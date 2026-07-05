@@ -126,7 +126,12 @@ a { color: inherit; text-decoration: none; }
   position: fixed; top: 0; left: 0; right: 0; z-index: 140;
   display: flex; align-items: center; justify-content: space-between;
   padding: 1.4rem clamp(1.2rem, 4vw, 3rem);
-  mix-blend-mode: normal;
+}
+.site-head::before {
+  content: "";
+  position: absolute; inset: 0; z-index: -1; height: 160%;
+  background: linear-gradient(180deg, rgba(10, 8, 7, 0.9) 0%, rgba(10, 8, 7, 0.55) 55%, transparent 100%);
+  pointer-events: none;
 }
 .brand {
   font-family: var(--display);
@@ -244,10 +249,10 @@ a { color: inherit; text-decoration: none; }
 .bg-video--fixed { position: absolute; }
 .scrim {
   position: absolute; inset: 0;
-  background: linear-gradient(90deg, rgba(10, 8, 7, 0.92) 0%, rgba(10, 8, 7, 0.55) 55%, rgba(10, 8, 7, 0.75) 100%);
+  background: linear-gradient(90deg, rgba(10, 8, 7, 0.85) 0%, rgba(10, 8, 7, 0.3) 55%, rgba(10, 8, 7, 0.55) 100%);
 }
 .scrim--deep {
-  background: linear-gradient(180deg, rgba(10, 8, 7, 0.95) 0%, rgba(10, 8, 7, 0.62) 40%, rgba(10, 8, 7, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(10, 8, 7, 0.9) 0%, rgba(10, 8, 7, 0.42) 40%, rgba(10, 8, 7, 0.9) 100%);
 }
 
 /* ---------- stats strip ---------- */

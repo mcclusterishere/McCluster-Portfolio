@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Matthew McCluster — Creative Director</title>
   <meta name="description" content="Matthew McCluster. Creative Director. Photography/Videography, Web Design, Songwriting/Jingles.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0807'/%3E%3Ctext x='32' y='46' font-family='Impact,sans-serif' font-size='42' fill='%23e5383b' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -41,7 +42,10 @@
     <section class="hero" id="hero">
       <div class="hero__sticky">
         <canvas id="orbitCanvas" aria-label="Matthew McCluster in a production studio, camera orbiting"></canvas>
-        <video id="heroFallback" class="hero__fallback" src="assets/video/hero.mp4" muted loop playsinline preload="none"></video>
+        <video id="heroFallback" class="hero__fallback" muted loop playsinline preload="none">
+          <source src="assets/video/hero.mp4" type="video/mp4">
+          <source src="assets/video/hero.webm" type="video/webm">
+        </video>
         <div class="hero__vignette" aria-hidden="true"></div>
 
         <div class="hero__content">
@@ -94,7 +98,10 @@
     <!-- ============ THREE PILLARS (over clip 2) ============ -->
     <section class="pillars" id="pillars">
       <div class="pillars__sticky">
-        <video class="bg-video" id="pillarsVideo" src="assets/video/designer.mp4" muted loop playsinline preload="metadata"></video>
+        <video class="bg-video" id="pillarsVideo" muted loop playsinline preload="metadata">
+          <source src="assets/video/designer.mp4" type="video/mp4">
+          <source src="assets/video/designer.webm" type="video/webm">
+        </video>
         <div class="scrim" aria-hidden="true"></div>
         <div class="pillars__frame">
           <header class="pillars__head">
@@ -124,7 +131,10 @@
 
     <!-- ============ WORK (over clip 3) ============ -->
     <section class="work" id="work">
-      <video class="bg-video bg-video--fixed" id="workVideo" src="assets/video/songwriter.mp4" muted loop playsinline preload="metadata"></video>
+      <video class="bg-video bg-video--fixed" id="workVideo" muted loop playsinline preload="metadata">
+        <source src="assets/video/songwriter.mp4" type="video/mp4">
+        <source src="assets/video/songwriter.webm" type="video/webm">
+      </video>
       <div class="scrim scrim--deep" aria-hidden="true"></div>
       <div class="work__frame">
         <header class="work__head">
