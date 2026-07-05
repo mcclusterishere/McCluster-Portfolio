@@ -26,5 +26,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Stamp asset versions so every deploy busts browser caches
+        run: |
+          find . -maxdepth 1 -name '*.html' -exec sed -i "s/__STAMP__/${GITHUB_SHA::12}/g" {} +
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "Stamp asset versions for deploy" --allow-empty
+
       - name: Push to gh-pages
         run: git push origin HEAD:refs/heads/gh-pages --force

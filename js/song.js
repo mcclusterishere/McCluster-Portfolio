@@ -115,7 +115,7 @@
     }
   }
 
-  fetch("assets/frames/manifest.json")
+  fetch("assets/frames/manifest.json", { cache: "no-cache" })
     .then(function (r) { return r.json(); })
     .then(function (m) {
       var gated = false; // the page opener gates the loader

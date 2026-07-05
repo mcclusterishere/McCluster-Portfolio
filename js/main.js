@@ -195,7 +195,7 @@
     }, "-=0.7");
   }
 
-  fetch("assets/frames/manifest.json")
+  fetch("assets/frames/manifest.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error("no manifest"); return r.json(); })
     .then(function (m) {
       loadSequence(sequences.hero, "hero", m.hero.count, function (p) {
@@ -533,7 +533,7 @@
     var avail = {};
 
     // tracks the manifest says exist; show the toggle once there's at least one
-    fetch("assets-manifest.json")
+    fetch("assets-manifest.json", { cache: "no-cache" })
       .then(function (r) { return r.json(); })
       .then(function (m) {
         avail = m.audio || {};
