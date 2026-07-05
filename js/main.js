@@ -104,6 +104,7 @@
     vaunt: createSequence("cmdCanvas4", null),
     whip: createSequence("cmdCanvas6", null),
     citations: createSequence("cmdCanvas7", null),
+    bussalick: createSequence("cmdCanvas8", null),
   };
 
   function clamp01(v) { return Math.max(0, Math.min(1, v)); }
@@ -227,6 +228,7 @@
         loadNear("#work", [
           ["uprise", "uprise"], ["citations", "citations"], ["prim3", "prim3"],
           ["study", "study"], ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
+          ["bussalick", "bussalick"],
           ["whip", m.whip ? "whip" : "street"],
         ]);
         ScrollTrigger.refresh();
@@ -394,12 +396,13 @@
     { seq: "study", f0: 0, f1: 1, speed: 1 },
     { seq: "vauntlive", f0: 0, f1: 1, speed: 1 },    // runway performance up to the sky...
     { seq: "vaunt", f0: 0, f1: 1, speed: 1.75 },     // ...into the cabin fly-through
+    { seq: "bussalick", f0: 0, f1: 1, speed: 1.75 },  // Dealer Plates video: the dash — fast scrub, whole clip early
     { seq: "whip", f0: 0, f1: 1, speed: 1 },         // Whip Equipped mini-series
   ];
   // six scenes, three PROJECTS: the counter and numbering track projects
-  var cmdProjects = [1, 1, 1, 2, 2, 3, 3, 4];
+  var cmdProjects = [1, 1, 1, 2, 2, 3, 3, 4, 4];
   var cmdProjectCount = 4;
-  var cmdSceneTracks = ["environmental-injustice", "environmental-injustice", "environmental-injustice", "gotwifi", "gotwifi", "vaunt", "vaunt", "dealerplates"];
+  var cmdSceneTracks = ["environmental-injustice", "environmental-injustice", "environmental-injustice", "gotwifi", "gotwifi", "vaunt", "vaunt", "dealerplates", "dealerplates"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades

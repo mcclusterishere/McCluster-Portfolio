@@ -140,12 +140,13 @@
             onEnter: function () { if (!s.count) loadSeq(s, m[name].count); },
           });
         }
+        var speed = parseFloat(block.getAttribute("data-speed")) || 1;
         ScrollTrigger.create({
           trigger: block,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
-          onUpdate: function (st) { s.target = st.progress * (s.count - 1 || 0); },
+          onUpdate: function (st) { s.target = Math.min(1, st.progress * speed) * (s.count - 1 || 0); },
         });
       });
       if (!gated) pre.finish(); // stub pages with no films
