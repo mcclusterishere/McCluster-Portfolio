@@ -1,0 +1,54 @@
+name: Fetch portfolio assets
+
+# The Claude Code session container can't reach the Higgsfield CDN, so this
+# workflow downloads the generated clips on a runner, cuts the hero orbit
+# into a scroll-scrub frame sequence, and commits everything back.
+
+on:
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - "assets-manifest.json"
+      - ".github/workflows/fetch-assets.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download videos from manifest
+        run: |
+          test -f assets-manifest.json || { echo "no manifest yet"; exit 0; }
+          mkdir -p assets/video
+          jq -r 'to_entries[] | "\(.key) \(.value)"' assets-manifest.json | while read -r name url; do
+            echo "Fetching $name"
+            curl -fL --retry 4 --retry-delay 3 -o "assets/video/${name}.mp4" "$url"
+          done
+          ls -la assets/video
+
+      - name: Extract hero frame sequence
+        run: |
+          test -f assets/video/hero.mp4 || { echo "no hero video"; exit 0; }
+          mkdir -p assets/frames
+          rm -f assets/frames/hero_*.jpg
+          ffmpeg -hide_banner -loglevel error -i assets/video/hero.mp4 \
+            -vf "fps=20,scale=1536:-2" -q:v 3 assets/frames/hero_%04d.jpg
+          COUNT=$(ls assets/frames/hero_*.jpg | wc -l | tr -d ' ')
+          printf '{ "count": %s, "fps": 20, "width": 1536 }\n' "$COUNT" > assets/frames/manifest.json
+          echo "Extracted $COUNT frames"
+          du -sh assets/frames
+
+      - name: Commit assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets
+          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "Add generated clips and hero frame sequence [skip ci]"
+          git push

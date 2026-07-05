@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matthew McCluster — Creative Director</title>
+  <meta name="description" content="Matthew McCluster. Creative Director. Photography/Videography, Web Design, Songwriting/Jingles.">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__m">M</div>
+      <div class="preloader__count"><span id="preCount">000</span><span class="preloader__pct">%</span></div>
+      <div class="preloader__label">McCluster · rolling the set</div>
+    </div>
+  </div>
+
+  <!-- FILM GRAIN -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgressBar"></span></div>
+
+  <!-- HEADER -->
+  <header class="site-head">
+    <a class="brand" href="#top"><span class="brand__m">M</span><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="#pillars">Pillars</a>
+      <a href="#work">Work</a>
+      <a class="head-cta" href="#book">Book Now</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ORBIT ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__sticky">
+        <canvas id="orbitCanvas" aria-label="Matthew McCluster in a production studio, camera orbiting"></canvas>
+        <video id="heroFallback" class="hero__fallback" src="assets/video/hero.mp4" muted loop playsinline preload="none"></video>
+        <div class="hero__vignette" aria-hidden="true"></div>
+
+        <div class="hero__content">
+          <p class="hero__eyebrow reveal-line"><span>The portfolio of</span></p>
+          <h1 class="hero__title" id="heroTitle">
+            <span class="hero__line" data-word="MATTHEW"></span>
+            <span class="hero__line hero__line--accent" data-word="McCLUSTER"></span>
+          </h1>
+          <p class="hero__sub reveal-line"><span><em class="bracket">[</em> Creative Director <em class="bracket">]</em></span></p>
+        </div>
+
+        <div class="hero__hud" aria-hidden="true">
+          <div class="hud__item hud__scroll">Scroll to orbit <span class="hud__arrow">↓</span></div>
+          <div class="hud__item hud__deg" id="hudDeg">000°</div>
+          <div class="hud__item hud__reel">REEL 01 · HERO ORBIT · 1080p</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS STRIP ============ -->
+    <section class="stats" id="stats">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marqueeTrack">
+          <span>Photography — Videography — Web Design — Songwriting — Jingles —&nbsp;</span>
+        </div>
+      </div>
+      <ul class="stats__grid">
+        <li class="stat">
+          <span class="stat__num" data-count="1">00</span>
+          <h3 class="stat__name">Photography <em>/</em> Videography</h3>
+          <p class="stat__line">Frames that feel directed, not taken.</p>
+        </li>
+        <li class="stat">
+          <span class="stat__num" data-count="2">00</span>
+          <h3 class="stat__name">Web Design</h3>
+          <p class="stat__line">Scroll-driven sites with a pulse — like this one.</p>
+        </li>
+        <li class="stat">
+          <span class="stat__num" data-count="3">00</span>
+          <h3 class="stat__name">Songwriting <em>/</em> Jingles</h3>
+          <p class="stat__line">Hooks that land before the logo does.</p>
+        </li>
+      </ul>
+      <div class="stats__tagline">
+        <span class="stat__bignum" data-count="3">0</span>
+        <span class="stats__tagtext">disciplines. One director.</span>
+      </div>
+    </section>
+
+    <!-- ============ THREE PILLARS (over clip 2) ============ -->
+    <section class="pillars" id="pillars">
+      <div class="pillars__sticky">
+        <video class="bg-video" id="pillarsVideo" src="assets/video/designer.mp4" muted loop playsinline preload="metadata"></video>
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="pillars__frame">
+          <header class="pillars__head">
+            <p class="kicker">Reel 02 · The Graphic Designer</p>
+            <h2 class="section-title">Three<br>Pillars</h2>
+          </header>
+          <div class="pillars__list" id="pillarsList">
+            <article class="pillar" data-pillar="0">
+              <span class="pillar__idx">01</span>
+              <h3 class="pillar__name">Photography<br>/ Videography</h3>
+              <p class="pillar__copy">Cinematic coverage from first frame to final grade — portraits, promos, and stories shot like film.</p>
+            </article>
+            <article class="pillar" data-pillar="1">
+              <span class="pillar__idx">02</span>
+              <h3 class="pillar__name">Web<br>Design</h3>
+              <p class="pillar__copy">Bold, kinetic, scroll-driven websites engineered to make a first impression twice.</p>
+            </article>
+            <article class="pillar" data-pillar="2">
+              <span class="pillar__idx">03</span>
+              <h3 class="pillar__name">Songwriting<br>/ Jingles</h3>
+              <p class="pillar__copy">Original hooks, cuts, and jingles written and produced in-house — melodies that sell.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORK (over clip 3) ============ -->
+    <section class="work" id="work">
+      <video class="bg-video bg-video--fixed" id="workVideo" src="assets/video/songwriter.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="scrim scrim--deep" aria-hidden="true"></div>
+      <div class="work__frame">
+        <header class="work__head">
+          <p class="kicker">Reel 03 · The Songwriter</p>
+          <h2 class="section-title">Selected<br>Work</h2>
+        </header>
+        <div class="work__grid">
+          <a class="card" href="#book">
+            <span class="card__idx">01</span>
+            <span class="card__tag">Film / Docuseries</span>
+            <h3 class="card__title">CT Docket 516R</h3>
+            <p class="card__pitch">A real courtroom saga cut like a thriller — shot, scored, and delivered frame by frame.</p>
+            <span class="card__cta">View case →</span>
+          </a>
+          <a class="card" href="#book">
+            <span class="card__idx">02</span>
+            <span class="card__tag">Songwriting / Jingles</span>
+            <h3 class="card__title">The M Sessions</h3>
+            <p class="card__pitch">In-house hooks and brand jingles — written, sung, and mixed under the metallic M.</p>
+            <span class="card__cta">Hear the reel →</span>
+          </a>
+          <a class="card" href="#book">
+            <span class="card__idx">03</span>
+            <span class="card__tag">Web Design</span>
+            <h3 class="card__title">Studio M Sites</h3>
+            <p class="card__pitch">Cinematic scroll-driven builds like the one you're on — designed to win the first five seconds.</p>
+            <span class="card__cta">Start yours →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINALE ============ -->
+    <section class="finale" id="book">
+      <div class="finale__inner">
+        <p class="kicker kicker--center">The set is lit. The mic is hot.</p>
+        <h2 class="finale__title" id="finaleTitle">
+          <span class="hero__line" data-word="BOOK"></span>
+          <span class="hero__line hero__line--accent" data-word="NOW"></span>
+        </h2>
+        <div class="finale__actions">
+          <a class="btn btn--ruby magnetic" href="mailto:matthew@mccluster.org?subject=Booking%20Request%20%E2%80%94%20McCluster">Book a Shoot</a>
+          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=New%20Project%20%E2%80%94%20McCluster">Start a Project</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-foot">
+    <div class="site-foot__brand"><span class="brand__m">M</span>cCluster</div>
+    <nav class="site-foot__links">
+      <a href="https://instagram.com/McClusterishere" target="_blank" rel="noopener">Instagram · @McClusterishere</a>
+      <a href="https://youtube.com/@McClusterishere" target="_blank" rel="noopener">YouTube · @McClusterishere</a>
+      <a href="https://tiktok.com/@McClusterishere" target="_blank" rel="noopener">TikTok · @McClusterishere</a>
+    </nav>
+    <p class="site-foot__note">© 2026 Matthew McCluster — shot, scored &amp; built under the metallic M.</p>
+  </footer>
+
+  <script src="vendor/lenis.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
