@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matthew McCluster — Creative Director</title>
+  <meta name="description" content="Matthew McCluster. Creative Director. Photography/Videography, Web Design, Songwriting/Jingles.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__mark" id="preMark">
+        <img class="preloader__piece preloader__piece--l" src="assets/img/m-mark.png" alt="">
+        <img class="preloader__piece preloader__piece--r" src="assets/img/m-mark.png" alt="">
+      </div>
+      <div class="preloader__count"><span id="preCount">000</span><span class="preloader__pct">%</span></div>
+      <div class="preloader__label">McCluster · rolling the set</div>
+    </div>
+  </div>
+
+  <!-- FILM GRAIN -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgressBar"></span></div>
+
+  <!-- HEADER -->
+  <header class="site-head">
+    <a class="brand" href="#top"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="#pillars">Services</a>
+      <a href="#work">Work</a>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false" hidden>
+        <span class="sound-toggle__dot"></span> Sound
+      </button>
+      <a class="head-cta" href="#book">Lock In</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ORBIT ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__sticky">
+        <canvas id="orbitCanvas" aria-label="Matthew McCluster in a production studio, camera orbiting"></canvas>
+        <video id="heroFallback" class="hero__fallback" muted loop playsinline preload="none">
+          <source src="assets/video/hero.mp4" type="video/mp4">
+          <source src="assets/video/hero.webm" type="video/webm">
+        </video>
+        <div class="hero__vignette" aria-hidden="true"></div>
+
+        <div class="hero__content">
+          <p class="hero__eyebrow reveal-line"><span>Creative direction · Photography · Web · Music</span></p>
+          <h1 class="hero__title" id="heroTitle">
+            <span class="hero__line" data-word="MATTHEW"></span>
+            <span class="hero__line hero__line--accent" data-word="McCLUSTER"></span>
+          </h1>
+          <p class="hero__sub reveal-line"><span><em class="bracket">[</em> Creative Director <em class="bracket">]</em></span></p>
+        </div>
+
+        <div class="hero__hud" aria-hidden="true">
+          <div class="hud__item hud__scroll">Scroll slow, homie <span class="hud__arrow">↓</span></div>
+          <div class="hud__item hud__deg" id="hudDeg">000°</div>
+          <div class="hud__item hud__reel">Make 'em do a double take · Betcha broke your neck</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THE LOADOUT — 360 studio pan ============ -->
+    <section class="loadout" id="loadout">
+      <div class="loadout__sticky command__sticky">
+        <canvas class="bg-canvas" id="loadoutCanvas" aria-label="360 pan from the center of a multipurpose production studio: photo/video corner, recording corner, and a conference stage"></canvas>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <header class="command__head">
+          <p class="kicker">"Never ask me to lower my price — I snap like my A7R5"</p>
+          <h2 class="section-title">Full<br>Production</h2>
+          <p class="work__answer">Portable enough to come to you — plus a network of studios to bring you into.</p>
+        </header>
+        <div class="command__panels">
+          <article class="command__panel" data-scene="0">
+            <p class="command__meta"><span class="command__tag">Corner One — Photo / Video</span></p>
+            <h3 class="command__title">Photo &amp; Video<br>Studio</h3>
+            <p class="command__pitch">Lit cyc, backdrops, and the full camera loadout — portraits, products, and promos shot in-studio, or packed into cases and brought to your location.</p>
+          </article>
+          <article class="command__panel" data-scene="1">
+            <p class="command__meta"><span class="command__tag">Corner Two — Sound</span></p>
+            <h3 class="command__title">Recording<br>Studio</h3>
+            <p class="command__pitch">A live room with the instruments ready — vocals, sessions, jingles, and mixes cut in-house, or in a partner room wherever you are.</p>
+          </article>
+          <article class="command__panel" data-scene="2">
+            <p class="command__meta"><span class="command__tag">Corner Three — The Stage</span></p>
+            <h3 class="command__title">Conference &amp;<br>Broadcast</h3>
+            <p class="command__pitch">A stage with a TV-style multicam setup — keynotes, panels, and live events captured broadcast-ready, at our place or yours.</p>
+          </article>
+        </div>
+        <div class="command__count" id="loCount">01 / 03</div>
+        <a class="song-gate" href="song-who-did-the-shoot.html"><span class="song-gate__dot"></span> Now playing: "Who Did The Shoot" — own it</a>
+      </div>
+    </section>
+
+    <!-- ============ STATS STRIP ============ -->
+    <section class="stats" id="stats">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track" id="marqueeTrack">
+          <span>Who did the shoot? — It was me — Wunt for free — Pay the fee — Scroll slow, homie —&nbsp;</span>
+        </div>
+      </div>
+      <ul class="stats__grid">
+        <li class="stat">
+          <div class="stat__obj"><img src="assets/img/float-laptop.png" alt="Laptop with rising analytics"></div>
+          <h3 class="stat__name">Consultation</h3>
+          <p class="stat__line">Get on the call and lay out the vision. You leave with scope, timeline, and the exact number — no surprises later.</p>
+        </li>
+        <li class="stat">
+          <div class="stat__obj"><img src="assets/img/float-invoice.png" alt="Invoice stamped PAID with the M mark"></div>
+          <h3 class="stat__name">Deposit</h3>
+          <p class="stat__line">The deposit locks the day in. Your date comes off the market and pre-production starts the same week.</p>
+        </li>
+        <li class="stat">
+          <div class="stat__obj"><img src="assets/img/float-fx6.png" alt="Sony FX6"></div>
+          <h3 class="stat__name">Action</h3>
+          <p class="stat__line">Lights, camera, delivery. Shot, cut, and handed off broadcast-ready — on schedule.</p>
+        </li>
+      </ul>
+      <div class="stats__tagline">
+        <span class="stats__tagtext">Consultation to action — one director, one point of contact.</span>
+      </div>
+      <a class="stats__own" href="song-who-did-the-shoot.html">● Now playing: "Who Did The Shoot" — own the track →</a>
+    </section>
+
+    <!-- ============ SERVICES — three slides over Antisocial ============ -->
+    <section class="services" id="pillars">
+      <div class="command__sticky">
+        <canvas class="bg-canvas command__canvas" id="svcCanvas0" aria-label="Matthew directing a room of video editors on a big screen"></canvas>
+        <canvas class="bg-canvas command__canvas" id="svcCanvas1" aria-label="Matthew on two phones walking the street with two assistants"></canvas>
+        <canvas class="bg-canvas command__canvas" id="pillarsCanvas" aria-label="Matthew at a dark desk surrounded by holographic screens"></canvas>
+        <video class="bg-video" id="pillarsVideo" muted loop playsinline preload="none">
+          <source src="assets/video/designer.mp4" type="video/mp4">
+          <source src="assets/video/designer.webm" type="video/webm">
+        </video>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <header class="command__head">
+          <p class="kicker">"I'm antisocial 'cause I'm always on social" — scroll slow, homie</p>
+          <h2 class="section-title">Services</h2>
+        </header>
+        <div class="command__panels">
+          <article class="command__panel" data-scene="0">
+            <p class="command__meta"><span class="command__tag">Post-Production</span></p>
+            <h3 class="command__title">Editorial<br>Direction</h3>
+            <p class="command__pitch">A full edit bay under one director — cuts reviewed on the big screen, notes in real time, every editor cutting toward the same picture.</p>
+          </article>
+          <article class="command__panel" data-scene="1">
+            <p class="command__meta"><span class="command__tag">Strategy / Team Leadership</span></p>
+            <h3 class="command__title">Strategy<br>&amp; Team</h3>
+            <p class="command__pitch">Campaigns run like productions: strategy on two phones and a moving schedule — briefing teams, training interns and workforce personnel into a crew that ships.</p>
+          </article>
+          <article class="command__panel" data-scene="2">
+            <p class="command__meta"><span class="command__tag">Web Design / Site Management</span></p>
+            <h3 class="command__title">Web Design<br>&amp; Management</h3>
+            <p class="command__pitch"><em>01</em> Discovery call — define the scope and the timeline. <em>02</em> The build-out. <em>03</em> Delivery — then ongoing site management.</p>
+          </article>
+        </div>
+        <div class="command__count" id="svcCount">01 / 03</div>
+        <a class="song-gate" href="song-antisocial.html"><span class="song-gate__dot"></span> Now playing: "Antisocial" — own it</a>
+      </div>
+    </section>
+
+    <!-- ============ IN COMMAND — mini scroll (selected work as scenes) ============ -->
+    <section class="command" id="work">
+      <div class="command__sticky">
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas0" aria-label="Equity Uprise: Matthew engineering the rally from the sound booth, then slamming the case file onto a desk"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas7" aria-label="Equity Uprise: the official state citations standing on the podium of the empty church"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas2" aria-label="PRIM3: Matthew teaching kids and adults from schematics inside a half-built data center"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas3" aria-label="PRIM3: a kid in headphones studying to the music beside a small server rack"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas5" aria-label="Vaunt: Matthew singing and Zakir on guitar on the runway, the camera lifting to the jet in flight"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas4" aria-label="Vaunt: fly-through from open sky past Matthew into the cockpit"></canvas>
+        <canvas class="bg-canvas command__canvas" id="cmdCanvas6" aria-label="Whip Equipped: the We In This Together mini-series for a car dealership"></canvas>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <header class="command__head">
+          <p class="kicker">From videography to web design to brand strategy. We do it all.</p>
+          <h2 class="section-title">Portfolio</h2>
+          <p class="work__answer">Recent projects.</p>
+        </header>
+        <div class="command__panels">
+          <article class="command__panel" data-scene="0">
+            <p class="command__meta"><img class="command__logo" src="assets/img/equity-uprise-logo.png" alt="Equity Uprise logo"><span class="command__tag">Equity Uprise · Docket 516R — The Movement</span></p>
+            <h3 class="command__title">Event<br>Production</h3>
+            <p class="command__pitch">A grassroots civic-engagement rally on environmental injustice — sound, staging, and program for hundreds of attendees, engineered from the booth and put on the record.</p>
+          </article>
+          <article class="command__panel" data-scene="1">
+            <p class="command__meta"><img class="command__logo" src="assets/img/equity-uprise-logo.png" alt="Equity Uprise logo"><span class="command__tag">Equity Uprise · Docket 516R — The Policy Change</span></p>
+            <h3 class="command__title">Policy<br>Recommendations</h3>
+            <p class="command__pitch">The same fight, on the record: policy recommendations built from the case — U&amp;I vs. UI — followed from public filing to verdict.</p>
+          </article>
+          <article class="command__panel" data-scene="2">
+            <p class="command__meta"><img class="command__logo" src="assets/img/equity-uprise-logo.png" alt="Equity Uprise logo"><span class="command__tag">Equity Uprise · Docket 516R — The Recognition</span></p>
+            <h3 class="command__title">Official<br>Citations</h3>
+            <p class="command__pitch">The receipts, delivered: State of Connecticut General Assembly citations and the City of Bridgeport's "Equity Uprise Human Rights Day" proclamation.</p>
+          </article>
+          <article class="command__panel" data-scene="3">
+            <p class="command__meta"><span class="command__tag">PRIM3 — Part I · Technology / Education</span></p>
+            <h3 class="command__title">PRIM3</h3>
+            <p class="command__pitch">A technology program that teaches kids and adults to build real infrastructure — from the schematics to a working data center, managed on site.</p>
+          </article>
+          <article class="command__panel" data-scene="4">
+            <p class="command__meta"><span class="command__tag">PRIM3 — Part II · Education Through Music</span></p>
+            <h3 class="command__title">Study to<br>the Music</h3>
+            <p class="command__pitch">The curriculum comes with a soundtrack — original tracks kids study to, so the lessons stick like a hook. Headphones on. Got WiFi.</p>
+          </article>
+          <article class="command__panel" data-scene="5">
+            <p class="command__meta"><img class="command__logo command__logo--white" src="assets/img/vaunt-logo.jpeg" alt="Vaunt logo"><span class="command__tag">Vaunt Private Flights — The Performance</span></p>
+            <h3 class="command__title">Commercial<br>Production</h3>
+            <p class="command__pitch">The spot itself: performed live on the runway with Zakir on guitar — the original jingle that became the campaign.</p>
+          </article>
+          <article class="command__panel" data-scene="6">
+            <p class="command__meta"><img class="command__logo command__logo--white" src="assets/img/vaunt-logo.jpeg" alt="Vaunt logo"><span class="command__tag">Vaunt Private Flights — The Launch</span></p>
+            <h3 class="command__title">Launch<br>Campaign</h3>
+            <p class="command__pitch">First influencer in their beta program — coverage that drove online sign-ups before the app even launched.</p>
+          </article>
+          <article class="command__panel" data-scene="7">
+            <p class="command__meta"><img class="command__logo" src="assets/img/we-logo.png" alt="WE — In This Together logo"><span class="command__tag">Whip Equipped — "We In This Together" Mini-Series</span></p>
+            <h3 class="command__title">Branded<br>Mini-Series</h3>
+            <p class="command__pitch">A dealership campaign disguised as a crime saga: the lot breaks all the rules and builds an empire — scored by "Dealer Plates," produced by Zakir &amp; McCluster.</p>
+          </article>
+        </div>
+        <div class="command__count" id="cmdCount">01 / 03</div>
+        <a class="song-gate" id="gateCmd" href="song-environmental-injustice.html"><span class="song-gate__dot"></span> <span id="gateCmdLabel">Now playing: "Environmental Injustice" — own it</span></a>
+      </div>
+    </section>
+
+    <!-- ============ FINALE ============ -->
+    <section class="finale" id="book">
+      <div class="finale__inner">
+        <p class="kicker kicker--center">"Deposit lock the day in" — calendars fill fast.</p>
+        <h2 class="finale__title" id="finaleTitle">
+          <span class="hero__line" data-word="LOCK"></span>
+          <span class="hero__line hero__line--accent" data-word="IN"></span>
+        </h2>
+        <div class="finale__actions">
+          <a class="btn btn--ruby magnetic" href="mailto:matthew@mccluster.org?subject=Booking%20Inquiry%20%E2%80%94%20McCluster">Lock In a Date</a>
+          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Quote%20Request%20%E2%80%94%20McCluster">Request a Quote</a>
+          <a class="btn btn--ghost magnetic" id="subscribeBtn" href="#">Subscribe</a>
+        </div>
+        <p class="finale__believe">You could love it or leave it — as long as you believe it.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <nav class="site-foot__links">
+      <a href="song-who-did-the-shoot.html">♫ Who Did The Shoot</a>
+      <a href="song-antisocial.html">♫ Antisocial</a>
+      <a href="song-environmental-injustice.html">♫ Environmental Injustice</a>
+      <a href="song-got-wifi.html">♫ Got WiFi</a>
+      <a href="song-vaunt.html">♫ Vaunt (Acoustic)</a>
+      <a href="song-dealer-plates.html">♫ Dealer Plates</a>
+      <a href="https://instagram.com/McClusterishere" target="_blank" rel="noopener">Instagram · @McClusterishere</a>
+      <a href="https://youtube.com/@McClusterishere" target="_blank" rel="noopener">YouTube · @McClusterishere</a>
+      <a href="https://tiktok.com/@McClusterishere" target="_blank" rel="noopener">TikTok · @McClusterishere</a>
+    </nav>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Here — The Album. Every frame, chord, and line of code on this page is his.</p>
+  </footer>
+
+  <!-- Here album — one track per section, driven by the sound toggle -->
+  <audio id="track-runway" preload="none" loop>
+    <source src="assets/audio/runway.mp3" type="audio/mpeg">
+    <source src="assets/audio/runway.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-antisocial" preload="none" loop>
+    <source src="assets/audio/antisocial.mp3" type="audio/mpeg">
+    <source src="assets/audio/antisocial.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-whodidtheshoot" preload="none" loop>
+    <source src="assets/audio/who-did-the-shoot.mp3" type="audio/mpeg">
+    <source src="assets/audio/who-did-the-shoot.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-environmental-injustice" preload="none" loop>
+    <source src="assets/audio/environmental-injustice.mp3" type="audio/mpeg">
+    <source src="assets/audio/environmental-injustice.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-vaunt" preload="none" loop>
+    <source src="assets/audio/vaunt.mp3" type="audio/mpeg">
+    <source src="assets/audio/vaunt.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-gotwifi" preload="none" loop>
+    <source src="assets/audio/got-wifi.mp3" type="audio/mpeg">
+    <source src="assets/audio/got-wifi.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-dealerplates" preload="none" loop>
+    <source src="assets/audio/dealer-plates.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="js/analytics.js"></script>
+  <script src="js/payments.js"></script>
+  <script src="vendor/lenis.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

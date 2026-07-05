@@ -1,0 +1,30 @@
+name: Deploy to GitHub Pages
+
+# Mirrors this branch into gh-pages, which GitHub Pages serves.
+# (GITHUB_TOKEN can't enable Pages itself, so the site is published
+# from the gh-pages branch instead of a Pages deployment workflow.)
+
+on:
+  push:
+    branches:
+      - "claude/mccluster-portfolio-3d-wc288w"
+      - "main"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to gh-pages
+        run: git push origin HEAD:refs/heads/gh-pages --force

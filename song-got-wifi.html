@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Got WiFi — Matthew McCluster · Here, The Album</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="#own">Own It</a>
+    </nav>
+  </header>
+  <main>
+    <section class="songhero">
+      <p class="kicker kicker--center">Here — The Album</p>
+      <h1 class="songhero__title">Got WiFi</h1>
+      <p class="songhero__sub">PRIM3 · Study to the music</p>
+      <button class="sound-toggle songhero__play" id="songPlay" type="button">
+        <span class="sound-toggle__dot"></span> <span>Play the track</span>
+      </button>
+      <p class="songhero__hint">Scroll slow, homie ↓</p>
+    </section>
+    <section class="songblock" data-seq="prim3">
+      <div class="songblock__sticky">
+        <canvas class="bg-canvas"></canvas>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <div class="songblock__lyrics">
+          <p class="songblock__tag">The Build</p>
+          <p class="songblock__line">Got WiFi.</p>
+          <p class="songblock__line">The PRIM3 anthem —</p>
+          <p class="songblock__line">from the schematics</p>
+          <p class="songblock__line">to a working data center.</p>
+        </div>
+      </div>
+    </section>
+    <section class="songblock" data-seq="study">
+      <div class="songblock__sticky">
+        <canvas class="bg-canvas"></canvas>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <div class="songblock__lyrics">
+          <p class="songblock__tag">Study to the Music</p>
+          <p class="songblock__line">The curriculum comes with a soundtrack.</p>
+          <p class="songblock__line">Headphones on.</p>
+          <p class="songblock__line">Lyric page coming soon —</p>
+          <p class="songblock__line">press play and ride the scroll.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="songbuy" id="own">
+      <p class="kicker kicker--center">Wunt for free — pay the fee</p>
+      <h2 class="songbuy__title">Own<br>"Got WiFi"</h2>
+      <div class="finale__actions">
+        <a class="btn btn--ruby" id="songBuy" href="#">Buy the track</a>
+        <a class="btn btn--ghost" id="songSubscribe" href="#">Subscribe to McCluster</a>
+      </div>
+      <p class="finale__believe">Checkout runs through the nonprofit's Square — every purchase funds the work.</p>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Here — The Album.</p>
+  </footer>
+  <script>window.SONG = { key: "gotwifi", audio: "assets/audio/got-wifi.mp3" };</script>
+  <script src="js/analytics.js"></script>
+  <script src="js/payments.js"></script>
+  <script src="vendor/lenis.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="js/song.js"></script>
+</body>
+</html>
