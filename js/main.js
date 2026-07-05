@@ -627,7 +627,7 @@
       });
     });
     // CTAs, song gates, and nav clicks
-    document.querySelectorAll(".head-cta, .finale__actions .btn, .song-gate, .stats__own, .site-foot a").forEach(function (el) {
+    document.querySelectorAll(".head-cta, .finale__actions .btn, .song-gate, .stats__own, .site-foot a, a[data-cta]").forEach(function (el) {
       el.addEventListener("click", function () {
         track("cta_click", {
           label: (el.textContent || "").trim().slice(0, 60),

@@ -233,6 +233,11 @@
       });
     }
   }
+  document.querySelectorAll("a[data-cta]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      track("cta_click", { label: el.getAttribute("data-cta"), song: window.SONG.key, page: "song" });
+    });
+  });
   wireGate(document.getElementById("songBuy"), window.PAYMENTS[window.SONG.key]);
   wireGate(document.getElementById("songSubscribe"), window.PAYMENTS.subscribe);
 })();
