@@ -307,6 +307,14 @@
     }, { threshold: 0.05 }).observe(v);
   });
 
+  /* ---------------- debug handle (used by the verification harness) ---------------- */
+  window.__MCC = {
+    ready: function () { return seqReady; },
+    frameCount: function () { return frameCount; },
+    lastDrawn: function () { return lastDrawn; },
+    target: function () { return target; },
+  };
+
   /* ---------------- anchor links through Lenis ---------------- */
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     a.addEventListener("click", function (e) {

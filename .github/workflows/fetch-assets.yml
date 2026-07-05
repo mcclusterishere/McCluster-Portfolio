@@ -32,6 +32,9 @@ jobs:
           done
           ls -la assets/video
 
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Extract hero frame sequence
         run: |
           test -f assets/video/hero.mp4 || { echo "no hero video"; exit 0; }
