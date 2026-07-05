@@ -10,6 +10,8 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  var PAR = window.MCC_PARALLAX;
+
   var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
@@ -141,12 +143,21 @@
           });
         }
         var speed = parseFloat(block.getAttribute("data-speed")) || 1;
+        var parC = PAR.attach(canvas, { depth: 15, tilt: 2.4, push: 0.06 });
+        var parL = PAR.attach(block.querySelector(".songblock__lyrics"), { depth: -7 });
         ScrollTrigger.create({
           trigger: block,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
-          onUpdate: function (st) { s.target = Math.min(1, st.progress * speed) * (s.count - 1 || 0); },
+          onUpdate: function (st) {
+            var q = Math.min(1, st.progress * speed);
+            s.target = q * (s.count - 1 || 0);
+            // once the film runs out, the held frame starts tracking the cursor
+            var ps = st.isActive ? PAR.ramp(q) : 0;
+            PAR.set(parC, ps);
+            PAR.set(parL, ps);
+          },
         });
       });
       if (!gated) pre.finish(); // stub pages with no films
@@ -157,9 +168,19 @@
   /* ---------- still-image blocks: scroll-driven drift ---------- */
   document.querySelectorAll(".songblock[data-img]").forEach(function (block) {
     var img = block.querySelector(".songblock__img");
+    // no push here: the drift tween owns the image's scale
+    var parC = PAR.attach(img, { depth: 12, tilt: 2 });
+    var parL = PAR.attach(block.querySelector(".songblock__lyrics"), { depth: -7 });
     gsap.fromTo(img, { scale: 1.18, yPercent: -4 }, {
       scale: 1.02, yPercent: 4, ease: "none",
-      scrollTrigger: { trigger: block, start: "top top", end: "bottom bottom", scrub: 0.4 },
+      scrollTrigger: {
+        trigger: block, start: "top top", end: "bottom bottom", scrub: 0.4,
+        onUpdate: function (st) {
+          var ps = st.isActive ? PAR.ramp(st.progress) : 0;
+          PAR.set(parC, ps);
+          PAR.set(parL, ps);
+        },
+      },
     });
   });
 

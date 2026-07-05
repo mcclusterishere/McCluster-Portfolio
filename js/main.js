@@ -109,6 +109,15 @@
 
   function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 
+  /* ---------------- mouse parallax hookups ----------------
+     Each slide hands its local progress to the parallax layer;
+     near a film's final frame the scene starts following the cursor. */
+  var PAR = window.MCC_PARALLAX;
+  function parCanvas(seqKey, opts) {
+    var s = sequences[seqKey];
+    return s ? PAR.attach(s.canvas, opts || { depth: 15, tilt: 2.4, push: 0.06 }) : null;
+  }
+
   // butter loop: every tick, lerp each sequence toward its scroll target
   gsap.ticker.add(function () {
     Object.keys(sequences).forEach(function (k) {
@@ -242,6 +251,7 @@
 
   /* ---------------- hero scrub ---------------- */
   var hudDeg = document.getElementById("hudDeg");
+  var parHero = parCanvas("hero");
 
   ScrollTrigger.create({
     trigger: "#hero",
@@ -252,7 +262,9 @@
       var p = st.progress;
       sequences.hero.target = p * (sequences.hero.count - 1 || 0);
       hudDeg.textContent = String(Math.round(p * 360)).padStart(3, "0") + "°";
+      PAR.set(parHero, st.isActive ? PAR.ramp(p) : 0);
     },
+    onToggle: function (st) { if (!st.isActive) PAR.set(parHero, 0); },
   });
 
   // kinetic type: letters track apart and drift out as the orbit runs
@@ -274,6 +286,8 @@
     var loPanels = gsap.utils.toArray("#loadout .command__panel");
     var loCount = document.getElementById("loCount");
     var current = 0;
+    var parLoCanvas = parCanvas("keynote");
+    var parLoPanels = PAR.attach(document.querySelector("#loadout .command__panels"), { depth: -7 });
 
     function applyLoadout(p) {
       var active = Math.min(2, Math.floor(p * 3));
@@ -282,6 +296,10 @@
       loPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
       loCount.textContent = "0" + (active + 1) + " / 03";
       current = active;
+      // the pan comes alive at the end of each corner's band
+      var s = PAR.ramp(clamp01(p * 3 - active));
+      PAR.set(parLoCanvas, s);
+      PAR.set(parLoPanels, s);
     }
     applyLoadout(0);
 
@@ -290,7 +308,13 @@
       start: "top top",
       end: "bottom bottom",
       scrub: true,
-      onUpdate: function (st) { applyLoadout(st.progress); },
+      onUpdate: function (st) {
+        applyLoadout(st.progress);
+        if (!st.isActive) { PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
+      },
+      onToggle: function (st) {
+        if (!st.isActive) { PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
+      },
     });
     gsap.from("#loadout .command__head", {
       x: -70, opacity: 0, duration: 1, ease: "power3.out",
@@ -355,6 +379,9 @@
     return Math.min(oIn, oOut);
   }
 
+  var parSvcCanvases = svcScenes.map(function (sc) { return parCanvas(sc.seq); });
+  var parSvcPanels = PAR.attach(document.querySelector("#pillars .command__panels"), { depth: -7 });
+
   function applyServices(p) {
     var n = svcScenes.length;
     var active = Math.min(n - 1, Math.floor(p * n));
@@ -363,7 +390,9 @@
       var q = clamp01(p * n - i);
       s.target = q * (s.count - 1 || 0);
       s.canvas.style.opacity = svcSceneOpacity(p, i);
+      PAR.set(parSvcCanvases[i], i === active ? PAR.ramp(q) : 0);
     });
+    PAR.set(parSvcPanels, PAR.ramp(clamp01(p * n - active)));
     svcPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
     svcCount.textContent = "0" + (active + 1) + " / 0" + n;
   }
@@ -374,7 +403,19 @@
     start: "top top",
     end: "bottom bottom",
     scrub: true,
-    onUpdate: function (st) { applyServices(st.progress); },
+    onUpdate: function (st) {
+      applyServices(st.progress);
+      if (!st.isActive) {
+        parSvcCanvases.forEach(function (it) { PAR.set(it, 0); });
+        PAR.set(parSvcPanels, 0);
+      }
+    },
+    onToggle: function (st) {
+      if (!st.isActive) {
+        parSvcCanvases.forEach(function (it) { PAR.set(it, 0); });
+        PAR.set(parSvcPanels, 0);
+      }
+    },
   });
   gsap.from("#pillars .command__head", {
     x: -80, opacity: 0, duration: 1, ease: "power3.out",
@@ -412,11 +453,14 @@
 
   // each canvas is visible across the contiguous scene bands of its sequence
   var cmdCanvasBands = {};
+  var parCmdCanvases = {};
   cmdScenes.forEach(function (sc, i) {
     var id = sequences[sc.seq].canvas.id;
     if (!cmdCanvasBands[id]) cmdCanvasBands[id] = { from: i, to: i + 1 };
     else cmdCanvasBands[id].to = i + 1;
+    if (!parCmdCanvases[sc.seq]) parCmdCanvases[sc.seq] = parCanvas(sc.seq);
   });
+  var parCmdPanels = PAR.attach(document.querySelector("#work .command__panels"), { depth: -7 });
 
   function cmdCanvasOpacity(p, band) {
     var n = cmdScenes.length;
@@ -439,6 +483,13 @@
     Object.keys(cmdCanvasBands).forEach(function (id) {
       document.getElementById(id).style.opacity = cmdCanvasOpacity(p, cmdCanvasBands[id]);
     });
+    // near the end of the active band the scene starts tracking the cursor
+    var actSc = cmdScenes[active];
+    var actS = PAR.ramp(clamp01((p * n - active) * actSc.speed));
+    Object.keys(parCmdCanvases).forEach(function (k) {
+      PAR.set(parCmdCanvases[k], k === actSc.seq ? actS : 0);
+    });
+    PAR.set(parCmdPanels, actS);
     cmdPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
     cmdCount.textContent = "0" + cmdProjects[active] + " / 0" + cmdProjectCount;
     if (active !== lastCmdActive) {
@@ -462,7 +513,19 @@
     start: "top top",
     end: "bottom bottom",
     scrub: true,
-    onUpdate: function (st) { applyCommand(st.progress); },
+    onUpdate: function (st) {
+      applyCommand(st.progress);
+      if (!st.isActive) {
+        Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
+        PAR.set(parCmdPanels, 0);
+      }
+    },
+    onToggle: function (st) {
+      if (!st.isActive) {
+        Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
+        PAR.set(parCmdPanels, 0);
+      }
+    },
   });
 
   gsap.from(".command__head", {

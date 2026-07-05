@@ -851,6 +851,22 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--cream-dim);
 }
+/* cursor light: a soft glow that follows the mouse while a slide is
+   tracking it (position + opacity driven by js/parallax.js root vars) */
+.command__sticky::after,
+.hero__sticky::after,
+.songblock__sticky::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    46rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(255, 240, 219, 0.09), transparent 62%
+  );
+  opacity: var(--spot-o, 0);
+  mix-blend-mode: screen;
+}
+
 .songblock { height: 300vh; position: relative; }
 /* storyboard frames: quicker scroll beats than full film blocks */
 .songblock--short { height: 160vh; }
