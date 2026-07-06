@@ -361,37 +361,6 @@
     scrollTrigger: { trigger: document.body, start: "top top", end: "max", scrub: 0.3 },
   });
 
-  /* ---------------- marquee (velocity-reactive) ---------------- */
-  var track = document.getElementById("marqueeTrack");
-  // duplicate content for a seamless loop
-  track.innerHTML += track.innerHTML + track.innerHTML;
-  var mx = 0;
-  gsap.ticker.add(function () {
-    var vel = prefersReduced ? 0 : lenis.velocity || 0;
-    mx -= 0.6 + Math.min(Math.abs(vel) * 0.05, 3);
-    var w = track.scrollWidth / 3;
-    if (-mx >= w) mx += w;
-    track.style.transform = "translateX(" + mx + "px)";
-  });
-
-  /* ---------------- stats: floating cameras rotate with the scroll ---------------- */
-  gsap.utils.toArray(".stat__obj img").forEach(function (el, i) {
-    gsap.fromTo(el,
-      { rotation: -25 - i * 15 },
-      {
-        rotation: 335 - i * 15, // one full turn across the section's travel
-        ease: "none",
-        scrollTrigger: { trigger: "#stats", start: "top bottom", end: "bottom top", scrub: 0.5 },
-      });
-  });
-
-  gsap.utils.toArray(".stat").forEach(function (el, i) {
-    gsap.from(el, {
-      y: 60, opacity: 0, duration: 0.9, ease: "power3.out", delay: i * 0.12,
-      scrollTrigger: { trigger: el, start: "top 88%" },
-    });
-  });
-
   /* ---------------- services: three slides over Antisocial ---------------- */
   var svcScenes = [
     { seq: "editors" },
@@ -619,7 +588,6 @@
     var zones = [
       { sel: "#hero", track: "whodidtheshoot" },
       { sel: "#loadout", track: "whodidtheshoot" },
-      { sel: "#stats", track: "whodidtheshoot" },
       { sel: "#pillars", track: "antisocial" },
       // the command scroll picks its track per scene
       { sel: "#work", track: function () { return cmdSceneTracks[lastCmdActive]; } },
@@ -752,14 +720,14 @@
   (function () {
     function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
     // each section counts once per visit as the visitor reaches it
-    ["#hero", "#loadout", "#stats", "#pillars", "#work", "#book"].forEach(function (sel) {
+    ["#hero", "#loadout", "#pillars", "#work", "#book"].forEach(function (sel) {
       ScrollTrigger.create({
         trigger: sel, start: "top 60%", once: true,
         onEnter: function () { track("section_view", { section: sel.slice(1), page: "home" }); },
       });
     });
     // CTAs, song gates, and nav clicks
-    document.querySelectorAll(".head-cta, .finale__actions .btn, .song-gate, .stats__own, .site-foot a, a[data-cta]").forEach(function (el) {
+    document.querySelectorAll(".head-cta, .finale__actions .btn, .song-gate, .site-foot a, a[data-cta]").forEach(function (el) {
       el.addEventListener("click", function () {
         track("cta_click", {
           label: (el.textContent || "").trim().slice(0, 60),
