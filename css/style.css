@@ -2153,3 +2153,142 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
   animation: loadFlash 1.2s steps(2) infinite;
 }
 @media (prefers-reduced-motion: reduce) { .dkt__group.is-parsing summary::after { animation: none; } }
+
+/* ============================================================
+   THE ECOSYSTEM — brand hub (ecosystem.html) + brand pages (brand.html)
+   ============================================================ */
+
+/* ---- ecosystem hub ---- */
+.ecohero {
+  padding: clamp(6rem, 14vh, 10rem) clamp(1.2rem, 5vw, 4rem) clamp(2rem, 6vh, 4rem);
+  max-width: 62rem;
+}
+.ecohero__title {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(2.8rem, 9vw, 6.5rem); line-height: 0.9; margin: 0.4rem 0 1.2rem;
+}
+.ecohero__lede, .brandhero__lede {
+  font-size: clamp(1rem, 1.5vw, 1.2rem); color: var(--cream-dim); max-width: 52ch;
+}
+.ecoseg {
+  padding: clamp(2.4rem, 6vh, 4.5rem) clamp(1.2rem, 5vw, 4rem);
+  border-top: 1px solid rgba(244, 239, 230, 0.08);
+}
+.ecoseg__head { max-width: 60rem; margin-bottom: clamp(1.6rem, 4vh, 2.6rem); }
+.ecoseg__label {
+  font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--ruby-hot); margin-bottom: 0.6rem;
+}
+.ecoseg__title {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(2rem, 5vw, 3.4rem); line-height: 0.95;
+}
+.ecoseg__blurb { color: var(--cream-dim); max-width: 56ch; margin-top: 0.8rem; }
+.ecogrid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.8rem);
+}
+.ecocard {
+  display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  background: var(--ink-2); border: 1px solid rgba(244, 239, 230, 0.1);
+  border-radius: 14px; overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.35s, box-shadow 0.35s;
+}
+.ecocard:hover {
+  transform: translateY(-5px); border-color: rgba(229, 56, 59, 0.6);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(229, 56, 59, 0.15);
+}
+.ecocard__media {
+  position: relative; aspect-ratio: 16 / 9; background: #1a1210 center/cover no-repeat;
+  display: flex; align-items: center; justify-content: center;
+}
+.ecocard__media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10, 8, 7, 0.15) 0%, rgba(10, 8, 7, 0.75) 100%);
+}
+.ecocard__logo {
+  position: relative; z-index: 1; max-height: 46%; max-width: 62%;
+  object-fit: contain; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.6));
+}
+.ecocard__mmark {
+  position: relative; z-index: 1; font-family: var(--display); font-size: 3.2rem;
+  color: var(--cream); opacity: 0.85;
+}
+.ecocard__text { padding: 1rem 1.15rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.ecocard__text h3 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: 0.01em; }
+.ecocard__text p { color: var(--cream-dim); font-size: 0.92rem; line-height: 1.45; flex: 1; }
+.ecocard__go { color: var(--ruby-hot); font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* ---- individual brand page ---- */
+.brandhero { position: relative; }
+.brandhero__sticky {
+  position: relative; min-height: 82vh; display: flex; align-items: flex-end;
+  overflow: hidden;
+}
+.brandhero__bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; background: #140e0c center/cover no-repeat; z-index: 0;
+}
+.brandhero__sticky .scrim--deep { z-index: 1; }
+.brandhero__inner {
+  position: relative; z-index: 2; width: 100%;
+  padding: clamp(2rem, 8vh, 5rem) clamp(1.2rem, 5vw, 4rem);
+  max-width: 66rem;
+}
+.brandhero--index .brandhero__inner, .brandpage .brandhero__inner:only-child { padding-top: clamp(6rem, 14vh, 9rem); }
+.kicker--seg {
+  font-size: 0.7rem; letter-spacing: 0.36em; text-transform: uppercase;
+  color: var(--ruby-hot); margin-bottom: 1rem;
+}
+.brandhero__logo {
+  max-height: 74px; max-width: 60%; object-fit: contain; margin-bottom: 1rem;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+}
+.brandhero__title {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(2.6rem, 9vw, 6rem); line-height: 0.9; margin-bottom: 0.7rem;
+}
+.brandhero__tag {
+  font-size: clamp(1.05rem, 2vw, 1.45rem); color: var(--cream);
+  max-width: 44ch; line-height: 1.35;
+}
+.brandfacts {
+  display: flex; flex-wrap: wrap; gap: clamp(1rem, 3vw, 2.6rem);
+  margin-top: clamp(1.4rem, 3vh, 2.2rem);
+}
+.brandfacts dt {
+  font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--cream-dim); margin-bottom: 0.25rem;
+}
+.brandfacts dd { font-family: var(--display); font-weight: 400; font-size: 1.35rem; }
+.brandbody {
+  padding: clamp(2.4rem, 7vh, 5rem) clamp(1.2rem, 5vw, 4rem) clamp(4rem, 10vh, 7rem);
+  max-width: 62rem;
+}
+.brandbody__summary {
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem); line-height: 1.6;
+  color: var(--cream); max-width: 60ch; margin-bottom: clamp(1.8rem, 5vh, 3rem);
+}
+.brandhi {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.6rem); margin-bottom: clamp(1.8rem, 5vh, 3rem);
+}
+.brandhi__card {
+  background: var(--ink-2); border: 1px solid rgba(244, 239, 230, 0.1);
+  border-radius: 12px; padding: 1.3rem 1.4rem;
+}
+.brandhi__card h3 {
+  font-family: var(--display); font-weight: 400; font-size: 1.35rem;
+  margin-bottom: 0.5rem; color: var(--ruby-hot);
+}
+.brandhi__card p { color: var(--cream-dim); line-height: 1.5; font-size: 0.98rem; }
+.brandlinks { flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.6rem; }
+.brandbody .song-gate { margin-top: 0.4rem; }
+.brandbody__back { margin-top: 2rem; }
+.brandbody__back a { color: var(--cream-dim); text-decoration: none; letter-spacing: 0.04em; }
+.brandbody__back a:hover { color: var(--ruby-hot); }
+
+@media (max-width: 600px) {
+  .brandhero__sticky { min-height: 74vh; }
+  .ecocard__media { aspect-ratio: 3 / 2; }
+}

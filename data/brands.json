@@ -1,0 +1,261 @@
+{
+  "note": "The McCluster ecosystem, sorted into segments. Each brand gets its own landing page at brand.html?brand=<slug>. ecosystem.html renders every segment. Add a brand by dropping an object into the right segment's list — the pages build themselves.",
+  "segments": [
+    {
+      "key": "owned",
+      "title": "Owned & Controlled",
+      "label": "The McCluster Ecosystem",
+      "blurb": "Brands McCluster Corp owns and operates end to end — the movements, the businesses, and the catalogue behind them."
+    },
+    {
+      "key": "vendors",
+      "title": "Vendors & Production Partners",
+      "label": "Who We Build With",
+      "blurb": "Independent producers and studios that supply craft into the ecosystem — hired in, credited out."
+    },
+    {
+      "key": "affiliates",
+      "title": "Affiliates & Outside Providers",
+      "label": "Partners Beyond the House",
+      "blurb": "Outside brands and partner organizations McCluster represents, promotes, or has served — related but independently owned."
+    }
+  ],
+  "brands": [
+    {
+      "slug": "mccluster-corp",
+      "segment": "owned",
+      "name": "McCluster Corp",
+      "tagline": "The parent house — creative direction and civic infrastructure under one roof.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/keynote.mp4",
+      "poster": "assets/frames/keynote_0001.jpg",
+      "summary": "McCluster Corp is the creative and civic company behind everything on this site — the Equity Uprise fellowship, the McCluster Service Network, the PRIM3 education program, and the Here / PRIM3 music catalogue. A registered Connecticut public charity, it turns media, policy, and technology into a single operating system.",
+      "facts": [
+        { "label": "Founded", "value": "2025" },
+        { "label": "Status", "value": "CT Public Charity · CHR.0069693" },
+        { "label": "Based", "value": "Connecticut & Georgia" }
+      ],
+      "highlights": [
+        { "title": "One operating system", "body": "Policy, music, media, and outreach run as a single platform rather than separate campaigns." },
+        { "title": "On the public record", "body": "Recognized by the State of Georgia and the City of Bridgeport; registered as a public charity in Connecticut." },
+        { "title": "Owner-operated", "body": "Every frame, chord, and line of code across the ecosystem is built in-house by Matthew McCluster." }
+      ],
+      "links": [
+        { "label": "The founder's record", "href": "role.html?role=mccluster-corp", "cta": "brand-corp-role" },
+        { "label": "Charity registration", "href": "assets/credentials/mccluster-corp-public-charity-registration.pdf", "cta": "brand-corp-charity", "external": true }
+      ]
+    },
+    {
+      "slug": "equity-uprise",
+      "segment": "owned",
+      "name": "Equity Uprise",
+      "tagline": "Not left, not right — forward. A civic platform where your talent is the superpower.",
+      "logo": "assets/img/equity-uprise-logo.webp",
+      "video": "assets/video/uprise.mp4",
+      "poster": "assets/frames/uprise_0001.jpg",
+      "summary": "Equity Uprise is McCluster Corp's civic-engagement fellowship — policy, music, media, and voter outreach fused into one movement. It ran the Docket 516R fight against a 7.3-mile monopole build, took the case from public filing to a court remand, and put the whole record on the wall for anyone to read.",
+      "facts": [
+        { "label": "Recognition", "value": "Georgia & Bridgeport Proclamations" },
+        { "label": "Flagship case", "value": "Docket 516R" },
+        { "label": "Form", "value": "Fellowship · Party · Platform" }
+      ],
+      "highlights": [
+        { "title": "The Movement", "body": "A grassroots rally on environmental injustice — sound, staging, and program engineered from the booth for hundreds of attendees." },
+        { "title": "The Evidence Room", "body": "One power company, two cities that fought back, and a court that sent the case back for a rematch — archived and explained in plain English." },
+        { "title": "The Fellowship", "body": "A civic operating system: submit an anthem, launch an outreach campaign, or apply for a verified profile." }
+      ],
+      "links": [
+        { "label": "Enter the terminal", "href": "fellowship.html", "cta": "brand-eu-fellowship" },
+        { "label": "The evidence room", "href": "docket-516.html", "cta": "brand-eu-docket" },
+        { "label": "Bridgeport proclamation", "href": "assets/credentials/bridgeport-human-rights-day-proclamation.pdf", "cta": "brand-eu-proc", "external": true }
+      ],
+      "song": { "label": "Scored to \"Environmental Injustice\"", "href": "song-environmental-injustice.html" }
+    },
+    {
+      "slug": "prim3",
+      "segment": "owned",
+      "name": "PRIM3",
+      "tagline": "Build real infrastructure — from the schematics to a working data center.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/prim3.mp4",
+      "poster": "assets/frames/prim3_0001.jpg",
+      "summary": "PRIM3 is the ecosystem's technology-and-education program. It teaches kids and adults to build real infrastructure — reading the schematics, standing up a working data center, and managing it on site — and it ships the lessons with a soundtrack so they stick like a hook.",
+      "facts": [
+        { "label": "Focus", "value": "Technology · Education" },
+        { "label": "Method", "value": "Study to the Music" },
+        { "label": "Output", "value": "Working data center" }
+      ],
+      "highlights": [
+        { "title": "Part I — Infrastructure", "body": "From half-built room to managed data center: real hardware, real hands, taught from the ground up." },
+        { "title": "Part II — Education through music", "body": "Original tracks kids study to, so the curriculum lands like a chorus. Headphones on. Got WiFi." }
+      ],
+      "links": [
+        { "label": "See it in Programs", "href": "index.html#work", "cta": "brand-prim3-programs" }
+      ],
+      "song": { "label": "Scored to \"Got WiFi\"", "href": "song-got-wifi.html" }
+    },
+    {
+      "slug": "whip-equipped",
+      "segment": "owned",
+      "name": "Whip Equipped LLC",
+      "tagline": "A parts-licensed dealership that became a story.",
+      "logo": "assets/img/we-logo.webp",
+      "video": "assets/video/whip.mp4",
+      "poster": "assets/frames/whip_0001.jpg",
+      "summary": "Whip Equipped LLC is a parts-licensed automotive dealership organized out of Acworth, Georgia in 2024 — and a piece of media at the same time. The lot runs day-to-day sales and compliance while doubling as the set for \"We In This Together,\" an interactive mini-series scored by \"Dealer Plates.\"",
+      "facts": [
+        { "label": "Founded", "value": "2024 · Acworth, GA" },
+        { "label": "License", "value": "Parts-licensed dealership" },
+        { "label": "Media", "value": "\"We In This Together\" mini-series" }
+      ],
+      "highlights": [
+        { "title": "The business", "body": "Sourcing, sales, parts licensing, and compliance — a real dealership, run day to day." },
+        { "title": "The web series", "body": "An interactive thriller: choose actions during your watch and change the outcome of the story." },
+        { "title": "The crossover", "body": "A dealership campaign disguised as a crime saga, scored by \"Dealer Plates,\" produced by Zakir & McCluster." }
+      ],
+      "links": [
+        { "label": "The owner's record", "href": "role.html?role=whip-equipped", "cta": "brand-whip-role" }
+      ],
+      "song": { "label": "Scored to \"Dealer Plates\"", "href": "song-dealer-plates.html" }
+    },
+    {
+      "slug": "service-network",
+      "segment": "owned",
+      "name": "McCluster Service Network",
+      "tagline": "Who did the shoot? Photography, recording, and broadcast — one network.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/studio360.mp4",
+      "poster": "assets/frames/studio360_0001.jpg",
+      "summary": "The McCluster Service Network is the creative-services arm — photography, recording, and broadcast production booked through one loadout. It's the crew behind the campaigns, the sound behind the movements, and the answer to the question every credit asks: who did the shoot?",
+      "facts": [
+        { "label": "Disciplines", "value": "Photo · Recording · Broadcast" },
+        { "label": "Rig", "value": "A7R V · 2× RS 4 Pro · A7R IV" },
+        { "label": "Booking", "value": "By the day" }
+      ],
+      "highlights": [
+        { "title": "Photography", "body": "Full-frame stills and motion, lit and directed end to end." },
+        { "title": "Recording", "body": "Original scoring and session work — the catalogue that scores every program." },
+        { "title": "Broadcast", "body": "Live streaming, multi-cam, and event production run from the booth." }
+      ],
+      "links": [
+        { "label": "Photography network", "href": "network-photo.html", "cta": "brand-net-photo" },
+        { "label": "Recording network", "href": "network-recording.html", "cta": "brand-net-rec" }
+      ],
+      "song": { "label": "Scored to \"Who Did The Shoot\"", "href": "song-who-did-the-shoot.html" }
+    },
+    {
+      "slug": "here-album",
+      "segment": "owned",
+      "name": "Here — The Album",
+      "tagline": "The catalogue that scores the whole ecosystem.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/nightscroll.mp4",
+      "poster": "assets/frames/nightscroll_0001.jpg",
+      "summary": "Here is the McCluster music catalogue — the original songs behind every program on this site. Each track doubles as the score for a movement, a business, or a lesson: \"Environmental Injustice\" for the Uprise, \"Dealer Plates\" for Whip Equipped, \"Got WiFi\" for PRIM3, \"Please Set Me Free\" for the civic poll.",
+      "facts": [
+        { "label": "Format", "value": "Album · Ongoing catalogue" },
+        { "label": "Role", "value": "Scores every program" },
+        { "label": "Own it", "value": "Track pages · Catalogue" }
+      ],
+      "highlights": [
+        { "title": "Every track has a job", "body": "The songs aren't a side project — each one scores a specific movement, business, or lesson." },
+        { "title": "Own the record", "body": "Every track gets its own page; the full catalogue is browsable and purchasable." }
+      ],
+      "links": [
+        { "label": "The full catalogue", "href": "catalogue.html", "cta": "brand-here-catalogue" },
+        { "label": "Please Set Me Free — the civic poll", "href": "song-please-set-me-free.html", "cta": "brand-here-psmf" }
+      ]
+    },
+    {
+      "slug": "fireside",
+      "segment": "owned",
+      "name": "Fireside Thrift Shop",
+      "tagline": "Where it started — marketing director at fourteen.",
+      "logo": "assets/img/m-mark.png",
+      "video": "",
+      "poster": "",
+      "summary": "Fireside Thrift Shop is the origin of everything that followed — the first venture, run by the family homeschool network that took the store over. At fourteen, Matthew served as its marketing director: build the platform, tell the story, move the product. The same through-line that runs the whole ecosystem today.",
+      "facts": [
+        { "label": "Era", "value": "The first role · Age 14" },
+        { "label": "Model", "value": "Family homeschool network" },
+        { "label": "Lesson", "value": "Retail · Merchandising · Promotion" }
+      ],
+      "highlights": [
+        { "title": "The first platform", "body": "A real storefront, marketed by a fourteen-year-old learning the trade from the ground up." },
+        { "title": "The through-line", "body": "Build the platform, tell the story, move the product — the pattern behind every brand since." }
+      ],
+      "links": [
+        { "label": "The origin on the record", "href": "role.html?role=fireside", "cta": "brand-fireside-role" }
+      ]
+    },
+    {
+      "slug": "zakir",
+      "segment": "vendors",
+      "name": "Zakir",
+      "tagline": "Producer and guitarist — the sound partner across the catalogue.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/editors.mp4",
+      "poster": "assets/frames/editors_0001.jpg",
+      "summary": "Zakir is the independent production partner behind key records in the catalogue — co-producing \"Dealer Plates\" for Whip Equipped and playing the live runway guitar on the Vaunt jingle. Hired in for craft, credited out on the record: the model for how the ecosystem works with outside talent.",
+      "facts": [
+        { "label": "Craft", "value": "Production · Guitar" },
+        { "label": "Credits", "value": "Dealer Plates · Vaunt jingle" },
+        { "label": "Relationship", "value": "Independent partner" }
+      ],
+      "highlights": [
+        { "title": "Dealer Plates", "body": "Co-produced the score for the Whip Equipped mini-series — Zakir & McCluster." },
+        { "title": "Vaunt, live", "body": "Played the original jingle live on the runway that became the launch campaign." }
+      ],
+      "links": [
+        { "label": "Hear Dealer Plates", "href": "song-dealer-plates.html", "cta": "brand-zakir-plates" },
+        { "label": "Hear Vaunt (Acoustic)", "href": "song-vaunt.html", "cta": "brand-zakir-vaunt" }
+      ]
+    },
+    {
+      "slug": "vaunt",
+      "segment": "affiliates",
+      "name": "Vaunt Private Flights",
+      "tagline": "Private aviation — McCluster was the first influencer in the beta.",
+      "logo": "assets/img/vaunt-logo.webp",
+      "video": "assets/video/vaunt.mp4",
+      "poster": "assets/frames/vaunt_0001.jpg",
+      "summary": "Vaunt Private Flights is an outside private-aviation brand McCluster represents as an affiliate. As the first influencer in their beta program, McCluster produced the launch coverage — an original jingle performed live on the runway that drove online sign-ups before the app even launched.",
+      "facts": [
+        { "label": "Relationship", "value": "Affiliate · Referral" },
+        { "label": "Role", "value": "First beta influencer" },
+        { "label": "Deliverable", "value": "Launch campaign + jingle" }
+      ],
+      "highlights": [
+        { "title": "Commercial production", "body": "The spot performed live on the runway with Zakir on guitar — the jingle that became the campaign." },
+        { "title": "Launch campaign", "body": "Coverage that drove online sign-ups before the app even launched." }
+      ],
+      "links": [
+        { "label": "Fly with Vaunt", "href": "https://vauntapi.flyvaunt.com/referral/nuao1K", "cta": "brand-vaunt-referral", "external": true },
+        { "label": "Hear the jingle", "href": "song-vaunt.html", "cta": "brand-vaunt-song" }
+      ],
+      "song": { "label": "Scored to \"Vaunt (Acoustic)\"", "href": "song-vaunt.html" }
+    },
+    {
+      "slug": "freedom",
+      "segment": "affiliates",
+      "name": "F.R.E.E.D.O.M. Inc.",
+      "tagline": "Community partner — the digital front McCluster built and ran.",
+      "logo": "assets/img/m-mark.png",
+      "video": "assets/video/warroom.mp4",
+      "poster": "assets/frames/warroom_0001.jpg",
+      "summary": "F.R.E.E.D.O.M. Inc. is an independent Bridgeport community organization McCluster served as its digital marketing and outreach platform manager — running social channels, outreach workflows, and weekly live broadcasts. A partner brand: independently owned, powered on the digital side by McCluster.",
+      "facts": [
+        { "label": "Location", "value": "Bridgeport, CT" },
+        { "label": "Engagement", "value": "2021 – 2026" },
+        { "label": "Scope", "value": "Digital · Outreach · Broadcast" }
+      ],
+      "highlights": [
+        { "title": "Digital front", "body": "Social channels, outreach workflows, and community contact systems, moved from paper into modern platforms." },
+        { "title": "Weekly broadcasts", "body": "Live streaming, recording, and media production for public programming." }
+      ],
+      "links": [
+        { "label": "The role on the record", "href": "role.html?role=freedom", "cta": "brand-freedom-role" }
+      ]
+    }
+  ]
+}

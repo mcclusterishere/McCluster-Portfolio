@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The McCluster Ecosystem — Brands, Vendors & Affiliates</title>
+  <meta name="description" content="The McCluster ecosystem, sorted by segment: brands owned and controlled by McCluster Corp (Equity Uprise, PRIM3, Whip Equipped, the Service Network), production vendors, and outside affiliates like Vaunt Private Flights.">
+  <meta name="keywords" content="McCluster ecosystem, McCluster Corp brands, Equity Uprise, PRIM3, Whip Equipped, McCluster Service Network, Vaunt Private Flights affiliate">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/ecosystem.html">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The McCluster Ecosystem — Brands, Vendors & Affiliates">
+  <meta property="og:description" content="Every brand in the McCluster house, sorted by segment: owned & controlled, production vendors, and outside affiliates.">
+  <meta property="og:url" content="https://mcclusterishere.github.io/McCluster-Portfolio/ecosystem.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "The McCluster Ecosystem",
+    "url": "https://mcclusterishere.github.io/McCluster-Portfolio/ecosystem.html",
+    "about": { "@type": "Organization", "name": "McCluster Corp", "url": "https://mcclusterishere.github.io/McCluster-Portfolio/" }
+  }
+  </script>
+</head>
+<body class="songpage ecopage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Home</a>
+      <a href="index.html#work">Programs</a>
+      <a class="head-cta" href="index.html#book">Lock In</a>
+    </nav>
+  </header>
+  <main>
+    <section class="ecohero">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Ecosystem</p>
+      <h1 class="ecohero__title">One House,<br>Many Brands</h1>
+      <p class="ecohero__lede">Everything McCluster touches, sorted by how it's held — the brands owned and controlled in-house, the vendors who supply craft, and the outside partners and affiliates. Pick any brand to open its page.</p>
+    </section>
+    <div id="ecoSegments"></div>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var root = document.getElementById("ecoSegments");
+
+      fetch("data/brands.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var brands = data.brands || [];
+          var html = (data.segments || []).map(function (seg) {
+            var members = brands.filter(function (b) { return b.segment === seg.key; });
+            if (!members.length) return "";
+            return '<section class="ecoseg">' +
+              '<div class="ecoseg__head">' +
+                '<p class="ecoseg__label">' + esc(seg.label || "") + "</p>" +
+                '<h2 class="ecoseg__title">' + esc(seg.title) + "</h2>" +
+                '<p class="ecoseg__blurb">' + esc(seg.blurb || "") + "</p>" +
+              "</div>" +
+              '<div class="ecogrid">' +
+              members.map(function (b) {
+                var poster = b.poster ? ' style="background-image:url(' + esc(b.poster) + ')"' : "";
+                var hasLogo = b.logo && b.logo.indexOf("m-mark") === -1;
+                return '<a class="ecocard" href="brand.html?brand=' + encodeURIComponent(b.slug) + '" data-cta="eco-' + esc(b.slug) + '">' +
+                  '<div class="ecocard__media"' + poster + '>' +
+                    (hasLogo ? '<img class="ecocard__logo" src="' + esc(b.logo) + '" alt="' + esc(b.name) + ' logo">' : '<span class="ecocard__mmark">M</span>') +
+                  "</div>" +
+                  '<div class="ecocard__text">' +
+                    "<h3>" + esc(b.name) + "</h3>" +
+                    "<p>" + esc(b.tagline || "") + "</p>" +
+                    '<span class="ecocard__go">Open the page &#8594;</span>' +
+                  "</div></a>";
+              }).join("") +
+              "</div></section>";
+          }).join("");
+          root.innerHTML = html;
+          track("ecosystem_view", { brands: brands.length });
+        })
+        .catch(function () {
+          root.innerHTML = '<section class="ecoseg"><p class="ecoseg__blurb">Couldn\'t load the ecosystem. Try again in a moment.</p></section>';
+        });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brand — McCluster Ecosystem</title>
+  <meta name="description" content="A brand in the McCluster ecosystem — owned, partnered, or affiliated. Part of the platform behind McCluster Corp and Equity Uprise.">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/brand.html">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage brandpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="ecosystem.html">← The Ecosystem</a>
+      <a class="head-cta" href="index.html#book">Lock In</a>
+    </nav>
+  </header>
+  <main>
+    <section class="brandhero" id="brandBody">
+      <div class="brandhero__inner"><h1>Loading…</h1></div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var body = document.getElementById("brandBody");
+      var want = new URLSearchParams(location.search).get("brand");
+
+      fetch("data/brands.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var brands = data.brands || [];
+          var segMap = {};
+          (data.segments || []).forEach(function (s) { segMap[s.key] = s; });
+          var b = brands.filter(function (x) { return x.slug === want; })[0];
+
+          if (!b) {
+            body.className = "brandhero brandhero--index";
+            body.innerHTML =
+              '<div class="brandhero__inner">' +
+              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Ecosystem</p>' +
+              '<h1 class="brandhero__title">Every Brand<br>in the House</h1>' +
+              '<p class="brandhero__lede">Pick a brand to open its page, or browse the full ecosystem by segment.</p>' +
+              '<div class="bexp__legend">' +
+              brands.map(function (r2) {
+                var seg = segMap[r2.segment] || {};
+                return '<a class="bexp__card" href="brand.html?brand=' + encodeURIComponent(r2.slug) + '">' +
+                  "<span><b>" + esc(r2.name) + "</b><small>" + esc(seg.title || "") + "</small></span></a>";
+              }).join("") + "</div>" +
+              '<p style="margin-top:1.6rem"><a class="btn btn--ruby" href="ecosystem.html">Open the full ecosystem &#8594;</a></p>' +
+              "</div>";
+            track("brand_index_view", {});
+            return;
+          }
+
+          var seg = segMap[b.segment] || {};
+          document.title = b.name + " — McCluster Ecosystem";
+          var md = document.querySelector('meta[name="description"]');
+          if (md && b.summary) md.setAttribute("content", b.name + " — " + b.summary);
+
+          var media = "";
+          if (b.video) {
+            media =
+              '<video class="brandhero__bg" autoplay muted loop playsinline preload="none"' +
+              (b.poster ? ' poster="' + esc(b.poster) + '"' : "") + ">" +
+              '<source src="' + esc(b.video) + '" type="video/mp4"></video>';
+          } else if (b.poster) {
+            media = '<div class="brandhero__bg" style="background-image:url(' + esc(b.poster) + ')"></div>';
+          }
+
+          var logoRow = (b.logo && b.logo.indexOf("m-mark") === -1)
+            ? '<img class="brandhero__logo" src="' + esc(b.logo) + '" alt="' + esc(b.name) + ' logo">'
+            : "";
+
+          var facts = (b.facts && b.facts.length)
+            ? '<dl class="brandfacts">' + b.facts.map(function (f) {
+                return "<div><dt>" + esc(f.label) + "</dt><dd>" + esc(f.value) + "</dd></div>";
+              }).join("") + "</dl>"
+            : "";
+
+          var highlights = (b.highlights && b.highlights.length)
+            ? '<div class="brandhi">' + b.highlights.map(function (h) {
+                return '<article class="brandhi__card"><h3>' + esc(h.title) + "</h3><p>" + esc(h.body) + "</p></article>";
+              }).join("") + "</div>"
+            : "";
+
+          var links = (b.links && b.links.length)
+            ? '<div class="finale__actions brandlinks">' + b.links.map(function (l, i) {
+                var attrs = l.external ? ' target="_blank" rel="noopener"' : "";
+                var cls = i === 0 ? "btn btn--ruby" : "btn btn--ghost";
+                return '<a class="' + cls + '" href="' + esc(l.href) + '"' + attrs +
+                  ' data-cta="' + esc(l.cta || "brand-link") + '">' + esc(l.label) +
+                  (l.external ? " &#8599;" : " &#8594;") + "</a>";
+              }).join("") + "</div>"
+            : "";
+
+          var songLine = (b.song && b.song.href)
+            ? '<a class="song-gate" href="' + esc(b.song.href) + '"><span class="song-gate__dot"></span> ' + esc(b.song.label) + "</a>"
+            : "";
+
+          body.innerHTML =
+            '<div class="brandhero__sticky">' + media +
+            '<div class="scrim scrim--deep" aria-hidden="true"></div>' +
+            '<div class="brandhero__inner">' +
+              '<p class="kicker kicker--seg">' + esc(seg.title || "") + (seg.label ? ' · ' + esc(seg.label) : "") + "</p>" +
+              logoRow +
+              '<h1 class="brandhero__title">' + esc(b.name) + "</h1>" +
+              '<p class="brandhero__tag">' + esc(b.tagline || "") + "</p>" +
+              facts +
+            "</div></div>" +
+            '<div class="brandbody">' +
+              '<p class="brandbody__summary">' + esc(b.summary || "") + "</p>" +
+              highlights +
+              links +
+              songLine +
+              '<p class="brandbody__back"><a href="ecosystem.html" data-cta="brand-back-eco">&#8592; Back to the ecosystem</a></p>' +
+            "</div>";
+
+          track("brand_view", { brand: b.slug, segment: b.segment });
+        })
+        .catch(function () {
+          body.innerHTML = '<div class="brandhero__inner"><h1>Offline</h1><p class="brandhero__lede">Try again in a moment.</p></div>';
+        });
+    })();
+  </script>
+</body>
+</html>
