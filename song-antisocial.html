@@ -36,7 +36,7 @@
           <p class="songblock__tag">Intro · Next Flight Out</p>
           <p class="songblock__line">I&#x27;m out here scrolling and scrolling</p>
           <p class="songblock__line">Scroll slow homie…</p>
-          <p class="songblock__line">Tryna pharm dopamine</p>
+          <p class="songblock__line"><em class="psy" data-psy="dopamine">Tryna pharm dopamine</em></p>
           <p class="songblock__line">Feel me?</p>
         </div>
       </div>
@@ -47,7 +47,7 @@
         <div class="scrim scrim--deep" aria-hidden="true"></div>
         <div class="songblock__lyrics">
           <p class="songblock__tag">Intro · Back to Earth</p>
-          <p class="songblock__line">But in truth and reality…</p>
+          <p class="songblock__line"><em class="psy" data-psy="doomscroll">But in truth and reality…</em></p>
         </div>
       </div>
     </section>
@@ -57,9 +57,9 @@
         <div class="scrim scrim--deep" aria-hidden="true"></div>
         <div class="songblock__lyrics">
           <p class="songblock__tag">Verse 1 · Orlanda Brown is calling</p>
-          <p class="songblock__line">I&#x27;m antisocial &#x27;cause I&#x27;m always on social</p>
+          <p class="songblock__line"><em class="psy" data-psy="theword">I&#x27;m antisocial</em> &#x27;cause I&#x27;m always on social</p>
           <p class="songblock__line">and I wanna feel social</p>
-          <p class="songblock__line">but I&#x27;m never really social</p>
+          <p class="songblock__line"><em class="psy" data-psy="paradox">but I&#x27;m never really social</em></p>
         </div>
       </div>
     </section>
@@ -69,12 +69,12 @@
         <div class="scrim scrim--deep" aria-hidden="true"></div>
         <div class="songblock__lyrics">
           <p class="songblock__tag">The Extraction &#183; one helicopter, one way off the boat</p>
-          <p class="songblock__line">Watching everybody glow up</p>
+          <p class="songblock__line"><em class="psy" data-psy="comparison">Watching everybody glow up</em></p>
           <p class="songblock__line">and I just wanna glow too</p>
           <p class="songblock__line">Watching people vacate</p>
-          <p class="songblock__line">to places I wanna go to</p>
+          <p class="songblock__line"><em class="psy" data-psy="fomo">to places I wanna go to</em></p>
           <p class="songblock__line">If it sounds like you</p>
-          <p class="songblock__line">I guess I really know you</p>
+          <p class="songblock__line"><em class="psy" data-psy="parasocial">I guess I really know you</em></p>
           <p class="songblock__line">(sounds like you&#8230; really know you)</p>
         </div>
       </div>
@@ -134,7 +134,7 @@
           <p class="songblock__line">gon shine like a constellation</p>
           <p class="songblock__line">Profile optimization can turn</p>
           <p class="songblock__line">your hobby into an occupation</p>
-          <p class="songblock__line">Stop the procrastination — you keep saying</p>
+          <p class="songblock__line"><em class="psy" data-psy="akrasia">Stop the procrastination</em> — you keep saying</p>
           <p class="songblock__line">you gon make the content: make it</p>
           <p class="songblock__line">This could be your confirmation,</p>
           <p class="songblock__line">ion no, I&#x27;m no prophet, I just make them</p>
@@ -163,6 +163,68 @@
   <script src="vendor/gsap.min.js?v=__STAMP__"></script>
   <script src="vendor/ScrollTrigger.min.js?v=__STAMP__"></script>
   <script src="js/parallax.js?v=__STAMP__"></script>
+  <script>
+    // The psychology under the bars — tap a shimmering phrase.
+    window.PSY_MAP = {
+      "theword": {
+        field: "language matters", title: "'Antisocial' isn't what you think",
+        text: "Clinically, antisocial personality disorder means a pattern of disregarding other people — deceit, aggression, no remorse. What most of us mean is 'asocial': avoiding the room. The hook lives in the gap — surrounded by everyone online, connected to almost no one.",
+        q: "Ever cancelled plans, then spent that time on the feed?",
+        opts: ["More than once", "Never"],
+        resp: ["That gap between wanting people and choosing the scroll — that's the whole song.", "Then you own the phone. Keep it that way."]
+      },
+      "paradox": {
+        field: "the loneliness paradox", title: "More connected, more alone",
+        text: "Heavy social media use tracks with feeling lonelier, not less — researchers call phone-snubbing the people in front of you 'phubbing.' A thousand weak ties can't do the work of one strong one.",
+        q: "At dinner, is your phone on the table or out of reach?",
+        opts: ["On the table", "Out of reach"],
+        resp: ["It wins the table just by sitting there — its presence alone splits attention.", "Rare move. The people across from you can tell."]
+      },
+      "dopamine": {
+        field: "behavioral design", title: "Pharming dopamine",
+        text: "Feeds pay out on a variable-ratio schedule — the same reinforcement pattern as a slot machine. It isn't the reward that hooks you, it's the MAYBE. Every pull-to-refresh is a lever.",
+        q: "Refreshed a feed today expecting nothing new?",
+        opts: ["Guilty", "Caught myself first"],
+        resp: ["That's the lever. The casino fits in a pocket now.", "Noticing the lever is the only real cheat code."]
+      },
+      "doomscroll": {
+        field: "sleep science", title: "Revenge bedtime procrastination",
+        text: "Staying up scrolling to reclaim 'your' time from a day that took it — psychologists gave it that name. The blue light delays melatonin while the feed keeps arousal up: wired, tired, and still scrolling.",
+        q: "Last night: lights out, or one more scroll?",
+        opts: ["One more scroll", "Lights out"],
+        resp: ["The camera falling through the clouds into his bedroom? That was for you.", "Undefeated. Guard that."]
+      },
+      "comparison": {
+        field: "social psychology", title: "Social comparison theory",
+        text: "Festinger showed in 1954 that we measure ourselves against others when no objective measure exists. Feeds weaponize it: your ordinary Tuesday against everyone else's highlight reel, forever.",
+        q: "Compared your week to someone's post this week?",
+        opts: ["Yeah, honestly", "Not really"],
+        resp: ["You compared your bloopers to their trailer. Rigged game.", "Keep scoring your own tape."]
+      },
+      "fomo": {
+        field: "decision science", title: "FOMO runs on regret",
+        text: "Fear of missing out is anticipated regret plus ambiguity — the feed shows departures, never the delays. Platforms monetize the itch because an anxious user checks back sooner.",
+        q: "Seen a trip this month you 'should' have been on?",
+        opts: ["Literally today", "Unbothered"],
+        resp: ["The window seat looks better than it flies. Usually.", "Movement without the itch — that's the actual flex."]
+      },
+      "parasocial": {
+        field: "media psychology", title: "Parasocial bonds",
+        text: "A one-way relationship with a voice or face that doesn't know you exist — coined in 1956 for TV hosts, industrialized by creators. It can comfort; it can also quietly replace the two-way kind.",
+        q: "Is there a creator you'd say you 'know'?",
+        opts: ["Definitely", "Not like that"],
+        resp: ["If it sounds like you, I guess I really know you — that line is this feeling.", "Two-way only. Old school."]
+      },
+      "akrasia": {
+        field: "philosophy of will", title: "Akrasia — knowing better anyway",
+        text: "The Greeks named the gap between knowing what's good for you and doing it. Procrastination isn't laziness; it's mood repair — trading tomorrow's goal for tonight's relief, one more app open.",
+        q: "Reopened an app within a minute of closing it?",
+        opts: ["Within seconds", "Never noticed"],
+        resp: ["That loop has a 2,300-year-old name. You're in good company — now make the content.", "Watch for it once. You'll see it everywhere."]
+      }
+    };
+  </script>
+  <script src="js/psy.js?v=__STAMP__"></script>
   <script src="js/song.js?v=__STAMP__"></script>
 </body>
 </html>
