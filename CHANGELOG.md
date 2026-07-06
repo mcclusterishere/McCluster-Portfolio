@@ -10,7 +10,7 @@ this repo's history (`git log` has the full detail).
   history of every branch.
 - Working reference photos (`assets/ref/`, 48 MB) removed from the
   repository and purged from history — the site never displayed them,
-  and generation workflows import from the media CDN, not the repo.
+  and the media workflows pull from the CDN, not the repo.
 - The public site now streams 128 kbps audio encodes (12 MB total).
   Full-quality masters stay offline with the label; Square buyers get
   the real files. The old full-bitrate files were purged from history.
