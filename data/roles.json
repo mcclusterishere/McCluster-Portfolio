@@ -51,7 +51,9 @@
         "Worked with cross-functional teams to support reliable digital operations.",
         "Built experience supporting business systems that demanded strong communication, organization, and technical follow-through."
       ],
-      "credentials": []
+      "credentials": [
+        { "label": "Infrastructure Associate — Cover Letter", "url": "assets/credentials/ipc-infrastructure-associate-cover-letter.pdf" }
+      ]
     },
     {
       "slug": "robert-half",
