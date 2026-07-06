@@ -306,9 +306,22 @@
     window.addEventListener("pagehide", function () {
       if (playing && !audio.paused) track("song_stop", { song: window.SONG.key, page: "song", at_seconds: Math.round(audio.currentTime), reason: "left_page" });
     });
+    // the deeper overlay (psychology markers) freezes the ride, then hands it back
+    window.__MCC_PAUSE = function () {
+      lenis.stop();
+      var wasPlaying = playing && !audio.paused;
+      if (wasPlaying) audio.pause();
+      return wasPlaying;
+    };
+    window.__MCC_RESUME = function (resumeAudio) {
+      lenis.start();
+      if (resumeAudio && playing) audio.play().catch(function () {});
+    };
   } else {
     playBtn.classList.add("is-pending");
     playBtn.querySelector("span").textContent = "Mix coming soon";
+    window.__MCC_PAUSE = function () { lenis.stop(); return false; };
+    window.__MCC_RESUME = function () { lenis.start(); };
   }
 
   /* ---------- buy + subscribe gates ---------- */

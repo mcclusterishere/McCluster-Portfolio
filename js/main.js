@@ -588,7 +588,7 @@
       "dealerplates": document.getElementById("track-dealerplates"),
     };
     var zones = [
-      { sel: "#hero", track: "antisocial" },
+      { sel: "#hero", track: "whodidtheshoot" },
       { sel: "#loadout", track: "whodidtheshoot" },
       { sel: "#pillars", track: "antisocial" },
       // the command scroll picks its track per scene
@@ -596,7 +596,7 @@
       { sel: "#book", track: "whodidtheshoot" },
     ];
     var soundOn = false;
-    var currentTrack = "antisocial"; // the site opens on Antisocial
+    var currentTrack = "whodidtheshoot"; // the site opens on Who Did The Shoot
     var avail = {};
 
     // tracks the manifest says exist; show the toggle once there's at least one

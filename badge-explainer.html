@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Badge Explainer — M-Verified · McCluster</title>
+  <meta name="description" content="What every McCluster verification badge means, what it takes to earn it, and how it's proven.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="verify.html">Get Verified</a>
+    </nav>
+  </header>
+  <main>
+    <section class="bexp" id="bexpRoot">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Network — The Badge System</p>
+      <div id="bexpBody">
+        <div class="bexp__hero"><h1>Loading the seal…</h1></div>
+      </div>
+      <div class="finale__actions" style="margin-top:2rem">
+        <a class="btn btn--ruby" href="verify.html" data-cta="badge-apply">Apply for this badge</a>
+        <a class="btn btn--ghost" href="list-your-space.html" data-cta="badge-list-space">List your space</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Every badge on this network is earned, never sold.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s; return d.innerHTML; }
+      var body = document.getElementById("bexpBody");
+      var want = new URLSearchParams(location.search).get("badge");
+
+      fetch("data/service-badges.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var badge = data.badges.find(function (b) { return b.id === want; });
+
+          if (badge) {
+            var sec = data.sections[badge.section] || { label: badge.section, color: "#e5383b" };
+            var levels = { self: "Self-attested", document: "Document-verified", site: "Site-verified by McCluster" };
+            document.title = badge.name + " — Badge Explainer · McCluster";
+            body.innerHTML =
+              '<div class="bexp__hero">' +
+              '<span class="mbadge" style="--badge-c:' + sec.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+              "<div><p class='bexp__section'>" + esc(sec.label) + " · McCluster Approved</p><h1>" + esc(badge.name) + "</h1></div></div>" +
+              '<div class="bexp__panel"><h3>What this badge means</h3><p>' + esc(badge.meaning) + "</p></div>" +
+              '<div class="bexp__panel"><h3>What it takes to earn it</h3><ul>' +
+              badge.requirements.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") +
+              "</ul></div>" +
+              '<div class="bexp__panel"><h3>How it\'s proven</h3><p>' + esc(badge.proof) + "</p>" +
+              '<p style="margin-top:0.8rem"><span class="bexp__attest">' + esc(levels[badge.attestation] || badge.attestation) + "</span></p>" +
+              "<p style='margin-top:0.8rem'>" + esc(data.attestation_levels[badge.attestation] || "") + "</p></div>";
+            track("badge_explainer_view", { badge_id: badge.id, section: badge.section, page: "badge-explainer" });
+          } else {
+            // no badge picked (or a stale link): show the full legend, grouped by section
+            body.innerHTML =
+              '<div class="bexp__hero"><div><p class="bexp__section">The Badge System</p><h1>Every Seal,<br>Explained</h1></div></div>' +
+              '<div class="bexp__panel"><p>Every badge on the McCluster network is earned through the verification process — never bought. ' +
+              "Tap any seal to see what it means, what it takes, and how it's proven.</p></div>" +
+              Object.keys(data.sections).map(function (key) {
+                var sec = data.sections[key];
+                return "<h2 class='bexp__section' style='margin:1.8rem 0 0.4rem'>" + esc(sec.label) + "</h2>" +
+                  '<div class="bexp__legend">' +
+                  data.badges.filter(function (b) { return b.section === key; }).map(function (b) {
+                    return '<a class="bexp__card" href="badge-explainer.html?badge=' + encodeURIComponent(b.id) + '">' +
+                      '<span class="mbadge" style="--badge-c:' + sec.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+                      "<span><b>" + esc(b.name) + "</b><small>" + esc(b.short) + "</small></span></a>";
+                  }).join("") +
+                  "</div>";
+              }).join("");
+            track("badge_explainer_view", { badge_id: "legend", page: "badge-explainer" });
+          }
+        })
+        .catch(function () {
+          body.innerHTML = '<div class="bexp__hero"><h1>The registry is offline</h1></div><div class="bexp__panel"><p>Try again in a moment, or head back to the network.</p></div>';
+        });
+    })();
+  </script>
+</body>
+</html>

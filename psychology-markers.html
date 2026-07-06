@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Psychology Markers — The Icon Registry · McCluster</title>
+  <meta name="description" content="Every psychology marker on the McCluster lyric pages: original icons, plain-English meanings, and the consent rules the whole layer lives by.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="song-antisocial.html">Hear It Live</a>
+    </nav>
+  </header>
+  <main>
+    <section class="pmk">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Psychology Markers</p>
+      <h1 class="songhero__title" style="text-align:left">The Icon<br>Registry</h1>
+      <p class="songhero__sub" style="text-align:left;max-width:56ch">
+        Every shimmering phrase on a McCluster lyric page carries one of these markers —
+        an original icon for a pattern the song is really about. Tap one mid-song and the
+        record pauses to ask you a question. This page is the full legend.
+      </p>
+      <div class="pmk__grid" id="pmkGrid"></div>
+      <div class="pmk__consent">
+        <h3>The consent rules this system lives by</h3>
+        <p>
+          Every prompt is optional, anonymous, and shown in the open — nothing runs quietly in the
+          background. Your answers are never stored or tied to you, no personal profile is ever built,
+          and nothing here infers medical or clinical conditions or political beliefs. These markers
+          exist for one reason: the songs are about the scroll, and the scroll is about you.
+          For curiosity, not diagnosis.
+        </p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Original icons, original bars.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var grid = document.getElementById("pmkGrid");
+      fetch("data/psychology-markers.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          grid.innerHTML = data.markers.map(function (m) {
+            return '<article class="pmk__card">' +
+              '<svg class="psy__ic" aria-hidden="true"><use href="assets/icons/markers.svg#mk-' + m.id + '"></use></svg>' +
+              '<p class="pmk__id">' + m.id.replace(/_/g, " ") + "</p>" +
+              "<h3>" + m.name + "</h3>" +
+              "<p>" + m.short + "</p>" +
+              "<p>" + m.interpretation + "</p>" +
+              "</article>";
+          }).join("");
+          if (window.MCC_TRACK) window.MCC_TRACK("psych_registry_view", { page: "psychology-markers", markers: data.markers.length });
+        })
+        .catch(function () { grid.innerHTML = "<p style='color:var(--cream-dim)'>The registry is offline — try again in a moment.</p>"; });
+    })();
+  </script>
+</body>
+</html>

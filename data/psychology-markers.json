@@ -1,0 +1,217 @@
+{
+  "consent": {
+    "banner": "Optional and anonymous — these are reflection prompts, not a diagnosis. Your answers are never stored or tied to you.",
+    "footer": "For curiosity, not diagnosis. Nothing here infers medical conditions or political beliefs, and no personal profile is ever built."
+  },
+  "markers": [
+    {
+      "id": "social_comparison",
+      "name": "The Mirror",
+      "short": "Scoring your inside against everyone else's outside.",
+      "interpretation": "We measure ourselves against others when no objective yardstick exists — feeds weaponize it by pairing your ordinary Tuesday with everyone else's highlight reel, forever.",
+      "deeper": {
+        "q": "Compared your week to someone's post this week?",
+        "opts": ["Yeah, honestly", "Not really"],
+        "resp": ["You compared your bloopers to their trailer. Rigged game — score your own tape instead.", "Keep scoring your own tape. That's the whole cheat code."]
+      }
+    },
+    {
+      "id": "dopamine_loop",
+      "name": "The Lever",
+      "short": "The slot-machine schedule inside every pull-to-refresh.",
+      "interpretation": "Feeds pay out on a variable-ratio schedule — the same reinforcement pattern as a slot machine. It isn't the reward that hooks you, it's the maybe.",
+      "deeper": {
+        "q": "Refreshed a feed today expecting nothing new?",
+        "opts": ["Guilty", "Caught myself first"],
+        "resp": ["That's the lever. The casino fits in a pocket now — noticing the pull is how you loosen it.", "Noticing the lever is the only real cheat code. Keep it."]
+      }
+    },
+    {
+      "id": "digital_compulsion",
+      "name": "The Reflex",
+      "short": "Reaching for the phone before deciding to.",
+      "interpretation": "Checking becomes a motor habit — cue, reach, unlock — that runs before conscious choice gets a vote. The behavior asks permission afterward, if at all.",
+      "deeper": {
+        "q": "Ever unlocked your phone and forgotten why?",
+        "opts": ["All the time", "Rarely"],
+        "resp": ["That's the reflex running without you. Putting one step between cue and reach — a lock screen question, a different pocket — gives choice its vote back.", "Then your hands still work for you. Guard that."]
+      }
+    },
+    {
+      "id": "validation_hunger",
+      "name": "The Counter",
+      "short": "Outsourcing your mood to a number under a post.",
+      "interpretation": "When approval arrives as a count, the count starts standing in for the approval — and your baseline mood quietly gets indexed to it.",
+      "deeper": {
+        "q": "Posted something and checked back within ten minutes?",
+        "opts": ["Every time", "I post and walk away"],
+        "resp": ["The check-back is the tell — the post was partly a question. Nothing wrong with wanting an answer; just notice who you gave the scoreboard to.", "Post-and-walk is the strongest posture on the internet."]
+      }
+    },
+    {
+      "id": "social_fatigue",
+      "name": "The Low Battery",
+      "short": "Drained by connection that never lands.",
+      "interpretation": "A hundred shallow interactions can spend the same energy as one deep one — without returning any of it. The battery reads empty in a full room.",
+      "deeper": {
+        "q": "After an hour of scrolling, do you feel more connected or more tired?",
+        "opts": ["More tired", "More connected"],
+        "resp": ["That tiredness is data: the feed spends social energy without recharging it. One real conversation pays back more than a hundred taps.", "Then you're using it, not the other way around."]
+      }
+    },
+    {
+      "id": "avoidance",
+      "name": "The Detour",
+      "short": "The scroll as a swerve around something harder.",
+      "interpretation": "Sometimes the phone isn't the destination — it's the detour around a feeling, a task, or a conversation that's waiting. The route feels easier; the thing stays waiting.",
+      "deeper": {
+        "q": "Last time you opened an app — moving toward something, or away from something?",
+        "opts": ["Away, honestly", "Toward"],
+        "resp": ["Naming what you swerved around is half the trip back. The waiting thing gets smaller when you look at it.", "Intentional use is the rarest kind. Respect."]
+      }
+    },
+    {
+      "id": "ambition_drive",
+      "name": "The Climb",
+      "short": "Wanting the glow-up — fuel, when it's pointed right.",
+      "interpretation": "Watching others rise can burn as envy or as fuel. Same fire, different furnace — the difference is whether it moves your feet or just your feed.",
+      "deeper": {
+        "q": "Someone's win last week — did it move you to act, or just to watch more?",
+        "opts": ["It moved me", "Just watched"],
+        "resp": ["That's drive doing its actual job. Point it at one rep today.", "Watching is research for a while, then it's a residence. Pick one thing theirs proves is possible."]
+      }
+    },
+    {
+      "id": "performance_pressure",
+      "name": "The Gauge",
+      "short": "Life read as a scoreboard that never sleeps.",
+      "interpretation": "When everything is measurable — views, streaks, response times — everything starts to feel graded. The gauge is useful until it's the whole dashboard.",
+      "deeper": {
+        "q": "Does going quiet online for a week feel like falling behind?",
+        "opts": ["It does", "Feels like rest"],
+        "resp": ["That's the gauge talking, not the work. The work survives silence; the metrics were never the mission.", "You've kept the gauge in its lane. That's rare."]
+      }
+    },
+    {
+      "id": "identity_split",
+      "name": "The Double",
+      "short": "The online you and the offline you, drifting apart.",
+      "interpretation": "Everyone edits. The marker isn't having a public self — it's when the distance between the profile and the person gets wide enough that both feel like costumes.",
+      "deeper": {
+        "q": "Would the people who know you offline recognize your feed?",
+        "opts": ["Not really", "Instantly"],
+        "resp": ["A gap that wide costs energy to maintain — closing it even a little returns the deposit.", "One self, both places. That's the cheapest way to live."]
+      }
+    },
+    {
+      "id": "image_management",
+      "name": "The Polish",
+      "short": "Curating the shot instead of living the moment.",
+      "interpretation": "Impression management is older than the internet — but a camera in every pocket turned it into a part-time job. The polish protects the image and taxes the moment.",
+      "deeper": {
+        "q": "Ever re-shot a casual photo more than three times?",
+        "opts": ["More than three", "One take"],
+        "resp": ["The retakes are the tell: the audience entered the room. Some moments deserve to stay unphotographed.", "One-take living. The feed can keep up or catch up."]
+      }
+    },
+    {
+      "id": "procrastination_loop",
+      "name": "The Stall",
+      "short": "Trading tomorrow's goal for tonight's relief.",
+      "interpretation": "Procrastination isn't laziness — it's mood repair. The task feels bad, the app feels better, and the trade repeats until the deadline collects.",
+      "deeper": {
+        "q": "You keep saying you'll make the content. Made any this week?",
+        "opts": ["Not yet", "Shipped something"],
+        "resp": ["The loop breaks on contact: one ugly first version tonight beats the perfect one that stays imaginary.", "Shipping is the exit. You found the door."]
+      }
+    },
+    {
+      "id": "belief_filter",
+      "name": "The Funnel",
+      "short": "Only letting in what you already agree with.",
+      "interpretation": "We hunt for evidence we were already right — and feeds learn the hunt, then feed it. The funnel feels like clarity; it's actually a shrinking aperture.",
+      "deeper": {
+        "q": "When did you last change your mind because of something you read?",
+        "opts": ["Can't remember", "Recently"],
+        "resp": ["If nothing gets through, the funnel's doing the reading for you. Follow one smart voice you disagree with.", "A mind that still moves is the whole point of having one."]
+      }
+    },
+    {
+      "id": "attention_to_action",
+      "name": "The Switch",
+      "short": "Turning what you notice into what you do.",
+      "interpretation": "Attention is the raw material; action is the product. The switch flips when noticing something — a skill, a gap, an idea — converts into a rep instead of another saved post.",
+      "deeper": {
+        "q": "Your saved folder: launchpad or graveyard?",
+        "opts": ["Graveyard", "Launchpad"],
+        "resp": ["Saving feels like doing — that's the trap. Open one saved thing today and act on it for ten minutes.", "You've built the switch. Most people never wire it."]
+      }
+    },
+    {
+      "id": "boundary_signal",
+      "name": "The Line",
+      "short": "Knowing where you end and the feed begins.",
+      "interpretation": "A boundary is a signal, not a wall — hours the phone doesn't get, rooms it doesn't enter, questions it doesn't answer. The line protects the person drawing it.",
+      "deeper": {
+        "q": "Is there any hour of your day the phone reliably doesn't get?",
+        "opts": ["No hour is safe", "Yes, and I keep it"],
+        "resp": ["Start with one — the first hour, the last hour, or the meal. One kept line teaches the rest.", "One kept line teaches the rest. You already know."]
+      }
+    },
+    {
+      "id": "persuasion_frame",
+      "name": "The Frame",
+      "short": "Noticing when the room was built to move you.",
+      "interpretation": "Every pitch chooses a frame — what's compared, what's hidden, what's urgent. Seeing the frame doesn't make you cynical; it makes you the one person in the room who chose.",
+      "deeper": {
+        "q": "Last thing you bought online — did you find it, or did it find you?",
+        "opts": ["It found me", "I went looking"],
+        "resp": ["Nothing wrong with being found — just know the introduction was engineered. Ask who built the frame.", "Buyer on offense. That's the strongest position in the market."]
+      }
+    },
+    {
+      "id": "scarcity_pressure",
+      "name": "The Hourglass",
+      "short": "Urgency and FOMO doing the selling.",
+      "interpretation": "'Only 2 left' and 'everyone's going' work on anticipated regret — the feed shows departures, never the delays. An anxious buyer checks back sooner; that's the business model.",
+      "deeper": {
+        "q": "Seen a trip this month you 'should' have been on?",
+        "opts": ["Literally today", "Unbothered"],
+        "resp": ["The window seat looks better than it flies. Real scarcity is rare; manufactured scarcity is a Tuesday.", "Movement without the itch — that's the actual flex."]
+      }
+    },
+    {
+      "id": "trust_deficit",
+      "name": "The One-Way Wire",
+      "short": "Knowing a voice that doesn't know you exist.",
+      "interpretation": "Parasocial bonds — one-way relationships with creators and hosts — can comfort, and can also quietly substitute for the two-way kind that costs and returns more.",
+      "deeper": {
+        "q": "Is there a creator you'd say you 'know'?",
+        "opts": ["Definitely", "Not like that"],
+        "resp": ["If it sounds like you, I guess I really know you — that line is this feeling. Spend one hour of that loyalty on someone who can say your name back.", "Two-way only. Old school, still undefeated."]
+      }
+    },
+    {
+      "id": "isolation_pattern",
+      "name": "The Crowded Room",
+      "short": "A thousand connections, none load-bearing.",
+      "interpretation": "The loneliness paradox: heavy connectivity tracks with feeling less connected. A thousand weak ties can't do the work of one strong one.",
+      "deeper": {
+        "q": "If tonight went sideways, how many contacts could you actually call?",
+        "opts": ["Fewer than I'd like", "I've got my people"],
+        "resp": ["The number matters less than the trend — one real call this week starts rebuilding the beam.", "Load-bearing people. That's wealth the feed can't display."]
+      }
+    },
+    {
+      "id": "metacognition",
+      "name": "The Watcher",
+      "short": "Thinking about your own thinking — the master key.",
+      "interpretation": "Metacognition is the skill over all the others: noticing the lever, the mirror, the detour while they happen. Every other marker on this page is easier once the watcher is awake.",
+      "deeper": {
+        "q": "Reading this right now — is that the watcher waking up?",
+        "opts": ["Feels like it", "It never slept"],
+        "resp": ["That noticing is the muscle. Everything on this page gets easier from here.", "Then you've been running the room all along. Own it — only way to beat it."]
+      }
+    }
+  ]
+}
