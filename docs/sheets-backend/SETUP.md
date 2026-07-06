@@ -20,9 +20,8 @@
    means Google didn't review it — it's your own script reading your
    own sheet.)
 
-6. Copy the **Web app URL** (ends in `/exec`). Send that URL to Claude.
-   It gets pasted into one line on three pages and every submission
-   starts flowing into the Sheet with both emails automated.
+6. Copy the **Web app URL** (ends in `/exec`). Paste that URL into the INTAKE_ENDPOINT line near the top of the scripts in verify.html, interview.html, and fellowship.html (or hand it to your developer).
+   Every submission then flows into the Sheet with both emails automated.
 
 Optional, later:
 - **Daily digest:** in Apps Script, click the ⏰ clock icon → Add
