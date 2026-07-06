@@ -65,8 +65,31 @@ const CATEGORIES = [
   { slug: "remand", name: "Court-Ordered Remand / Docket 516R", match: /remand|516r/i },
 ];
 
-function categorize(headingTrail) {
-  // most specific (deepest) heading wins, walking back up the trail
+/* title-first rules: CT.gov's headings aren't reliable <h*> tags, so the
+   document's own name is the primary signal (same rules the local
+   recategorizer used to sort the first mirror) */
+const TITLE_RULES = [
+  ["Court-Ordered Remand / Docket 516R", "remand", /516r|remand/i],
+  ["Transcripts", "transcripts", /transcript/i],
+  ["Council Draft Findings", "draft-findings", /draft findings|councils draft/i],
+  ["Briefs / Findings of Fact", "briefs-findings", /\bbrief\b|proposed findings/i],
+  ["Final Decision", "final-decision", /findings of fact and opinion|decision and order|final decision|\bopinion\b/i],
+  ["Motions and Objections", "motions-objections", /\bmotion\b|objection/i],
+  ["Bulk-Filed Exhibits", "bulk-exhibits", /zoning|wetlands|plan of conservation|pocd|bulk.?filed/i],
+  ["Application", "application", /volume 1|volume 2|appendix [a-f]|cover letter|application guide|application received/i],
+  ["Municipal Consultation Filing", "municipal-consultation", /municipal consultation|open house|postcard|faq|public information meeting|project page|outreach/i],
+  ["State Agency Comments", "agency-comments", /airport authority|environmental quality|department of transportation|historic preservation|\bshpo\b|\bceq\b|\bdot\b/i],
+  ["Public Official Comments", "public-official-comments", /representative|senator|congress|delegation|state rep|mayor/i],
+  ["Hearing Information", "hearing-documents", /hearing notice|hearing program|public access|site plan|zoom|remote access|hearing information|field review/i],
+  ["Service Lists", "service-lists", /service list/i],
+  ["Schedules", "schedules", /schedule/i],
+  ["Party / Intervenor Exhibits", "intervenors", /bj'?s|bwc|scnet|station lofts|town of fairfield|superior plating|city of bridgeport|grouped llc|llc intervenors|national trust|southport|sasco|netreba|congregation|church/i],
+  ["Applicant Exhibits — United Illuminating", "applicant-ui", /^ui'?s?[ -]|united illuminating|applicant/i],
+];
+
+function categorize(headingTrail, title) {
+  for (const [name, slug, rx] of TITLE_RULES) if (rx.test(title)) return { name, slug };
+  // fall back to the nearest heading, deepest first
   for (let i = headingTrail.length - 1; i >= 0; i--) {
     for (const c of CATEGORIES) if (c.match.test(headingTrail[i])) return c;
   }
@@ -136,6 +159,7 @@ main = main.replace(/<footer[\s>][\s\S]*?<\/footer>/gi, "").replace(/<nav[\s>][\
 const tokens = [...main.matchAll(/<(h[1-6])[^>]*>([\s\S]*?)<\/\1>|<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
 const records = [];
 const seen = new Set();
+const seenPaths = new Set();
 let headingTrail = [];
 let found = 0, externalOnly = 0;
 
@@ -168,7 +192,7 @@ for (const t of tokens) {
   }
 
   found++;
-  const cat = categorize(trail.length ? trail : [text]);
+  const cat = categorize(trail, text);
   const date = inferDate(text) || inferDate(trail.join(" "));
   const slug = slugify(text);
   let id = `d516-${cat.slug}-${slug}${date ? "-" + date : ""}`;
@@ -178,6 +202,12 @@ for (const t of tokens) {
   const ext = fileTypeOf(abs);
   const external = isZoom || !isFile;
   if (external) externalOnly++;
+  // distinct documents can slug identically — keep every file
+  let localPath = external ? "" : `assets/dockets/516/${cat.slug}/${slug}.${ext}`;
+  if (localPath && seenPaths.has(localPath)) {
+    localPath = `assets/dockets/516/${cat.slug}/${slug}-${crypto.createHash("md5").update(abs).digest("hex").slice(0, 5)}.${ext}`;
+  }
+  if (localPath) seenPaths.add(localPath);
 
   records.push({
     id,
@@ -187,7 +217,7 @@ for (const t of tokens) {
     date,
     source_agency: "Connecticut Siting Council",
     official_url: abs,
-    local_path: external ? "" : `assets/dockets/516/${cat.slug}/${slug}.${ext}`,
+    local_path: localPath,
     file_type: ext,
     download: !external,
     external_only: external,
