@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get M-Verified — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="identifiers.html">What are these IDs?</a>
+    </nav>
+  </header>
+  <main>
+    <section class="verify">
+      <p class="kicker">McCluster Service Network · Verification</p>
+      <h1 class="section-title">Get<br>M-Verified</h1>
+      <p class="songhero__sub" style="margin-top:1rem; text-align:left">
+        Every entity on the network carries a badge backed by real registry identifiers —
+        the same ones <a class="songhero__cat" href="catalogue.html" style="border:0; padding:0">McCluster Corp publishes</a>.
+        Pick your entity type; the identifiers that type must present become required.
+        New to the identifiers? <a href="identifiers.html" style="color:var(--ruby-hot); border-bottom:1px solid var(--ruby)">Read what each one means →</a>
+      </p>
+
+      <div class="verify__grid" id="entityGrid"></div>
+
+      <form class="vform" id="vform" hidden novalidate>
+        <div class="vform__badgehead">
+          <span class="mbadge mbadge--lg" id="vBadge"><img src="assets/img/m-mark.png" alt=""></span>
+          <div>
+            <div class="vform__badgename" id="vBadgeName"></div>
+            <div class="vform__hint" id="vBadgeDesc"></div>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>The organization</legend>
+          <div class="vform__row">
+            <label for="f-name">Legal / business name <span class="req">*</span></label>
+            <input id="f-name" name="Business name" required placeholder="Decibel Studios LLC">
+          </div>
+          <div class="vform__row">
+            <label for="f-owner">Owner / principal <span class="req">*</span></label>
+            <input id="f-owner" name="Owner" required placeholder="Zakir Elhajoui">
+          </div>
+          <div class="vform__row">
+            <label for="f-city">City &amp; state <span class="req">*</span></label>
+            <input id="f-city" name="City/State" required placeholder="Bridgeport, CT">
+          </div>
+          <div class="vform__row">
+            <label for="f-email">Contact email <span class="req">*</span></label>
+            <input id="f-email" name="Email" type="email" required placeholder="you@business.com">
+          </div>
+          <div class="vform__row">
+            <label for="f-phone">Contact phone <span class="req">*</span></label>
+            <input id="f-phone" name="Phone" type="tel" required placeholder="(203) 555-0140">
+          </div>
+          <div class="vform__row">
+            <label for="f-web">Website / social links</label>
+            <input id="f-web" name="Links" placeholder="instagram.com/yourspace">
+          </div>
+          <div class="vform__row">
+            <label for="f-blurb">What you do, in ~50 words <span class="req">*</span></label>
+            <textarea id="f-blurb" name="Blurb" rows="3" required placeholder="The room, the gear, the specialty — what should the network know?"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset id="reqFields">
+          <legend>Required identifiers for this badge</legend>
+        </fieldset>
+
+        <fieldset id="optFields">
+          <legend>Optional identifiers — add any you hold</legend>
+        </fieldset>
+
+        <button class="btn btn--ruby" id="vSubmit" type="submit">Submit for verification</button>
+        <p class="vform__error" id="vError">Every required field must be filled — the badge is only as strong as the record behind it.</p>
+        <p class="vform__hint" style="margin-top:1rem">
+          Submitting opens your email with the completed application addressed to the network.
+          We confirm each identifier against its registry before the badge is issued.
+        </p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      // When the Google Apps Script intake endpoint exists, set its /exec URL
+      // here: submissions then POST straight into the network's Sheet (and
+      // the Sheet's script sends the automated emails). Empty = the form
+      // composes the application email locally instead.
+      var INTAKE_ENDPOINT = "";
+
+      var E = window.MCC_ENTITIES, IDS = window.MCC_IDENTIFIERS;
+      var grid = document.getElementById("entityGrid");
+      var form = document.getElementById("vform");
+      var current = null;
+
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      Object.keys(E).forEach(function (key) {
+        var e = E[key];
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "entity-card";
+        b.style.setProperty("--badge-c", e.color);
+        b.innerHTML =
+          '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+          '<span><span class="entity-card__name">' + e.label + '</span>' +
+          '<span class="entity-card__desc">' + e.desc + "</span></span>";
+        b.addEventListener("click", function () { select(key, b); });
+        grid.appendChild(b);
+      });
+
+      function fieldRow(id, required) {
+        var info = IDS[id];
+        var row = document.createElement("div");
+        row.className = "vform__row";
+        var hint = info.format ? "Format: " + info.format + ". " : "";
+        var link = info.url ? ' — <a href="identifiers.html#' + id + '">what is this?</a>' : "";
+        row.innerHTML =
+          '<label for="fid-' + id + '">' + info.name + " <em style=\"font-style:normal;color:var(--cream-dim)\">(" + info.long + ")</em>" +
+          (required ? ' <span class="req">*</span>' : "") + link + "</label>" +
+          '<input id="fid-' + id + '" name="' + info.name + '" ' + (required ? "required " : "") + 'placeholder="' + (info.format || "") + '">' +
+          (hint ? '<span class="vform__hint">' + hint + "Issued by " + info.issuer + ".</span>" : "");
+        return row;
+      }
+
+      function select(key, btn) {
+        current = key;
+        var e = E[key];
+        document.querySelectorAll(".entity-card").forEach(function (el) { el.classList.remove("is-active"); });
+        btn.classList.add("is-active");
+        form.hidden = false;
+        form.classList.remove("show-errors");
+        document.getElementById("vBadge").style.setProperty("--badge-c", e.color);
+        document.getElementById("vBadgeName").textContent = e.badge;
+        document.getElementById("vBadgeDesc").textContent = e.desc;
+        var req = document.getElementById("reqFields");
+        var opt = document.getElementById("optFields");
+        req.innerHTML = "<legend>Required identifiers for this badge</legend>";
+        opt.innerHTML = "<legend>Optional identifiers — add any you hold</legend>";
+        e.required.forEach(function (id) { req.appendChild(fieldRow(id, true)); });
+        e.optional.forEach(function (id) { opt.appendChild(fieldRow(id, false)); });
+        track("verify_type", { type: key, page: "verify" });
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        if (!form.checkValidity()) {
+          form.classList.add("show-errors");
+          var bad = form.querySelector(":invalid");
+          if (bad) bad.focus();
+          return;
+        }
+        var e = E[current];
+        var lines = ["M-VERIFIED APPLICATION — " + e.badge, "Entity type: " + e.label, ""];
+        var payload = { entity_type: e.label, badge: e.badge };
+        form.querySelectorAll("input, textarea").forEach(function (f) {
+          if (!f.value) return;
+          lines.push(f.name + ": " + f.value);
+          payload[f.name] = f.value;
+        });
+        lines.push("", "Next step for the applicant: identifiers guide — " + location.origin + location.pathname.replace("verify.html", "identifiers.html"));
+        track("verify_submit", { type: current, page: "verify" });
+        if (INTAKE_ENDPOINT) {
+          fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
+            .then(function () { document.getElementById("vSubmit").textContent = "Submitted — check your email"; })
+            .catch(function () {});
+        } else {
+          location.href = "mailto:matthew@mccluster.org?subject=" +
+            encodeURIComponent("M-Verified application — " + e.label) +
+            "&body=" + encodeURIComponent(lines.join("\n"));
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

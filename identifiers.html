@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Identifiers — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="verify.html">Get Verified</a>
+    </nav>
+  </header>
+  <main>
+    <section class="verify">
+      <p class="kicker">McCluster Service Network · The registry, explained</p>
+      <h1 class="section-title">The<br>Identifiers</h1>
+      <p class="songhero__sub" style="margin-top:1rem; text-align:left">
+        Every M-Verified badge is backed by public registry identifiers — the same system
+        McCluster Corp holds itself. Here is what each one means, who issues it, and why
+        the network checks it. When you're ready:
+        <a href="verify.html" style="color:var(--ruby-hot); border-bottom:1px solid var(--ruby)">apply for your badge →</a>
+      </p>
+
+      <h2 class="sysid__title" style="margin-top:2.5rem">The badges</h2>
+      <div class="badge-legend" id="badgeLegend"></div>
+
+      <h2 class="sysid__title" style="margin-top:2.5rem">Every identifier the network recognizes</h2>
+      <div class="idcards" id="idCards"></div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var E = window.MCC_ENTITIES, IDS = window.MCC_IDENTIFIERS;
+
+      var legend = document.getElementById("badgeLegend");
+      Object.keys(E).forEach(function (key) {
+        var e = E[key];
+        var el = document.createElement("div");
+        el.className = "badge-legend__item";
+        el.innerHTML =
+          '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+          "<span><strong style=\"color:var(--cream)\">" + e.badge + "</strong><br>requires " +
+          e.required.map(function (id) { return IDS[id].name; }).join(" · ") + "</span>";
+        legend.appendChild(el);
+      });
+
+      var cards = document.getElementById("idCards");
+      Object.keys(IDS).forEach(function (key) {
+        var d = IDS[key];
+        var requiredBy = Object.keys(E).filter(function (k) { return E[k].required.indexOf(key) !== -1; })
+          .map(function (k) { return E[k].badge; });
+        var el = document.createElement("article");
+        el.className = "idcard";
+        el.id = key;
+        el.innerHTML =
+          "<h3>" + d.name + "</h3>" +
+          '<div class="idcard__long">' + d.long + "</div>" +
+          "<p>" + d.what + "</p>" +
+          '<div class="idcard__meta">' +
+          (d.format ? "Format: <code>" + d.format + "</code><br>" : "") +
+          "Issued by " + d.issuer +
+          (d.url ? ' — <a href="' + d.url + '" target="_blank" rel="noopener">get yours →</a>' : "") +
+          (requiredBy.length ? "<br>Required for: " + requiredBy.join(", ") : "") +
+          "</div>";
+        cards.appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>
