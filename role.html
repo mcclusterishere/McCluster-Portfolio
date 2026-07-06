@@ -65,7 +65,7 @@
           var prev = roles[i + 1], next = roles[i - 1]; // roles run newest-first
           body.innerHTML =
             '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Experience · ' + esc(role.dates) + "</p>" +
-            '<div class="bexp__hero"><div><p class="bexp__section">' + esc(role.org + " · " + role.location) + "</p><h1>" + esc(role.title) + "</h1></div></div>" +
+            '<div class="bexp__hero"><div><p class="bexp__section">' + esc(role.org + (role.location ? " · " + role.location : "")) + "</p><h1>" + esc(role.title) + "</h1></div></div>" +
             '<p class="songhero__sub" style="text-align:left;max-width:60ch;margin-top:0.5rem">' + esc(role.summary) + "</p>" +
             '<div class="bexp__panel"><h3>Responsibilities &amp; Impact</h3><ul>' +
             role.bullets.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + "</ul></div>" +

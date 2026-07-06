@@ -19,6 +19,21 @@
       "credentials": []
     },
     {
+      "slug": "whip-equipped",
+      "dates": "2024 – Present",
+      "title": "Owner-Operator",
+      "org": "Whip Equipped LLC",
+      "location": "Acworth, GA",
+      "summary": "Owns and operates a parts-licensed automotive dealership organized in Acworth, Georgia — and turned the business into a story, producing a mini web series based on it.",
+      "bullets": [
+        "Founded and organized Whip Equipped LLC as a parts-licensed automotive dealership out of Acworth, Georgia in 2024.",
+        "Runs day-to-day operations — sourcing, sales, parts licensing, and compliance.",
+        "Producing a mini web series built around the dealership, scored by the McCluster catalogue (\"Dealer Plates\").",
+        "Bridges the business and the brand: retail operations on one side, media production on the other."
+      ],
+      "credentials": []
+    },
+    {
       "slug": "freedom",
       "dates": "January 2021 – 2026",
       "title": "Digital Marketing & Outreach Platform Manager",
@@ -68,6 +83,21 @@
         "Communicated technical information clearly to non-technical users.",
         "Supported technology rollouts, system setup, workstation support, and user training.",
         "Built a foundation in customer service, troubleshooting, documentation, and user support."
+      ],
+      "credentials": []
+    },
+    {
+      "slug": "fireside",
+      "dates": "Age 14 · First Role",
+      "title": "Marketing Director",
+      "org": "Fireside Thrift Shop",
+      "location": "The family homeschool network",
+      "summary": "The first job — at fourteen, marketing director of a thrift shop the family homeschool network took over and ran together. The origin of everything that followed.",
+      "bullets": [
+        "Served as marketing director at age fourteen — the first role on the record.",
+        "Worked the shop alongside family and the homeschool network that took the store over and ran it.",
+        "Learned retail, merchandising, and promotion from the ground up.",
+        "Where the through-line started: build the platform, tell the story, move the product."
       ],
       "credentials": []
     }
