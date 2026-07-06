@@ -439,55 +439,45 @@
       audio.preload = "none";
       var playBtn = document.getElementById("dktPlay");
       var playing = false;
-      var holdUntil = 0;
-      var pos = null;
       var hud = document.createElement("div");
       hud.className = "dkt__now";
       hud.hidden = true;
       document.body.appendChild(hud);
-      ["wheel", "touchstart"].forEach(function (ev) {
-        window.addEventListener(ev, function () { holdUntil = Date.now() + 4000; pos = null; }, { passive: true });
-      });
+      /* the parse is ambient: the listener scrolls wherever they want —
+         the music never takes the wheel. The sidebar sings the current bar
+         and the tab rail flashes whichever category the record is reading. */
       var lastCat = null;
+      var lastBar = null;
+      function markParsing(cat) {
+        tabs.querySelectorAll(".dkt__tab.is-parsing").forEach(function (x) { x.classList.remove("is-parsing"); });
+        var hit = null;
+        tabs.querySelectorAll(".dkt__tab").forEach(function (x) { if (x.getAttribute("data-cat") === cat) hit = x; });
+        if (hit) hit.classList.add("is-parsing");
+      }
       function ride() {
         if (!playing) return;
         requestAnimationFrame(ride);
-        if (audio.paused || !audio.duration) return;
+        if (audio.paused) return;
         var cats = CAT_ORDER.filter(function (c) { return FILES.some(function (x) { return x.category === c; }); });
         if (!cats.length) return;
         // progress across the whole release, not just the playing track
         var total = 0, before = 0;
         TRACKS.forEach(function (t, ti) { total += t.dur; if (ti < curTrack) before += t.dur; });
         var f = Math.min(0.9999, (before + audio.currentTime) / total);
-        var i = Math.floor(f * cats.length);
-        var seg = f * cats.length - i;
-        var cat = cats[i];
-        if (cat !== lastCat) {
-          lastCat = cat;
-          activeCat = cat;
-          drawTabs();
-          render();
-          var on = tabs.querySelector(".dkt__tab.is-on");
-          if (on) on.classList.add("is-parsing");
-        }
+        var cat = cats[Math.floor(f * cats.length)];
         var bar = lyricAt(audio.currentTime);
+        if (cat === lastCat && bar === lastBar) return;
+        lastCat = cat;
+        lastBar = bar;
+        markParsing(cat);
         hud.innerHTML = "<b>PARSING:</b> " + esc(cat) +
           (bar ? '<i class="dkt__bar">&ldquo;' + esc(bar) + "&rdquo;</i>" : "") +
           "<span>scored by " + TRACKS[curTrack].credit + " &#183; Track 0" + (curTrack + 1) + " of 04</span>";
-        if (Date.now() < holdUntil) return;
-        var el = document.getElementById("library");
-        var top = el.getBoundingClientRect().top + window.scrollY;
-        var span = Math.max(0, el.offsetHeight - innerHeight * 0.6);
-        var wanted = top - 80 + span * seg;
-        if (pos === null) pos = window.scrollY;
-        pos += (wanted - pos) * 0.05;
-        window.scrollTo(0, pos);
       }
       function parseOff() {
         lastCat = null;
-        activeCat = "";
-        drawTabs();
-        render();
+        lastBar = null;
+        tabs.querySelectorAll(".dkt__tab.is-parsing").forEach(function (x) { x.classList.remove("is-parsing"); });
       }
       var IDLE_LABEL = "Play the evidence — the 516R Release";
       playBtn.addEventListener("click", function () {
@@ -496,7 +486,6 @@
         if (playing) {
           audio.play().catch(function () {});
           hud.hidden = false;
-          pos = null;
           track("docket_song_play", { document_id: TRACKS[curTrack].id, category: "516R Release" });
           ride();
         } else {
