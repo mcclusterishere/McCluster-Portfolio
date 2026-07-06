@@ -617,6 +617,11 @@
 
     function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
 
+    // iOS only lets play() succeed on elements that have already played
+    // inside a user gesture; a mass unlock can drop one, so remember which
+    // elements actually made it and keep retrying the rest on later taps
+    var unlocked = {};
+
     function fadeTo(name) {
       if (soundOn && name !== currentTrack) {
         var prev = tracks[currentTrack];
@@ -629,7 +634,8 @@
         var a = tracks[k];
         if (!a) return;
         if (k === name && avail[k]) {
-          a.play().catch(function () {});
+          var pr = a.play();
+          if (pr && pr.then) pr.then(function () { unlocked[k] = true; }).catch(function () {});
           gsap.to(a, { volume: 0.85, duration: 1.2, ease: "power1.out", overwrite: "auto" });
         } else {
           gsap.to(a, {
@@ -666,18 +672,7 @@
         if (cur && !cur.paused) track("song_stop", { song: currentTrack, page: "home", at_seconds: Math.round(cur.currentTime) });
       }
       if (soundOn) {
-        // unlock every element inside this tap: iOS only allows play() on
-        // elements that have played during a user gesture at least once
-        Object.keys(tracks).forEach(function (k) {
-          var a = tracks[k];
-          if (!a || !avail[k]) return;
-          a.volume = 0;
-          var pr = a.play();
-          if (pr && pr.then) {
-            pr.then(function () { if (k !== currentTrack) a.pause(); })
-              .catch(function () {});
-          }
-        });
+        unlockAll();
         fadeTo(currentTrack);
       } else {
         Object.keys(tracks).forEach(function (k) {
@@ -687,6 +682,29 @@
       }
     }
 
+    // unlock every not-yet-unlocked element inside a user gesture: play it
+    // muted-by-volume, mark it on success, pause everything but the current
+    // track. Safe to call repeatedly — unlocked elements are skipped.
+    function unlockAll() {
+      Object.keys(tracks).forEach(function (k) {
+        var a = tracks[k];
+        if (!a || !avail[k] || unlocked[k]) return;
+        // a late unlock of the track the visitor is already on comes in
+        // audibly right away — never gate the fade on the play() promise,
+        // which only settles once media data actually arrives
+        var isCurrent = k === currentTrack && soundOn;
+        if (!isCurrent) a.volume = 0;
+        var pr = a.play();
+        if (isCurrent) gsap.to(a, { volume: 0.85, duration: 1.2, ease: "power1.out", overwrite: "auto" });
+        if (pr && pr.then) {
+          pr.then(function () {
+            unlocked[k] = true;
+            if (k !== currentTrack) a.pause();
+          }).catch(function () {});
+        }
+      });
+    }
+
     var userMuted = false;
     toggle.addEventListener("click", function () {
       if (soundOn) userMuted = true; // an explicit mute wins over auto-arm
@@ -694,16 +712,22 @@
     });
 
     // The album arms itself on the visitor's first real gesture — browsers
-    // refuse audio before one, which is why nothing plays "automatically"
-    // until then. On touch screens the first scroll-touch counts; on desktop
-    // the first click or keypress does. An explicit mute stays muted.
+    // refuse audio before one. On touch screens the first scroll-touch
+    // counts; on desktop the first click or keypress does. Later gestures
+    // keep retrying any element the first unlock burst dropped (iOS can
+    // reject one of several simultaneous play() calls), and restart the
+    // current track if its crossfade play() was refused off-gesture.
     ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
       window.addEventListener(ev, function (e) {
-        if (soundOn || userMuted) return;
+        if (userMuted) return;
         if (!Object.keys(avail).length) return; // tracks not known yet
         // the toggle click arms through its own handler
         if (e.target && e.target.closest && e.target.closest("#soundToggle")) return;
-        setSound(true);
+        if (!soundOn) { setSound(true); return; }
+        var cur = tracks[currentTrack];
+        var wasPaused = cur && avail[currentTrack] && cur.paused;
+        unlockAll();
+        if (wasPaused && unlocked[currentTrack]) fadeTo(currentTrack);
       }, { passive: true });
     });
   })();
