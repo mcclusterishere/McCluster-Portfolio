@@ -329,6 +329,7 @@
     var loPanels = gsap.utils.toArray("#loadout .command__panel");
     var loCount = document.getElementById("loCount");
     var loOffer = document.getElementById("loOffer");
+    var loDeg = document.getElementById("loDeg");
     var current = 0;
     var parLoCanvas = parCanvas("keynote");
     var parLoPanels = PAR.attach(document.querySelector("#loadout .command__panels"), { depth: -7 });
@@ -340,9 +341,17 @@
       loPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
       loCount.textContent = "0" + (active + 1) + " / 03";
       current = active;
-      // once the 360 pan is done — the visitor has seen all three corners —
+      // the 360 is "achieved" once the pan reaches the final corner — the
+      // snap parks the visitor there, so this state holds at rest (a p>=0.9
+      // check would only flicker past, since the snap settles at 5/6 ≈ 300°).
+      var done = active === 2;
       // the offer pops up in the same box: "want your own page like this?"
-      if (loOffer) loOffer.classList.toggle("is-shown", p >= 0.9);
+      if (loOffer) loOffer.classList.toggle("is-shown", done);
+      // the degree readout counts up with the pan and flashes 360° once achieved
+      if (loDeg) {
+        loDeg.textContent = (done ? "360" : String(Math.round(p * 360)).padStart(3, "0")) + "°";
+        loDeg.classList.toggle("is-360", done);
+      }
       // the pan comes alive at the end of each corner's band
       var s = PAR.ramp(clamp01(p * 3 - active));
       PAR.set(parLoCanvas, s);

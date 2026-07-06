@@ -2447,3 +2447,21 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
   .offer__dot--open { animation: none; }
 }
 @media (max-width: 560px) { .lo-offer { font-size: 0.82rem; padding: 0.7rem 1rem; white-space: normal; text-align: center; } }
+
+/* ---- the 360 readout on the home loadout: counts up, flashes at 360 ---- */
+.lo-deg {
+  position: absolute; z-index: 4;
+  right: clamp(1.2rem, 4vw, 3rem); bottom: clamp(4.4rem, 13vh, 8rem);
+  font-family: var(--display); letter-spacing: 0.08em; color: var(--cream-dim);
+  font-size: clamp(1.4rem, 3vw, 2.4rem); transition: color 0.3s;
+}
+.lo-deg.is-360 {
+  color: var(--ruby-hot);
+  animation: deg360Flash 0.62s steps(1, end) infinite;
+}
+@keyframes deg360Flash {
+  0%   { color: var(--ruby-hot); text-shadow: 0 0 26px rgba(229, 56, 59, 0.95); opacity: 1; }
+  50%  { color: var(--cream);    text-shadow: 0 0 8px rgba(244, 239, 230, 0.4); opacity: 0.5; }
+  100% { color: var(--ruby-hot); text-shadow: 0 0 26px rgba(229, 56, 59, 0.95); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .lo-deg.is-360 { animation: none; color: var(--ruby-hot); } }
