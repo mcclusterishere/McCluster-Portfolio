@@ -837,6 +837,34 @@ a { color: inherit; text-decoration: none; }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; padding: 7rem 1.5rem 3rem;
 }
+/* the record's registry line: credits, length, rights owner */
+.songhero__meta {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.5rem 0.6rem;
+  margin-top: 1.6rem;
+  max-width: 46rem;
+}
+.songhero__meta span {
+  font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cream-dim);
+  border: 1px solid rgba(244, 239, 230, 0.16);
+  border-radius: 100px;
+  padding: 0.34em 0.9em;
+  white-space: nowrap;
+}
+.songhero__meta .is-key { color: var(--ruby-hot); border-color: rgba(193, 18, 31, 0.5); }
+.songhero__cat {
+  font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cream);
+  border: 1px solid rgba(244, 239, 230, 0.16);
+  border-bottom-color: var(--ruby);
+  border-radius: 100px;
+  padding: 0.34em 0.9em;
+  white-space: nowrap;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.songhero__cat:hover { border-color: var(--ruby-hot); color: var(--ruby-hot); }
+
 .songhero__title {
   font-family: var(--display); font-weight: 400;
   font-size: clamp(3.2rem, 13vw, 10.5rem);
@@ -859,9 +887,10 @@ a { color: inherit; text-decoration: none; }
 .catalogue {
   position: relative; z-index: 2;
   background: var(--ink);
-  padding: clamp(4rem, 9vw, 8rem) clamp(1.2rem, 4vw, 3rem);
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 4vw, 3rem);
+  overflow: clip;
 }
-.catalogue__head { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.catalogue__head { margin-bottom: clamp(1.4rem, 3vw, 2.2rem); }
 .catalogue__list {
   list-style: none;
   border-top: 1px solid rgba(244, 239, 230, 0.12);
@@ -918,7 +947,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* the identity registry: every code the catalogue clears through */
-.sysid { margin-top: clamp(3rem, 7vw, 5rem); }
+.sysid { margin-top: clamp(2rem, 4vw, 3rem); }
 .sysid__title {
   font-family: var(--display);
   font-size: clamp(1.4rem, 3.4vw, 2.4rem);
