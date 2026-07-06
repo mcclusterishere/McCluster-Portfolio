@@ -36,14 +36,21 @@ real intake forms today and will point at these services when they exist.
 ## 2. Accounts and approval flow
 
 Registration is application-based — nobody self-provisions into the network.
+Applicants choose their password (and the rest of their credentials) at
+application time, but the account **sits pending until approved**: it cannot
+log in, vote, or appear anywhere until an admin flips it to APPROVED.
 
 ```
-visitor → submits intake (verify.html / interview.html / fellowship.html)
-       → record created with status = NEW
-       → admin review (approve / request-more / reject)
-       → APPROVED accounts get a login invitation
-       → account activated, role assigned
+visitor → submits application (verify.html / interview.html / fellowship.html)
+       → chooses email + password up front (hashed immediately, argon2id)
+       → record created with status = NEW, account inert
+       → admin review in the panel (approve / request-more / reject)
+       → APPROVED → account activates, role assigned, welcome email
 ```
+
+Participation that matters (voting, campaign tools, wearing badges publicly)
+requires an account. The only alternative is explicit, plainly-worded opt-in
+at the moment of participation — never silent tracking.
 
 Statuses: `NEW → IN_REVIEW → NEEDS_INFO → APPROVED | REJECTED → ACTIVE → SUSPENDED | CLOSED`.
 Every transition is written to the audit log with actor, timestamp, and reason.
@@ -113,6 +120,31 @@ Backups nightly, encrypted at rest, keys held by McCluster only.
   within 30 days and is logged in `deletion_requests`.
 - Dark patterns are out: no pre-checked boxes, no guilt copy on opt-outs, no
   countdown timers on consent.
+
+## 6a. Profile badges — worn or hidden, the member's call
+
+Completing a marker's deeper quiz earns that marker's badge. Today the badge
+lives only in the visitor's own browser (localStorage) with a worn/hidden
+choice made at the moment it's earned; the registry page lets them flip it any
+time. When accounts ship, a member can import their device badges to their
+profile — imports are explicit, and the worn/hidden setting is honored
+server-side (`profile_badges`: user_id, badge_kind, badge_key, worn,
+earned_at). Vendor badges surface on vendor profiles the same way. Hidden
+badges are invisible to everyone including admins' public views; they exist
+only so the member can flip them back on.
+
+## 6b. Monetization boundary — what the data business is and isn't
+
+The surveys and marker quizzes feed **statistics**, and statistics are the
+product: aggregate, anonymized insight reports (e.g. "which markers get the
+most deeper-quiz completions per track", "what services sections convert").
+Those aggregates can be published, licensed, or used to price sponsorships.
+
+The hard line, restated from section 6: we do not build or sell per-person
+advertising profiles, and we do not map an individual's quiz answers to ad
+targeting. If an advertiser wants reach, they buy placement against
+aggregate segments (minimum bucket 20, no identity attached) — the same way
+radio sells drive-time without selling the drivers.
 
 ## 7. Analytics — consented aggregates only
 

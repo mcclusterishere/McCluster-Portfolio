@@ -37,6 +37,17 @@ Hard lines: no personality scoring, no marker data, no covert traits.
 The psychology-marker layer on the music pages is a separate, anonymous
 art/education feature and never feeds fellowship decisions.
 
+**Where the application lives:** in the party's own backend (once the
+endpoint is live), in the applicant's browser storage, and in a downloadable
+copy the applicant keeps — the fellowship terminal already writes all three.
+Their words stay theirs.
+
+**Layer 3 — the Accepted Fellows Portal.** After acceptance, fellows get a
+logged-in portal with a deeper intake: placement interview (which policy
+lane, which campaigns, which skills to grow), availability planning, and
+cohort assignments. Deeper means more detailed about the *work* — it is
+still not a psychological assessment, and marker data still never enters it.
+
 ## 3. The ballot
 
 Members vote on priority questions (the terminal already narrows a ballot to
@@ -58,9 +69,17 @@ published in aggregate only.
 
 ## 5. Connector architecture (campaign side)
 
-Imports are file- and API-based, always initiated by the partner:
+Imports are file- and API-based, always initiated by the partner. The pitch
+is real: a partner with an approved profile can bring their own campaign
+data into the platform and run their outreach through Equity Uprise as if it
+were their own system.
 
 - **CSV import** — the workhorse; column mapping UI, dedupe, source tag.
+- **VoteBuilder / VAN export import** — partners who work in VoteBuilder
+  export their lists and walk them in via the CSV mapper (VAN's own export
+  formats get first-class column presets). Imports stay scoped to that
+  partner's campaign, per the rules above — the platform never pulls from
+  VoteBuilder directly and never re-shares an imported list.
 - **Google Sheets** — a partner's existing organizing sheet, read on a schedule.
 - **Calendar imports** — event schedules for canvass/outreach planning.
 

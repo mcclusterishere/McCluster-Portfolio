@@ -48,20 +48,82 @@
   <script>
     (function () {
       "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       var grid = document.getElementById("pmkGrid");
+      var want = new URLSearchParams(location.search).get("marker");
+      function badgeStore() {
+        try { return JSON.parse(localStorage.getItem("mcc_marker_badges") || "{}"); } catch (e) { return {}; }
+      }
+      function ic(id, style) {
+        return '<svg class="psy__ic" aria-hidden="true"' + (style ? ' style="' + style + '"' : "") + '><use href="assets/icons/markers.svg#mk-' + id + '"></use></svg>';
+      }
       fetch("data/psychology-markers.json", { cache: "no-cache" })
         .then(function (r) { return r.json(); })
         .then(function (data) {
+          var single = data.markers.find(function (m) { return m.id === want; });
+
+          if (single) {
+            // this marker's own page: the full breakdown
+            document.title = single.name + " — Psychology Marker · McCluster";
+            var hero = document.querySelector(".pmk");
+            hero.innerHTML =
+              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Psychology Marker · ' + single.id.replace(/_/g, " ") + "</p>" +
+              '<div class="bexp__hero">' + ic(single.id, "width:4.2em;height:4.2em;color:var(--ruby-hot)") +
+              '<div><p class="bexp__section">' + single.short + "</p><h1 style='font-family:var(--display);font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;line-height:1'>" + single.name + "</h1></div></div>" +
+              '<div class="bexp__panel"><h3>The pattern</h3><p>' + single.interpretation + "</p></div>" +
+              '<div class="bexp__panel"><h3>The question it asks you</h3><p>&ldquo;' + single.deeper.q + "&rdquo;</p>" +
+              "<p style='margin-top:0.6rem'>On the lyric pages this question pauses the song — you answer it for yourself, on your screen, and nothing leaves the device.</p></div>" +
+              '<div class="bexp__panel"><h3>What it is / what it isn\'t</h3>' +
+              "<p>It is a common, well-documented behavioral pattern written in plain English. It isn't a diagnosis, a score, or a label — no answer here says anything clinical or political about you.</p></div>" +
+              '<div class="pmk__consent"><h3>Consent</h3><p>Optional and anonymous. Answers are never stored or tied to you; earned badges live only in your own browser until you choose otherwise.</p></div>' +
+              '<div class="finale__actions" style="margin-top:2rem">' +
+              '<a class="btn btn--ruby" href="song-antisocial.html">Hear it in the bars</a>' +
+              '<a class="btn btn--ghost" href="psychology-markers.html">All 19 markers</a></div>';
+            track("psych_marker_page_view", { marker_id: single.id, page: "psychology-markers" });
+            return;
+          }
+
+          // the earned strip: badges this browser has collected, worn or hidden
+          var earned = badgeStore();
+          var keys = Object.keys(earned);
+          if (keys.length) {
+            var strip = document.createElement("div");
+            strip.className = "pmk__consent";
+            strip.style.marginBottom = "1.6rem";
+            strip.innerHTML = "<h3>Your badges — this device</h3><div class='pmk__mine'>" +
+              keys.map(function (k) {
+                var m = data.markers.find(function (x) { return x.id === k; });
+                if (!m) return "";
+                return '<button class="chat__chip pmk__minebtn" data-id="' + k + '" type="button" style="opacity:' + (earned[k].worn ? 1 : 0.45) + '">' +
+                  ic(k, "width:1.1em;height:1.1em;vertical-align:-0.2em;margin-right:0.4em") + m.name +
+                  " · " + (earned[k].worn ? "worn" : "hidden") + "</button>";
+              }).join("") +
+              "</div><p style='margin-top:0.6rem'>Tap to wear or hide. These live in this browser only — when profiles launch, you choose what carries over.</p>";
+            grid.parentNode.insertBefore(strip, grid);
+            strip.addEventListener("click", function (ev) {
+              var b = ev.target.closest(".pmk__minebtn");
+              if (!b) return;
+              var s = badgeStore();
+              var id = b.getAttribute("data-id");
+              s[id].worn = !s[id].worn;
+              try { localStorage.setItem("mcc_marker_badges", JSON.stringify(s)); } catch (e) {}
+              b.style.opacity = s[id].worn ? 1 : 0.45;
+              b.innerHTML = b.innerHTML.replace(/· (worn|hidden)$/, "· " + (s[id].worn ? "worn" : "hidden"));
+              track("psych_badge_wear", { marker_id: id, worn: s[id].worn, page: "psychology-markers" });
+            });
+          }
+
           grid.innerHTML = data.markers.map(function (m) {
-            return '<article class="pmk__card">' +
-              '<svg class="psy__ic" aria-hidden="true"><use href="assets/icons/markers.svg#mk-' + m.id + '"></use></svg>' +
+            return '<a class="pmk__card" href="psychology-markers.html?marker=' + m.id + '" style="display:block;color:inherit">' +
+              ic(m.id) +
               '<p class="pmk__id">' + m.id.replace(/_/g, " ") + "</p>" +
               "<h3>" + m.name + "</h3>" +
               "<p>" + m.short + "</p>" +
               "<p>" + m.interpretation + "</p>" +
-              "</article>";
+              '<p class="pmk__id" style="margin-top:0.6rem">Full breakdown &#8594;</p>' +
+              "</a>";
           }).join("");
-          if (window.MCC_TRACK) window.MCC_TRACK("psych_registry_view", { page: "psychology-markers", markers: data.markers.length });
+          track("psych_registry_view", { page: "psychology-markers", markers: data.markers.length });
         })
         .catch(function () { grid.innerHTML = "<p style='color:var(--cream-dim)'>The registry is offline — try again in a moment.</p>"; });
     })();

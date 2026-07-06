@@ -212,6 +212,12 @@
           track("fellowship_submit", { vote: answers.vote || "", page: "fellowship" });
           var lines = ["EQUITY UPRISE — POLICY FELLOWSHIP APPLICATION", ""];
           Q.forEach(function (q) { lines.push("[" + q.g + "] " + q.ask + "\n> " + (answers[q.id] || "—") + "\n"); });
+          // the record lives in three places: the party's backend (when the
+          // endpoint is live), this device's browser storage, and a file the
+          // fellow keeps — their words stay theirs
+          try {
+            localStorage.setItem("mcc_fellowship_record", JSON.stringify({ submitted_at: new Date().toISOString(), answers: answers }));
+          } catch (e) {}
           if (INTAKE_ENDPOINT) {
             fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(Object.assign({ _form: "fellowship" }, answers)) })
               .then(function () { send.textContent = "Received. Welcome to the uprise."; localStorage.removeItem(KEY); })
@@ -223,6 +229,21 @@
           }
         });
         input.appendChild(send);
+        var keep = document.createElement("button");
+        keep.className = "btn btn--ghost"; keep.type = "button";
+        keep.style.marginTop = "0.8rem"; keep.style.marginLeft = "0.6rem";
+        keep.textContent = "Download my copy";
+        keep.addEventListener("click", function () {
+          var lines2 = ["EQUITY UPRISE — POLICY FELLOWSHIP APPLICATION", "Kept by the applicant · " + new Date().toLocaleString(), ""];
+          Q.forEach(function (q) { lines2.push("[" + q.g + "] " + q.ask + "\n> " + (answers[q.id] || "—") + "\n"); });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(new Blob([lines2.join("\n")], { type: "text/plain" }));
+          a.download = "equity-uprise-fellowship-application.txt";
+          a.click();
+          URL.revokeObjectURL(a.href);
+          track("fellowship_download_copy", { page: "fellowship" });
+        });
+        input.appendChild(keep);
         var reset = document.createElement("button");
         reset.className = "chat__back"; reset.type = "button"; reset.style.marginTop = "0.8rem";
         reset.textContent = "wipe the record and start over";

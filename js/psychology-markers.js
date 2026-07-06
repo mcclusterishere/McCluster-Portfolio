@@ -26,6 +26,16 @@
   var MAP = {};
   var CONSENT = { banner: "", footer: "For curiosity, not diagnosis." };
 
+  /* earned marker badges — device-local only, the listener's to wear or hide */
+  function badgeStore() {
+    try { return JSON.parse(localStorage.getItem("mcc_marker_badges") || "{}"); } catch (e) { return {}; }
+  }
+  function saveBadge(id, worn) {
+    var s = badgeStore();
+    s[id] = { earned_at: (s[id] && s[id].earned_at) || new Date().toISOString(), worn: !!worn };
+    try { localStorage.setItem("mcc_marker_badges", JSON.stringify(s)); } catch (e) {}
+  }
+
   /* ---------- the small card ---------- */
   var card = document.createElement("aside");
   card.className = "psycard";
@@ -101,9 +111,24 @@
           icon(d.id) +
           '<p class="psyoverlay__kicker">' + d.name + "</p>" +
           '<p class="psyoverlay__resp">' + d.deeper.resp[i] + "</p>" +
-          '<button class="btn btn--ruby" type="button" id="psyContinue">Continue the song</button>' +
-          '<p class="psyoverlay__consent">' + CONSENT.footer + "</p>";
+          '<p class="psyoverlay__kicker">Badge earned: ' + d.name + "</p>" +
+          '<div class="psyoverlay__opts" id="psyWear">' +
+          '<button class="chat__chip" data-wear="1" type="button">Wear it on my profile</button>' +
+          '<button class="chat__chip" data-wear="0" type="button">Keep it hidden</button>' +
+          "</div>" +
+          '<button class="btn btn--ruby" type="button" id="psyContinue" style="margin-top:1rem">Continue the song</button>' +
+          '<p class="psyoverlay__consent">' + CONSENT.footer + " Badges live only in this browser until you make an account.</p>";
+        // finishing the quiz earns the marker badge — stored on THIS device
+        // only (localStorage), worn or hidden by the listener's own choice
+        overlay.querySelectorAll("#psyWear .chat__chip").forEach(function (w) {
+          w.addEventListener("click", function () {
+            saveBadge(d.id, w.getAttribute("data-wear") === "1");
+            overlay.querySelectorAll("#psyWear .chat__chip").forEach(function (x) { x.style.opacity = x === w ? "1" : "0.35"; });
+            track("psych_badge_wear", { marker_id: d.id, worn: w.getAttribute("data-wear") === "1", page: page() });
+          });
+        });
         overlay.querySelector("#psyContinue").addEventListener("click", function () {
+          if (!badgeStore()[d.id]) saveBadge(d.id, false); // earned either way, hidden by default
           track("psych_quiz_complete", { marker_id: d.id, page: page() });
           overlay.classList.remove("is-open");
           resumeWorld();
