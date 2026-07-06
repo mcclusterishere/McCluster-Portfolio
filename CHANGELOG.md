@@ -9,7 +9,7 @@ this repo's history (`git log` has the full detail).
 **What happened:** the main-page scroll started feeling "less native" —
 long black stretches between the cinematic sections.
 
-**Root cause:** commit `48dba40` added the Catalogue + System
+**Root cause:** commit `5c37509` added the Catalogue + System
 Identification section directly onto the main page, between the 360
 studio pan and the process strip. That inserted roughly two screens of
 static typographic black into what had been an unbroken film-to-film
@@ -30,7 +30,7 @@ section landed in the middle of it.
   reverted to the original values.
 
 **One other feel-related change to be aware of** (shipped 2026-07-06
-morning, commit `021fa86`): the preloader now opens the site after the
+morning, commit `6da1ec0`): the preloader now opens the site after the
 first 48 hero frames instead of all 161, and streams the rest during the
 scroll. On a fast connection this is invisible; on a slow connection a
 very fast scroller can briefly outrun the stream, and the orbit holds its
@@ -40,32 +40,32 @@ constant (`heroGate` in `js/main.js`).
 
 ## 2026-07-06 earlier deploys
 
-- `a0deaf9` — **Got WiFi karaoke**: full 38-bar lyric page from the
+- `7c66b54` — **Got WiFi karaoke**: full 38-bar lyric page from the
   DistroKid time codes; while the track plays, the page scrolls itself
   and each bar lights on cue. Engine works on any song page via `data-t`
   attributes.
-- `48dba40` — **Catalogue on the main page** (superseded — see above).
-- `f94a884` — **Sound back to opt-in** via the toggle (reviewer feedback:
+- `5c37509` — **Catalogue on the main page** (superseded — see above).
+- `9b34fba` — **Sound back to opt-in** via the toggle (reviewer feedback:
   auto-starting music reads wrong for corporate visitors). The iOS
   unlock-retry hardening stays.
-- `14dc2ee` — **Dealer Plates iPad fix**: iOS could silently reject one
+- `ad50a2b` — **Dealer Plates iPad fix**: iOS could silently reject one
   of six simultaneous audio unlocks (always Dealer Plates, last in the
   list); unlocks now retry on later taps.
-- `5db5ed8` — **Book a Paid Call** gates (finale button + Consultation
+- `eb03a53` — **Book a Paid Call** gates (finale button + Consultation
   tile), pending the Square Appointments URL.
-- `64d0517` — Got WiFi Square payment link wired.
-- `021fa86` — **Performance pass**: preloader gates on 48 frames
+- `acd1af3` — Got WiFi Square payment link wired.
+- `6da1ec0` — **Performance pass**: preloader gates on 48 frames
   (8.2 MB → 2.6 MB blocking payload), heavy PNGs re-encoded to WebP/JPEG
   derivatives (4.3 MB of eager images → 180 KB lazy), site opens ~5 s at
   5 Mbps instead of ~14 s. Auto-arm sound also shipped here and was
-  reverted later the same day (`f94a884`).
+  reverted later the same day (`9b34fba`).
 
 ## 2026-07-05 (selected)
 
-- `6e4e600` — **Mouse parallax**: near the end of each slide's scroll
+- `3e21e29` — **Mouse parallax**: near the end of each slide's scroll
   band the held frame leans toward the cursor, lyrics counter-drift, a
   soft light follows the pointer. Desktop pointers only.
-- `d1b588e` / `a1af04e` — **The Extraction storyboard**: the Antisocial
+- `5ac6cfe` / `6ca2a6f` — **The Extraction storyboard**: the Antisocial
   helicopter segment became 8 stills, one per bar, served as lazy JPEGs.
 - Earlier that day: Vaunt remix page, WIDER 210 money-glitch scene,
   Bell 525 extraction film, GM-call scene, Shiloh citations scene,
