@@ -67,20 +67,24 @@
       canvas: canvas, ctx: canvas.getContext("2d"), name: name,
       frames: [], count: 0, current: 0, target: 0, lastDrawn: -1, loadedMax: -1, ready: false,
     };
+    s.drawImg = function (img) {
+      if (!img || !img.complete || !img.naturalWidth) return false;
+      var cw = canvas.width, ch = canvas.height;
+      var sc = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      s.ctx.drawImage(img, (cw - img.naturalWidth * sc) / 2, (ch - img.naturalHeight * sc) / 2,
+        img.naturalWidth * sc, img.naturalHeight * sc);
+      return true;
+    };
     s.size = function () {
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       s.lastDrawn = -1;
+      // a resize clears the canvas — keep the poster up until the film runs
+      if (!s.ready && s.poster) s.drawImg(s.poster);
     };
     s.draw = function (i) {
-      var img = s.frames[i];
-      if (!img || !img.complete || !img.naturalWidth) return;
-      var cw = canvas.width, ch = canvas.height;
-      var sc = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-      s.ctx.drawImage(img, (cw - img.naturalWidth * sc) / 2, (ch - img.naturalHeight * sc) / 2,
-        img.naturalWidth * sc, img.naturalHeight * sc);
-      s.lastDrawn = i;
+      if (s.drawImg(s.frames[i])) s.lastDrawn = i;
     };
     window.addEventListener("resize", s.size);
     s.size();
@@ -128,21 +132,25 @@
         if (!m[name]) { canvas.style.display = "none"; return; }
         var s = makeSeq(canvas, name);
         if (!gated) {
-          // the opening film loads eagerly and drives the loader; the page
-          // opens once the first stretch is in — the rest streams behind it
-          // (the scrub engine holds the newest loaded frame if outrun)
+          // the opening film loads fully and drives the loader — rolled
+          // back to the pre-perf-pass behavior (2026-07-06)
           gated = true;
-          var gate = Math.min(48, m[name].count);
           loadSeq(s, m[name].count, function () {
-            var gp = Math.min(1, (s.loadedMax + 1) / gate);
+            var gp = Math.min(1, (s.loadedMax + 1) / m[name].count);
             pre.set(gp);
             if (gp >= 1) pre.finish();
           });
         } else {
           // every other film waits until the scroll gets near its block,
-          // so opening the page never downloads the whole song
+          // so opening the page never downloads the whole song — but its
+          // opening frame shows immediately, so no canvas is ever black
+          var pimg = new Image();
+          pimg.src = "assets/frames/" + name + "_0001.jpg";
+          pimg.onload = function () {
+            if (!s.ready) { s.poster = pimg; s.drawImg(pimg); }
+          };
           ScrollTrigger.create({
-            trigger: block, start: "top 250%", once: true,
+            trigger: block, start: "top 400%", once: true,
             onEnter: function () { if (!s.count) loadSeq(s, m[name].count); },
           });
         }

@@ -63,20 +63,24 @@
       loadedMax: -1, // highest contiguous loaded frame index
       ready: false,
     };
+    seq.drawImg = function (img) {
+      if (!img || !img.complete || !img.naturalWidth) return false;
+      var cw = canvas.width, ch = canvas.height;
+      var s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      var w = img.naturalWidth * s, h = img.naturalHeight * s;
+      seq.ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      return true;
+    };
     seq.size = function () {
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       seq.lastDrawn = -1; // force redraw
+      // a resize clears the canvas — keep the poster up until the film runs
+      if (!seq.ready && seq.poster) seq.drawImg(seq.poster);
     };
     seq.draw = function (i) {
-      var img = seq.frames[i];
-      if (!img || !img.complete || !img.naturalWidth) return;
-      var cw = canvas.width, ch = canvas.height;
-      var s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-      var w = img.naturalWidth * s, h = img.naturalHeight * s;
-      seq.ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
-      seq.lastDrawn = i;
+      if (seq.drawImg(seq.frames[i])) seq.lastDrawn = i;
     };
     seq.fallback = function () {
       var fb = document.getElementById(fallbackId);
@@ -208,10 +212,9 @@
   fetch("assets/frames/manifest.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error("no manifest"); return r.json(); })
     .then(function (m) {
-      // the site opens once the first stretch of the orbit is in — the rest
-      // of the film streams behind the scroll (the scrub engine holds the
-      // newest loaded frame if the visitor outruns the stream)
-      var heroGate = Math.min(48, m.hero.count);
+      // the preloader holds until the WHOLE orbit is in — rolled back to
+      // the pre-perf-pass behavior: nothing opens half-loaded (2026-07-06)
+      var heroGate = m.hero.count;
       var opened = false;
       loadSequence(sequences.hero, "hero", m.hero.count, function () {
         var gp = Math.min(1, (sequences.hero.loadedMax + 1) / heroGate);
@@ -221,7 +224,23 @@
       });
       function openSite() {
         finishPreloader();
-        // Each section's films load only when the scroll gets within ~2
+        // Every film shows its opening frame from the moment the site
+        // opens — a canvas must never sit black while the visitor scrolls
+        // faster than the connection streams.
+        function loadPoster(key, name) {
+          var s = sequences[key];
+          if (!s || !m[name]) return;
+          var img = new Image();
+          img.src = "assets/frames/" + name + "_0001.jpg";
+          img.onload = function () {
+            if (s.ready) return;
+            var cw = s.canvas.width, ch = s.canvas.height;
+            var sc = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+            s.ctx.drawImage(img, (cw - img.naturalWidth * sc) / 2, (ch - img.naturalHeight * sc) / 2,
+              img.naturalWidth * sc, img.naturalHeight * sc);
+          };
+        }
+        // Each section's full film loads once the scroll gets within a few
         // screens of it, so opening the page never downloads the whole site.
         function loadGroup(specs) {
           specs.forEach(function (spec) {
@@ -231,8 +250,9 @@
           });
         }
         function loadNear(sel, specs) {
+          specs.forEach(function (spec) { loadPoster(spec[0], spec[1]); });
           ScrollTrigger.create({
-            trigger: sel, start: "top 300%", once: true,
+            trigger: sel, start: "top 500%", once: true,
             onEnter: function () { loadGroup(specs); },
           });
         }
