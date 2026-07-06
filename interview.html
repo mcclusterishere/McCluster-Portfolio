@@ -244,7 +244,7 @@
           var lines = ["SPACE INTAKE INTERVIEW — McCluster Service Network", ""];
           active().forEach(function (q) { lines.push("[" + q.g + "] " + q.ask + "\n> " + (answers[q.id] || "—") + "\n"); });
           if (INTAKE_ENDPOINT) {
-            fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(answers) })
+            fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(Object.assign({ _form: "space-interview" }, answers)) })
               .then(function () { send.textContent = "Submitted — we'll be in touch"; localStorage.removeItem(KEY); })
               .catch(function () {});
           } else {

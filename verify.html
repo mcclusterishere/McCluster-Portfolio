@@ -168,7 +168,7 @@
         }
         var e = E[current];
         var lines = ["M-VERIFIED APPLICATION — " + e.badge, "Entity type: " + e.label, ""];
-        var payload = { entity_type: e.label, badge: e.badge };
+        var payload = { _form: "verification", entity_type: e.label, badge: e.badge };
         form.querySelectorAll("input, textarea").forEach(function (f) {
           if (!f.value) return;
           lines.push(f.name + ": " + f.value);

@@ -213,7 +213,7 @@
           var lines = ["EQUITY UPRISE — POLICY FELLOWSHIP APPLICATION", ""];
           Q.forEach(function (q) { lines.push("[" + q.g + "] " + q.ask + "\n> " + (answers[q.id] || "—") + "\n"); });
           if (INTAKE_ENDPOINT) {
-            fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(answers) })
+            fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(Object.assign({ _form: "fellowship" }, answers)) })
               .then(function () { send.textContent = "Received. Welcome to the uprise."; localStorage.removeItem(KEY); })
               .catch(function () {});
           } else {
