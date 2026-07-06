@@ -13,7 +13,7 @@
   <header class="site-head">
     <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
     <nav class="site-head__nav">
-      <a href="index.html#bio">← Back to profile</a>
+      <a href="resume.html#bio">← Back to profile</a>
       <a class="head-cta" href="index.html#book">Lock In</a>
     </nav>
   </header>
@@ -83,7 +83,7 @@
             '<div class="finale__actions" style="margin-top:1.8rem">' +
             (prev ? '<a class="btn btn--ghost" href="role.html?role=' + encodeURIComponent(prev.slug) + '">&#8592; ' + esc(prev.title) + "</a>" : "") +
             (next ? '<a class="btn btn--ghost" href="role.html?role=' + encodeURIComponent(next.slug) + '">' + esc(next.title) + " &#8594;</a>" : "") +
-            '<a class="btn btn--ruby" href="index.html#bio">Back to Experience</a></div>';
+            '<a class="btn btn--ruby" href="resume.html#bio">Back to Experience</a></div>';
           track("role_view", { role: role.slug });
         })
         .catch(function () { body.innerHTML = '<div class="bexp__hero"><h1>Offline</h1></div><div class="bexp__panel"><p>Try again in a moment.</p></div>'; });
