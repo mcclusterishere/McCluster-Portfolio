@@ -664,7 +664,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- IN COMMAND mini scroll ---------- */
-.command { height: 1350vh; position: relative; }
+.command { height: 1500vh; position: relative; }
 .command__sticky {
   position: sticky; top: 0; height: 100vh; overflow: hidden;
   background: var(--ink);
@@ -1264,3 +1264,33 @@ a { color: inherit; text-decoration: none; }
 .chat__review dl { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: 0.35rem 1rem; font-size: 0.85rem; }
 .chat__review dt { color: var(--cream-dim); }
 .chat__review dd { overflow-wrap: anywhere; }
+
+/* ============ Equity Uprise: the fellowship terminal ============ */
+.term { --tg: #7ce38b; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+.term .chat__msg--q { background: #05070a; border-color: rgba(124, 227, 139, 0.25); color: var(--tg); }
+.term .chat__msg--q .chat__group { color: var(--ruby-hot); }
+.term .chat__msg--q::before { content: "> "; color: var(--ruby-hot); }
+.term .chat__msg--a { background: #101d13; border: 1px solid rgba(124, 227, 139, 0.35); color: #d9ffe0; }
+.term .chat__chip { border-color: rgba(124, 227, 139, 0.35); color: var(--tg); font-family: inherit; }
+.term .chat__chip.is-picked, .term .chat__chip:hover { border-color: var(--tg); }
+.term .chat__chip.is-picked { background: rgba(124, 227, 139, 0.16); color: #d9ffe0; }
+.term .chat__free input, .term .chat__free textarea {
+  background: #05070a; border-color: rgba(124, 227, 139, 0.3); color: var(--tg);
+  font-family: inherit; caret-color: var(--tg);
+}
+.term .chat__review { background: #05070a; border-color: rgba(124, 227, 139, 0.25); color: var(--tg); }
+.manifesto {
+  max-width: 46rem; margin: 0 auto;
+  padding: clamp(7rem, 12vw, 9rem) 1.2rem 0;
+}
+.manifesto__title { font-family: var(--display); font-size: clamp(2.6rem, 9vw, 5rem); text-transform: uppercase; line-height: 0.95; }
+.manifesto__title em { font-style: normal; color: var(--ruby-hot); }
+.manifesto p { margin-top: 1.1rem; color: var(--cream-dim); font-size: 1rem; line-height: 1.65; }
+.manifesto p strong { color: var(--cream); }
+.manifesto__rule { margin-top: 2rem; border: 0; border-top: 1px dashed rgba(124, 227, 139, 0.35); }
+.manifesto__boot {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: #7ce38b; font-size: 0.8rem; letter-spacing: 0.06em;
+  margin-top: 1.6rem;
+}
+.manifesto__boot::after { content: "▮"; animation: loadFlash 1s steps(2) infinite; }

@@ -108,6 +108,7 @@
     vaunt: createSequence("cmdCanvas4", null),
     whip: createSequence("cmdCanvas6", null),
     citations: createSequence("cmdCanvas7", null),
+    church: createSequence("cmdCanvas9", null),
     bussalick: createSequence("cmdCanvas8", null),
   };
 
@@ -266,7 +267,7 @@
           ["designer", "designer"],
         ]);
         loadNear("#work", [
-          ["uprise", "uprise"], ["citations", "citations"], ["prim3", "prim3"],
+          ["uprise", "uprise"], ["church", "church"], ["citations", "citations"], ["prim3", "prim3"],
           ["study", "study"], ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
           ["bussalick", "bussalick"],
           ["whip", m.whip ? "whip" : "street"],
@@ -432,6 +433,7 @@
     // Event Production scrubs only the booth half, Policy Change only the slam
     { seq: "uprise", f0: 0, f1: 0.4975, speed: 1 },
     { seq: "uprise", f0: 0.5025, f1: 1, speed: 1 },
+    { seq: "church", f0: 0, f1: 1, speed: 1 },     // the Fellowship: the community at the church
     { seq: "citations", f0: 0, f1: 1, speed: 1 },  // the citations on the podium, empty church
     { seq: "prim3", f0: 0, f1: 1, speed: 1 },
     { seq: "study", f0: 0, f1: 1, speed: 1 },
@@ -441,9 +443,9 @@
     { seq: "whip", f0: 0, f1: 1, speed: 1 },         // Whip Equipped mini-series
   ];
   // six scenes, three PROJECTS: the counter and numbering track projects
-  var cmdProjects = [1, 1, 1, 2, 2, 3, 3, 4, 4];
+  var cmdProjects = [1, 1, 1, 1, 2, 2, 3, 3, 4, 4];
   var cmdProjectCount = 4;
-  var cmdSceneTracks = ["environmental-injustice", "environmental-injustice", "environmental-injustice", "gotwifi", "gotwifi", "vaunt", "vaunt", "dealerplates", "dealerplates"];
+  var cmdSceneTracks = ["environmental-injustice", "environmental-injustice", "environmental-injustice", "environmental-injustice", "gotwifi", "gotwifi", "vaunt", "vaunt", "dealerplates", "dealerplates"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades
