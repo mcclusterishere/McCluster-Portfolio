@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>List Your Space — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="index.html#book">Lock In</a>
+    </nav>
+  </header>
+  <main>
+    <section class="songhero">
+      <p class="kicker kicker--center">McCluster Service Network</p>
+      <h1 class="songhero__title">List Your<br>Space</h1>
+      <p class="songhero__sub">Studios · live rooms · stages — verified partners, booked through one network</p>
+      <div class="songhero__meta">
+        <span>Photo &amp; video studios</span>
+        <span>Recording rooms</span>
+        <span class="is-key">Event spaces</span>
+      </div>
+      <div class="finale__actions" style="margin-top: 2.4rem">
+        <a class="btn btn--ruby" data-cta="list-space-email" href="mailto:matthew@mccluster.org?subject=List%20My%20Space%20%E2%80%94%20McCluster%20Service%20Network">Reach out to list your space</a>
+      </div>
+      <p class="songhero__hint">The full partner application is being built — reach out and get verified early.</p>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      document.querySelectorAll("a[data-cta]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "list-your-space" });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
