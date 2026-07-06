@@ -34,7 +34,7 @@
   --ruby: #c1121f;
   --ruby-hot: #e5383b;
   --cream: #f4efe6;
-  --cream-dim: rgba(244, 239, 230, 0.55);
+  --cream-dim: rgba(244, 239, 230, 0.78);
   --display: "Anton", Impact, "Arial Narrow", sans-serif;
   --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
 }
@@ -55,9 +55,11 @@ body {
   background: var(--ink);
   color: var(--cream);
   font-family: var(--body);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection { background: var(--ruby); color: var(--cream); }
@@ -2505,3 +2507,57 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .chat__michint { font-size: 0.82rem; color: var(--cream-dim); margin: 0.5rem 0 0; transition: color 0.3s; }
 .chat__michint b { color: var(--cream); }
 .chat__michint.is-flash { color: var(--ruby-hot); animation: reelPulse 0.5s ease-in-out 2; }
+
+/* ============================================================
+   SENIOR-READABLE SUBTEXT — bigger, thicker, higher contrast.
+   The description/subtext was reading too thin and small.
+   ============================================================ */
+small { font-size: 1rem; font-weight: 500; }
+.bexp__card small, .ecocard__text p, .brandhi__card p, .hire__stat small,
+.hire__pkg li, .hire__faq p, .command__pitch, .offer__terms li, .offer__note,
+.offer__who span, .iprec__k, .chat__michint, .bexp__panel p, .site-foot__note,
+.work__answer, .ecoseg__blurb, .hire__faq summary, .brandfacts dt,
+.songblock__tag, .offer__spotsnum {
+  font-size: 1.14rem; font-weight: 500; line-height: 1.62;
+}
+.bio__body, .brandbody__summary, .songhero__sub { font-weight: 500; }
+.bexp__card small, .ecocard__text p, .brandhi__card p, .hire__pkg li {
+  color: var(--cream-dim);
+}
+
+/* ============================================================
+   POLISH — custom cursor, film-cut transitions, finish
+   ============================================================ */
+/* --- custom cursor (desktop pointer only; js/polish.js drives it) --- */
+.has-cursor, .has-cursor * { cursor: none !important; }
+.has-cursor input, .has-cursor textarea, .has-cursor [contenteditable="true"] { cursor: text !important; }
+.cur-ring, .cur-dot {
+  position: fixed; top: 0; left: 0; z-index: 99999; pointer-events: none;
+  border-radius: 50%; mix-blend-mode: difference; will-change: transform;
+}
+.cur-ring {
+  width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1.5px solid #fff;
+  transition: width .25s cubic-bezier(.2,.8,.2,1), height .25s cubic-bezier(.2,.8,.2,1),
+    margin .25s cubic-bezier(.2,.8,.2,1), background .25s, opacity .3s;
+}
+.cur-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #fff; transition: opacity .3s; }
+.cur-hot .cur-ring { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: rgba(255,255,255,0.14); }
+.cur-down .cur-ring { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+.cur-gone .cur-ring, .cur-gone .cur-dot { opacity: 0; }
+
+/* --- film-cut page transition veil --- */
+.pt-veil {
+  position: fixed; inset: 0; z-index: 99998; background: var(--ink);
+  transform: translateY(100%); pointer-events: none;
+}
+html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubic-bezier(.7,0,.3,1); }
+
+/* --- styled scrollbar --- */
+* { scrollbar-width: thin; scrollbar-color: var(--ruby) transparent; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--ruby), var(--ruby-hot)); border-radius: 11px; border: 3px solid var(--ink); }
+::-webkit-scrollbar-thumb:hover { background: var(--ruby-hot); }
+
+/* --- crisp focus ring --- */
+:focus-visible { outline: 2px solid var(--ruby-hot); outline-offset: 3px; border-radius: 3px; }
