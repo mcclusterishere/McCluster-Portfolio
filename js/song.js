@@ -22,9 +22,9 @@
   /* ---------- page loader: percentage + a genre animation per label ---------- */
   var pre = (function () {
     var map = {
-      "environmental-injustice": { logo: "assets/img/equity-uprise-logo.png", cls: "spre--uprise" },
+      "environmental-injustice": { logo: "assets/img/equity-uprise-logo.webp", cls: "spre--uprise" },
       "vaunt": { logo: "assets/img/vaunt-logo.jpeg", cls: "spre--vaunt" },
-      "dealerplates": { logo: "assets/img/we-logo.png", cls: "spre--we" },
+      "dealerplates": { logo: "assets/img/we-logo.webp", cls: "spre--we" },
       "antisocial": { logo: "assets/img/m-mark.png", cls: "spre--antisocial" },
       "whodidtheshoot": { logo: "assets/img/m-mark.png", cls: "spre--wdts" },
       "gotwifi": { logo: "assets/img/m-mark.png", cls: "spre--wifi" },
@@ -128,11 +128,15 @@
         if (!m[name]) { canvas.style.display = "none"; return; }
         var s = makeSeq(canvas, name);
         if (!gated) {
-          // the opening film loads eagerly and drives the loader
+          // the opening film loads eagerly and drives the loader; the page
+          // opens once the first stretch is in — the rest streams behind it
+          // (the scrub engine holds the newest loaded frame if outrun)
           gated = true;
-          loadSeq(s, m[name].count, function (p) {
-            pre.set(p);
-            if (p >= 1) pre.finish();
+          var gate = Math.min(48, m[name].count);
+          loadSeq(s, m[name].count, function () {
+            var gp = Math.min(1, (s.loadedMax + 1) / gate);
+            pre.set(gp);
+            if (gp >= 1) pre.finish();
           });
         } else {
           // every other film waits until the scroll gets near its block,

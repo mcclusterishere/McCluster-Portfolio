@@ -208,10 +208,18 @@
   fetch("assets/frames/manifest.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error("no manifest"); return r.json(); })
     .then(function (m) {
-      loadSequence(sequences.hero, "hero", m.hero.count, function (p) {
-        var pct = p * 100;
+      // the site opens once the first stretch of the orbit is in — the rest
+      // of the film streams behind the scroll (the scrub engine holds the
+      // newest loaded frame if the visitor outruns the stream)
+      var heroGate = Math.min(48, m.hero.count);
+      var opened = false;
+      loadSequence(sequences.hero, "hero", m.hero.count, function () {
+        var gp = Math.min(1, (sequences.hero.loadedMax + 1) / heroGate);
+        var pct = gp * 100;
         if (pct > shown.v) { shown.v = pct * 0.99; setCount(shown.v); }
-      }).then(function () {
+        if (!opened && gp >= 1) { opened = true; openSite(); }
+      });
+      function openSite() {
         finishPreloader();
         // Each section's films load only when the scroll gets within ~2
         // screens of it, so opening the page never downloads the whole site.
@@ -241,7 +249,7 @@
           ["whip", m.whip ? "whip" : "street"],
         ]);
         ScrollTrigger.refresh();
-      });
+      }
     })
     .catch(function () {
       // no frames committed — fall back to raw videos everywhere
@@ -646,8 +654,9 @@
       });
     });
 
-    toggle.addEventListener("click", function () {
-      soundOn = !soundOn;
+    function setSound(on) {
+      if (on === soundOn) return;
+      soundOn = on;
       toggle.classList.toggle("is-on", soundOn);
       toggle.setAttribute("aria-pressed", String(soundOn));
       track("sound_toggle", { on: soundOn, page: "home" });
@@ -676,6 +685,26 @@
           if (a) gsap.to(a, { volume: 0, duration: 0.5, overwrite: "auto", onComplete: function () { a.pause(); } });
         });
       }
+    }
+
+    var userMuted = false;
+    toggle.addEventListener("click", function () {
+      if (soundOn) userMuted = true; // an explicit mute wins over auto-arm
+      setSound(!soundOn);
+    });
+
+    // The album arms itself on the visitor's first real gesture — browsers
+    // refuse audio before one, which is why nothing plays "automatically"
+    // until then. On touch screens the first scroll-touch counts; on desktop
+    // the first click or keypress does. An explicit mute stays muted.
+    ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
+      window.addEventListener(ev, function (e) {
+        if (soundOn || userMuted) return;
+        if (!Object.keys(avail).length) return; // tracks not known yet
+        // the toggle click arms through its own handler
+        if (e.target && e.target.closest && e.target.closest("#soundToggle")) return;
+        setSound(true);
+      }, { passive: true });
     });
   })();
 
