@@ -219,6 +219,66 @@
     var audio = new Audio(window.SONG.audio);
     audio.loop = true;
     var playing = false;
+
+    /* ---------- karaoke: bars with data-t time codes ride the track ----------
+       While the song plays, the page scrolls itself — each bar lights up on
+       its cue and the films scrub along in time. A wheel or touch hands
+       control back to the listener for a few seconds, then the ride resumes
+       from wherever they left the scroll. */
+    var karaoke = (function () {
+      var nodes = document.querySelectorAll(".songblock__line[data-t]");
+      if (!nodes.length) return null;
+      var marks = [];
+      nodes.forEach(function (el) {
+        var block = el.closest(".songblock");
+        var lines = block.querySelectorAll(".songblock__line");
+        var idx = Array.prototype.indexOf.call(lines, el);
+        marks.push({
+          el: el,
+          t: parseFloat(el.getAttribute("data-t")),
+          block: block,
+          frac: (idx + 1) / lines.length,
+        });
+      });
+      var holdUntil = 0;
+      ["wheel", "touchstart"].forEach(function (ev) {
+        window.addEventListener(ev, function () { holdUntil = Date.now() + 4000; }, { passive: true });
+      });
+      var lit = null;
+      var pos = null; // our own smoothed scroll position while driving
+      function landing(m) {
+        // land the block's scrub just past where this bar reveals
+        // (bars stagger in across the first ~60% of a block's travel)
+        var span = m.block.offsetHeight - window.innerHeight;
+        return m.block.offsetTop + span * Math.min(1, m.frac * 0.6 + 0.08);
+      }
+      return function (t) {
+        var i = -1;
+        for (var j = 0; j < marks.length; j++) {
+          if (t >= marks[j].t - 0.1) i = j; else break;
+        }
+        if (i < 0) return;
+        var m = marks[i];
+        if (lit !== m.el) {
+          if (lit) lit.classList.remove("is-now");
+          m.el.classList.add("is-now");
+          lit = m.el;
+        }
+        if (Date.now() < holdUntil) { pos = null; return; } // listener has the wheel
+        var n = marks[i + 1];
+        var a = landing(m);
+        var b = n ? landing(n) : a;
+        var f = n ? Math.max(0, Math.min(1, (t - m.t) / (n.t - m.t))) : 0;
+        var wanted = a + (b - a) * f;
+        if (pos === null) pos = window.scrollY; // re-base, then glide
+        pos += (wanted - pos) * 0.06;
+        lenis.scrollTo(pos, { immediate: true });
+      };
+    })();
+    if (karaoke) {
+      gsap.ticker.add(function () { if (playing && !audio.paused) karaoke(audio.currentTime); });
+      window.__MCC_KARAOKE = karaoke; // verification hook
+    }
     playBtn.addEventListener("click", function () {
       playing = !playing;
       if (playing) {
