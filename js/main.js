@@ -328,6 +328,7 @@
   (function () {
     var loPanels = gsap.utils.toArray("#loadout .command__panel");
     var loCount = document.getElementById("loCount");
+    var loOffer = document.getElementById("loOffer");
     var current = 0;
     var parLoCanvas = parCanvas("keynote");
     var parLoPanels = PAR.attach(document.querySelector("#loadout .command__panels"), { depth: -7 });
@@ -339,6 +340,9 @@
       loPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
       loCount.textContent = "0" + (active + 1) + " / 03";
       current = active;
+      // once the 360 pan is done — the visitor has seen all three corners —
+      // the offer pops up in the same box: "want your own page like this?"
+      if (loOffer) loOffer.classList.toggle("is-shown", p >= 0.9);
       // the pan comes alive at the end of each corner's band
       var s = PAR.ramp(clamp01(p * 3 - active));
       PAR.set(parLoCanvas, s);
