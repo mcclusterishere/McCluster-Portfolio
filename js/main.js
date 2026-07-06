@@ -705,25 +705,18 @@
       });
     }
 
-    var userMuted = false;
-    toggle.addEventListener("click", function () {
-      if (soundOn) userMuted = true; // an explicit mute wins over auto-arm
-      setSound(!soundOn);
-    });
+    // Sound is strictly opt-in: nothing plays until the visitor hits the
+    // toggle. While sound is on, later gestures keep retrying any element
+    // the unlock burst dropped (iOS can reject one of several simultaneous
+    // play() calls) and restart the current track if its crossfade play()
+    // was refused off-gesture — this keeps every track, Dealer Plates
+    // included, crossfading reliably on iPad.
+    toggle.addEventListener("click", function () { setSound(!soundOn); });
 
-    // The album arms itself on the visitor's first real gesture — browsers
-    // refuse audio before one. On touch screens the first scroll-touch
-    // counts; on desktop the first click or keypress does. Later gestures
-    // keep retrying any element the first unlock burst dropped (iOS can
-    // reject one of several simultaneous play() calls), and restart the
-    // current track if its crossfade play() was refused off-gesture.
     ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
       window.addEventListener(ev, function (e) {
-        if (userMuted) return;
-        if (!Object.keys(avail).length) return; // tracks not known yet
-        // the toggle click arms through its own handler
+        if (!soundOn) return;
         if (e.target && e.target.closest && e.target.closest("#soundToggle")) return;
-        if (!soundOn) { setSound(true); return; }
         var cur = tracks[currentTrack];
         var wasPaused = cur && avail[currentTrack] && cur.paused;
         unlockAll();
