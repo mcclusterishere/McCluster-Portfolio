@@ -2485,3 +2485,15 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .hud__reel, .hud__reel .hud__arrow { animation: none; color: var(--ruby-hot); }
 }
+
+/* ---- IP page: the ownership record ---- */
+.iprec { display: flex; flex-direction: column; border: 1px solid rgba(244, 239, 230, 0.1); border-radius: 12px; overflow: hidden; }
+.iprec__row {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 0.9rem 1.2rem; border-bottom: 1px solid rgba(244, 239, 230, 0.07);
+  background: var(--ink-2);
+}
+.iprec__row:last-child { border-bottom: 0; }
+.iprec__k { color: var(--cream); font-size: 0.95rem; }
+.iprec__v { color: var(--cream-dim); font-family: var(--display); letter-spacing: 0.06em; font-size: 1.05rem; white-space: nowrap; }
+.iprec__v--live { color: var(--ruby-hot); }
