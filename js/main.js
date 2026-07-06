@@ -747,22 +747,27 @@
     loadedMax: function (k) { return sequences[k || "hero"].loadedMax; },
   };
 
-  /* ---------------- subscribe (Square recurring link) ---------------- */
+  /* ---------------- Square gates: subscribe + paid inquiry call ---------------- */
   (function () {
-    var btn = document.getElementById("subscribeBtn");
-    if (!btn) return;
-    var sub = window.PAYMENTS && window.PAYMENTS.subscribe;
-    if (sub && sub.link) {
-      btn.href = sub.link;
-      btn.target = "_blank";
-      btn.rel = "noopener";
-    } else {
-      btn.classList.add("is-pending");
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        btn.textContent = "Subscriptions open soon";
-      });
+    function wire(id, entry, pendingText) {
+      var btn = document.getElementById(id);
+      if (!btn) return;
+      if (entry && entry.link) {
+        btn.href = entry.link;
+        btn.target = "_blank";
+        btn.rel = "noopener";
+      } else {
+        btn.classList.add("is-pending");
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          btn.textContent = pendingText;
+        });
+      }
     }
+    var pay = window.PAYMENTS || {};
+    wire("subscribeBtn", pay.subscribe, "Subscriptions open soon");
+    wire("bookCallBtn", pay.bookcall, "Booking opens soon");
+    wire("bookCallStat", pay.bookcall, "Booking opens soon");
   })();
 
   /* ---------------- anchor links through Lenis ---------------- */

@@ -41,4 +41,11 @@ window.PAYMENTS = {
     title: "Subscribe",
     link: "",
   },
+  // Square Appointments booking page for the paid inquiry call:
+  // Dashboard → Appointments → create a paid "Inquiry Call" service with
+  // prepayment required, then paste the online booking URL here.
+  "bookcall": {
+    title: "Book a Paid Call",
+    link: "",
+  },
 };
