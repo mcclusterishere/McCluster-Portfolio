@@ -168,28 +168,6 @@
       ]
     },
     {
-      "slug": "fireside",
-      "segment": "owned",
-      "name": "Fireside Thrift Shop",
-      "tagline": "Where it started — marketing director at fourteen.",
-      "logo": "assets/img/m-mark.png",
-      "video": "",
-      "poster": "",
-      "summary": "Fireside Thrift Shop is the origin of everything that followed — the first venture, run by the family homeschool network that took the store over. At fourteen, Matthew served as its marketing director: build the platform, tell the story, move the product. The same through-line that runs the whole ecosystem today.",
-      "facts": [
-        { "label": "Era", "value": "The first role · Age 14" },
-        { "label": "Model", "value": "Family homeschool network" },
-        { "label": "Lesson", "value": "Retail · Merchandising · Promotion" }
-      ],
-      "highlights": [
-        { "title": "The first platform", "body": "A real storefront, marketed by a fourteen-year-old learning the trade from the ground up." },
-        { "title": "The through-line", "body": "Build the platform, tell the story, move the product — the pattern behind every brand since." }
-      ],
-      "links": [
-        { "label": "The origin on the record", "href": "role.html?role=fireside", "cta": "brand-fireside-role" }
-      ]
-    },
-    {
       "slug": "zakir",
       "segment": "vendors",
       "name": "Zakir",
