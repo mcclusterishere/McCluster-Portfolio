@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>The Registry Walkthrough — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="verify.html">Apply for the badge</a>
+      <a class="head-cta" href="identifiers.html">The identifiers</a>
+    </nav>
+  </header>
+  <main>
+    <section class="verify">
+      <p class="kicker">Buyers only · Do not share this link</p>
+      <h1 class="section-title">The Registry<br>Walkthrough</h1>
+      <p class="songhero__sub" style="margin-top:1rem; text-align:left">
+        You bought the map — here it is. Work top to bottom: the order matters, because
+        the business identifiers unlock the music and government ones. Every link below is
+        the official registry, not a middleman. Budget a week of calendar time; the actual
+        clicking is an afternoon. Get stuck anywhere and email
+        <a href="mailto:matthew@mccluster.org" style="color:var(--ruby-hot); border-bottom:1px solid var(--ruby)">matthew@mccluster.org</a>
+        — the walkthrough includes one follow-up.
+      </p>
+      <div class="idcards" id="steps" style="grid-template-columns: 1fr;"></div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var IDS = window.MCC_IDENTIFIERS;
+      // the order of operations + the real-world steps for each stop
+      var PLAYBOOK = [
+        { id: "ein", step: "START HERE. Free, ~15 minutes, instant number. Use the IRS online assistant (weekday daytime hours only), answer as the responsible party, and screenshot the confirmation letter (CP 575) — half the registries below ask for it." },
+        { id: "state-filing", step: "Register the entity with your Secretary of State (CT: business.ct.gov, one sitting). LLC or nonprofit corporation both work — your filing number and good-standing status come from here, and the ALEI rides along automatically in CT." },
+        { id: "alei", step: "Nothing to apply for in CT — it's derived from your state record (US-CT.BER:yourfiling). Copy it from your business record page once the state filing posts." },
+        { id: "charity", step: "Nonprofits only: register with your state's charity regulator BEFORE soliciting donations (CT: Dept. of Consumer Protection, ~$50/yr). You'll need the EIN, your officers list, and your IRS determination letter if you have one." },
+        { id: "isrc-prefix", step: "Buy your registrant prefix at usisrc.org ($95, one time, instant). Register as the rights-owner entity, not yourself. From then on you mint your own recording codes for free — never pay a distributor for ISRCs again." },
+        { id: "sx-rights", step: "Create the SoundExchange account as a RIGHTS OWNER (free). You'll need the EIN, banking for royalty deposits, and your recordings list with ISRCs. Takes days to approve — start it the same week as the prefix." },
+        { id: "sx-performer", step: "Separate registration, same site, as a FEATURED ARTIST (free). Yes, you need both if you own and perform your catalog — they're two different halves of every royalty." },
+        { id: "dpid", step: "Apply at dpid.ddex.net (free implementation licence). Use the org's legal name and the EIN-anchored details; the confirmation email carries your PA-DPIDA code. Distributors take you seriously with this on file." },
+        { id: "isni", step: "Request via an ISNI registration agency (isni.org lists them; some charge ~$25). Register the org and yourself separately, and link your existing credits so the record consolidates instead of splitting." },
+        { id: "ueid", step: "Free at sam.gov — never pay a third party. You'll need the EIN, state filing, and physical address; validation can take a couple of weeks. This is the door to grants and federal work." },
+        { id: "cage", step: "Assigned automatically during SAM registration for US entities (request NCAGE via the NATO portal if you're outside the US). Once it posts, you're procurement-visible." },
+        { id: "orcid", step: "Free, five minutes, orcid.org. Add your works, affiliations, and links immediately — an empty ORCID reads worse than none." },
+        { id: "ssrn", step: "Free author account at ssrn.com. Post a working paper — even a well-argued policy memo — and your author ID goes live with something on it." },
+        { id: "insurance", step: "Call two local commercial agents and one online carrier (Next, Hiscox, Thimble) for general liability quotes — venues typically need $1M/occurrence. Ask for a COI naming the network when you apply for the badge." },
+      ];
+      var wrap = document.getElementById("steps");
+      PLAYBOOK.forEach(function (s, i) {
+        var d = IDS[s.id];
+        var el = document.createElement("article");
+        el.className = "idcard";
+        el.innerHTML =
+          "<h3>" + String(i + 1).padStart(2, "0") + " · " + d.name + "</h3>" +
+          '<div class="idcard__long">' + d.long + "</div>" +
+          "<p>" + s.step + "</p>" +
+          '<div class="idcard__meta">' +
+          (d.format ? "Format: <code>" + d.format + "</code><br>" : "") +
+          "Official registry: " + (d.url ? '<a href="' + d.url + '" target="_blank" rel="noopener">' + d.url + "</a>" : d.issuer) +
+          "</div>";
+        wrap.appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -41,6 +41,12 @@ window.PAYMENTS = {
     title: "Subscribe",
     link: "",
   },
+  // The $20 identifier walkthrough (Square payment link). After purchase,
+  // send buyers the unlisted walkthrough page.
+  "idguide": {
+    title: "Identifier Walkthrough",
+    link: "",
+  },
   // Square Appointments booking page for the paid inquiry call:
   // Dashboard → Appointments → create a paid "Inquiry Call" service with
   // prepayment required, then paste the online booking URL here.

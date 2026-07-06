@@ -24,7 +24,9 @@
       <p class="songhero__sub" style="margin-top:1rem; text-align:left">
         Every M-Verified badge is backed by public registry identifiers — the same system
         McCluster Corp holds itself. Here is what each one means, who issues it, and why
-        the network checks it. When you're ready:
+        the network checks it. Want yours? The <strong style="color:var(--cream)">$20 guided
+        walkthrough</strong> maps the entire process — every registry, every step, every link —
+        so you get set up right the first time. When you're ready:
         <a href="verify.html" style="color:var(--ruby-hot); border-bottom:1px solid var(--ruby)">apply for your badge →</a>
       </p>
 
@@ -40,6 +42,7 @@
     <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/entities.js?v=__STAMP__"></script>
   <script>
     (function () {
@@ -58,6 +61,24 @@
         legend.appendChild(el);
       });
 
+      // "get yours" is a service, not a giveaway: $20 buys the guided
+      // walkthrough that maps the whole registry process, links included
+      function wireGetYours(root) {
+        var pay = window.PAYMENTS && window.PAYMENTS.idguide;
+        root.querySelectorAll("[data-idguide]").forEach(function (a) {
+          if (pay && pay.link) {
+            a.href = pay.link; a.target = "_blank"; a.rel = "noopener";
+          } else {
+            a.href = "mailto:matthew@mccluster.org?subject=" +
+              encodeURIComponent("Identifier Walkthrough ($20)") +
+              "&body=" + encodeURIComponent("I want the guided walkthrough to get my identifiers set up.");
+          }
+          a.addEventListener("click", function () {
+            if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: a.getAttribute("data-cta"), page: "identifiers" });
+          });
+        });
+      }
+
       var cards = document.getElementById("idCards");
       Object.keys(IDS).forEach(function (key) {
         var d = IDS[key];
@@ -73,11 +94,12 @@
           '<div class="idcard__meta">' +
           (d.format ? "Format: <code>" + d.format + "</code><br>" : "") +
           "Issued by " + d.issuer +
-          (d.url ? ' — <a href="' + d.url + '" target="_blank" rel="noopener">get yours →</a>' : "") +
+          ' — <a class="idcard__get" href="#" data-idguide data-cta="idguide-' + key + '">get yours →</a>' +
           (requiredBy.length ? "<br>Required for: " + requiredBy.join(", ") : "") +
           "</div>";
         cards.appendChild(el);
       });
+      wireGetYours(cards);
     })();
   </script>
 </body>
