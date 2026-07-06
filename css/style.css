@@ -2561,3 +2561,19 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 
 /* --- crisp focus ring --- */
 :focus-visible { outline: 2px solid var(--ruby-hot); outline-offset: 3px; border-radius: 3px; }
+
+/* ---- mobile: stop the command-section header and cards from stacking ---- */
+@media (max-width: 640px) {
+  .command__head { top: clamp(3.6rem, 8.5vh, 4.8rem); max-width: 92vw; }
+  .command__head .section-title { font-size: clamp(1.7rem, 7.5vw, 2.3rem); }
+  .command__head .work__answer { display: none; }
+  .command__head .kicker { margin-bottom: 0.4rem; }
+  .command__panels { bottom: clamp(3.2rem, 8vh, 4.4rem); min-height: 0; }
+  .command__title { font-size: clamp(1.45rem, 6.2vw, 1.95rem); margin-top: 0.35rem; }
+  .command__pitch { font-size: 0.92rem; line-height: 1.42; margin-top: 0.45rem; }
+  .command__meta { gap: 0.55rem; }
+  .command__tag { font-size: 0.58rem; }
+  .eu-ctas { gap: 0.38rem; margin-top: 0.6rem; }
+  .eu-ctas a { font-size: 0.66rem; padding: 0.3em 0.65em; }
+  .mbadge-set { margin-top: 0.55rem; }
+}
