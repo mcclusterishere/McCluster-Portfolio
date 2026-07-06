@@ -41,10 +41,11 @@
           <span class="sound-toggle__dot"></span> <span>Play the evidence — "Money or the Power"</span>
         </button>
         <p class="dkt__credit">
-          <b>The 516R Release.</b> The record gets a record: each piece of evidence in this room is
-          scored by another artist's song. Track 01 — Old Jay ft. Ocho, "Money or the Power"
-          (prod. Pax) — rides the whole file. Press play and the room parses itself, exhibit by
-          exhibit, in time with the music. More artists claim their evidence as the release rolls out.
+          <b>The 516R Release &#183; 4 tracks.</b> The record gets a record: each piece of evidence in
+          this room is scored by another artist's song. Track 01 — Old Jay ft. Ocho, "Money or the
+          Power" (prod. Pax) — rides the whole file, every bar time-coded to the parse. Press play
+          and the room reads itself, exhibit by exhibit, in time with the music. Tracks 02–04 claim
+          their evidence as the release rolls out.
         </p>
       </div>
     </section>
@@ -386,6 +387,20 @@
          the scroll back for a few seconds, then the parse resumes. */
       var RELEASE_DEFAULT = 'Old Jay ft. Ocho — "Money or the Power" (prod. Pax)';
       var RELEASE = {}; // future: category -> another artist's record on the 516R Release
+      // the bars, time-coded (masters live in data/lyrics/) — the HUD sings along
+      var LYRICS = [];
+      fetch("data/lyrics/money-or-the-power.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { LYRICS = d.lines || []; })
+        .catch(function () {});
+      function lyricAt(t) {
+        var cur = "";
+        for (var i = 0; i < LYRICS.length; i++) {
+          if (t >= LYRICS[i].t - 0.1) cur = LYRICS[i].text; else break;
+        }
+        return cur;
+      }
+      window.__DKT_LYRIC = lyricAt; // verification hook
       var audio = new Audio("assets/audio/money-or-the-power.mp3");
       audio.preload = "none";
       var playBtn = document.getElementById("dktPlay");
@@ -410,14 +425,17 @@
         var i = Math.floor(f * groups.length);
         var seg = f * groups.length - i;
         var g = groups[i];
+        var cat = g.querySelector("summary").textContent.trim().replace(/\s+\d+$/, "");
         if (g !== lastGroup) {
           if (lastGroup) lastGroup.classList.remove("is-parsing");
           g.classList.add("is-parsing");
           g.open = true;
           lastGroup = g;
-          var cat = g.querySelector("summary").textContent.trim().replace(/\s+\d+$/, "");
-          hud.innerHTML = "<b>PARSING:</b> " + esc(cat) + "<span>scored by " + esc(RELEASE[cat] || RELEASE_DEFAULT) + "</span>";
         }
+        var bar = lyricAt(audio.currentTime);
+        hud.innerHTML = "<b>PARSING:</b> " + esc(cat) +
+          (bar ? '<i class="dkt__bar">&ldquo;' + esc(bar) + "&rdquo;</i>" : "") +
+          "<span>scored by " + esc(RELEASE[cat] || RELEASE_DEFAULT) + " &#183; Track 01 of 04</span>";
         if (Date.now() < holdUntil) return;
         var top = g.getBoundingClientRect().top + window.scrollY;
         var span = Math.max(0, g.offsetHeight - innerHeight * 0.6);

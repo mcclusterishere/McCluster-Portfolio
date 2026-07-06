@@ -1782,6 +1782,12 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .dkt__now[hidden] { display: none; }
 .dkt__now b { color: var(--ruby-hot); }
 .dkt__now span { display: block; margin-top: 0.25rem; color: var(--cream-dim); font-size: 0.62rem; }
+.dkt__bar {
+  display: block; margin-top: 0.4rem;
+  font-family: var(--display); font-style: normal;
+  font-size: 0.95rem; letter-spacing: 0.05em; line-height: 1.25;
+  color: var(--cream); text-transform: none;
+}
 .dkt__group.is-parsing { border-color: var(--ruby); box-shadow: 0 0 24px rgba(193, 18, 31, 0.3); }
 .dkt__group.is-parsing summary { color: var(--ruby-hot); }
 .dkt__group.is-parsing summary::after {
