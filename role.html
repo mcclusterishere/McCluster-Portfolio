@@ -49,7 +49,15 @@
               roles.map(function (r2) {
                 return '<a class="bexp__card" href="role.html?role=' + encodeURIComponent(r2.slug) + '">' +
                   "<span><b>" + esc(r2.title) + "</b><small>" + esc(r2.dates + " · " + r2.org) + "</small></span></a>";
-              }).join("") + "</div>";
+              }).join("") + "</div>" +
+              ((data.certifications && data.certifications.length)
+                ? "<h2 class='bexp__section' style='margin:2.2rem 0 0.5rem'>Certifications &amp; Recognition</h2>" +
+                  '<div class="bexp__legend">' + data.certifications.map(function (c) {
+                    return c.url
+                      ? '<a class="bexp__card" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span><b>' + esc(c.label) + "</b><small>View credential &#8599;</small></span></a>"
+                      : '<div class="bexp__card"><span><b>' + esc(c.label) + "</b></span></div>";
+                  }).join("") + "</div>"
+                : "");
             track("role_index_view", {});
             return;
           }
