@@ -654,6 +654,7 @@
     var unlocked = {};
 
     function fadeTo(name) {
+      var previous = currentTrack;
       if (soundOn && name !== currentTrack) {
         var prev = tracks[currentTrack];
         if (prev && !prev.paused) track("song_stop", { song: currentTrack, page: "home", at_seconds: Math.round(prev.currentTime) });
@@ -665,14 +666,25 @@
         var a = tracks[k];
         if (!a) return;
         if (k === name && avail[k]) {
+          // the target: unmute, play, fade up
+          a.muted = false;
           var pr = a.play();
           if (pr && pr.then) pr.then(function () { unlocked[k] = true; }).catch(function () {});
           gsap.to(a, { volume: 0.85, duration: 1.2, ease: "power1.out", overwrite: "auto" });
-        } else {
+        } else if (k === previous && k !== name) {
+          // only the track we're leaving gets a smooth crossfade out
           gsap.to(a, {
             volume: 0, duration: 0.9, ease: "power1.out", overwrite: "auto",
-            onComplete: function () { a.pause(); },
+            onComplete: function () { a.pause(); a.muted = true; },
           });
+        } else {
+          // every other track is silenced HARD and immediately — no tween to
+          // outrun, no lingering playback. This is what stops a distant track
+          // (e.g. Dealer Plates) bleeding into the current section on a fast scroll.
+          gsap.killTweensOf(a);
+          a.pause();
+          a.muted = true;
+          a.volume = 0;
         }
       });
     }
@@ -724,7 +736,10 @@
         // audibly right away — never gate the fade on the play() promise,
         // which only settles once media data actually arrives
         var isCurrent = k === currentTrack && soundOn;
-        if (!isCurrent) a.volume = 0;
+        // non-current unlock elements are both muted AND volume-0 so the burst
+        // that primes them for iOS can never be heard; the target unmutes below
+        if (!isCurrent) { a.muted = true; a.volume = 0; }
+        else a.muted = false;
         var pr = a.play();
         if (isCurrent) gsap.to(a, { volume: 0.85, duration: 1.2, ease: "power1.out", overwrite: "auto" });
         if (pr && pr.then) {

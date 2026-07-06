@@ -2500,3 +2500,8 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .iprec__group { font-family: var(--display); font-weight: 400; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 1.6rem 0 0.7rem; color: var(--ruby-hot); }
 .iprec__group:first-of-type { margin-top: 0.4rem; }
 .iprec + .iprec__group { margin-top: 1.8rem; }
+
+/* interview: the talk-your-answer hint */
+.chat__michint { font-size: 0.82rem; color: var(--cream-dim); margin: 0.5rem 0 0; transition: color 0.3s; }
+.chat__michint b { color: var(--cream); }
+.chat__michint.is-flash { color: var(--ruby-hot); animation: reelPulse 0.5s ease-in-out 2; }

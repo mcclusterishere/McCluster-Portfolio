@@ -164,25 +164,53 @@
           var f = document.createElement(q.type === "long" ? "textarea" : "input");
           if (q.type === "long") f.rows = 3;
           f.placeholder = q.ph || "Type or talk it out…";
+          // dictation-friendly: the phone keyboard's mic types straight in here
+          f.setAttribute("autocapitalize", "sentences");
+          f.setAttribute("autocorrect", "on");
+          f.setAttribute("spellcheck", "true");
+          f.setAttribute("enterkeyhint", "next");
           row.appendChild(f);
-          var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-          if (SR) {
-            var mic = document.createElement("button");
-            mic.type = "button"; mic.className = "chat__mic"; mic.textContent = "🎙";
-            mic.addEventListener("click", function () {
-              var r = new SR();
-              r.lang = "en-US"; r.interimResults = false;
-              mic.classList.add("is-live");
-              r.onresult = function (ev) { f.value = (f.value ? f.value + " " : "") + ev.results[0][0].transcript; };
-              r.onend = function () { mic.classList.remove("is-live"); f.focus(); };
-              r.start();
-            });
-            row.appendChild(mic);
+
+          var hint = document.createElement("p");
+          hint.className = "chat__michint";
+          function flashHint() {
+            hint.classList.add("is-flash");
+            setTimeout(function () { hint.classList.remove("is-flash"); }, 3200);
           }
+
+          // The mic ALWAYS shows now. Where the browser has speech recognition
+          // (desktop Chrome/Safari, Android) it transcribes in-page. Where it
+          // doesn't (iPhone/iPad Safari never ships it), tapping opens the
+          // keyboard so the visitor can use the keyboard's own dictation mic.
+          var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+          var mic = document.createElement("button");
+          mic.type = "button"; mic.className = "chat__mic"; mic.textContent = "🎙";
+          mic.setAttribute("aria-label", "Talk your answer");
+          mic.addEventListener("click", function () {
+            if (SR) {
+              var r = null;
+              try { r = new SR(); } catch (e) { r = null; }
+              if (r) {
+                r.lang = "en-US"; r.interimResults = false;
+                mic.classList.add("is-live");
+                r.onresult = function (ev) { f.value = (f.value ? f.value + " " : "") + ev.results[0][0].transcript; };
+                r.onerror = function () { mic.classList.remove("is-live"); f.focus(); flashHint(); };
+                r.onend = function () { mic.classList.remove("is-live"); f.focus(); };
+                try { r.start(); return; } catch (e) { mic.classList.remove("is-live"); }
+              }
+            }
+            // no in-browser speech engine → bring up the keyboard + its mic
+            f.focus();
+            flashHint();
+          });
+          row.appendChild(mic);
+
           var go2 = document.createElement("button");
           go2.className = "btn btn--ruby"; go2.type = "button"; go2.textContent = "Next →";
           go2.addEventListener("click", function () { submit(f.value.trim()); });
           input.appendChild(row);
+          hint.innerHTML = "Prefer to talk? Tap <b>🎙</b> — or the <b>microphone key</b> on your keyboard — and just speak.";
+          input.appendChild(hint);
           input.appendChild(go2);
           f.addEventListener("keydown", function (ev) {
             if (ev.key === "Enter" && q.type !== "long") { ev.preventDefault(); submit(f.value.trim()); }
