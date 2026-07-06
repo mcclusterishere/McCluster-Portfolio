@@ -2497,3 +2497,6 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .iprec__k { color: var(--cream); font-size: 0.95rem; }
 .iprec__v { color: var(--cream-dim); font-family: var(--display); letter-spacing: 0.06em; font-size: 1.05rem; white-space: nowrap; }
 .iprec__v--live { color: var(--ruby-hot); }
+.iprec__group { font-family: var(--display); font-weight: 400; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.04em; margin: 1.6rem 0 0.7rem; color: var(--ruby-hot); }
+.iprec__group:first-of-type { margin-top: 0.4rem; }
+.iprec + .iprec__group { margin-top: 1.8rem; }
