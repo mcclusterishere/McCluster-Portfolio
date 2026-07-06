@@ -2621,3 +2621,22 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 }
 @media (max-width: 560px) { .float-pause__label { display: none; } .float-pause { padding: 0; width: 3.3rem; justify-content: center; } }
 @media (prefers-reduced-motion: reduce) { .float-pause { animation: none; } }
+
+/* ---- song gates pulse so people notice and tap "listen" ---- */
+.song-gate { animation: gatePulse 2.6s ease-in-out infinite; }
+@keyframes gatePulse {
+  0%, 100% { border-color: rgba(244, 239, 230, 0.22); box-shadow: 0 0 0 rgba(229, 56, 59, 0); color: var(--cream-dim); }
+  50% { border-color: var(--ruby-hot); box-shadow: 0 0 18px rgba(229, 56, 59, 0.45); color: var(--cream); }
+}
+
+/* ---- floating pause: spin + flash while the visitor scrolls ---- */
+.float-pause--spin { animation: floatPauseFlash 0.42s steps(2, end) infinite; }
+.float-pause--spin svg { animation: floatPauseSpin 0.6s linear infinite; }
+@keyframes floatPauseSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes floatPauseFlash {
+  0%, 100% { background: var(--ruby); box-shadow: 0 10px 34px rgba(0,0,0,0.5), 0 0 0 rgba(229,56,59,0); }
+  50% { background: var(--ruby-hot); box-shadow: 0 10px 34px rgba(0,0,0,0.5), 0 0 30px rgba(229,56,59,0.95); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .song-gate, .float-pause--spin, .float-pause--spin svg { animation: none; }
+}

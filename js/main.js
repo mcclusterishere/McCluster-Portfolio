@@ -542,7 +542,7 @@
       if (pay && gate) {
         gate.href = pay.page;
         document.getElementById("gateCmdLabel").textContent =
-          'Now playing: "' + pay.title + '" — own it';
+          'Now playing: "' + pay.title + '" · listen';
       }
     }
   }
@@ -765,10 +765,22 @@
       setSound(!soundOn);
     });
     // the floating pause stops the music wherever the visitor is on the page
-    if (floatPause) floatPause.addEventListener("click", function () {
-      track("float_pause", { page: "home" });
-      setSound(false);
-    });
+    if (floatPause) {
+      floatPause.addEventListener("click", function () {
+        track("float_pause", { page: "home" });
+        setSound(false);
+      });
+      // flash + spin the button on every scroll, so it stays impossible to miss
+      var spinTimer = null;
+      function spinOnScroll() {
+        if (floatPause.hidden) return;
+        floatPause.classList.add("float-pause--spin");
+        clearTimeout(spinTimer);
+        spinTimer = setTimeout(function () { floatPause.classList.remove("float-pause--spin"); }, 400);
+      }
+      lenis.on("scroll", spinOnScroll);
+      window.addEventListener("scroll", spinOnScroll, { passive: true });
+    }
 
     ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
       window.addEventListener(ev, function (e) {
