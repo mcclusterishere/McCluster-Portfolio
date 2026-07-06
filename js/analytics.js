@@ -14,7 +14,7 @@
    file — endpoints only, keys live server-side.
    ============================================================ */
 
-window.ANALYTICS_ID = "";
+window.ANALYTICS_ID = "G-38KDY01Z2V";
 window.TRACK_ENDPOINT = "";
 
 window.MCC_TRACK = (function () {
@@ -32,7 +32,7 @@ window.MCC_TRACK = (function () {
     gtag = function () { window.dataLayer.push(arguments); };
     window.gtag = gtag;
     gtag("js", new Date());
-    gtag("config", gaId);
+    gtag("config", gaId, { anonymize_ip: true });
   }
 
   return function (name, params) {

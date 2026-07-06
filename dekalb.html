@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeKalb County — Community Intake · Equity Uprise</title>
+  <meta name="description" content="Community intake for DeKalb County, powered by Equity Uprise. Bring your needs, concerns, and ideas to the table — consent-first, never sold, never shared.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage hirepage dekalbpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="equity-uprise.html">← About Equity Uprise</a>
+      <a class="head-cta" href="#intake">Start Intake</a>
+    </nav>
+  </header>
+  <main>
+    <section class="bexp">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> DeKalb County · powered by Equity Uprise</p>
+      <div class="bexp__hero">
+        <div>
+          <p class="bexp__section">Community intake — DeKalb County, GA</p>
+          <h1>Bring It<br>to the Table.</h1>
+        </div>
+      </div>
+      <p class="songhero__sub" style="text-align:left;max-width:60ch;margin-top:1rem">
+        A direct line for DeKalb County residents and organizations to bring needs, concerns, and
+        ideas into the <a href="equity-uprise.html" style="color:var(--ruby-hot)">Equity Uprise</a>
+        process. No red tape — tell us what's going on and how you'd like to be part of it. Your
+        information is <strong style="color:var(--cream)">never sold and never shared</strong>; it's
+        used only to follow up on what you send.
+      </p>
+
+      <!-- INTAKE FORM -->
+      <form class="vform" id="intakeForm" novalidate style="margin-top:1.8rem" id="intake">
+        <fieldset>
+          <legend>Who you are</legend>
+          <div class="vform__row">
+            <label for="i-name">Full name <span class="req">*</span></label>
+            <input id="i-name" name="Name" required autocomplete="name" placeholder="First Last">
+          </div>
+          <div class="vform__row">
+            <label for="i-email">Email <span class="req">*</span></label>
+            <input id="i-email" name="Email" type="email" required autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="vform__row">
+            <label for="i-phone">Phone <span style="color:var(--cream-dim)">(optional)</span></label>
+            <input id="i-phone" name="Phone" type="tel" autocomplete="tel" placeholder="(555) 555-0100">
+          </div>
+          <div class="vform__row">
+            <label for="i-area">Area of DeKalb County <span class="req">*</span></label>
+            <input id="i-area" name="Area/ZIP" required placeholder="City or ZIP">
+          </div>
+          <div class="vform__row">
+            <label for="i-org">Organization <span style="color:var(--cream-dim)">(if any)</span></label>
+            <input id="i-org" name="Organization" placeholder="Group, business, or agency">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>What you're bringing</legend>
+          <div class="vform__row">
+            <label for="i-topic">What's this about? <span class="req">*</span></label>
+            <select id="i-topic" name="Topic" required>
+              <option value="">Choose one…</option>
+              <option>A community need or concern</option>
+              <option>An idea or proposal</option>
+              <option>I want to volunteer / get involved</option>
+              <option>Partnership or sponsorship</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="vform__row">
+            <label for="i-detail">Tell us more <span class="req">*</span></label>
+            <textarea id="i-detail" name="Details" required rows="5" placeholder="What's going on, what you'd like to see happen, and how you'd like to be part of it."></textarea>
+          </div>
+          <div class="vform__row">
+            <label for="i-help">How would you like to help? <span style="color:var(--cream-dim)">(optional)</span></label>
+            <input id="i-help" name="How they can help" placeholder="Time, skills, space, funding, spreading the word…">
+          </div>
+        </fieldset>
+
+        <label class="intake__consent">
+          <input type="checkbox" id="i-consent" required>
+          <span>I agree to be contacted about this submission. I understand my information is used only
+            to follow up and is <strong>never sold or shared</strong>.</span>
+        </label>
+
+        <div class="finale__actions" style="margin-top:1.4rem">
+          <button class="btn btn--ruby" type="submit" id="intakeSubmit" data-cta="dekalb-intake-submit">Submit intake</button>
+          <a class="btn btn--ghost" href="equity-uprise.html" data-cta="dekalb-learn">What is Equity Uprise?</a>
+        </div>
+        <p class="offer__note" id="intakeMsg">A copy goes straight to the Equity Uprise team. Expect a reply by email.</p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Equity Uprise · McCluster Corp · Community intake for DeKalb County, GA.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var INTAKE_ENDPOINT = ""; // Apps Script /exec URL when the Sheet backend is live
+
+      var form = document.getElementById("intakeForm");
+      var msg = document.getElementById("intakeMsg");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        if (!document.getElementById("i-consent").checked) { msg.textContent = "Please check the consent box so we can follow up."; return; }
+
+        var lines = ["DEKALB COUNTY — COMMUNITY INTAKE", ""];
+        var payload = { _form: "dekalb-intake", county: "DeKalb, GA" };
+        form.querySelectorAll("input, textarea, select").forEach(function (f) {
+          if (f.type === "checkbox" || !f.value) return;
+          lines.push((f.name || f.id) + ": " + f.value);
+          payload[f.name || f.id] = f.value;
+        });
+        track("dekalb_intake_submit", { page: "dekalb" });
+
+        if (INTAKE_ENDPOINT) {
+          fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
+            .then(function () { msg.textContent = "Submitted — thank you. We'll be in touch by email."; form.reset(); })
+            .catch(function () { msg.textContent = "Couldn't submit just now — please email matthew@mccluster.org."; });
+        } else {
+          location.href = "mailto:matthew@mccluster.org?subject=" +
+            encodeURIComponent("DeKalb County — Community Intake") +
+            "&body=" + encodeURIComponent(lines.join("\n"));
+        }
+      });
+
+      document.querySelectorAll("a[data-cta]").forEach(function (a) {
+        a.addEventListener("click", function () { track("cta_click", { label: a.getAttribute("data-cta"), page: "dekalb" }); });
+      });
+      track("dekalb_view", {});
+    })();
+  </script>
+</body>
+</html>
