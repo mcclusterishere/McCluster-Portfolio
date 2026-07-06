@@ -2577,3 +2577,25 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
   .eu-ctas a { font-size: 0.66rem; padding: 0.3em 0.65em; }
   .mbadge-set { margin-top: 0.55rem; }
 }
+
+/* ---- per-panel psychology-marker chips (song lyric pages) ---- */
+.songblock__markers { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.psy-chip {
+  -webkit-appearance: none; appearance: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 3rem; height: 3rem; padding: 0; border-radius: 50%;
+  background: rgba(229, 56, 59, 0.12); border: 1.5px solid rgba(229, 56, 59, 0.5);
+  color: var(--cream); cursor: pointer; position: relative; line-height: 0;
+  animation: chipFlash 1.9s ease-in-out infinite;
+  transition: background 0.25s, transform 0.2s;
+}
+.psy-chip::after { content: none !important; }
+.psy-chip .psy__ic { width: 1.55em; height: 1.55em; margin: 0; animation: none; }
+.psy-chip:hover, .psy-chip:focus-visible { background: rgba(229, 56, 59, 0.3); transform: translateY(-2px); }
+.psy-chip:nth-child(2) { animation-delay: 0.5s; }
+.psy-chip:nth-child(3) { animation-delay: 1s; }
+@keyframes chipFlash {
+  0%, 100% { box-shadow: 0 0 0 rgba(229, 56, 59, 0); border-color: rgba(229, 56, 59, 0.35); }
+  50% { box-shadow: 0 0 18px rgba(229, 56, 59, 0.6); border-color: var(--ruby-hot); }
+}
+@media (prefers-reduced-motion: reduce) { .psy-chip { animation: none; } }
