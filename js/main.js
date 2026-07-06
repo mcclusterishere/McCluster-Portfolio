@@ -616,6 +616,7 @@
      user gesture that unlocks audio. Crossfades as sections change. */
   (function () {
     var toggle = document.getElementById("soundToggle");
+    var floatPause = document.getElementById("floatPause");
     var tracks = {
       "runway": document.getElementById("track-runway"),
       "antisocial": document.getElementById("track-antisocial"),
@@ -708,6 +709,8 @@
       soundOn = on;
       toggle.classList.toggle("is-on", soundOn);
       toggle.setAttribute("aria-pressed", String(soundOn));
+      // the floating pause only shows while music is actually playing
+      if (floatPause) floatPause.hidden = !soundOn;
       track("sound_toggle", { on: soundOn, page: "home" });
       if (soundOn) track("song_start", { song: currentTrack, page: "home" });
       else {
@@ -760,6 +763,11 @@
     toggle.addEventListener("click", function () {
       toggle.classList.add("was-used"); // the come-tap-me beacon retires
       setSound(!soundOn);
+    });
+    // the floating pause stops the music wherever the visitor is on the page
+    if (floatPause) floatPause.addEventListener("click", function () {
+      track("float_pause", { page: "home" });
+      setSound(false);
     });
 
     ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
