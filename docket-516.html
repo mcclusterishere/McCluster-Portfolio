@@ -38,15 +38,14 @@
       </div>
       <div class="dkt__release">
         <button class="sound-toggle songhero__play" id="dktPlay" type="button">
-          <span class="sound-toggle__dot"></span> <span>Play the evidence — "Money or the Power"</span>
+          <span class="sound-toggle__dot"></span> <span>Play the evidence — the 516R Release</span>
         </button>
         <p class="dkt__credit">
           <b>The 516R Release &#183; 4 tracks.</b> The record gets a record: each piece of evidence in
-          this room is scored by another artist's song. Track 01 — Old Jay ft. Ocho, "Money or the
-          Power" (prod. Pax) — rides the whole file, every bar time-coded to the parse. Press play
-          and the room reads itself, exhibit by exhibit, in time with the music.
-          Track 02 is claimed: "Environmental Injustice / Brave" — McCluster ft. Ocho &amp; Angel,
-          bars already time-coded, master on the way. Tracks 03–04 claim their evidence as the
+          this room is scored by an artist's song, every bar time-coded to the parse. Press play and
+          the release rides the whole file — Track 01, Old Jay ft. Ocho's "Money or the Power"
+          (prod. Pax), opens the record; Track 02, McCluster ft. Ocho &amp; Angel's "Environmental
+          Injustice / Brave," carries it home. Tracks 03&#8211;04 claim their evidence as the
           release rolls out.
         </p>
       </div>
@@ -412,23 +411,31 @@
          the page glides through it, and the HUD names what's being
          parsed and whose record is scoring it. A wheel or touch hands
          the scroll back for a few seconds, then the parse resumes. */
-      var RELEASE_DEFAULT = 'Old Jay ft. Ocho — "Money or the Power" (prod. Pax)';
-      var RELEASE = {}; // future: category -> another artist's record on the 516R Release
-      // the bars, time-coded (masters live in data/lyrics/) — the HUD sings along
-      var LYRICS = [];
-      fetch("data/lyrics/money-or-the-power.json", { cache: "no-cache" })
-        .then(function (r) { return r.json(); })
-        .then(function (d) { LYRICS = d.lines || []; })
-        .catch(function () {});
+      /* the 516R Release playlist — each track carries its own time-coded
+         bars (masters in data/lyrics/); the parse rides the whole release */
+      var TRACKS = [
+        { id: "money-or-the-power", src: "assets/audio/money-or-the-power.mp3", lyrics: "data/lyrics/money-or-the-power.json", credit: 'Old Jay ft. Ocho — "Money or the Power" (prod. Pax)', dur: 216, lines: [] },
+        { id: "environmental-injustice-brave", src: "assets/audio/environmental-injustice-brave.mp3", lyrics: "data/lyrics/environmental-injustice-brave.json", credit: 'McCluster ft. Ocho &amp; Angel — "Environmental Injustice / Brave"', dur: 254, lines: [] },
+      ];
+      var curTrack = 0;
+      TRACKS.forEach(function (t) {
+        fetch(t.lyrics, { cache: "no-cache" })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { t.lines = d.lines || []; if (d.duration) t.dur = d.duration; })
+          .catch(function () {});
+      });
       function lyricAt(t) {
+        var lines = TRACKS[curTrack].lines;
         var cur = "";
-        for (var i = 0; i < LYRICS.length; i++) {
-          if (t >= LYRICS[i].t - 0.1) cur = LYRICS[i].text; else break;
+        for (var i = 0; i < lines.length; i++) {
+          if (t >= lines[i].t - 0.1) cur = lines[i].text; else break;
         }
         return cur;
       }
-      window.__DKT_LYRIC = lyricAt; // verification hook
-      var audio = new Audio("assets/audio/money-or-the-power.mp3");
+      window.__DKT_LYRIC = lyricAt; // verification hooks
+      window.__DKT_TRACKS = TRACKS;
+      window.__DKT_SETTRACK = function (i) { curTrack = i; };
+      var audio = new Audio(TRACKS[0].src);
       audio.preload = "none";
       var playBtn = document.getElementById("dktPlay");
       var playing = false;
@@ -448,7 +455,10 @@
         if (audio.paused || !audio.duration) return;
         var cats = CAT_ORDER.filter(function (c) { return FILES.some(function (x) { return x.category === c; }); });
         if (!cats.length) return;
-        var f = Math.min(0.9999, audio.currentTime / audio.duration);
+        // progress across the whole release, not just the playing track
+        var total = 0, before = 0;
+        TRACKS.forEach(function (t, ti) { total += t.dur; if (ti < curTrack) before += t.dur; });
+        var f = Math.min(0.9999, (before + audio.currentTime) / total);
         var i = Math.floor(f * cats.length);
         var seg = f * cats.length - i;
         var cat = cats[i];
@@ -463,7 +473,7 @@
         var bar = lyricAt(audio.currentTime);
         hud.innerHTML = "<b>PARSING:</b> " + esc(cat) +
           (bar ? '<i class="dkt__bar">&ldquo;' + esc(bar) + "&rdquo;</i>" : "") +
-          "<span>scored by " + esc(RELEASE[cat] || RELEASE_DEFAULT) + " &#183; Track 01 of 04</span>";
+          "<span>scored by " + TRACKS[curTrack].credit + " &#183; Track 0" + (curTrack + 1) + " of 04</span>";
         if (Date.now() < holdUntil) return;
         var el = document.getElementById("library");
         var top = el.getBoundingClientRect().top + window.scrollY;
@@ -479,6 +489,7 @@
         drawTabs();
         render();
       }
+      var IDLE_LABEL = "Play the evidence — the 516R Release";
       playBtn.addEventListener("click", function () {
         playing = !playing;
         playBtn.classList.toggle("is-on", playing);
@@ -486,23 +497,33 @@
           audio.play().catch(function () {});
           hud.hidden = false;
           pos = null;
-          track("docket_song_play", { document_id: "money-or-the-power", category: "516R Release" });
+          track("docket_song_play", { document_id: TRACKS[curTrack].id, category: "516R Release" });
           ride();
         } else {
           audio.pause();
           hud.hidden = true;
           parseOff();
-          track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release" });
+          track("docket_song_stop", { document_id: TRACKS[curTrack].id, category: "516R Release" });
         }
-        playBtn.querySelector("span + span").textContent = playing ? "Pause the parse" : 'Play the evidence — "Money or the Power"';
+        playBtn.querySelector("span + span").textContent = playing ? "Pause the parse" : IDLE_LABEL;
       });
       audio.addEventListener("ended", function () {
+        track("docket_song_stop", { document_id: TRACKS[curTrack].id, category: "516R Release", filter_value: "ended" });
+        if (playing && curTrack < TRACKS.length - 1) {
+          // the release keeps rolling: next record takes the file
+          curTrack++;
+          audio.src = TRACKS[curTrack].src;
+          audio.play().catch(function () {});
+          track("docket_song_play", { document_id: TRACKS[curTrack].id, category: "516R Release" });
+          return;
+        }
         playing = false;
+        curTrack = 0;
+        audio.src = TRACKS[0].src;
         playBtn.classList.remove("is-on");
-        playBtn.querySelector("span + span").textContent = 'Play the evidence — "Money or the Power"';
+        playBtn.querySelector("span + span").textContent = IDLE_LABEL;
         hud.hidden = true;
         parseOff();
-        track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release", filter_value: "ended" });
       });
     })();
   </script>
