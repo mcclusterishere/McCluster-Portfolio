@@ -1,0 +1,280 @@
+{
+  "song_id": "please_set_me_free",
+  "title": "Please Set Me Free",
+  "framing": "Consent-first civic reflection poll. Every answer is a policy sentiment / lived-experience signal — never a diagnosis, never a label.",
+  "consent": {
+    "intro": "This interactive song poll asks optional questions about policy, community, identity, and lived experience. Your answers help build aggregate civic research for Equity Uprise. You can skip any question.",
+    "choices": [
+      { "id": "research", "label": "I agree to save my poll answers for aggregate research." },
+      { "id": "demographics", "label": "I agree to answer optional demographic questions." },
+      { "id": "contact", "label": "I agree to be contacted about policy/fellowship/civic work." }
+    ],
+    "after_answer": "Your answer is saved as an issue-signal, not a diagnosis."
+  },
+  "issues": ["housing_displacement", "criminal_legal", "immigration", "utility_infrastructure", "economic_access", "political_trust", "community_wellbeing", "creative_civic_action"],
+  "markers": [
+    { "marker_id": "freedom_pressure", "label": "Freedom Pressure", "icon": "boundary_signal", "definition": "A felt demand for relief from systems, rules, costs, or conditions that limit life choices." },
+    { "marker_id": "policy_burden", "label": "Policy Burden", "icon": "performance_pressure", "definition": "The feeling that laws, rules, or public systems make everyday life harder." },
+    { "marker_id": "corporate_extraction", "label": "Corporate Extraction", "icon": "persuasion_frame", "definition": "The perception that companies profit from communities without giving fair value back." },
+    { "marker_id": "civic_distrust", "label": "Civic Distrust", "icon": "trust_deficit", "definition": "Low confidence that government or elected officials care, listen, or act fairly." },
+    { "marker_id": "creative_resistance", "label": "Creative Resistance", "icon": "attention_to_action", "definition": "Turning frustration into writing, music, organizing, or public testimony." },
+    { "marker_id": "place_attachment", "label": "Place Attachment", "icon": "validation_hunger", "definition": "The emotional and identity connection people have to a city, neighborhood, or home." },
+    { "marker_id": "capital_exclusion", "label": "Capital Exclusion", "icon": "belief_filter", "definition": "Barriers to loans, grants, credit, or investment." },
+    { "marker_id": "displacement_pressure", "label": "Displacement Pressure", "icon": "avoidance", "definition": "The pressure people feel when redevelopment, rents, taxes, or costs threaten their ability to stay." },
+    { "marker_id": "utility_siting_concern", "label": "Utility Siting Concern", "icon": "ambition_drive", "definition": "Concern about power lines, monopoles, energy projects, infrastructure siting, and community consent." },
+    { "marker_id": "criminal_legal_trap", "label": "Criminal-Legal Trap", "icon": "procrastination_loop", "definition": "The feeling that laws, probation, fees, or enforcement cycles keep people under control instead of helping them rebuild." },
+    { "marker_id": "political_stress", "label": "Political Stress", "icon": "social_fatigue", "definition": "Emotional strain connected to public rhetoric, elections, policy, or government action." },
+    { "marker_id": "immigration_fear", "label": "Immigration Fear", "icon": "isolation_pattern", "definition": "Fear, disruption, or family stress connected to immigration enforcement or anti-immigration rhetoric." },
+    { "marker_id": "civic_efficacy", "label": "Civic Efficacy", "icon": "metacognition", "definition": "Belief that action — voting, protest, art, organizing, legal work — can actually change conditions." },
+    { "marker_id": "hope_delay", "label": "Hope Delay", "icon": "scarcity_pressure", "definition": "The feeling that justice may come too late or not within one's lifetime." }
+  ],
+  "modules": [
+    { "id": "m1", "name": "Freedom pressure, policy burden, corporate greed" },
+    { "id": "m2", "name": "Change, hardship, blame, and creative resistance" },
+    { "id": "m3", "name": "Inner cities, belonging, loans, gentrification" },
+    { "id": "m4", "name": "Lifestyle, utility infrastructure, war language, government trust" },
+    { "id": "m5", "name": "Immigration, freedom, hope, no way out" },
+    { "id": "m6", "name": "Final hook — the re-check" }
+  ],
+  "units": [
+    { "lyric_id": "psmf_001", "module": "m1", "priority": true, "bar": "Please set me free,", "marker_id": "freedom_pressure", "meaning": "This line is about more than escape. It asks what kind of system, rule, cost, or condition is making life feel restricted.", "question": "When you hear \"set me free,\" what kind of freedom comes to mind first?", "field": "freedom_type", "options": [
+      { "value": "economic", "label": "Economic", "issues": { "economic_access": 3 } },
+      { "value": "legal", "label": "Legal", "issues": { "criminal_legal": 3 } },
+      { "value": "emotional", "label": "Emotional", "issues": { "community_wellbeing": 3 } },
+      { "value": "political", "label": "Political", "issues": { "political_trust": 3 } },
+      { "value": "safety", "label": "Safety", "issues": { "community_wellbeing": 2, "criminal_legal": 1 } },
+      { "value": "other", "label": "Other", "issues": {} }
+    ], "indexes": { "freedom_pressure_score": 3 } },
+    { "lyric_id": "psmf_002", "module": "m1", "bar": "and just let me be", "marker_id": "policy_burden", "meaning": "The ask for autonomy — room to live without interference.", "question": "Do you feel institutions give people like you enough room to live without interference?", "field": "institutional_interference", "scale": { "min": 1, "max": 5, "low": "Plenty of room", "high": "No room at all" }, "indexes": { "policy_burden_score": 4 }, "issues_on_high": { "political_trust": 2 } },
+    { "lyric_id": "psmf_003", "module": "m1", "priority": true, "bar": "Cause all these policies and all this corporate greed", "marker_id": "corporate_extraction", "meaning": "Government rules and private-sector extraction, named in one breath.", "question": "Which feels heavier in your life right now?", "field": "burden_source", "options": [
+      { "value": "government", "label": "Government policy", "issues": { "political_trust": 3 } },
+      { "value": "corporations", "label": "Corporate power", "issues": { "economic_access": 3 } },
+      { "value": "both", "label": "Both", "issues": { "political_trust": 2, "economic_access": 2 } },
+      { "value": "neither", "label": "Neither", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": {} }
+    ], "indexes": { "policy_burden_score": 2, "corporate_accountability_score": 2 } },
+    { "lyric_id": "psmf_004", "module": "m1", "bar": "It really gets to me", "marker_id": "political_stress", "meaning": "The emotional weight of public conditions.", "question": "How much do public issues affect your mood or stress level?", "field": "policy_stress_level", "scale": { "min": 0, "max": 4, "low": "Not at all", "high": "Heavily" }, "indexes": { "political_stress_score": 5 }, "support_on_high": true },
+    { "lyric_id": "psmf_005", "module": "m1", "bar": "Please set me free… (again)", "marker_id": "freedom_pressure", "meaning": "Second exposure to the hook — how does it land now?", "question": "After hearing it again, does the line feel personal, political, spiritual, or artistic?", "field": "hook_interpretation", "options": [
+      { "value": "personal", "label": "Personal", "issues": { "community_wellbeing": 1 } },
+      { "value": "political", "label": "Political", "issues": { "political_trust": 1 } },
+      { "value": "spiritual", "label": "Spiritual", "issues": {} },
+      { "value": "artistic", "label": "Artistic", "issues": { "creative_civic_action": 1 } },
+      { "value": "all", "label": "All of it", "issues": { "community_wellbeing": 1, "political_trust": 1, "creative_civic_action": 1 } }
+    ] },
+    { "lyric_id": "psmf_006", "module": "m1", "priority": true, "bar": "…policies and corporate greed (again)", "marker_id": "policy_burden", "meaning": "Which arena does this song live in for you?", "question": "Which policy area do you connect to this most?", "field": "top_policy_area", "options": [
+      { "value": "housing", "label": "Housing", "issues": { "housing_displacement": 3 } },
+      { "value": "policing", "label": "Policing", "issues": { "criminal_legal": 3 } },
+      { "value": "immigration", "label": "Immigration", "issues": { "immigration": 3 } },
+      { "value": "utilities", "label": "Utilities", "issues": { "utility_infrastructure": 3 } },
+      { "value": "jobs", "label": "Jobs", "issues": { "economic_access": 3 } },
+      { "value": "healthcare", "label": "Healthcare", "issues": { "community_wellbeing": 3 } },
+      { "value": "education", "label": "Education", "issues": { "community_wellbeing": 2 } },
+      { "value": "other", "label": "Other", "issues": {} }
+    ], "store_as_pre": "pre_issue_priority" },
+    { "lyric_id": "psmf_007", "module": "m1", "bar": "It really gets to me, (again)", "marker_id": "political_stress", "meaning": "Intensity after repetition.", "question": "Would you say these issues affect you rarely, sometimes, often, or constantly?", "field": "issue_intrusion_frequency", "options": [
+      { "value": "0", "label": "Rarely", "issues": {} },
+      { "value": "1", "label": "Sometimes", "issues": { "community_wellbeing": 1 } },
+      { "value": "2", "label": "Often", "issues": { "community_wellbeing": 2 } },
+      { "value": "3", "label": "Constantly", "issues": { "community_wellbeing": 3 } }
+    ], "indexes": { "policy_burden_score": 3 } },
+    { "lyric_id": "psmf_008", "module": "m1", "sensitive": true, "bar": "Cause my people in chains", "marker_id": "freedom_pressure", "meaning": "Collective constraint — the community carried in two words.", "question": "Optional: when you hear \"my people,\" what community are you thinking about?", "field": "community_identity_optional", "requires_consent": "demographics", "options": [
+      { "value": "black", "label": "Black" }, { "value": "latino", "label": "Latino" }, { "value": "immigrant", "label": "Immigrant" }, { "value": "working_class", "label": "Working class" }, { "value": "city", "label": "My city" }, { "value": "family", "label": "My family" }, { "value": "faith", "label": "My faith" }, { "value": "self", "label": "Self-described…", "open": true }, { "value": "skip", "label": "Skip" }
+    ] },
+    { "lyric_id": "psmf_009", "module": "m2", "priority": true, "bar": "We ain't diggin' through the couch but what we seekin' is change", "marker_id": "civic_efficacy", "meaning": "Change as money and change as transformation — same word, same hunger.", "question": "What kind of change would matter most in your community?", "field": "change_priority", "options": [
+      { "value": "money", "label": "Money access", "issues": { "economic_access": 3 } },
+      { "value": "safety", "label": "Safer streets", "issues": { "community_wellbeing": 3 } },
+      { "value": "housing", "label": "Housing", "issues": { "housing_displacement": 3 } },
+      { "value": "fair_laws", "label": "Fair laws", "issues": { "criminal_legal": 3 } },
+      { "value": "jobs", "label": "Jobs", "issues": { "economic_access": 3 } },
+      { "value": "voice", "label": "Political voice", "issues": { "political_trust": 3 } },
+      { "value": "other", "label": "Other", "issues": {} }
+    ] },
+    { "lyric_id": "psmf_010", "module": "m2", "bar": "Cause we done been through hell", "marker_id": "place_attachment", "meaning": "Accumulated burden — carried collectively.", "question": "Do you feel your community has been through more than people outside it understand?", "field": "community_hardship_recognition", "options": [
+      { "value": "yes", "label": "Yes", "issues": { "community_wellbeing": 2 } },
+      { "value": "somewhat", "label": "Somewhat", "issues": { "community_wellbeing": 1 } },
+      { "value": "no", "label": "No", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": {} }
+    ] },
+    { "lyric_id": "psmf_011", "module": "m2", "bar": "And I been peepin' the flames", "marker_id": "civic_distrust", "meaning": "Seeing the crisis before anyone official names it.", "question": "Do you usually notice community problems before officials respond?", "field": "early_warning_perception", "scale": { "min": 1, "max": 5, "low": "They're on it", "high": "Always first" }, "issues_on_high": { "political_trust": 2 } },
+    { "lyric_id": "psmf_012", "module": "m2", "priority": true, "bar": "All these crooked politicians, they the people to blame", "marker_id": "civic_distrust", "meaning": "Accountability, named directly.", "question": "How much do you trust elected officials to act in your community's interest?", "field": "official_trust_score", "scale": { "min": 0, "max": 4, "low": "Not at all", "high": "Fully" }, "trust_component": true, "issues_on_low": { "political_trust": 3 } },
+    { "lyric_id": "psmf_013", "module": "m2", "bar": "So please set me free, and just let me live", "marker_id": "policy_burden", "meaning": "Survival frame — not luxury, living.", "question": "Do current policies help you live better, make life harder, or feel invisible?", "field": "policy_life_effect", "options": [
+      { "value": "helps", "label": "They help", "issues": {} },
+      { "value": "hurts", "label": "They make it harder", "issues": { "political_trust": 2 }, "index": { "policy_burden_score": 4 } },
+      { "value": "invisible", "label": "They don't see me", "issues": { "political_trust": 2 }, "index": { "policy_burden_score": 3 } },
+      { "value": "mixed", "label": "Mixed", "issues": { "political_trust": 1 } },
+      { "value": "unsure", "label": "Unsure", "issues": {} }
+    ], "trust_component": true },
+    { "lyric_id": "psmf_014", "module": "m2", "bar": "Y'all done took so much, got nothin' left to give", "marker_id": "corporate_extraction", "meaning": "Extraction until empty.", "question": "What feels most drained right now?", "field": "depletion_domain", "options": [
+      { "value": "money", "label": "Money", "issues": { "economic_access": 2 } },
+      { "value": "time", "label": "Time", "issues": {} },
+      { "value": "energy", "label": "Energy", "issues": { "community_wellbeing": 1 } },
+      { "value": "trust", "label": "Trust", "issues": { "political_trust": 2 } },
+      { "value": "hope", "label": "Hope", "issues": { "community_wellbeing": 2 } },
+      { "value": "safety", "label": "Safety", "issues": { "community_wellbeing": 2 } },
+      { "value": "none", "label": "Nothing — I'm good", "issues": {} }
+    ] },
+    { "lyric_id": "psmf_015", "module": "m2", "priority": true, "bar": "Wait I take that back, what I got left's a fist", "marker_id": "creative_resistance", "meaning": "After depletion, resistance remains.", "question": "When you feel pushed too far, what response feels most natural?", "field": "resistance_style", "options": [
+      { "value": "speak", "label": "Speak up", "issues": { "creative_civic_action": 2 } },
+      { "value": "organize", "label": "Organize", "issues": { "creative_civic_action": 3 } },
+      { "value": "withdraw", "label": "Withdraw", "issues": {} },
+      { "value": "vote", "label": "Vote", "issues": { "political_trust": 1, "creative_civic_action": 1 } },
+      { "value": "create", "label": "Create", "issues": { "creative_civic_action": 3 } },
+      { "value": "protest", "label": "Protest", "issues": { "creative_civic_action": 2 } },
+      { "value": "pray", "label": "Pray", "issues": {} },
+      { "value": "other", "label": "Other", "issues": {} }
+    ] },
+    { "lyric_id": "psmf_016", "module": "m2", "bar": "And I'ma use it to write, so just accept this gift", "marker_id": "creative_resistance", "meaning": "Anger converted into art, testimony, civic voice.", "question": "Would you use art, writing, music, or media to speak on policy issues?", "field": "creative_civic_interest", "options": [
+      { "value": "yes", "label": "Yes", "issues": { "creative_civic_action": 4 } },
+      { "value": "already", "label": "Already do", "issues": { "creative_civic_action": 5 } },
+      { "value": "maybe", "label": "Maybe", "issues": { "creative_civic_action": 2 } },
+      { "value": "no", "label": "No", "issues": {} }
+    ], "indexes": { "creative_agency_score": 4 } },
+    { "lyric_id": "psmf_017", "module": "m3", "sensitive": true, "bar": "Leave my city alone", "marker_id": "place_attachment", "meaning": "Local control. No exact addresses — a city name is enough.", "question": "Optional: what city or area are you answering from?", "field": "geo_city_optional", "open": true, "requires_consent": "demographics", "note": "City/state only — never exact location." },
+    { "lyric_id": "psmf_018", "module": "m3", "bar": "This is BPT, I call this city my home…", "marker_id": "place_attachment", "meaning": "Place as identity.", "question": "How connected do you feel to your city or neighborhood?", "field": "place_attachment", "scale": { "min": 0, "max": 4, "low": "Not at all", "high": "It's who I am" }, "indexes": { "community_attachment_score": 5 } },
+    { "lyric_id": "psmf_019", "module": "m3", "bar": "But we ain't gettin' no loans, we gotta get it alone", "marker_id": "capital_exclusion", "meaning": "Credit access, lending exclusion, self-financing.", "question": "Have you or your family ever felt blocked from loans, credit, grants, or business capital?", "field": "capital_access_barrier", "options": [
+      { "value": "yes", "label": "Yes", "issues": { "economic_access": 4 } },
+      { "value": "maybe", "label": "Maybe", "issues": { "economic_access": 2 } },
+      { "value": "no", "label": "No", "issues": {} },
+      { "value": "prefer_not", "label": "Prefer not to say", "issues": {} }
+    ], "indexes": { "economic_exclusion_score": 4 } },
+    { "lyric_id": "psmf_020", "module": "m3", "bar": "Now you movin' into town, and we ain't gettin' no say", "marker_id": "civic_distrust", "meaning": "Development without community voice.", "question": "Do residents in your area get enough say before major development happens?", "field": "development_voice_score", "scale": { "min": 0, "max": 4, "low": "No say at all", "high": "Real say" }, "trust_component": true, "issues_on_low": { "housing_displacement": 2, "political_trust": 2 } },
+    { "lyric_id": "psmf_021", "module": "m3", "priority": true, "bar": "With all this gentrification, we ain't gettin' to stay", "marker_id": "displacement_pressure", "meaning": "Displacement risk — rents, taxes, redevelopment.", "question": "Have rising rents, taxes, or redevelopment made it harder for people you know to stay?", "field": "displacement_exposure", "options": [
+      { "value": "self", "label": "Me", "issues": { "housing_displacement": 4, "economic_access": 1 } },
+      { "value": "family", "label": "My family", "issues": { "housing_displacement": 4, "economic_access": 1 } },
+      { "value": "friends", "label": "Friends", "issues": { "housing_displacement": 3 } },
+      { "value": "community", "label": "My community", "issues": { "housing_displacement": 4, "economic_access": 1 } },
+      { "value": "no", "label": "No", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": {} }
+    ], "indexes": { "displacement_pressure_score": 5 } },
+    { "lyric_id": "psmf_022", "module": "m3", "bar": "Y'all been eatin' off of us, and we ain't gettin' a plate", "marker_id": "corporate_extraction", "meaning": "Investment without benefit-sharing.", "question": "When investment comes into your community, who benefits most?", "field": "perceived_beneficiary", "options": [
+      { "value": "residents", "label": "Longtime residents", "issues": {} },
+      { "value": "newcomers", "label": "Newcomers", "issues": { "housing_displacement": 2 } },
+      { "value": "developers", "label": "Developers", "issues": { "housing_displacement": 2, "economic_access": 2 } },
+      { "value": "government", "label": "Government", "issues": { "political_trust": 2 } },
+      { "value": "mixed", "label": "Mixed", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": {} }
+    ], "indexes": { "corporate_accountability_score": 3 } },
+    { "lyric_id": "psmf_023", "module": "m3", "bar": "…policies… corporate greed… (the neighborhood weight)", "marker_id": "policy_burden", "meaning": "Which local fight should this song collect data on first?", "question": "Which local issue should this song collect data on first?", "field": "local_issue_rank_1", "options": [
+      { "value": "housing", "label": "Housing", "issues": { "housing_displacement": 2 } },
+      { "value": "lending", "label": "Lending", "issues": { "economic_access": 2 } },
+      { "value": "utilities", "label": "Utilities", "issues": { "utility_infrastructure": 2 } },
+      { "value": "policing", "label": "Policing", "issues": { "criminal_legal": 2 } },
+      { "value": "immigration", "label": "Immigration", "issues": { "immigration": 2 } },
+      { "value": "jobs", "label": "Jobs", "issues": { "economic_access": 2 } },
+      { "value": "education", "label": "Education", "issues": { "community_wellbeing": 2 } }
+    ] },
+    { "lyric_id": "psmf_024", "module": "m4", "bar": "I just wanna live life… diamond watch would be nice, but I ain't rockin' with ice", "marker_id": "freedom_pressure", "meaning": "Stability over status.", "question": "Which matters more to you right now?", "field": "life_priority", "options": [
+      { "value": "stability", "label": "Stability", "issues": { "economic_access": 1 } },
+      { "value": "status", "label": "Status", "issues": {} },
+      { "value": "safety", "label": "Safety", "issues": { "community_wellbeing": 1 } },
+      { "value": "opportunity", "label": "Opportunity", "issues": { "economic_access": 1 } },
+      { "value": "family", "label": "Family", "issues": { "community_wellbeing": 1 } },
+      { "value": "faith", "label": "Faith", "issues": {} }
+    ] },
+    { "lyric_id": "psmf_025", "module": "m4", "priority": true, "bar": "All this talk about these monopoles just isn't right…", "marker_id": "utility_siting_concern", "meaning": "The song walks straight into Docket 516 — utility siting and community consent.", "question": "Have utility poles, power lines, energy bills, or infrastructure projects affected your neighborhood?", "field": "utility_impact_exposure", "options": [
+      { "value": "yes", "label": "Yes", "issues": { "utility_infrastructure": 4 }, "route": "docket" },
+      { "value": "no", "label": "No", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": { "utility_infrastructure": 1 } }
+    ], "indexes": { "utility_siting_concern_score": 5 } },
+    { "lyric_id": "psmf_026", "module": "m4", "bar": "There's a war outside, my people under attack", "marker_id": "political_stress", "meaning": "Perceived threat, collective vulnerability.", "question": "Do you feel your community is under pressure right now?", "field": "community_threat_level", "scale": { "min": 0, "max": 4, "low": "Not really", "high": "Heavy pressure" }, "followup": { "question": "From where, mostly?", "field": "threat_source", "options": [
+      { "value": "prices", "label": "Prices", "issues": { "economic_access": 2 } },
+      { "value": "policing", "label": "Policing", "issues": { "criminal_legal": 2 } },
+      { "value": "immigration", "label": "Immigration", "issues": { "immigration": 2 } },
+      { "value": "development", "label": "Development", "issues": { "housing_displacement": 2 } },
+      { "value": "politics", "label": "Politics", "issues": { "political_trust": 2 } },
+      { "value": "utilities", "label": "Utilities", "issues": { "utility_infrastructure": 2 } }
+    ] } },
+    { "lyric_id": "psmf_027", "module": "m4", "priority": true, "sensitive": true, "bar": "The government don't care about us… y'all was settin' a trap, now we all set in a trap", "marker_id": "criminal_legal_trap", "meaning": "Where probation, fees, and enforcement cycles live in this song.", "question": "Do criminal laws, probation rules, or marijuana enforcement feel fair, unfair, or like they keep people trapped?", "field": "criminal_legal_fairness", "options": [
+      { "value": "fair", "label": "Fair", "issues": {} },
+      { "value": "unfair", "label": "Unfair", "issues": { "criminal_legal": 3, "political_trust": 1 } },
+      { "value": "keeps_people_trapped", "label": "It keeps people trapped", "issues": { "criminal_legal": 4, "political_trust": 2 }, "index": { "criminal_legal_impact_score": 4 } },
+      { "value": "mixed", "label": "Mixed", "issues": { "criminal_legal": 1 } },
+      { "value": "not_familiar", "label": "Not familiar", "issues": {} }
+    ], "sensitive_followups": [
+      { "field": "state_context", "question": "Optional: which state is your view based on?", "options": [{ "value": "GA", "label": "Georgia" }, { "value": "CT", "label": "Connecticut" }, { "value": "other", "label": "Other" }, { "value": "skip", "label": "Skip" }] },
+      { "field": "probation_experience", "question": "Optional: has probation touched your life?", "options": [{ "value": "self", "label": "Me" }, { "value": "family", "label": "Family" }, { "value": "community", "label": "Community" }, { "value": "none", "label": "No" }, { "value": "skip", "label": "Skip" }] }
+    ] },
+    { "lyric_id": "psmf_028", "module": "m4", "sensitive": true, "bar": "I don't wanna be here… I just wanna be clear", "marker_id": "political_stress", "meaning": "Political stress and emotional burden — not a diagnosis, ever.", "question": "Over the last two weeks, how often has political news or public rhetoric left you feeling down, hopeless, or emotionally drained?", "field": "political_mood_frequency", "requires_consent": "research", "options": [
+      { "value": "0", "label": "Not at all" },
+      { "value": "1", "label": "Several days" },
+      { "value": "2", "label": "More than half" },
+      { "value": "3", "label": "Nearly every day", "support": true }
+    ], "indexes": { "political_stress_score": 5 }, "never_send_to_ga4": true },
+    { "lyric_id": "psmf_029", "module": "m5", "priority": true, "sensitive": true, "bar": "All this anti-immigration, got my cousins in fear", "marker_id": "immigration_fear", "meaning": "Family impact from immigration policy and rhetoric.", "question": "Have immigration laws, enforcement, or rhetoric negatively affected you or your family?", "field": "immigration_impact", "requires_consent": "research", "options": [
+      { "value": "yes", "label": "Yes", "issues": { "immigration": 5, "community_wellbeing": 2 }, "index": { "immigration_impact_score": 5 } },
+      { "value": "no", "label": "No", "issues": {} },
+      { "value": "unsure", "label": "Unsure", "issues": { "immigration": 1 } },
+      { "value": "prefer_not", "label": "Prefer not to say", "issues": {} }
+    ], "sensitive_followups": [
+      { "field": "immigration_impact_kind", "question": "Optional: how?", "options": [{ "value": "fear", "label": "Fear" }, { "value": "separation", "label": "Family separation concern" }, { "value": "work", "label": "Work impact" }, { "value": "school", "label": "School impact" }, { "value": "healthcare", "label": "Healthcare avoidance" }, { "value": "legal_cost", "label": "Legal cost" }, { "value": "other", "label": "Other" }, { "value": "skip", "label": "Skip" }] }
+    ], "never_send_to_ga4": true },
+    { "lyric_id": "psmf_030", "module": "m5", "bar": "My fist is up in the air, cause the freedom up in the air", "marker_id": "civic_efficacy", "meaning": "Protest posture, uncertain outcome.", "question": "Do you feel protest, voting, art, or organizing can change anything?", "field": "change_method_belief", "options": [
+      { "value": "protest", "label": "Protest", "issues": { "creative_civic_action": 2 }, "efficacy": 3 },
+      { "value": "voting", "label": "Voting", "issues": { "political_trust": 1 }, "efficacy": 3 },
+      { "value": "art", "label": "Art / media", "issues": { "creative_civic_action": 3 }, "efficacy": 3 },
+      { "value": "organizing", "label": "Organizing", "issues": { "creative_civic_action": 3 }, "efficacy": 4 },
+      { "value": "legal", "label": "Legal action", "issues": { "criminal_legal": 1 }, "efficacy": 3 },
+      { "value": "none", "label": "None of it", "issues": { "political_trust": 2 }, "efficacy": 0 },
+      { "value": "unsure", "label": "Unsure", "issues": {}, "efficacy": 1 }
+    ], "indexes": { "civic_efficacy_score": 4 } },
+    { "lyric_id": "psmf_031", "module": "m5", "priority": true, "bar": "Can't wait for the day… who we kiddin', I'll be waitin' till the day that I'm gone", "marker_id": "hope_delay", "meaning": "The most valuable question in the song.", "question": "Do you feel like there is a real way out of the issues named in this song?", "field": "way_out_belief", "options": [
+      { "value": "yes", "label": "Yes", "efficacy": 4, "branch": { "question": "What is the way out?", "field": "way_out_open", "open": true } },
+      { "value": "no", "label": "No", "efficacy": 0, "branch": { "question": "What makes it feel blocked?", "field": "barrier_category", "open": true } },
+      { "value": "maybe", "label": "Maybe", "efficacy": 2, "branch": { "question": "What would need to change first?", "field": "prerequisite_change", "open": true } },
+      { "value": "not_sure", "label": "Not sure", "efficacy": 1 }
+    ], "trust_component": true },
+    { "lyric_id": "psmf_032", "module": "m6", "bar": "Please set me free… (final hook, first pass)", "marker_id": "policy_burden", "meaning": "Post-exposure re-check: did the song move you?", "question": "After hearing the full verse, which issue feels most urgent now?", "field": "post_song_issue_priority", "options": [
+      { "value": "housing", "label": "Housing", "issues": { "housing_displacement": 2 } },
+      { "value": "lending", "label": "Lending", "issues": { "economic_access": 2 } },
+      { "value": "utilities", "label": "Utilities", "issues": { "utility_infrastructure": 2 } },
+      { "value": "policing", "label": "Policing", "issues": { "criminal_legal": 2 } },
+      { "value": "immigration", "label": "Immigration", "issues": { "immigration": 2 } },
+      { "value": "jobs", "label": "Jobs", "issues": { "economic_access": 2 } },
+      { "value": "education", "label": "Education", "issues": { "community_wellbeing": 2 } }
+    ], "compare_with": "pre_issue_priority" },
+    { "lyric_id": "psmf_033", "module": "m6", "bar": "Please set me free… (final hook, second pass)", "marker_id": "political_stress", "meaning": "Resonance check.", "question": "Did this song make the issue feel more personal, more political, both, or neither?", "field": "resonance_shift", "options": [
+      { "value": "personal", "label": "More personal" }, { "value": "political", "label": "More political" }, { "value": "both", "label": "Both" }, { "value": "neither", "label": "Neither" }
+    ] },
+    { "lyric_id": "psmf_034", "module": "m6", "priority": true, "bar": "Please set me free… (final hook, third pass)", "marker_id": "civic_efficacy", "meaning": "Action readiness.", "question": "Would you take one action on this issue today?", "field": "action_readiness", "options": [
+      { "value": "yes", "label": "Yes", "efficacy": 3, "branch_actions": true },
+      { "value": "maybe", "label": "Maybe", "efficacy": 1 },
+      { "value": "no", "label": "No", "efficacy": 0 }
+    ] },
+    { "lyric_id": "psmf_035", "module": "m6", "bar": "Please set me free… (final hook, fourth pass)", "marker_id": "civic_efficacy", "meaning": "Keep your signal.", "question": "Do you want to save your answers and see your policy profile?", "field": "account_conversion_intent", "options": [
+      { "value": "yes", "label": "Yes — show my profile" }, { "value": "later", "label": "Later" }, { "value": "no", "label": "No" }
+    ] },
+    { "lyric_id": "psmf_036", "module": "m6", "bar": "So please set me free", "marker_id": "freedom_pressure", "meaning": "The closing word is yours.", "question": "In one word, what should people be set free from?", "field": "closing_word", "open": true, "sensitive": true }
+  ],
+  "demographics": {
+    "note": "Optional, multi-select, self-described — modeled on the 2024 combined race/ethnicity standard. Never required, never sent to GA4.",
+    "requires_consent": "demographics",
+    "question": "Optional: how do you describe your race and/or ethnicity? Select all that apply, or describe it your own way.",
+    "field": "race_ethnicity_multi",
+    "multi": true,
+    "options": [
+      { "value": "black", "label": "Black or African American" },
+      { "value": "hispanic_latino", "label": "Hispanic or Latino" },
+      { "value": "white", "label": "White" },
+      { "value": "asian", "label": "Asian" },
+      { "value": "aian", "label": "American Indian or Alaska Native" },
+      { "value": "mena", "label": "Middle Eastern or North African" },
+      { "value": "nhpi", "label": "Native Hawaiian or Pacific Islander" },
+      { "value": "self_described", "label": "Self-described…", "open": true },
+      { "value": "prefer_not", "label": "Prefer not to say" }
+    ],
+    "open_field": "race_ethnicity_open"
+  },
+  "routing": {
+    "housing_displacement": { "label": "housing & displacement", "cta": "Read the Docket 516 explainer — how a community fights redevelopment on the record", "href": "docket-516.html" },
+    "utility_infrastructure": { "label": "utility siting", "cta": "The monopoles have a case file — enter the Docket 516 evidence room", "href": "docket-516.html" },
+    "criminal_legal": { "label": "the criminal-legal system", "cta": "Join the policy fellowship — the criminal-legal lane needs organizers", "href": "fellowship.html" },
+    "immigration": { "label": "immigration", "cta": "Join the policy fellowship — the immigration lane needs voices", "href": "fellowship.html" },
+    "economic_access": { "label": "economic access", "cta": "Capital access is a fight — bring it to the fellowship", "href": "fellowship.html" },
+    "political_trust": { "label": "whether institutions listen and respond", "cta": "Make them listen — join the outreach work", "href": "fellowship.html" },
+    "community_wellbeing": { "label": "community wellbeing", "cta": "The movement takes care of its own — walk with Equity Uprise", "href": "fellowship.html" },
+    "creative_civic_action": { "label": "creative civic action", "cta": "Submit a civic anthem — your art belongs in the release", "href": "mailto:matthew@mccluster.org?subject=Civic%20Anthem%20Submission%20%E2%80%94%20Equity%20Uprise" }
+  },
+  "support_card": "Heavy is real. Before the politics: breathe, step outside, call somebody who knows your name. If the weight stays, 988 (call or text) is free and always on. The movement needs you whole.",
+  "ga4_safe_fields": ["song_id", "lyric_id", "marker_id", "module", "question_id"],
+  "never_to_ga4": ["answer_value", "answer_label", "free_text", "race_ethnicity_multi", "race_ethnicity_open", "immigration_impact", "political_mood_frequency", "community_identity_optional", "geo_city_optional", "state_context", "probation_experience", "closing_word", "way_out_open", "barrier_category", "prerequisite_change", "political_context_optional"]
+}

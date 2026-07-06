@@ -1750,6 +1750,43 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .pmk__consent h3 { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ruby-hot); margin-bottom: 0.5rem; }
 .pmk__consent p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; }
 
+/* ============ Please Set Me Free: the civic poll ============ */
+.poll { max-width: 52rem; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) clamp(1.2rem, 4vw, 3rem) clamp(4rem, 8vw, 6rem); }
+.poll__note { max-width: 46ch; margin: 1.4rem auto 0; color: var(--cream-dim); font-size: 0.82rem; line-height: 1.65; text-align: center; }
+.poll__module { margin-bottom: clamp(3rem, 7vw, 5rem); }
+.poll__module .songblock__tag { margin-bottom: 1.2rem; }
+.poll__bar {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(1.25rem, 3.4vw, 2.1rem);
+  text-transform: uppercase; line-height: 1.2;
+  margin-bottom: 0.9rem; cursor: pointer;
+  color: var(--cream); transition: color 0.3s, opacity 0.3s;
+}
+.poll__bar:hover { color: var(--ruby-hot); }
+.poll__bar.is-now { color: var(--ruby-hot); }
+.poll__bar.is-answered { opacity: 0.55; }
+.poll__bar.is-answered::after { content: "✓ answered"; font-family: var(--body); font-size: 0.55rem; letter-spacing: 0.2em; color: var(--ruby-hot); margin-left: 0.7em; vertical-align: middle; }
+.poll__bar.is-locked { opacity: 0.28; cursor: default; }
+.poll__bar.is-locked:hover { color: var(--cream); }
+.poll__bar.is-locked::after { content: "deep mode"; font-family: var(--body); font-size: 0.5rem; letter-spacing: 0.2em; color: var(--cream-dim); margin-left: 0.7em; vertical-align: middle; }
+.poll__ic { width: 0.8em; height: 0.8em; vertical-align: -0.08em; }
+.poll__now[hidden] { display: none; }
+.poll__now { max-width: min(22rem, calc(100vw - 1.6rem)); }
+.poll__opts { justify-content: center; }
+.poll__opts .chat__chip { font-size: 0.82rem; }
+.poll__scalekey { margin-top: 0.7rem; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); text-align: center; }
+.poll__consent { text-align: left; display: grid; gap: 0.7rem; margin-top: 1rem; }
+.poll__consent label { font-size: 0.86rem; color: var(--cream-dim); line-height: 1.5; cursor: pointer; }
+.poll__consent input { accent-color: var(--ruby); margin-right: 0.5em; }
+.poll__text {
+  width: 100%; margin-top: 0.4rem;
+  background: var(--ink-2); color: var(--cream);
+  border: 1px solid rgba(244, 239, 230, 0.25); border-radius: 10px;
+  font-family: var(--body); font-size: 0.95rem; padding: 0.7em 0.9em;
+}
+.poll__text:focus { outline: none; border-color: var(--ruby); }
+.psyoverlay__box--poll { max-width: 34rem; }
+
 /* ============ the gallery wall (Who Did The Shoot) ============ */
 .gal { padding: clamp(4rem, 8vw, 6rem) clamp(1.2rem, 4vw, 3rem); max-width: 80rem; margin: 0 auto; text-align: center; }
 .gal__sub { margin: 1rem auto 0; color: var(--cream-dim); font-size: 0.98rem; line-height: 1.65; max-width: 52ch; }

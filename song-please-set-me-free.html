@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Please Set Me Free — The Civic Poll · McCluster</title>
+  <meta name="description" content="Please Set Me Free — an interactive lyric poll. Every bar is a tappable policy question; every answer is an aggregate civic signal for Equity Uprise.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a href="docket-516.html">The Evidence Room</a>
+      <a class="head-cta" href="fellowship.html">The Fellowship</a>
+    </nav>
+  </header>
+  <main>
+    <section class="songhero">
+      <p class="kicker kicker--center"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · The Civic Poll</p>
+      <h1 class="songhero__title">Please Set<br>Me Free</h1>
+      <p class="songhero__sub">Every bar is a ballot — tap a line, answer if you want, skip if you don't</p>
+      <div class="songhero__meta">
+        <span>Written &amp; performed by McCluster</span>
+        <span class="is-key">&#8471; McCluster Corp</span>
+        <a class="songhero__cat" href="psychology-markers.html">The markers &#8594;</a>
+      </div>
+      <p class="songhero__hint" id="pollProgress">Scroll slow, homie ↓</p>
+      <div class="finale__actions" style="margin-top:1.4rem">
+        <button class="btn btn--ghost" id="pollDeep" type="button">Deep mode — unlock all 36</button>
+      </div>
+      <p class="poll__note">
+        This interactive song poll asks optional questions about policy, community, identity, and
+        lived experience. Answers build aggregate civic research for Equity Uprise — issue signals,
+        never diagnoses. You can skip any question, and nothing sensitive moves without your consent.
+      </p>
+    </section>
+
+    <section class="poll" id="pollBody"></section>
+
+    <section class="songbuy" id="pollResults" hidden></section>
+
+    <section class="songbuy">
+      <p class="kicker kicker--center">The record behind the record</p>
+      <div class="finale__actions">
+        <a class="btn btn--ruby" href="docket-516.html">Enter the Docket 516 evidence room</a>
+        <a class="btn btn--ghost" href="fellowship.html">Join the Policy Fellowship</a>
+      </div>
+      <p class="finale__believe">
+        Sources &amp; methods: every marker in this poll is documented —
+        <a href="psychology-markers.html" style="color:var(--ruby-hot)">the registry &#8594;</a>.
+        Analytics receives interaction events only; consented answers go to the movement's own research store.
+      </p>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Equity Uprise — your answers are signals, not labels.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/psmf-poll.js?v=__STAMP__"></script>
+</body>
+</html>
