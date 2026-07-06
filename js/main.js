@@ -335,6 +335,26 @@
     }
     applyLoadout(0);
 
+    // the M-network snaps: stop scrolling and the pan swings all the way to the
+    // nearest corner — photo, then recording, then broadcast. Scoped to this
+    // section only, and eased through Lenis so it doesn't fight the smooth scroll.
+    var LO_SNAP = [1 / 6, 0.5, 5 / 6]; // the centre of each corner's band
+    var snapTimer = null, snapping = false;
+    function scheduleSnap(st) {
+      if (snapping) return;
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(function () {
+        if (!st.isActive || snapping) return;
+        var p = st.progress;
+        var target = LO_SNAP.reduce(function (a, c) { return Math.abs(c - p) < Math.abs(a - p) ? c : a; });
+        if (Math.abs(target - p) < 0.012) return; // already parked on a corner
+        var y = st.start + target * (st.end - st.start);
+        snapping = true;
+        lenis.scrollTo(y, { duration: 0.55, easing: function (t) { return 1 - Math.pow(1 - t, 3); } });
+        setTimeout(function () { snapping = false; }, 650);
+      }, 150);
+    }
+
     ScrollTrigger.create({
       trigger: "#loadout",
       start: "top top",
@@ -342,10 +362,11 @@
       scrub: true,
       onUpdate: function (st) {
         applyLoadout(st.progress);
-        if (!st.isActive) { PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
+        if (st.isActive) scheduleSnap(st);
+        else { PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
       },
       onToggle: function (st) {
-        if (!st.isActive) { PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
+        if (!st.isActive) { clearTimeout(snapTimer); snapping = false; PAR.set(parLoCanvas, 0); PAR.set(parLoPanels, 0); }
       },
     });
     gsap.from("#loadout .command__head", {
