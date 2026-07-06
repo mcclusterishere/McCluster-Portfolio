@@ -1294,3 +1294,133 @@ a { color: inherit; text-decoration: none; }
   margin-top: 1.6rem;
 }
 .manifesto__boot::after { content: "▮"; animation: loadFlash 1s steps(2) infinite; }
+
+/* ============ Service Network panels: genre effects ============ */
+/* PHOTO — the strobe: a camera flash pops across the panel, the link
+   sits inside viewfinder brackets that snap to focus */
+.panel-fx--photo .command__pitch { position: relative; }
+.panel-fx--photo .command__pitch::after {
+  content: ""; position: absolute; inset: -0.6rem -0.8rem;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), transparent 70%);
+  opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  animation: fxFlash 4.6s ease-out infinite;
+}
+@keyframes fxFlash {
+  0%, 88%, 100% { opacity: 0; }
+  90% { opacity: 0.85; }
+  93% { opacity: 0.1; }
+  95% { opacity: 0.35; }
+}
+.panel-fx--photo:hover .command__pitch::after { animation-duration: 1.4s; }
+.vf-link {
+  position: relative; display: inline-block;
+  margin-top: 0.5rem; padding: 0.3em 0.8em;
+  color: var(--cream); white-space: nowrap;
+}
+.vf-link i {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) top left / 12px 2px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) top left / 2px 12px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) top right / 12px 2px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) top right / 2px 12px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) bottom left / 12px 2px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) bottom left / 2px 12px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) bottom right / 12px 2px,
+    linear-gradient(var(--ruby-hot), var(--ruby-hot)) bottom right / 2px 12px;
+  background-repeat: no-repeat;
+  animation: fxFocus 2.6s ease-in-out infinite;
+}
+@keyframes fxFocus {
+  0%, 100% { transform: scale(1.14); opacity: 0.45; }
+  50% { transform: scale(1); opacity: 1; }
+}
+.vf-link:hover i { animation-duration: 0.9s; }
+
+/* SOUND — the meters: a REC dot pulses on the tag, EQ bars dance
+   beside a link underlined by a moving waveform */
+.rec-dot {
+  display: inline-block; width: 0.55em; height: 0.55em;
+  border-radius: 50%; background: var(--ruby-hot);
+  margin-right: 0.55em; vertical-align: 0.05em;
+  animation: loadFlash 1.1s steps(2) infinite;
+}
+.eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 0.95em; margin: 0 0.5em 0 0.1em; vertical-align: -0.12em; }
+.eq i {
+  width: 3px; background: var(--ruby-hot); border-radius: 1px;
+  animation: fxEq 0.9s ease-in-out infinite alternate;
+}
+.eq i:nth-child(1) { height: 45%; animation-delay: 0s; }
+.eq i:nth-child(2) { height: 90%; animation-delay: 0.12s; }
+.eq i:nth-child(3) { height: 60%; animation-delay: 0.24s; }
+.eq i:nth-child(4) { height: 100%; animation-delay: 0.06s; }
+.eq i:nth-child(5) { height: 70%; animation-delay: 0.18s; }
+@keyframes fxEq { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+.panel-fx--sound:hover .eq i { animation-duration: 0.35s; }
+.eq-link {
+  color: var(--cream); white-space: nowrap;
+  background: linear-gradient(90deg, var(--ruby-hot) 0 2px, transparent 2px 6px) repeat-x bottom / 6px 2px;
+  padding-bottom: 0.25em;
+  animation: fxTape 1.2s linear infinite;
+}
+@keyframes fxTape { from { background-position-x: 0; } to { background-position-x: 6px; } }
+
+/* LIVE — the broadcast: an on-air bug, RGB-split glitch bursts, and a
+   GO LIVE button that jolts like a hot signal. Overdone on purpose. */
+.live-bug {
+  display: inline-block; background: var(--ruby); color: #fff;
+  font-size: 0.66em; letter-spacing: 0.22em; font-weight: 700;
+  border-radius: 4px; padding: 0.25em 0.6em; vertical-align: 0.15em;
+  animation: loadFlash 0.9s steps(2) infinite;
+}
+.glitch-text { position: relative; display: inline; }
+.glitch-text::before, .glitch-text::after {
+  content: attr(data-text);
+  position: absolute; inset: 0; overflow: hidden;
+  opacity: 0; pointer-events: none;
+}
+.glitch-text::before { color: #29e3ff; transform: translate(-2px, -1px); }
+.glitch-text::after { color: var(--ruby-hot); transform: translate(2px, 1px); }
+.panel-fx--live .glitch-text::before { animation: fxGlitch 3.4s steps(1) infinite; }
+.panel-fx--live .glitch-text::after { animation: fxGlitch 3.4s steps(1) infinite 0.05s; }
+@keyframes fxGlitch {
+  0%, 87%, 94%, 100% { opacity: 0; clip-path: none; }
+  88% { opacity: 0.8; clip-path: inset(10% 0 55% 0); }
+  90% { opacity: 0.8; clip-path: inset(60% 0 15% 0); }
+  92% { opacity: 0.8; clip-path: inset(30% 0 35% 0); }
+}
+.panel-fx--live:hover .glitch-text::before,
+.panel-fx--live:hover .glitch-text::after { animation-duration: 0.7s; }
+.live-link {
+  display: inline-block; margin-top: 0.55rem;
+  background: var(--ruby); color: #fff; font-weight: 700;
+  letter-spacing: 0.14em; white-space: nowrap;
+  border-radius: 6px; padding: 0.45em 1em;
+  box-shadow: 0 0 18px rgba(229, 56, 59, 0.55);
+  animation: fxJolt 3.4s linear infinite;
+}
+@keyframes fxJolt {
+  0%, 86%, 96%, 100% { transform: translate(0, 0); }
+  88% { transform: translate(-2px, 1px); }
+  90% { transform: translate(2px, -1px); }
+  92% { transform: translate(-1px, -1px); }
+  94% { transform: translate(1px, 1px); }
+}
+.live-link:hover { background: var(--ruby-hot); }
+@media (prefers-reduced-motion: reduce) {
+  .panel-fx--photo .command__pitch::after, .vf-link i, .eq i, .eq-link,
+  .rec-dot, .live-bug, .glitch-text::before, .glitch-text::after, .live-link { animation: none; }
+}
+
+/* network page skins: the flash and the meters follow their genre */
+.net--photo { overflow: clip; }
+.net--photo .section-title { position: relative; }
+.net--photo .section-title::after {
+  content: ""; position: absolute; inset: -1rem -2rem;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), transparent 70%);
+  opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  animation: fxFlash 5s ease-out infinite;
+}
+.net--sound .section-title { border-left: 4px solid var(--ruby-hot); padding-left: 0.4em; animation: fxMeterEdge 1.1s ease-in-out infinite alternate; }
+@keyframes fxMeterEdge { from { border-color: var(--ruby); } to { border-color: var(--ruby-hot); } }
+@media (prefers-reduced-motion: reduce) { .net--photo .section-title::after, .net--sound .section-title { animation: none; } }

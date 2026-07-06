@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Recording Network — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="interview.html">List your space</a>
+    </nav>
+  </header>
+  <main>
+    <section class="verify net--sound">
+      <p class="kicker">McCluster Service Network · Recording</p>
+      <h1 class="section-title">The Recording<br>Network</h1>
+      <p class="songhero__sub" style="margin-top:1rem; text-align:left">Consoles, iso booths, mic lockers, engineers on call — vetted rooms tuned for the take, with day rates published like they should be. <span class="glitch-hint">Run your session through one door.</span></p>
+      <div class="idcards" style="margin-top:2.2rem">
+        <article class="idcard"><h3>01 · Browse</h3><p>Verified control rooms and live rooms with the gear list spelled out — console, DAW, locker highlights, booth count — no surprises at load-in.</p></article>
+        <article class="idcard"><h3>02 · Book through one door</h3><p>One request to the network books the room — we route it, confirm it, and hold the published rate. No phone tag, no mystery pricing.</p></article>
+        <article class="idcard"><h3>03 · Session covered</h3><p>House engineers where offered, published engineer rates, verified insurance, and rooms that honor the block you booked.</p></article>
+      </div>
+      <div class="sysid" style="margin-top:2.5rem">
+        <h3 class="sysid__title">The roster</h3>
+        <div class="badge-legend">
+          <div class="badge-legend__item">
+            <span class="mbadge" style="--badge-c:#e5383b"><img src="assets/img/m-mark.png" alt=""></span>
+            <span><strong style="color:var(--cream)">First partners are in verification now.</strong><br>Every listing goes live with the M-Verified · Venue badge, real photos, and its full price sheet.</span>
+          </div>
+        </div>
+      </div>
+      <div class="finale__actions" style="margin-top:2.2rem">
+        <a class="btn btn--ruby" data-cta="recording-booking" href="mailto:matthew@mccluster.org?subject=Recording%20Network%20booking">Request a booking</a>
+        <a class="btn btn--ghost" data-cta="recording-booking-join" href="interview.html">Get your space listed</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">&#169; 2026 Matthew McCluster &#183; McCluster Corp.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    document.querySelectorAll("a[data-cta]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "network-recording" });
+      });
+    });
+  </script>
+</body>
+</html>
