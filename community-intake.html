@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community Intake · Equity Uprise</title>
+  <meta name="description" content="A community concern and intake line powered by Equity Uprise. Tell us what's happening in your ZIP code. Consent-first, never sold, never shared.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage hirepage dekalbpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="equity-uprise.html">← About Equity Uprise</a>
+      <a class="head-cta" href="#intake">Start Intake</a>
+    </nav>
+  </header>
+  <main>
+    <section class="bexp">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Community concern line · powered by Equity Uprise</p>
+      <div class="bexp__hero">
+        <div>
+          <p class="bexp__section">Tell us what's happening on your block</p>
+          <h1>Your ZIP.<br>Your Voice.</h1>
+        </div>
+      </div>
+      <p class="songhero__sub" style="text-align:left;max-width:60ch;margin-top:1rem">
+        A direct line for residents to report a concern, share an idea, or ask for help. No red tape and
+        no name required. Just tell us your ZIP code and what's going on. Your information is
+        <strong style="color:var(--cream)">never sold and never shared</strong>, and it is used only to
+        follow up and to understand what a neighborhood actually needs.
+      </p>
+
+      <!-- INTAKE FORM -->
+      <form class="vform" id="intakeForm" novalidate style="margin-top:1.8rem">
+        <span id="intake"></span>
+        <fieldset>
+          <legend>Where you are</legend>
+          <div class="vform__row">
+            <label for="i-zip">ZIP code <span class="req">*</span></label>
+            <input id="i-zip" name="ZIP" required inputmode="numeric" autocomplete="postal-code" placeholder="e.g. 30032" pattern="[0-9]{5}">
+          </div>
+          <div class="vform__row">
+            <label for="i-city">City or neighborhood <span style="color:var(--cream-dim)">(optional)</span></label>
+            <input id="i-city" name="City/Neighborhood" placeholder="Where in the area?">
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>What you're bringing</legend>
+          <div class="vform__row">
+            <label for="i-topic">What's this about? <span class="req">*</span></label>
+            <select id="i-topic" name="Concern type" required>
+              <option value="">Choose one…</option>
+              <option>Safety &amp; policing</option>
+              <option>Housing &amp; rent</option>
+              <option>Jobs &amp; the economy</option>
+              <option>Youth &amp; education</option>
+              <option>Health &amp; wellness</option>
+              <option>Streets &amp; infrastructure</option>
+              <option>An idea or proposal</option>
+              <option>I want to get involved</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="vform__row">
+            <label for="i-detail">Tell us more <span class="req">*</span></label>
+            <textarea id="i-detail" name="Details" required rows="5" placeholder="What's going on, and what you'd like to see happen."></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>If you'd like a reply <span style="color:var(--cream-dim);text-transform:none;letter-spacing:0">(optional)</span></legend>
+          <div class="vform__row">
+            <label for="i-name">Name <span style="color:var(--cream-dim)">(optional)</span></label>
+            <input id="i-name" name="Name" autocomplete="name" placeholder="You can stay anonymous">
+          </div>
+          <div class="vform__row">
+            <label for="i-contact">Email or phone <span style="color:var(--cream-dim)">(optional)</span></label>
+            <input id="i-contact" name="Email or phone" autocomplete="email" placeholder="Only if you want us to follow up">
+          </div>
+        </fieldset>
+
+        <label class="intake__consent">
+          <input type="checkbox" id="i-consent" required>
+          <span>I understand this is submitted to the Equity Uprise team, my information is
+            <strong>never sold or shared</strong>, and it is used only to follow up and to understand
+            community needs. If I left contact info, I agree to be contacted about this submission.</span>
+        </label>
+
+        <div class="finale__actions" style="margin-top:1.4rem">
+          <button class="btn btn--ruby" type="submit" id="intakeSubmit" data-cta="community-intake-submit">Submit</button>
+          <a class="btn btn--ghost" href="equity-uprise.html" data-cta="community-learn">What is Equity Uprise?</a>
+        </div>
+        <p class="offer__note" id="intakeMsg">Anonymous is fine. A copy goes straight to the Equity Uprise team.</p>
+      </form>
+
+      <!-- THE CASE: why fund ZIP-targeted reach (private brief) -->
+      <h2 class="bexp__section" style="margin:3.5rem 0 0.5rem">Why paid reach, and why it's imperative</h2>
+      <p style="color:var(--cream-dim);max-width:60ch">
+        Community data does not collect itself. The residents whose voices matter most are not filling out
+        government forms. They are on Instagram and Facebook. A focused ad budget of
+        <strong style="color:var(--cream)">$500 to $1,000</strong>, targeted to specific ZIP codes, puts this
+        intake line directly in front of a district and turns scrolling into signal.
+      </p>
+      <div class="bexp__legend" style="margin-top:1.4rem">
+        <div class="bexp__card"><span><b>Reach where people already are</b><small>Meta's ZIP-level targeting puts the form in front of residents block by block, not the whole internet. The right neighborhoods, on the apps they already open all day.</small></span></div>
+        <div class="bexp__card"><span><b>Turn spend into structured data</b><small>Every dollar becomes measurable reach and real responses. Who, where, and what they need, captured cleanly instead of guessed at.</small></span></div>
+        <div class="bexp__card"><span><b>Evidence, not anecdote</b><small>The result is a dataset an office and its partners can act on and cite. Grant applications and policy asks land harder when they are backed by real resident input.</small></span></div>
+        <div class="bexp__card"><span><b>A fraction of the alternative</b><small>Canvassing a district costs thousands in staff hours. A targeted campaign gathers the same signal for a fraction of that, in days instead of months.</small></span></div>
+      </div>
+
+      <h3 class="bexp__section" style="margin:2.6rem 0 0.6rem">How it works</h3>
+      <div class="offer__who">
+        <span>1 · Ad runs in target ZIP codes</span>
+        <span>2 · Resident taps through</span>
+        <span>3 · This intake form</span>
+        <span>4 · Data lands with the team</span>
+        <span>5 · A report you can act on</span>
+      </div>
+      <p class="offer__note" style="margin-top:1.6rem;max-width:60ch">
+        The ask is simple: <strong style="color:var(--cream)">$500 to $1,000 for one ZIP-targeted campaign</strong>,
+        run and reported by Equity Uprise. You get the reach, the responses, and a plain-language report.
+        Consent-first the whole way. Never sold, never shared.
+      </p>
+      <div class="finale__actions" style="margin-top:1.8rem">
+        <a class="btn btn--ruby" href="mailto:matthew@mccluster.org?subject=Equity%20Uprise%20%E2%80%94%20ZIP-targeted%20intake%20campaign&body=I%27d%20like%20to%20talk%20about%20funding%20a%20ZIP-targeted%20community%20intake%20campaign.%0A%0ATarget%20ZIP%20codes%3A%0ABudget%20range%3A%0AWhat%20we%20want%20to%20learn%3A%0A" data-cta="community-fund">Fund a campaign</a>
+        <a class="btn btn--ghost" href="equity-uprise.html" data-cta="community-eu">See the program</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Equity Uprise · McCluster Corp · Community intake. Consent-first, never sold.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var INTAKE_ENDPOINT = ""; // Apps Script /exec URL when the Sheet backend is live
+
+      var form = document.getElementById("intakeForm");
+      var msg = document.getElementById("intakeMsg");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        if (!document.getElementById("i-consent").checked) { msg.textContent = "Please check the consent box so we can log this properly."; return; }
+
+        var lines = ["EQUITY UPRISE — COMMUNITY INTAKE", ""];
+        var payload = { _form: "community-intake" };
+        form.querySelectorAll("input, textarea, select").forEach(function (f) {
+          if (f.type === "checkbox" || !f.value) return;
+          lines.push((f.name || f.id) + ": " + f.value);
+          payload[f.name || f.id] = f.value;
+        });
+        track("community_intake_submit", { page: "community-intake" });
+
+        if (INTAKE_ENDPOINT) {
+          fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
+            .then(function () { msg.textContent = "Submitted — thank you. If you left contact info, we'll be in touch."; form.reset(); })
+            .catch(function () { msg.textContent = "Couldn't submit just now — please email matthew@mccluster.org."; });
+        } else {
+          location.href = "mailto:matthew@mccluster.org?subject=" +
+            encodeURIComponent("Equity Uprise — Community Intake") +
+            "&body=" + encodeURIComponent(lines.join("\n"));
+        }
+      });
+
+      document.querySelectorAll("a[data-cta]").forEach(function (a) {
+        a.addEventListener("click", function () { track("cta_click", { label: a.getAttribute("data-cta"), page: "community-intake" }); });
+      });
+      track("community_intake_view", {});
+    })();
+  </script>
+</body>
+</html>
