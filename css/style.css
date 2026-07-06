@@ -2292,3 +2292,91 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
   .brandhero__sticky { min-height: 74vh; }
   .ecocard__media { aspect-ratio: 3 / 2; }
 }
+
+/* ============================================================
+   HIRE — the sales landing room (hire.html)
+   ============================================================ */
+.hirepage .bexp { padding-bottom: clamp(5rem, 12vh, 8rem); }
+
+/* recognition strip under the hero */
+.hire__trust {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem;
+}
+.hire__pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.42rem 0.85rem; border-radius: 999px;
+  border: 1px solid rgba(244, 239, 230, 0.16); background: rgba(244, 239, 230, 0.04);
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim);
+}
+.hire__pill::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ruby-hot); box-shadow: 0 0 10px rgba(229, 56, 59, 0.8);
+}
+
+/* credibility stat bar */
+.hire__stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: clamp(0.8rem, 2vw, 1.4rem); margin: 2.4rem 0 0;
+}
+.hire__stat {
+  border: 1px solid rgba(244, 239, 230, 0.1); border-radius: 12px;
+  padding: 1.1rem 1.2rem; background: var(--ink-2);
+}
+.hire__stat b {
+  display: block; font-family: var(--display); font-weight: 400;
+  font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1; color: var(--cream);
+}
+.hire__stat small { display: block; margin-top: 0.4rem; color: var(--cream-dim); font-size: 0.82rem; line-height: 1.4; }
+
+/* engagement packages */
+.hire__pkgs {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.6rem); margin-top: 0.6rem;
+}
+.hire__pkg {
+  display: flex; flex-direction: column; gap: 0.7rem;
+  border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 14px;
+  padding: 1.5rem 1.5rem 1.6rem; background: var(--ink-2); position: relative;
+}
+.hire__pkg--feature { border-color: rgba(229, 56, 59, 0.55); box-shadow: 0 0 0 1px rgba(229, 56, 59, 0.15), 0 20px 50px rgba(0,0,0,0.4); }
+.hire__pkg--feature::after {
+  content: "Most booked"; position: absolute; top: -0.75rem; left: 1.5rem;
+  background: var(--ruby); color: #fff; font-size: 0.62rem; letter-spacing: 0.18em;
+  text-transform: uppercase; padding: 0.28rem 0.7rem; border-radius: 999px;
+}
+.hire__pkg h3 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
+.hire__pkg .hire__price { font-size: 0.9rem; color: var(--ruby-hot); letter-spacing: 0.06em; }
+.hire__pkg ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.hire__pkg li { padding-left: 1.3rem; position: relative; color: var(--cream-dim); font-size: 0.92rem; line-height: 1.45; }
+.hire__pkg li::before { content: "\2713"; position: absolute; left: 0; color: var(--ruby-hot); }
+.hire__pkg .btn { margin-top: 0.4rem; text-align: center; }
+
+/* FAQ */
+.hire__faq { display: flex; flex-direction: column; gap: 0.6rem; }
+.hire__faq details {
+  border: 1px solid rgba(244, 239, 230, 0.1); border-radius: 10px;
+  background: var(--ink-2); padding: 0 1.2rem;
+}
+.hire__faq summary {
+  cursor: pointer; list-style: none; padding: 1rem 0; font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.hire__faq summary::-webkit-details-marker { display: none; }
+.hire__faq summary::after { content: "+"; color: var(--ruby-hot); font-size: 1.3rem; line-height: 1; transition: transform 0.25s; }
+.hire__faq details[open] summary::after { transform: rotate(45deg); }
+.hire__faq p { padding: 0 0 1.1rem; color: var(--cream-dim); line-height: 1.55; }
+
+/* sticky mobile book bar */
+.hire__sticky {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  display: none; align-items: center; justify-content: space-between; gap: 0.8rem;
+  padding: 0.7rem clamp(1rem, 4vw, 1.4rem);
+  background: rgba(10, 8, 7, 0.92); backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(244, 239, 230, 0.12);
+}
+.hire__sticky span { font-size: 0.85rem; color: var(--cream-dim); }
+.hire__sticky .btn { padding: 0.7rem 1.2rem; white-space: nowrap; }
+@media (max-width: 720px) {
+  .hire__sticky { display: flex; }
+  .hirepage main { padding-bottom: 4.5rem; }
+}
