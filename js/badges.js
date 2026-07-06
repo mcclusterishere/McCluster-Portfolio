@@ -11,6 +11,29 @@
 
   function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
 
+  /* org-type badge sets: the original M-Verified entity seals, straight
+     from js/entities.js — panels declare which org types they verify */
+  document.querySelectorAll("[data-orgbadges]").forEach(function (slot) {
+    if (!window.MCC_ENTITIES) return;
+    var frag = document.createDocumentFragment();
+    slot.getAttribute("data-orgbadges").split(",").forEach(function (k) {
+      var e = window.MCC_ENTITIES[k.trim()];
+      if (!e) return;
+      var a = document.createElement("a");
+      a.className = "mbadge-chip mbadge-chip--org";
+      a.href = "verify.html";
+      a.title = e.label + " — " + e.desc;
+      a.innerHTML =
+        '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+        "<small>" + e.badge + "</small>";
+      a.addEventListener("click", function () {
+        track("badge_click", { badge_id: "org-" + k.trim(), section: slot.closest(".command__panel") ? "loadout" : "page", page: "home" });
+      });
+      frag.appendChild(a);
+    });
+    slot.appendChild(frag);
+  });
+
   var slots = document.querySelectorAll("[data-badges]");
   if (slots.length) {
     fetch("data/service-badges.json", { cache: "no-cache" })

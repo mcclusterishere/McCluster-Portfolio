@@ -73,6 +73,26 @@
       </div>
     </section>
 
+    <!-- ============ BIO — the director, between the orbit and the network ============ -->
+    <section class="bio" id="bio">
+      <div class="bio__inner">
+        <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Director</p>
+        <h2 class="bio__name">Matthew<br>McCluster</h2>
+        <p class="bio__lede">Shoots it. Cuts it. Scores it. Ships it.</p>
+        <p class="bio__body">
+          Creative director out of Connecticut — photographer and videographer, web designer,
+          songwriter. Founder of Equity Uprise, the civic movement the State of Connecticut put
+          citations on. Every frame, chord, and line of code on this site is his — the album is
+          called <em>Here</em> because that's where the work gets made.
+        </p>
+        <ul class="bio__ledger">
+          <li><b>Equity Uprise</b><span>State citations · a city proclamation · a party</span></li>
+          <li><b>Here — The Album</b><span>Written, performed &amp; produced by McCluster</span></li>
+          <li><b>The Service Network</b><span>M-Verified spaces, one door books them all</span></li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ============ THE LOADOUT — 360 studio pan ============ -->
     <section class="loadout" id="loadout">
       <div class="loadout__sticky command__sticky">
@@ -87,19 +107,19 @@
             <p class="command__meta"><span class="command__tag">Service Network</span></p>
             <h3 class="command__title">Photo &amp; Studio<br>Network</h3>
             <p class="command__pitch"><a class="vf-link" href="network-photo.html" data-cta="network-photo"><i></i>Step into the photo network &#8594;</a></p>
-            <div class="mbadge-set" data-badges="photo-network" aria-label="Photo network verification badges"></div>
+            <div class="mbadge-set" data-orgbadges="venue,creator" aria-label="Org types verified in the photo network"></div>
           </article>
           <article class="command__panel panel-fx panel-fx--sound" data-scene="1">
             <p class="command__meta"><span class="command__tag"><span class="rec-dot" aria-hidden="true"></span>Recording Studio Partners</span></p>
             <h3 class="command__title">Recording<br>Studio</h3>
             <p class="command__pitch"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><a class="eq-link" href="network-recording.html" data-cta="network-recording">Run the session through the network &#8594;</a></p>
-            <div class="mbadge-set" data-badges="recording-studio" aria-label="Recording studio verification badges"></div>
+            <div class="mbadge-set" data-orgbadges="venue,performer,rights-owner" aria-label="Org types verified in the recording network"></div>
           </article>
           <article class="command__panel panel-fx panel-fx--live" data-scene="2">
             <p class="command__meta"><span class="command__tag">Event Spaces Partners — Your Stage</span></p>
             <h3 class="command__title">Conference &amp;<br>Broadcast</h3>
             <p class="command__pitch"><span class="live-bug" aria-hidden="true">&#9679; LIVE</span> <a class="live-link" href="list-your-space.html" data-cta="list-your-space">GO LIVE — list your stage &#8594;</a></p>
-            <div class="mbadge-set" data-badges="conference-broadcast" aria-label="Conference and broadcast verification badges"></div>
+            <div class="mbadge-set" data-orgbadges="venue,nonprofit,federal" aria-label="Org types verified in the event and broadcast network"></div>
           </article>
         </div>
         <div class="command__count" id="loCount">01 / 03</div>
@@ -301,6 +321,7 @@
   <script src="vendor/gsap.min.js?v=__STAMP__"></script>
   <script src="vendor/ScrollTrigger.min.js?v=__STAMP__"></script>
   <script src="js/parallax.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
   <script src="js/badges.js?v=__STAMP__"></script>
   <script src="js/main.js?v=__STAMP__"></script>
 </body>
