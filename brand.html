@@ -68,6 +68,9 @@
           document.title = b.name + " — McCluster Ecosystem";
           var md = document.querySelector('meta[name="description"]');
           if (md && b.summary) md.setAttribute("content", b.name + " — " + b.summary);
+          // each brand page wears its own logo as the browser-tab favicon
+          var fav = document.querySelector('link[rel="icon"]');
+          if (fav && b.logo && b.logo.indexOf("m-mark") === -1) fav.setAttribute("href", b.logo);
 
           var media = "";
           if (b.video) {
