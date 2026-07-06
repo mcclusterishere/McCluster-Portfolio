@@ -67,4 +67,17 @@
       track("service_click", { service: el.getAttribute("data-service"), page: "home" });
     });
   });
+
+  // the character sheet: stat bars fill when the bio takes the screen
+  var stats = document.getElementById("bioStats");
+  if (stats && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries, obs) {
+      if (entries[0].isIntersecting) {
+        stats.classList.add("is-on");
+        obs.disconnect();
+      }
+    }, { threshold: 0.35 }).observe(stats);
+  } else if (stats) {
+    stats.classList.add("is-on");
+  }
 })();
