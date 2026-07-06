@@ -53,9 +53,10 @@
               ((data.certifications && data.certifications.length)
                 ? "<h2 class='bexp__section' style='margin:2.2rem 0 0.5rem'>Certifications &amp; Recognition</h2>" +
                   '<div class="bexp__legend">' + data.certifications.map(function (c) {
+                    var meta = (c.date || "") + (c.date && c.url ? " · " : "") + (c.url ? "View credential &#8599;" : "");
                     return c.url
-                      ? '<a class="bexp__card" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span><b>' + esc(c.label) + "</b><small>View credential &#8599;</small></span></a>"
-                      : '<div class="bexp__card"><span><b>' + esc(c.label) + "</b></span></div>";
+                      ? '<a class="bexp__card" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span><b>' + esc(c.label) + "</b><small>" + meta + "</small></span></a>"
+                      : '<div class="bexp__card"><span><b>' + esc(c.label) + "</b>" + (meta ? "<small>" + meta + "</small>" : "") + "</span></div>";
                   }).join("") + "</div>"
                 : "");
             track("role_index_view", {});
