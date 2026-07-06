@@ -42,6 +42,10 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: auto; }
+/* nothing may widen the page — rotated props and pills stay clipped
+   (clip, not hidden: it never creates a scroll container, so sticky
+   sections keep working) */
+html, body { overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
@@ -851,6 +855,110 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
   color: var(--cream-dim);
 }
+/* ============ CATALOGUE: the registered discography ============ */
+.catalogue {
+  position: relative; z-index: 2;
+  background: var(--ink);
+  padding: clamp(4rem, 9vw, 8rem) clamp(1.2rem, 4vw, 3rem);
+}
+.catalogue__head { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.catalogue__list {
+  list-style: none;
+  border-top: 1px solid rgba(244, 239, 230, 0.12);
+}
+.catalogue__row a {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 2fr) minmax(0, 3fr) 4rem 6rem;
+  gap: 1rem; align-items: baseline;
+  padding: clamp(1rem, 2.4vw, 1.6rem) 0.4rem;
+  border-bottom: 1px solid rgba(244, 239, 230, 0.12);
+  transition: background 0.25s ease, padding-left 0.25s ease;
+}
+.catalogue__row a:hover {
+  background: rgba(193, 18, 31, 0.08);
+  padding-left: 1rem;
+}
+.catalogue__no {
+  font-size: 0.75rem; letter-spacing: 0.18em;
+  color: var(--cream-dim);
+}
+.catalogue__title {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 3.2vw, 2.2rem);
+  line-height: 1.05; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.catalogue__title em { font-style: normal; color: var(--ruby-hot); }
+.catalogue__credit {
+  font-size: 0.85rem; color: var(--cream-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.catalogue__len {
+  font-size: 0.8rem; letter-spacing: 0.1em; color: var(--cream-dim);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.catalogue__own {
+  font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ruby-hot); text-align: right; white-space: nowrap;
+}
+.catalogue__row:hover .catalogue__own { color: var(--cream); }
+.catalogue__row--soon .catalogue__title,
+.catalogue__row--soon .catalogue__credit { opacity: 0.5; }
+.catalogue__note {
+  margin-top: 1.4rem;
+  font-size: 0.8rem; color: var(--cream-dim);
+}
+@media (max-width: 720px) {
+  .catalogue__row a {
+    grid-template-columns: 2.2rem minmax(0, 1fr) 3.4rem;
+    row-gap: 0.25rem;
+  }
+  .catalogue__credit { grid-column: 2; grid-row: 2; }
+  .catalogue__own { display: none; }
+}
+
+/* the identity registry: every code the catalogue clears through */
+.sysid { margin-top: clamp(3rem, 7vw, 5rem); }
+.sysid__title {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+  text-transform: uppercase;
+  margin-bottom: 1.6rem;
+}
+.sysid__cols {
+  display: grid; gap: 1.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(21rem, 100%), 1fr));
+}
+.sysid__card {
+  border: 1px solid rgba(244, 239, 230, 0.12);
+  border-radius: 10px;
+  padding: clamp(1rem, 2.6vw, 1.7rem);
+  background: var(--ink-2);
+}
+.sysid__who {
+  font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--ruby-hot);
+  margin-bottom: 1rem;
+}
+.sysid__item {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem;
+  padding: 0.45rem 0.3rem;
+  border-bottom: 1px dashed rgba(244, 239, 230, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.sysid__item:last-child { border-bottom: 0; }
+.sysid__item:hover { background: rgba(193, 18, 31, 0.1); }
+.sysid__item dd { font-size: 0.78rem; color: var(--cream-dim); white-space: nowrap; }
+.sysid__item code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.82rem; letter-spacing: 0.04em;
+  overflow-wrap: anywhere; text-align: right;
+}
+.sysid__item.is-copied code { color: var(--ruby-hot); }
+.sysid__hint { margin-top: 0.9rem; font-size: 0.72rem; color: var(--cream-dim); }
+
 /* cursor light: a soft glow that follows the mouse while a slide is
    tracking it (position + opacity driven by js/parallax.js root vars) */
 .command__sticky::after,

@@ -331,6 +331,33 @@
     window.__MCC_GEAR = function () { return current; };
   })();
 
+  /* ---------------- catalogue: ledger reveal + copyable identifiers ---------------- */
+  gsap.utils.toArray(".catalogue__row").forEach(function (el, i) {
+    gsap.from(el, {
+      y: 36, opacity: 0, duration: 0.7, ease: "power3.out", delay: (i % 7) * 0.06,
+      scrollTrigger: { trigger: el, start: "top 92%" },
+    });
+  });
+  document.querySelectorAll(".sysid__item").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var v = el.getAttribute("data-copy") || "";
+      var done = function () {
+        el.classList.add("is-copied");
+        var code = el.querySelector("code");
+        var orig = code.textContent;
+        code.textContent = "copied";
+        setTimeout(function () {
+          code.textContent = orig;
+          el.classList.remove("is-copied");
+        }, 900);
+        if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: "sysid-copy", value: v.slice(0, 24), page: "home" });
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v).then(done).catch(function () {});
+      }
+    });
+  });
+
   /* ---------------- scroll progress bar ---------------- */
   gsap.to("#scrollProgressBar", {
     scaleX: 1,
@@ -729,7 +756,7 @@
   (function () {
     function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
     // each section counts once per visit as the visitor reaches it
-    ["#hero", "#loadout", "#stats", "#pillars", "#work", "#book"].forEach(function (sel) {
+    ["#hero", "#loadout", "#catalogue", "#stats", "#pillars", "#work", "#book"].forEach(function (sel) {
       ScrollTrigger.create({
         trigger: sel, start: "top 60%", once: true,
         onEnter: function () { track("section_view", { section: sel.slice(1), page: "home" }); },
