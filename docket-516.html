@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docket 516 Explainer — UI 115-kV Railroad Transmission Line Rebuild · McCluster</title>
+  <meta name="description" content="A public archive and plain-English guide to Connecticut Siting Council Docket No. 516 — United Illuminating's 115-kV railroad transmission line rebuild through Fairfield and Bridgeport.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a href="fellowship.html">The Fellowship</a>
+      <a class="head-cta" href="#library">The Record</a>
+    </nav>
+  </header>
+  <main>
+    <!-- ============ hero ============ -->
+    <section class="dkt dkt__hero">
+      <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · The Public Record</p>
+      <h1 class="songhero__title" style="text-align:left">Docket 516<br>Explainer</h1>
+      <p class="dkt__subtitle">United Illuminating 115-kV Railroad Transmission Line Rebuild</p>
+      <p class="dkt__summary">
+        A public archive and plain-English guide to Connecticut Siting Council Docket No. 516,
+        covering UI's proposed relocation and rebuild of existing 115-kV electric transmission
+        lines along the Metro-North railroad corridor through Fairfield and Bridgeport.
+      </p>
+      <div class="finale__actions dkt__jump">
+        <a class="btn btn--ruby" href="#cat-Application" data-jump="application">View Application</a>
+        <a class="btn btn--ghost" href="#cat-Transcripts" data-jump="transcripts">View Transcripts</a>
+        <a class="btn btn--ghost" href="#cat-Final-Decision" data-jump="final-decision">View Final Decision</a>
+        <a class="btn btn--ghost" href="#cat-Court-Ordered-Remand-Docket-516R" data-jump="remand">View 516R Remand</a>
+      </div>
+      <div class="dkt__release">
+        <button class="sound-toggle songhero__play" id="dktPlay" type="button">
+          <span class="sound-toggle__dot"></span> <span>Play the evidence — "Money or the Power"</span>
+        </button>
+        <p class="dkt__credit">
+          <b>The 516R Release.</b> The record gets a record: each piece of evidence in this room is
+          scored by another artist's song. Track 01 — Old Jay ft. Ocho, "Money or the Power"
+          (prod. Pax) — rides the whole file. Press play and the room parses itself, exhibit by
+          exhibit, in time with the music. More artists claim their evidence as the release rolls out.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ what this case is about ============ -->
+    <section class="dkt">
+      <div class="bexp__panel">
+        <h3>What this case is about</h3>
+        <p>
+          United Illuminating applied to the Connecticut Siting Council for a Certificate of
+          Environmental Compatibility and Public Need — the state permission an electric company
+          needs before building or rebuilding major transmission infrastructure. The project would
+          relocate and rebuild existing 115-kV transmission lines, moving them off the railroad
+          catenary structures they ride today and onto new steel monopole structures, along roughly
+          7.3 miles of the Metro-North corridor between Fairfield and Bridgeport. The filing also
+          covers related substation and interconnection work at Ash Creek, Resco, Pequonnock, and
+          Congress Street. Everything on this page traces back to the official docket — the
+          Council's record is the source, this page is the guide.
+        </p>
+      </div>
+      <div class="bexp__panel">
+        <h3>Why it matters</h3>
+        <ul>
+          <li>Environmental compatibility — the legal test the whole case turns on</li>
+          <li>Visual impact — monopoles change the skyline of every neighborhood they pass</li>
+          <li>Rail corridor infrastructure — the state's busiest line is the construction site</li>
+          <li>Bridgeport and Fairfield land use — easements, yards, and business frontage</li>
+          <li>Neighborhood impacts — noise, access, and years of construction staging</li>
+          <li>Electromagnetic field concerns — raised, studied, and argued on the record</li>
+          <li>Cultural resources — historic districts and properties along the corridor</li>
+          <li>Wetlands and ecology — Ash Creek and the coastal edge are in the path</li>
+          <li>The public process itself — who got heard, and how</li>
+          <li>Agency comments — DOT, CEQ, SHPO, and the Airport Authority all weighed in</li>
+          <li>Municipal and intervenor objections — both towns and a bench of neighbors fought the route</li>
+          <li>The final decision and the court-ordered remand — this fight went to court and came back</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ document library ============ -->
+    <section class="dkt" id="library">
+      <h2 class="section-title" style="font-size:clamp(2rem,5vw,3.2rem)">The Evidence Room</h2>
+      <p class="dkt__note" id="dktStats">Loading the record…</p>
+      <div class="dkt__toolbar">
+        <input type="search" id="dktSearch" placeholder="Search the record…" aria-label="Search documents">
+        <select id="dktCat" aria-label="Filter by category"><option value="">All categories</option></select>
+        <select id="dktType" aria-label="Filter by document type">
+          <option value="">All types</option>
+          <option>Application</option><option>Testimony</option><option>Transcript</option>
+          <option>Exhibit</option><option>Correspondence</option><option>Agency Comment</option>
+          <option>Intervenor Filing</option><option>Hearing</option><option>Schedule</option>
+          <option>Brief</option><option>Final Decision</option><option>Remand</option><option>Map</option>
+        </select>
+        <select id="dktYear" aria-label="Filter by year"><option value="">All dates</option></select>
+        <input type="search" id="dktParty" placeholder="Party / source…" aria-label="Filter by party or source">
+      </div>
+      <div id="dktLibrary"></div>
+    </section>
+
+    <!-- ============ explainer cards ============ -->
+    <section class="dkt">
+      <h2 class="section-title" style="font-size:clamp(2rem,5vw,3.2rem)">Know the Language</h2>
+      <div class="dkt__cards">
+        <article class="dkt__exp"><h3>Certificate of Environmental Compatibility and Public Need</h3><p>The permit at the center of the case. Connecticut law says big energy infrastructure needs the Siting Council to certify two things at once: the public needs it, and the environment can live with it. No certificate, no project.</p></article>
+        <article class="dkt__exp"><h3>What is an intervenor?</h3><p>A person, business, town, or group the Council lets into the case as a participant — they can file exhibits, question witnesses, and argue. More power than a commenter, less than the applicant.</p></article>
+        <article class="dkt__exp"><h3>What is CEPA intervenor status?</h3><p>Intervention under the Connecticut Environmental Protection Act — a special door into the case for anyone claiming the project involves unreasonable harm to the state's air, water, or natural resources.</p></article>
+        <article class="dkt__exp"><h3>What are interrogatories?</h3><p>Written questions the Council or parties serve on each other that must be answered on the record, under the same duty of candor as live testimony. Much of the technical record gets built this way.</p></article>
+        <article class="dkt__exp"><h3>What is pre-filed testimony?</h3><p>Witness testimony submitted in writing before the hearing. At the hearing the witness adopts it under oath and gets cross-examined on it — the writing is the direct, the hearing is the test.</p></article>
+        <article class="dkt__exp"><h3>What are late-filed exhibits?</h3><p>Documents a party is ordered or allowed to submit after its main filings — usually answers the hearing demanded that nobody had on hand that day.</p></article>
+        <article class="dkt__exp"><h3>What is an evidentiary hearing?</h3><p>The trial part of the process: sworn witnesses, cross-examination, exhibits admitted into the record. Different from a public comment session, where anyone can speak but nothing is cross-examined.</p></article>
+        <article class="dkt__exp"><h3>What is a remand?</h3><p>When a court reviews the decision and sends the case back to the agency to redo part of the work. That's what created Docket 516R — the court ordered the Council to take another pass.</p></article>
+        <article class="dkt__exp"><h3>What is a final decision?</h3><p>The Council's end product: findings of fact, an opinion, and a decision and order. It's the document a court reviews on appeal — which is exactly what happened here.</p></article>
+        <article class="dkt__exp"><h3>Application vs. testimony vs. exhibits vs. comments vs. transcripts</h3><p>The application is the ask. Testimony is sworn evidence from witnesses. Exhibits are the documents parties put into the record. Comments are the public's voice — heard, but not evidence. Transcripts are the word-for-word record of what happened in the room.</p></article>
+      </div>
+    </section>
+
+    <!-- ============ timeline ============ -->
+    <section class="dkt">
+      <h2 class="section-title" style="font-size:clamp(2rem,5vw,3.2rem)">The Timeline</h2>
+      <ol class="dkt__timeline" id="dktTimeline">
+        <li data-t="application"><b>03/17/23</b><span>Application received — UI files for the certificate</span></li>
+        <li data-t="process"><b>2023</b><span>The public process — hearings, interrogatories, agency comments, intervenor exhibits, transcripts</span></li>
+        <li data-t="decision"><b>02/16/24</b><span>Final decision documents issue — findings of fact, opinion, decision and order</span></li>
+        <li data-t="appeal"><b>After</b><span>Appeal — the decision goes to court</span></li>
+        <li data-t="remand"><b>Remand</b><span>The court sends it back: the fight continues as Docket 516R</span></li>
+      </ol>
+      <div class="pmk__consent">
+        <h3>Docket 516R — the remand</h3>
+        <p>
+          The court-ordered remand runs as its own proceeding with its own record.
+          Follow it at the Connecticut Siting Council's site — start from the
+          <a href="https://portal.ct.gov/csc" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Council's applications index</a>
+          and open Docket No. 516R. The 516R record is the live continuation of everything archived here.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ compliance ============ -->
+    <section class="dkt">
+      <div class="bexp__panel">
+        <h3>About this archive</h3>
+        <p>
+          This page is an independent public explainer and archive index. The Connecticut Siting
+          Council docket page remains the official source. Public comments containing personal
+          identifying information are not mirrored here — the Council makes limited-appearance
+          comments available only by request, and this archive leaves it that way. Zoom hearing
+          recordings remain external links to the official record.
+        </p>
+        <p style="margin-top:0.6rem">
+          Official source:
+          <a href="https://portal.ct.gov/csc/1_applications-and-other-pending-matters/applications/4_docketnos500s/docket-no-516?archived=true" target="_blank" rel="noopener" style="color:var(--ruby-hot)">
+            Connecticut Siting Council — Docket No. 516</a>
+        </p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Equity Uprise — the record, kept.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, Object.assign({ docket: "516" }, p || {})); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s || ""; return d.innerHTML; }
+      track("docket_page_view", {});
+
+      var CAT_ORDER = ["Application", "Bulk-Filed Exhibits", "Municipal Consultation Filing", "Procedural Correspondence",
+        "State Agency Comments", "Public Official Comments", "Hearing Information", "Schedules", "Service Lists",
+        "Transcripts", "Applicant Exhibits — United Illuminating", "Party / Intervenor Exhibits",
+        "Motions and Objections", "Briefs / Findings of Fact", "Council Draft Findings", "Final Decision",
+        "Court-Ordered Remand / Docket 516R"];
+      function badgeOf(f) {
+        var c = f.category, t = (f.title + " " + (f.subcategory || "")).toLowerCase();
+        if (c === "Court-Ordered Remand / Docket 516R") return "Remand";
+        if (c === "Final Decision" || c === "Council Draft Findings") return "Final Decision";
+        if (c === "Transcripts") return "Transcript";
+        if (c === "State Agency Comments") return "Agency Comment";
+        if (c === "Public Official Comments") return "Agency Comment";
+        if (c === "Party / Intervenor Exhibits" || c === "Motions and Objections") return "Intervenor Filing";
+        if (c === "Briefs / Findings of Fact") return "Brief";
+        if (c === "Hearing Information") return "Hearing";
+        if (c === "Schedules" || c === "Service Lists") return "Schedule";
+        if (c === "Procedural Correspondence" || c === "Municipal Consultation Filing") return "Correspondence";
+        if (/testimony|resume/.test(t)) return "Testimony";
+        if (/map|drawing|site plan/.test(t)) return "Map";
+        if (c === "Application") return "Application";
+        return "Exhibit";
+      }
+      var slugAnchor = function (c) { return "cat-" + c.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); };
+
+      var FILES = [];
+      var lib = document.getElementById("dktLibrary");
+      var stats = document.getElementById("dktStats");
+
+      function render() {
+        var q = document.getElementById("dktSearch").value.trim().toLowerCase();
+        var cat = document.getElementById("dktCat").value;
+        var type = document.getElementById("dktType").value;
+        var year = document.getElementById("dktYear").value;
+        var party = document.getElementById("dktParty").value.trim().toLowerCase();
+        var shown = FILES.filter(function (f) {
+          if (q && (f.title + " " + f.summary).toLowerCase().indexOf(q) < 0) return false;
+          if (cat && f.category !== cat) return false;
+          if (type && badgeOf(f) !== type) return false;
+          if (year && (f.date || "").slice(0, 4) !== year) return false;
+          if (party && (f.title + " " + (f.subcategory || "") + " " + f.category).toLowerCase().indexOf(party) < 0) return false;
+          return true;
+        });
+        var mirrored = FILES.filter(function (f) { return f.local_path; }).length;
+        stats.textContent = shown.length + " of " + FILES.length + " records shown · " + mirrored + " mirrored locally · source: Connecticut Siting Council";
+
+        var cats = CAT_ORDER.filter(function (c) { return shown.some(function (f) { return f.category === c; }); });
+        lib.innerHTML = cats.map(function (c) {
+          var files = shown.filter(function (f) { return f.category === c; });
+          return '<details class="dkt__group" id="' + slugAnchor(c) + '" open>' +
+            "<summary>" + esc(c) + ' <span class="dkt__count">' + files.length + "</span></summary>" +
+            '<div class="dkt__cards">' + files.map(function (f) {
+              return '<article class="dkt__card" data-id="' + esc(f.id) + '">' +
+                '<p class="dkt__badge">' + badgeOf(f) + "</p>" +
+                "<h3>" + esc(f.title) + "</h3>" +
+                (f.subcategory ? '<p class="dkt__sub">' + esc(f.subcategory) + "</p>" : "") +
+                '<p class="dkt__meta">' + (f.date ? esc(f.date) + " · " : "") + esc(f.source_agency) +
+                (f.external_only ? " · external only" : "") + "</p>" +
+                '<p class="dkt__desc">' + esc(f.summary) + "</p>" +
+                '<div class="dkt__acts">' +
+                '<a class="dkt__btn dkt__btn--official" href="' + esc(f.official_url) + '" target="_blank" rel="noopener" data-act="official">Official Source</a>' +
+                (f.local_path ? '<a class="dkt__btn dkt__btn--local" href="' + esc(f.local_path) + '" target="_blank" rel="noopener" data-act="local">Local Copy</a>' : "") +
+                "</div></article>";
+            }).join("") + "</div></details>";
+        }).join("") || '<p class="dkt__note">Nothing in the record matches those filters.</p>';
+      }
+
+      fetch("data/docket-516-files.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (files) {
+          FILES = files;
+          var catSel = document.getElementById("dktCat");
+          CAT_ORDER.filter(function (c) { return files.some(function (f) { return f.category === c; }); })
+            .forEach(function (c) { var o = document.createElement("option"); o.textContent = c; catSel.appendChild(o); });
+          var years = Array.from(new Set(files.map(function (f) { return (f.date || "").slice(0, 4); }).filter(Boolean))).sort();
+          var ySel = document.getElementById("dktYear");
+          years.forEach(function (y) { var o = document.createElement("option"); o.textContent = y; ySel.appendChild(o); });
+          render();
+        })
+        .catch(function () { stats.textContent = "The manifest is offline — the official record is always at the Connecticut Siting Council."; });
+
+      var t;
+      document.getElementById("dktSearch").addEventListener("input", function () {
+        clearTimeout(t);
+        var v = this.value;
+        t = setTimeout(function () { render(); if (v.trim()) track("docket_search", { search_query: v.trim().slice(0, 80) }); }, 350);
+      });
+      document.getElementById("dktParty").addEventListener("input", function () {
+        clearTimeout(t);
+        var v = this.value;
+        t = setTimeout(function () { render(); if (v.trim()) track("docket_filter", { filter_value: "party:" + v.trim().slice(0, 80) }); }, 350);
+      });
+      ["dktCat", "dktType", "dktYear"].forEach(function (id) {
+        document.getElementById(id).addEventListener("change", function () {
+          render();
+          track("docket_filter", { filter_value: id.replace("dkt", "").toLowerCase() + ":" + this.value });
+        });
+      });
+      lib.addEventListener("click", function (ev) {
+        var d = ev.target.closest("details.dkt__group summary");
+        if (d) { track("docket_category_open", { category: d.parentElement.querySelector("summary").textContent.trim() }); return; }
+        var a = ev.target.closest("a[data-act]");
+        if (!a) return;
+        var card = a.closest(".dkt__card");
+        var f = FILES.find(function (x) { return x.id === card.getAttribute("data-id"); }) || {};
+        var base = { document_id: f.id, category: f.category, source_url: f.official_url, local_path: f.local_path || "" };
+        track("docket_document_click", base);
+        track(a.getAttribute("data-act") === "local" ? "docket_local_copy_click" : "docket_official_source_click", base);
+      });
+      document.getElementById("dktTimeline").addEventListener("click", function (ev) {
+        var li = ev.target.closest("li[data-t]");
+        if (li) track("docket_timeline_click", { filter_value: li.getAttribute("data-t") });
+      });
+      document.querySelectorAll(".dkt__jump a").forEach(function (a) {
+        a.addEventListener("click", function () { track("docket_category_open", { category: a.getAttribute("data-jump"), filter_value: "hero-jump" }); });
+      });
+
+      /* ---------- the 516R Release: the song parses the evidence ----------
+         While "Money or the Power" plays, the room rides itself: each
+         category group takes the light for an equal slice of the track,
+         the page glides through it, and the HUD names what's being
+         parsed and whose record is scoring it. A wheel or touch hands
+         the scroll back for a few seconds, then the parse resumes. */
+      var RELEASE_DEFAULT = 'Old Jay ft. Ocho — "Money or the Power" (prod. Pax)';
+      var RELEASE = {}; // future: category -> another artist's record on the 516R Release
+      var audio = new Audio("assets/audio/money-or-the-power.mp3");
+      audio.preload = "none";
+      var playBtn = document.getElementById("dktPlay");
+      var playing = false;
+      var holdUntil = 0;
+      var pos = null;
+      var hud = document.createElement("div");
+      hud.className = "dkt__now";
+      hud.hidden = true;
+      document.body.appendChild(hud);
+      ["wheel", "touchstart"].forEach(function (ev) {
+        window.addEventListener(ev, function () { holdUntil = Date.now() + 4000; pos = null; }, { passive: true });
+      });
+      var lastGroup = null;
+      function ride() {
+        if (!playing) return;
+        requestAnimationFrame(ride);
+        if (audio.paused || !audio.duration) return;
+        var groups = Array.prototype.slice.call(document.querySelectorAll(".dkt__group"));
+        if (!groups.length) return;
+        var f = Math.min(0.9999, audio.currentTime / audio.duration);
+        var i = Math.floor(f * groups.length);
+        var seg = f * groups.length - i;
+        var g = groups[i];
+        if (g !== lastGroup) {
+          if (lastGroup) lastGroup.classList.remove("is-parsing");
+          g.classList.add("is-parsing");
+          g.open = true;
+          lastGroup = g;
+          var cat = g.querySelector("summary").textContent.trim().replace(/\s+\d+$/, "");
+          hud.innerHTML = "<b>PARSING:</b> " + esc(cat) + "<span>scored by " + esc(RELEASE[cat] || RELEASE_DEFAULT) + "</span>";
+        }
+        if (Date.now() < holdUntil) return;
+        var top = g.getBoundingClientRect().top + window.scrollY;
+        var span = Math.max(0, g.offsetHeight - innerHeight * 0.6);
+        var wanted = top - 90 + span * seg;
+        if (pos === null) pos = window.scrollY;
+        pos += (wanted - pos) * 0.05;
+        window.scrollTo(0, pos);
+      }
+      playBtn.addEventListener("click", function () {
+        playing = !playing;
+        playBtn.classList.toggle("is-on", playing);
+        if (playing) {
+          audio.play().catch(function () {});
+          hud.hidden = false;
+          pos = null;
+          track("docket_song_play", { document_id: "money-or-the-power", category: "516R Release" });
+          ride();
+        } else {
+          audio.pause();
+          hud.hidden = true;
+          if (lastGroup) { lastGroup.classList.remove("is-parsing"); lastGroup = null; }
+          track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release" });
+        }
+        playBtn.querySelector("span + span").textContent = playing ? "Pause the parse" : 'Play the evidence — "Money or the Power"';
+      });
+      audio.addEventListener("ended", function () {
+        playing = false;
+        playBtn.classList.remove("is-on");
+        playBtn.querySelector("span + span").textContent = 'Play the evidence — "Money or the Power"';
+        hud.hidden = true;
+        if (lastGroup) { lastGroup.classList.remove("is-parsing"); lastGroup = null; }
+        track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release", filter_value: "ended" });
+      });
+    })();
+  </script>
+</body>
+</html>
