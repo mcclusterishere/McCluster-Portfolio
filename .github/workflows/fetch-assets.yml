@@ -1,13 +1,12 @@
 name: Fetch portfolio assets
 
-# The Claude Code session container can't reach the Higgsfield CDN, so this
+# The build environment can't reach the media CDN directly, so this
 # workflow downloads the generated clips on a runner, cuts the hero orbit
 # into a scroll-scrub frame sequence, and commits everything back.
 
 on:
   push:
     branches:
-      - "claude/**"
     paths:
       - "assets-manifest.json"
       - ".github/workflows/fetch-assets.yml"
