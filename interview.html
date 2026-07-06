@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Space Intake Interview — McCluster Service Network</title>
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="chat__progress" aria-hidden="true"><span id="chatBar"></span></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="list-your-space.html">← About the network</a>
+      <a class="head-cta" href="identifiers.html">The identifiers</a>
+    </nav>
+  </header>
+  <main>
+    <div class="chat" id="chat">
+      <div class="chat__log" id="chatLog"></div>
+      <div class="chat__input" id="chatInput"></div>
+    </div>
+  </main>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      // Google Apps Script /exec URL goes here when the Sheet backend exists;
+      // until then the finished interview composes the application email.
+      var INTAKE_ENDPOINT = "";
+
+      /* The interview. type: chips | multi | text | long | number.
+         when(a) gates branch questions on earlier answers. */
+      var Q = [
+        { id: "spacetype", g: "The space", ask: "Welcome to the network intake — this takes about ten minutes, and you can talk your answers with your keyboard's mic. First: what kind of space are you listing?", type: "chips", options: ["Recording studio", "Photo / video studio", "Event space", "Multi-use"] },
+        { id: "bizname", g: "Identity", ask: "What's the legal or business name?", type: "text", ph: "Decibel Studios LLC" },
+        { id: "owner", g: "Identity", ask: "Who's the owner or principal we'll be working with?", type: "text", ph: "Zakir Elhajoui" },
+        { id: "years", g: "Identity", ask: "How long has the space been operating?", type: "chips", options: ["Under 1 year", "1–3 years", "3–10 years", "10+ years"] },
+        { id: "address", g: "Location", ask: "Full street address — number, street, unit if any.", type: "text", ph: "123 Main St, Suite 2" },
+        { id: "citystate", g: "Location", ask: "City, state, and ZIP?", type: "text", ph: "Bridgeport, CT 06604" },
+        { id: "loadin", g: "Location", ask: "Tell me about parking and load-in — street or lot, elevator or stairs, anything a crew hauling gear should know.", type: "long" },
+        { id: "email", g: "Contact", ask: "Best email for bookings and this application?", type: "text", ph: "you@business.com", validate: "email" },
+        { id: "phone", g: "Contact", ask: "Best phone number?", type: "text", ph: "(203) 555-0140" },
+        { id: "contactpref", g: "Contact", ask: "How do you prefer the network reaches you?", type: "chips", options: ["Email", "Text", "Call"] },
+        { id: "rooms", g: "The room", ask: "How many bookable rooms or areas does the space have?", type: "chips", options: ["1", "2", "3", "4+"] },
+        { id: "sqft", g: "The room", ask: "Roughly how many square feet is the main bookable area?", type: "text", ph: "e.g. 1,200 sq ft" },
+        { id: "ceiling", g: "The room", ask: "Ceiling height in the main area?", type: "chips", options: ["Under 9 ft", "9–12 ft", "12–16 ft", "16 ft+"] },
+        { id: "capacity", g: "The room", ask: "Maximum capacity — how many people, seated and standing?", type: "text", ph: "e.g. 80 seated / 150 standing",
+          when: function (a) { return a.spacetype === "Event space" || a.spacetype === "Multi-use"; } },
+        { id: "isobooths", g: "The room", ask: "How many iso booths / live rooms, and what's the control room setup?", type: "long",
+          when: function (a) { return a.spacetype === "Recording studio" || a.spacetype === "Multi-use"; } },
+        { id: "cyc", g: "The room", ask: "Do you have a cyc wall, backdrops, or dedicated shooting bays? Describe them.", type: "long",
+          when: function (a) { return a.spacetype === "Photo / video studio" || a.spacetype === "Multi-use"; } },
+        { id: "days", g: "Hours", ask: "Which days is the space bookable?", type: "multi", options: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+        { id: "hours", g: "Hours", ask: "What are the earliest start and latest end times?", type: "text", ph: "e.g. 9am – midnight" },
+        { id: "afterhours", g: "Hours", ask: "Do you offer after-hours sessions?", type: "chips", options: ["Yes — same rate", "Yes — premium rate", "No"] },
+        { id: "rate-hourly", g: "Price sheet", ask: "Now the full price sheet — the network publishes real numbers, that's the point. What's your standard hourly rate?", type: "text", ph: "$75/hr" },
+        { id: "rate-min", g: "Price sheet", ask: "Minimum booking — how many hours?", type: "chips", options: ["1", "2", "3", "4+"] },
+        { id: "rate-halfday", g: "Price sheet", ask: "Half-day rate (4–5 hours)?", type: "text", ph: "$260 or type 'none'" },
+        { id: "rate-fullday", g: "Price sheet", ask: "Full-day rate (8–10 hours)?", type: "text", ph: "$480 or type 'none'" },
+        { id: "engineer", g: "Price sheet", ask: "Is an engineer or house tech included in the rate?", type: "chips", options: ["Included", "Available — extra hourly", "Not offered"],
+          when: function (a) { return a.spacetype !== "Event space"; } },
+        { id: "engineer-rate", g: "Price sheet", ask: "What's the engineer/tech hourly rate?", type: "text", ph: "$40/hr",
+          when: function (a) { return a.engineer === "Available — extra hourly"; } },
+        { id: "deposit", g: "Price sheet", ask: "What deposit locks a booking, and is it refundable?", type: "text", ph: "e.g. 50%, refundable to 48h out" },
+        { id: "overtime", g: "Price sheet", ask: "Overtime rate when a session runs past the block?", type: "text", ph: "e.g. 1.5× hourly" },
+        { id: "fees", g: "Price sheet", ask: "Any additional fees — cleaning, security, gear rental add-ons? List them with prices.", type: "long" },
+        { id: "discounts", g: "Price sheet", ask: "Block-booking or member discounts? Spell them out.", type: "long" },
+        { id: "cancel", g: "Price sheet", ask: "Your cancellation policy — windows and what's kept.", type: "long" },
+        { id: "payments", g: "Price sheet", ask: "Which payment methods do you accept?", type: "multi", options: ["Card", "Cash", "ACH", "Square", "PayPal", "Zelle", "Other"] },
+        { id: "gear", g: "Gear & amenities", ask: "Headline the gear and amenities — console/DAW and mic locker, lighting and grip, PA and staging, whatever sells the room.", type: "long" },
+        { id: "amenities", g: "Gear & amenities", ask: "Which comforts does the space offer?", type: "multi", options: ["WiFi", "Green room", "Restrooms", "Climate control", "Kitchen/bar", "Wheelchair accessible", "On-site parking"] },
+        { id: "photos", g: "Media", ask: "Drop a link to 3–5 photos of the space (Drive, Dropbox, or your site).", type: "text", ph: "https://…" },
+        { id: "video", g: "Media", ask: "A walkthrough video link, if you have one.", type: "text", ph: "https://… or 'none'" },
+        { id: "insurance", g: "Legal", ask: "General liability insurance — carrier and policy number. We verify the certificate before the badge is issued.", type: "text", ph: "Carrier + policy no." },
+        { id: "occupancy", g: "Legal", ask: "Fire-marshal occupancy limit and any assembly permit details?", type: "text", ph: "e.g. 150 per FD permit",
+          when: function (a) { return a.spacetype === "Event space" || a.spacetype === "Multi-use"; } },
+        { id: "alcohol", g: "Legal", ask: "What's the alcohol policy?", type: "chips", options: ["Licensed bar", "BYOB allowed", "Not permitted"],
+          when: function (a) { return a.spacetype === "Event space" || a.spacetype === "Multi-use"; } },
+        { id: "curfew", g: "Legal", ask: "Any noise curfew or neighborhood restrictions?", type: "text", ph: "e.g. amplified sound until 11pm" },
+        { id: "ein", g: "Identifiers", ask: "Your EIN (federal tax ID) — required for the venue badge.", type: "text", ph: "XX-XXXXXXX" },
+        { id: "statefiling", g: "Identifiers", ask: "Your state business filing number (CT: from business.ct.gov).", type: "text", ph: "0013567374" },
+        { id: "leadtime", g: "Booking", ask: "How much lead time do bookings need, and how do you confirm them?", type: "text", ph: "e.g. 48h, confirmed by deposit" },
+        { id: "rules", g: "Booking", ask: "House rules the network should publish with your listing.", type: "long" },
+        { id: "revshare", g: "Agreement", ask: "Bookings routed through the network carry a referral arrangement we'll finalize together before listing. Good to proceed on that basis?", type: "chips", options: ["Agreed — let's finalize terms", "I want to discuss first"] },
+        { id: "attest", g: "Agreement", ask: "Last one: do you attest everything above is accurate and yours to represent?", type: "chips", options: ["I attest"] },
+      ];
+
+      var KEY = "mcc-interview";
+      var answers = {};
+      try { answers = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+      var log = document.getElementById("chatLog");
+      var input = document.getElementById("chatInput");
+      var bar = document.getElementById("chatBar");
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      function active() { return Q.filter(function (q) { return !q.when || q.when(answers); }); }
+      function nextQ() {
+        var qs = active();
+        for (var i = 0; i < qs.length; i++) if (!(qs[i].id in answers)) return qs[i];
+        return null;
+      }
+      function progress() {
+        var qs = active();
+        var done = qs.filter(function (q) { return q.id in answers; }).length;
+        bar.style.width = Math.round((done / qs.length) * 100) + "%";
+        return { done: done, total: qs.length };
+      }
+      function bubble(cls, html) {
+        var d = document.createElement("div");
+        d.className = "chat__msg " + cls;
+        d.innerHTML = html;
+        log.appendChild(d);
+        return d;
+      }
+      function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+      function render() {
+        input.innerHTML = "";
+        var q = nextQ();
+        var p = progress();
+        if (!q) return review();
+        bubble("chat__msg--q", '<span class="chat__group">' + q.g + " · " + (p.done + 1) + " of ~" + p.total + "</span>" + esc(q.ask));
+        window.scrollTo(0, document.body.scrollHeight);
+
+        function submit(val) {
+          if (!val) return;
+          if (q.validate === "email" && !/^\S+@\S+\.\S+$/.test(val)) { alert("That email doesn't look right — one more try."); return; }
+          answers[q.id] = val;
+          localStorage.setItem(KEY, JSON.stringify(answers));
+          bubble("chat__msg--a", esc(val));
+          track("interview_answer", { q: q.id, page: "interview" });
+          render();
+        }
+
+        if (q.type === "chips" || q.type === "multi") {
+          var wrap = document.createElement("div");
+          wrap.className = "chat__chips";
+          var picked = [];
+          q.options.forEach(function (opt) {
+            var b = document.createElement("button");
+            b.type = "button"; b.className = "chat__chip"; b.textContent = opt;
+            b.addEventListener("click", function () {
+              if (q.type === "chips") return submit(opt);
+              b.classList.toggle("is-picked");
+              var i = picked.indexOf(opt);
+              if (i === -1) picked.push(opt); else picked.splice(i, 1);
+            });
+            wrap.appendChild(b);
+          });
+          input.appendChild(wrap);
+          if (q.type === "multi") {
+            var go = document.createElement("button");
+            go.className = "btn btn--ruby"; go.type = "button"; go.textContent = "That's all of them →";
+            go.addEventListener("click", function () { submit(picked.join(", ")); });
+            input.appendChild(go);
+          }
+        } else {
+          var row = document.createElement("div");
+          row.className = "chat__free";
+          var f = document.createElement(q.type === "long" ? "textarea" : "input");
+          if (q.type === "long") f.rows = 3;
+          f.placeholder = q.ph || "Type or talk it out…";
+          row.appendChild(f);
+          var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+          if (SR) {
+            var mic = document.createElement("button");
+            mic.type = "button"; mic.className = "chat__mic"; mic.textContent = "🎙";
+            mic.addEventListener("click", function () {
+              var r = new SR();
+              r.lang = "en-US"; r.interimResults = false;
+              mic.classList.add("is-live");
+              r.onresult = function (ev) { f.value = (f.value ? f.value + " " : "") + ev.results[0][0].transcript; };
+              r.onend = function () { mic.classList.remove("is-live"); f.focus(); };
+              r.start();
+            });
+            row.appendChild(mic);
+          }
+          var go2 = document.createElement("button");
+          go2.className = "btn btn--ruby"; go2.type = "button"; go2.textContent = "Next →";
+          go2.addEventListener("click", function () { submit(f.value.trim()); });
+          input.appendChild(row);
+          input.appendChild(go2);
+          f.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter" && q.type !== "long") { ev.preventDefault(); submit(f.value.trim()); }
+          });
+          setTimeout(function () { f.focus(); }, 50);
+        }
+
+        var actions = document.createElement("div");
+        actions.className = "chat__actions";
+        if (Object.keys(answers).length) {
+          var back = document.createElement("button");
+          back.className = "chat__back"; back.type = "button"; back.textContent = "← change last answer";
+          back.addEventListener("click", function () {
+            var qs = active();
+            for (var i = qs.length - 1; i >= 0; i--) {
+              if (qs[i].id in answers) {
+                delete answers[qs[i].id];
+                localStorage.setItem(KEY, JSON.stringify(answers));
+                break;
+              }
+            }
+            log.innerHTML = "";
+            replay();
+            render();
+          });
+          actions.appendChild(back);
+        }
+        var hint = document.createElement("span");
+        hint.className = "chat__hint";
+        hint.textContent = "Answers save on this device — leave and come back anytime.";
+        actions.appendChild(hint);
+        input.appendChild(actions);
+      }
+
+      function replay() {
+        active().forEach(function (q) {
+          if (q.id in answers) {
+            bubble("chat__msg--q", '<span class="chat__group">' + q.g + "</span>" + esc(q.ask));
+            bubble("chat__msg--a", esc(answers[q.id]));
+          }
+        });
+      }
+
+      function review() {
+        bar.style.width = "100%";
+        var rows = active().map(function (q) {
+          return "<dt>" + esc(q.g + " · " + q.id) + "</dt><dd>" + esc(answers[q.id] || "—") + "</dd>";
+        }).join("");
+        input.innerHTML = "";
+        var card = document.createElement("div");
+        card.className = "chat__review";
+        card.innerHTML = "<h3>Review your listing</h3><dl>" + rows + "</dl>";
+        input.appendChild(card);
+        var send = document.createElement("button");
+        send.className = "btn btn--ruby"; send.type = "button"; send.style.marginTop = "1rem";
+        send.textContent = "Send the application";
+        send.addEventListener("click", function () {
+          track("interview_submit", { page: "interview" });
+          var lines = ["SPACE INTAKE INTERVIEW — McCluster Service Network", ""];
+          active().forEach(function (q) { lines.push("[" + q.g + "] " + q.ask + "\n> " + (answers[q.id] || "—") + "\n"); });
+          if (INTAKE_ENDPOINT) {
+            fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(answers) })
+              .then(function () { send.textContent = "Submitted — we'll be in touch"; localStorage.removeItem(KEY); })
+              .catch(function () {});
+          } else {
+            location.href = "mailto:matthew@mccluster.org?subject=" +
+              encodeURIComponent("Space intake — " + (answers.bizname || "new space")) +
+              "&body=" + encodeURIComponent(lines.join("\n"));
+          }
+        });
+        input.appendChild(send);
+        var reset = document.createElement("button");
+        reset.className = "chat__back"; reset.type = "button"; reset.style.marginTop = "0.8rem";
+        reset.textContent = "start over";
+        reset.addEventListener("click", function () {
+          if (!confirm("Wipe every answer and start fresh?")) return;
+          answers = {}; localStorage.removeItem(KEY); log.innerHTML = ""; render();
+        });
+        input.appendChild(reset);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      replay();
+      render();
+    })();
+  </script>
+</body>
+</html>

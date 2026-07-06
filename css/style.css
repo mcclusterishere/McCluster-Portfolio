@@ -1222,3 +1222,45 @@ a { color: inherit; text-decoration: none; }
 .idcard__meta a { color: var(--ruby-hot); border-bottom: 1px solid var(--ruby); }
 .badge-legend { display: flex; flex-wrap: wrap; gap: 1rem 1.6rem; margin: 1.6rem 0; }
 .badge-legend__item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--cream-dim); }
+
+/* ============ the intake interview: one question at a time ============ */
+.chat { max-width: 46rem; margin: 0 auto; padding: clamp(6.5rem, 11vw, 8.5rem) 1.2rem 6rem; }
+.chat__progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 150; background: rgba(244, 239, 230, 0.08); }
+.chat__progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ruby), var(--ruby-hot)); transition: width 0.4s ease; }
+.chat__log { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 1.4rem; }
+.chat__msg { max-width: 85%; padding: 0.8em 1.1em; border-radius: 14px; font-size: 0.95rem; line-height: 1.45; }
+.chat__msg--q { align-self: flex-start; background: var(--ink-2); border: 1px solid rgba(244, 239, 230, 0.12); border-bottom-left-radius: 4px; }
+.chat__msg--q .chat__group { display: block; font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ruby-hot); margin-bottom: 0.3rem; }
+.chat__msg--a { align-self: flex-end; background: var(--ruby); border-bottom-right-radius: 4px; color: #fff; }
+.chat__msg--a .chat__edit { display: inline-block; margin-left: 0.6em; font-size: 0.72rem; opacity: 0.75; border-bottom: 1px solid rgba(255,255,255,0.5); cursor: pointer; }
+.chat__input { display: flex; flex-direction: column; gap: 0.7rem; }
+.chat__chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chat__chip {
+  border: 1px solid rgba(244, 239, 230, 0.25); border-radius: 100px;
+  background: none; color: var(--cream); cursor: pointer;
+  padding: 0.55em 1.1em; font-family: var(--body); font-size: 0.9rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.chat__chip:hover { border-color: var(--ruby-hot); }
+.chat__chip.is-picked { background: var(--ruby); border-color: var(--ruby); color: #fff; }
+.chat__free { display: flex; gap: 0.5rem; }
+.chat__free input, .chat__free textarea {
+  flex: 1; background: var(--ink-2); color: var(--cream);
+  border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+  padding: 0.75em 0.9em; font-family: var(--body); font-size: 1rem;
+}
+.chat__free input:focus, .chat__free textarea:focus { outline: 2px solid var(--ruby); }
+.chat__mic {
+  flex: none; width: 2.9rem; border-radius: 10px; cursor: pointer;
+  border: 1px solid rgba(244, 239, 230, 0.2); background: var(--ink-2);
+  color: var(--cream); font-size: 1.1rem;
+}
+.chat__mic.is-live { background: var(--ruby); border-color: var(--ruby-hot); animation: loadFlash 0.6s steps(2) infinite; }
+.chat__actions { display: flex; align-items: center; gap: 1rem; }
+.chat__skip, .chat__back { font-size: 0.78rem; color: var(--cream-dim); border-bottom: 1px dashed rgba(244, 239, 230, 0.3); cursor: pointer; background: none; border-top: 0; border-left: 0; border-right: 0; font-family: var(--body); padding: 0; }
+.chat__hint { font-size: 0.74rem; color: var(--cream-dim); }
+.chat__review { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 12px; background: var(--ink-2); padding: 1.2rem; }
+.chat__review h3 { font-family: var(--display); text-transform: uppercase; margin-bottom: 0.8rem; }
+.chat__review dl { display: grid; grid-template-columns: minmax(9rem, auto) 1fr; gap: 0.35rem 1rem; font-size: 0.85rem; }
+.chat__review dt { color: var(--cream-dim); }
+.chat__review dd { overflow-wrap: anywhere; }
