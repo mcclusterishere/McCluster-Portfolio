@@ -294,6 +294,7 @@
 
   /* ---------------- hero scrub ---------------- */
   var hudDeg = document.getElementById("hudDeg");
+  var heroOffer = document.getElementById("heroOffer");
   var parHero = parCanvas("hero");
 
   ScrollTrigger.create({
@@ -304,7 +305,12 @@
     onUpdate: function (st) {
       var p = st.progress;
       sequences.hero.target = p * (sequences.hero.count - 1 || 0);
-      hudDeg.textContent = String(Math.round(p * 360)).padStart(3, "0") + "°";
+      // the orbit is a full 360 — once the camera comes all the way around,
+      // the degree readout locks on 360° and flashes, and the offer pops up.
+      var done = p >= 0.94;
+      hudDeg.textContent = (done ? "360" : String(Math.round(p * 360)).padStart(3, "0")) + "°";
+      hudDeg.classList.toggle("is-360", done);
+      if (heroOffer) heroOffer.classList.toggle("is-shown", done);
       PAR.set(parHero, st.isActive ? PAR.ramp(p) : 0);
     },
     onToggle: function (st) { if (!st.isActive) PAR.set(parHero, 0); },
@@ -328,8 +334,6 @@
   (function () {
     var loPanels = gsap.utils.toArray("#loadout .command__panel");
     var loCount = document.getElementById("loCount");
-    var loOffer = document.getElementById("loOffer");
-    var loDeg = document.getElementById("loDeg");
     var current = 0;
     var parLoCanvas = parCanvas("keynote");
     var parLoPanels = PAR.attach(document.querySelector("#loadout .command__panels"), { depth: -7 });
@@ -341,17 +345,6 @@
       loPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
       loCount.textContent = "0" + (active + 1) + " / 03";
       current = active;
-      // the 360 is "achieved" once the pan reaches the final corner — the
-      // snap parks the visitor there, so this state holds at rest (a p>=0.9
-      // check would only flicker past, since the snap settles at 5/6 ≈ 300°).
-      var done = active === 2;
-      // the offer pops up in the same box: "want your own page like this?"
-      if (loOffer) loOffer.classList.toggle("is-shown", done);
-      // the degree readout counts up with the pan and flashes 360° once achieved
-      if (loDeg) {
-        loDeg.textContent = (done ? "360" : String(Math.round(p * 360)).padStart(3, "0")) + "°";
-        loDeg.classList.toggle("is-360", done);
-      }
       // the pan comes alive at the end of each corner's band
       var s = PAR.ramp(clamp01(p * 3 - active));
       PAR.set(parLoCanvas, s);
