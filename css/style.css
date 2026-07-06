@@ -1705,6 +1705,40 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .pmk__consent h3 { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ruby-hot); margin-bottom: 0.5rem; }
 .pmk__consent p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; }
 
+/* ============ the gallery wall (Who Did The Shoot) ============ */
+.gal { padding: clamp(4rem, 8vw, 6rem) clamp(1.2rem, 4vw, 3rem); max-width: 80rem; margin: 0 auto; text-align: center; }
+.gal__sub { margin: 1rem auto 0; color: var(--cream-dim); font-size: 0.98rem; line-height: 1.65; max-width: 52ch; }
+.gal__wall { columns: 3 16rem; column-gap: 0.9rem; margin-top: 2.2rem; text-align: left; }
+.gal__shot {
+  break-inside: avoid; margin: 0 0 0.9rem; position: relative;
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  border: 1px solid rgba(244, 239, 230, 0.12);
+  transition: transform 0.3s ease, border-color 0.3s, box-shadow 0.3s;
+}
+.gal__shot img { display: block; width: 100%; height: auto; transition: transform 0.5s ease; }
+.gal__shot:hover { transform: translateY(-4px); border-color: var(--ruby); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 22px rgba(193, 18, 31, 0.25); }
+.gal__shot:hover img { transform: scale(1.04); }
+.gal__shot figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 1.6rem 0.9rem 0.7rem;
+  background: linear-gradient(180deg, transparent, rgba(6, 5, 4, 0.85));
+  font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--cream-dim);
+}
+.gal__shot figcaption b { color: var(--ruby-hot); margin-right: 0.5em; }
+.gal__light {
+  position: fixed; inset: 0; z-index: 260;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  background: rgba(6, 5, 4, 0.95); padding: 1.2rem;
+  opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+  cursor: zoom-out;
+}
+.gal__light.is-open { opacity: 1; visibility: visible; }
+.gal__light img { max-width: min(92vw, 70rem); max-height: 80vh; border-radius: 10px; }
+.gal__light p { text-align: center; }
+.gal__light b { display: block; font-family: var(--display); font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.gal__light span { color: var(--cream-dim); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; }
+
 /* ============ Docket 516: the evidence room ============ */
 .dkt { padding: clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 4vw, 3rem); max-width: 74rem; margin: 0 auto; }
 .dkt__hero { padding-top: clamp(7rem, 12vw, 9rem); }

@@ -1,0 +1,47 @@
+{
+  "note": "The Who Did The Shoot gallery. Add a photo: drop the optimized jpg in assets/gallery/ and add a record here — the page renders this file.",
+  "shots": [
+    {
+      "src": "assets/gallery/penthouse-jump.jpg",
+      "alt": "Dancer mid-air between the kitchen counters of a penthouse lounge",
+      "caption": "Caught at the top of the jump — no wires, one take",
+      "location": "Penthouse lounge session",
+      "tag": "Photography"
+    },
+    {
+      "src": "assets/gallery/penthouse-dj-skyline.jpg",
+      "alt": "DJ over the decks with the city skyline through the window",
+      "caption": "Serato over the skyline",
+      "location": "Penthouse lounge session",
+      "tag": "Audio"
+    },
+    {
+      "src": "assets/gallery/penthouse-dj-wide.jpg",
+      "alt": "Wide frame of a DJ setting up on a stone counter in a sunlit penthouse",
+      "caption": "The room before the party — natural light, no rig needed",
+      "location": "Penthouse lounge session",
+      "tag": "Photography"
+    },
+    {
+      "src": "assets/gallery/penthouse-dj-portrait.jpg",
+      "alt": "DJ smiling mid-set, hand raised",
+      "caption": "Mid-set, hands up",
+      "location": "Penthouse lounge session",
+      "tag": "Photography"
+    },
+    {
+      "src": "assets/gallery/downtown-slingshot.jpg",
+      "alt": "Artist seated on a Polaris Slingshot on a downtown street at dusk",
+      "caption": "Dusk on the boulevard — shot for the record, not the 'gram",
+      "location": "Downtown Bridgeport",
+      "tag": "Photography"
+    },
+    {
+      "src": "assets/gallery/openmic-live.jpg",
+      "alt": "Vocalist at the mic in front of a painted storefront window",
+      "caption": "Live at the open mic — one mic, one window, all heart",
+      "location": "Storefront gallery session",
+      "tag": "Live"
+    }
+  ]
+}

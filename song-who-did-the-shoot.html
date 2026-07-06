@@ -121,6 +121,22 @@
       </div>
     </section>
 
+    <!-- ============ THE GALLERY — the answer to the question ============ -->
+    <section class="gal" id="gallery">
+      <p class="kicker kicker--center">Who did the shoot? He did.</p>
+      <h2 class="songbuy__title">The<br>Gallery</h2>
+      <p class="gal__sub">
+        Real shoots, real rooms — penthouse lounges, downtown at dusk, storefront
+        stages. Every frame below was shot, lit, and cut by McCluster. The wall grows
+        with every session.
+      </p>
+      <div class="gal__wall" id="galWall"></div>
+      <div class="finale__actions" style="margin-top:2rem">
+        <a class="btn btn--ruby" href="network-photo.html" data-cta="gallery-book">Book a shoot like this</a>
+        <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Shoot%20Inquiry%20%E2%80%94%20The%20Gallery" data-cta="gallery-inquiry">Ask about a location</a>
+      </div>
+    </section>
+
     <section class="songbuy" id="own">
       <p class="kicker kicker--center">Wunt for free — pay the fee</p>
       <h2 class="songbuy__title">Own<br>"Who Did The Shoot"</h2>
@@ -143,5 +159,40 @@
   <script src="vendor/ScrollTrigger.min.js?v=__STAMP__"></script>
   <script src="js/parallax.js?v=__STAMP__"></script>
   <script src="js/song.js?v=__STAMP__"></script>
+  <script>
+    // The gallery wall — renders data/gallery.json; tap a frame for the full view
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s || ""; return d.innerHTML; }
+      var wall = document.getElementById("galWall");
+      var box = document.createElement("div");
+      box.className = "gal__light";
+      document.body.appendChild(box);
+      var SHOTS = [];
+      fetch("data/gallery.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          SHOTS = d.shots || [];
+          wall.innerHTML = SHOTS.map(function (s, i) {
+            return '<figure class="gal__shot" data-i="' + i + '">' +
+              '<img loading="lazy" decoding="async" src="' + esc(s.src) + '" alt="' + esc(s.alt) + '">' +
+              "<figcaption><b>" + esc(s.tag) + "</b> " + esc(s.location) + "</figcaption></figure>";
+          }).join("");
+          track("gallery_view", { page: "song-whodidtheshoot", shots: SHOTS.length });
+        })
+        .catch(function () { wall.innerHTML = "<p class='finale__believe'>The wall is being rehung — check back in a minute.</p>"; });
+      wall.addEventListener("click", function (ev) {
+        var fig = ev.target.closest(".gal__shot");
+        if (!fig) return;
+        var s = SHOTS[+fig.getAttribute("data-i")];
+        box.innerHTML = '<img src="' + esc(s.src) + '" alt="' + esc(s.alt) + '">' +
+          '<p><b>' + esc(s.caption) + "</b><span>" + esc(s.location) + " · " + esc(s.tag) + "</span></p>";
+        box.classList.add("is-open");
+        track("gallery_open", { shot: s.src, page: "song-whodidtheshoot" });
+      });
+      box.addEventListener("click", function () { box.classList.remove("is-open"); });
+    })();
+  </script>
 </body>
 </html>
