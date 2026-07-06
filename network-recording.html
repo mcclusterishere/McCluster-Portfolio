@@ -28,13 +28,8 @@
         <article class="idcard"><h3>03 · Session covered</h3><p>House engineers where offered, published engineer rates, verified insurance, and rooms that honor the block you booked.</p></article>
       </div>
       <div class="sysid" style="margin-top:2.5rem">
-        <h3 class="sysid__title">The roster</h3>
-        <div class="badge-legend">
-          <div class="badge-legend__item">
-            <span class="mbadge" style="--badge-c:#e5383b"><img src="assets/img/m-mark.png" alt=""></span>
-            <span><strong style="color:var(--cream)">First partners are in verification now.</strong><br>Every listing goes live with the M-Verified · Venue badge, real photos, and its full price sheet.</span>
-          </div>
-        </div>
+        <h3 class="sysid__title">The badges — org types we verify</h3>
+        <div class="badge-legend" id="orgBadges"></div>
       </div>
       <div class="finale__actions" style="margin-top:2.2rem">
         <a class="btn btn--ruby" data-cta="recording-booking" href="mailto:matthew@mccluster.org?subject=Recording%20Network%20booking">Request a booking</a>
@@ -47,7 +42,20 @@
     <p class="site-foot__note">&#169; 2026 Matthew McCluster &#183; McCluster Corp.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
   <script>
+    // the original org-type badges: every entity type the network verifies
+    (function () {
+      var box = document.getElementById("orgBadges");
+      if (box && window.MCC_ENTITIES) {
+        box.innerHTML = Object.keys(MCC_ENTITIES).map(function (k) {
+          var e = MCC_ENTITIES[k];
+          return '<a class="badge-legend__item" href="verify.html" data-cta="orgbadge-' + k + '" style="text-decoration:none;color:inherit">' +
+            '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+            '<span><strong style="color:var(--cream)">' + e.badge + "</strong><br>" + e.desc + "</span></a>";
+        }).join("");
+      }
+    })();
     document.querySelectorAll("a[data-cta]").forEach(function (el) {
       el.addEventListener("click", function () {
         if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "network-recording" });

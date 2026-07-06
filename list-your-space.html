@@ -34,14 +34,31 @@
       </div>
       <p class="songhero__hint">Pick your entity type, present its identifiers, earn the M-Verified badge for it.</p>
     </section>
+    <section class="verify" style="padding-top:0">
+      <div class="sysid">
+        <h3 class="sysid__title">The badges — org types we verify</h3>
+        <div class="badge-legend" id="orgBadges"></div>
+      </div>
+    </section>
   </main>
   <footer class="site-foot">
     <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
     <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
   <script>
     (function () {
+      // the original org-type badges: every entity type the network verifies
+      var box = document.getElementById("orgBadges");
+      if (box && window.MCC_ENTITIES) {
+        box.innerHTML = Object.keys(MCC_ENTITIES).map(function (k) {
+          var e = MCC_ENTITIES[k];
+          return '<a class="badge-legend__item" href="verify.html" data-cta="orgbadge-' + k + '" style="text-decoration:none;color:inherit">' +
+            '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+            '<span><strong style="color:var(--cream)">' + e.badge + "</strong><br>" + e.desc + "</span></a>";
+        }).join("");
+      }
       document.querySelectorAll("a[data-cta]").forEach(function (el) {
         el.addEventListener("click", function () {
           if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "list-your-space" });
