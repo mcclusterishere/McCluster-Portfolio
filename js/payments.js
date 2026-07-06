@@ -25,7 +25,7 @@ window.PAYMENTS = {
   "gotwifi": {
     title: "Got WiFi",
     page: "song-got-wifi.html",
-    link: "",
+    link: "https://square.link/u/ihcmtexP",
   },
   "vaunt": {
     title: "Vaunt (Acoustic)",
