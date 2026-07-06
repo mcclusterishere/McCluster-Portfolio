@@ -943,7 +943,8 @@ a { color: inherit; text-decoration: none; }
   list-style: none;
   border-top: 1px solid rgba(244, 239, 230, 0.12);
 }
-.catalogue__row a {
+.catalogue__row a,
+.catalogue__rowinner {
   display: grid;
   grid-template-columns: 3rem minmax(0, 2fr) minmax(0, 3fr) 4rem 6rem;
   gap: 1rem; align-items: baseline;
@@ -951,6 +952,13 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid rgba(244, 239, 230, 0.12);
   transition: background 0.25s ease, padding-left 0.25s ease;
 }
+.catalogue__album {
+  font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--ruby-hot);
+  padding: 1.4rem 0.4rem 0.5rem; margin-top: 0.4rem;
+  border-bottom: 1px solid rgba(229, 56, 59, 0.3);
+}
+.catalogue__list > .catalogue__album:first-child { padding-top: 0.2rem; }
 .catalogue__row a:hover {
   background: rgba(193, 18, 31, 0.08);
   padding-left: 1rem;
@@ -986,7 +994,8 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.8rem; color: var(--cream-dim);
 }
 @media (max-width: 720px) {
-  .catalogue__row a {
+  .catalogue__row a,
+  .catalogue__rowinner {
     grid-template-columns: 2.2rem minmax(0, 1fr) 3.4rem;
     row-gap: 0.25rem;
   }
@@ -1017,6 +1026,37 @@ a { color: inherit; text-decoration: none; }
   color: var(--ruby-hot);
   margin-bottom: 1rem;
 }
+.sysid__sub { color: var(--cream-dim); font-size: 0.86rem; line-height: 1.6; max-width: 60ch; margin-bottom: 1.4rem; }
+/* the earned badges, sitting over the info they're backed by */
+.sysid__badges {
+  display: flex; flex-wrap: wrap; gap: 0.7rem 1rem;
+  margin-bottom: 1.1rem; padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(244, 239, 230, 0.14);
+}
+.sysid__badge {
+  position: relative; display: flex; align-items: center; gap: 0.55rem;
+  text-decoration: none; color: var(--cream);
+  transition: transform 0.2s ease;
+}
+.sysid__badge .mbadge { width: 2.4em; flex: none; transition: transform 0.2s ease; }
+.sysid__badge b { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 400; line-height: 1.25; }
+.sysid__badge:hover { transform: translateY(-2px); }
+.sysid__badge:hover .mbadge { transform: scale(1.12); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5)); }
+.sysid__badge:hover b { color: var(--ruby-hot); }
+/* the hover blurb */
+.sysid__tip {
+  position: absolute; bottom: calc(100% + 0.6rem); left: 0;
+  width: max(14rem, 100%); max-width: 20rem; z-index: 20;
+  background: rgba(10, 8, 7, 0.97); color: var(--cream-dim);
+  border: 1px solid rgba(229, 56, 59, 0.5); border-radius: 10px;
+  padding: 0.7rem 0.85rem; font-size: 0.72rem; letter-spacing: 0; text-transform: none; line-height: 1.5;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  opacity: 0; visibility: hidden; transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
+}
+.sysid__tip em { display: block; margin-top: 0.4rem; color: var(--ruby-hot); font-style: normal; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; }
+.sysid__badge:hover .sysid__tip, .sysid__badge:focus-visible .sysid__tip { opacity: 1; visibility: visible; transform: translateY(0); }
 .sysid__item {
   display: flex; justify-content: space-between; align-items: baseline;
   gap: 1rem;
@@ -1590,6 +1630,11 @@ a { color: inherit; text-decoration: none; }
 }
 .bio__ledger b { display: block; font-family: var(--display); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1rem; }
 .bio__ledger span { display: block; margin-top: 0.3rem; color: var(--cream-dim); font-size: 0.78rem; letter-spacing: 0.08em; }
+/* the quest log runs tight — it's a list, not a set of cards */
+.bio__ledger--stack { gap: 0.35rem; }
+.bio__ledger--stack li { padding: 0.4rem 0.75rem; border-radius: 7px; border-top: 0; border-right: 0; border-bottom: 0; background: none; }
+.bio__ledger--stack b { font-size: 0.78rem; }
+.bio__ledger--stack span { margin-top: 0.1rem; font-size: 0.68rem; }
 
 /* ============ the Equity Uprise logo: kill the white chip, keep it for Vaunt ============ */
 .command__logo--transparent { background: transparent; padding: 0; border-radius: 0; }

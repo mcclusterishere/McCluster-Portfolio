@@ -23,7 +23,7 @@
         <p class="kicker">Registered works · McCluster Corp — ISRC prefix QT6KV</p>
         <h2 class="section-title">Catalogue</h2>
       </header>
-      <ol class="catalogue__list">
+      <ol class="catalogue__list" id="catList">
         <li class="catalogue__row">
           <a href="song-who-did-the-shoot.html" data-cta="catalogue-whodidtheshoot">
             <span class="catalogue__no">01</span>
@@ -92,9 +92,11 @@
 
       <div class="sysid">
         <h3 class="sysid__title">System Identification</h3>
+        <p class="sysid__sub">The badges are earned — every one is backed by the verified credentials listed under it. Hover a badge for what it means; tap it for the full explanation.</p>
         <div class="sysid__cols">
-          <dl class="sysid__card">
-            <dt class="sysid__who">McCluster Corp — Rights Owner</dt>
+          <dl class="sysid__card" data-badges="rights-owner,nonprofit,federal">
+            <dt class="sysid__who">McCluster Corp</dt>
+            <div class="sysid__badges"></div>
             <div class="sysid__item" data-copy="QT6KV"><dd>ISRC Prefix</dd><code>QT6KV</code></div>
             <div class="sysid__item" data-copy="PA-DPIDA-2025101205-D"><dd>DDEX DPID</dd><code>PA-DPIDA-2025101205-D</code></div>
             <div class="sysid__item" data-copy="2181078405"><dd>SoundExchange ID</dd><code>2181078405</code></div>
@@ -107,15 +109,16 @@
             <div class="sysid__item" data-copy="US-CT.BER:3293440"><dd>ALEI</dd><code>US-CT.BER:3293440</code></div>
             <div class="sysid__item" data-copy="0013567374"><dd>CT Filing No.</dd><code>0013567374</code></div>
           </dl>
-          <dl class="sysid__card">
-            <dt class="sysid__who">Matthew McCluster — Performer</dt>
+          <dl class="sysid__card" data-badges="performer,creator">
+            <dt class="sysid__who">Matthew McCluster</dt>
+            <div class="sysid__badges"></div>
             <div class="sysid__item" data-copy="0000 0005 2956 3111"><dd>ISNI</dd><code>0000 0005 2956 3111</code></div>
             <div class="sysid__item" data-copy="SX1102K2V5"><dd>SoundExchange SubID</dd><code>SX1102K2V5</code></div>
             <div class="sysid__item" data-copy="0009-0000-8988-8955"><dd>ORCID</dd><code>0009-0000-8988-8955</code></div>
             <div class="sysid__item" data-copy="9761733"><dd>SSRN</dd><code>9761733</code></div>
           </dl>
         </div>
-        <p class="sysid__hint">Tap any identifier to copy it.</p>
+        <p class="sysid__hint">Tap a badge for its explanation · tap any identifier to copy it.</p>
       </div>
     </section>
   </main>
@@ -124,9 +127,64 @@
     <p class="site-foot__note">© 2026 Matthew McCluster · Here — The Album.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
   <script>
     (function () {
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s || ""; return d.innerHTML; }
+      // Matthew's earned badges: rendered from the entity registry, over his info
+      document.querySelectorAll(".sysid__card[data-badges]").forEach(function (card) {
+        var slot = card.querySelector(".sysid__badges");
+        if (!slot || !window.MCC_ENTITIES) return;
+        slot.innerHTML = card.getAttribute("data-badges").split(",").map(function (k) {
+          var e = window.MCC_ENTITIES[k.trim()];
+          if (!e) return "";
+          return '<a class="sysid__badge" href="badge-explainer.html?entity=' + encodeURIComponent(k.trim()) + '" data-badge="' + esc(k.trim()) + '" title="' + esc(e.badge + " — " + e.desc) + '">' +
+            '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+            "<b>" + esc(e.badge) + "</b>" +
+            '<span class="sysid__tip">' + esc(e.desc) + " <em>Tap for the full explanation &#8594;</em></span></a>";
+        }).join("");
+      });
+      document.querySelectorAll(".sysid__badge").forEach(function (a) {
+        a.addEventListener("click", function () { track("badge_click", { badge_id: "entity-" + a.getAttribute("data-badge"), section: "catalogue", page: "catalogue" }); });
+      });
+
+      // the catalogue builds itself from data/catalogue.json (generated from the
+      // actual mp3 files by tools/build-catalogue.mjs). Static rows are the fallback.
+      var list = document.getElementById("catList");
+      if (list) {
+        fetch("data/catalogue.json", { cache: "no-cache" })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var tracks = data.tracks || [];
+            if (!tracks.length) return;
+            var html = "";
+            var album = null;
+            tracks.forEach(function (t) {
+              if (t.album && t.album !== album) {
+                album = t.album;
+                html += '<li class="catalogue__album">' + esc(album) + (album === "Here" ? " — The Album" : "") + "</li>";
+              }
+              var linkable = t.page && (t.available || (t.page.indexOf("song-") === 0));
+              var inner =
+                '<span class="catalogue__no">' + esc(t.no) + "</span>" +
+                '<span class="catalogue__title">' + esc(t.title) + "</span>" +
+                '<span class="catalogue__credit">' + esc(t.credit) + "</span>" +
+                '<span class="catalogue__len">' + esc(t.length || "") + "</span>" +
+                '<span class="catalogue__own">' + (t.available ? "Own it &#8594;" : t.page && t.page.indexOf("song-") === 0 ? "Preview &#8594;" : "Coming soon") + "</span>";
+              html += '<li class="catalogue__row' + (t.available ? "" : " catalogue__row--soon") + '">' +
+                (linkable ? '<a href="' + esc(t.page) + '" data-cta="catalogue-' + esc(t.slug) + '">' + inner + "</a>" : '<div class="catalogue__rowinner">' + inner + "</div>") +
+                "</li>";
+            });
+            list.innerHTML = html;
+            // re-bind cta tracking for the freshly rendered links
+            list.querySelectorAll("a[data-cta]").forEach(function (el) {
+              el.addEventListener("click", function () { track("cta_click", { label: el.getAttribute("data-cta"), page: "catalogue" }); });
+            });
+            track("catalogue_view", { tracks: tracks.length });
+          })
+          .catch(function () { /* keep the static fallback rows */ });
+      }
       document.querySelectorAll("a[data-cta]").forEach(function (el) {
         el.addEventListener("click", function () {
           track("cta_click", { label: el.getAttribute("data-cta"), page: "catalogue" });
