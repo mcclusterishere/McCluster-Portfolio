@@ -659,7 +659,23 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- SERVICES slides ---------- */
-.services { height: 400vh; position: relative; }
+.services { height: 100vh; position: relative; }
+/* services collapsed to a single frame: all three offerings shown at once,
+   no three-scene scrub, counter hidden */
+.command__panels--trio {
+  display: flex; flex-wrap: wrap; gap: clamp(1rem, 3vw, 2.2rem);
+  align-items: flex-end; bottom: clamp(3rem, 10vh, 5.5rem);
+}
+.command__panels--trio .command__panel {
+  position: relative; left: auto; bottom: auto;
+  opacity: 1; transform: none; pointer-events: auto;
+  flex: 1 1 15rem; max-width: 24rem;
+}
+.services .command__count { display: none; }
+@media (max-width: 720px) {
+  .command__panels--trio { gap: 1.1rem; bottom: clamp(2rem, 7vh, 3.5rem); }
+  .command__panels--trio .command__panel { flex-basis: 100%; }
+}
 .command__pitch em {
   color: var(--ruby-hot); font-style: normal;
   font-family: var(--display); padding-right: 0.25em;
