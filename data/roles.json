@@ -104,6 +104,7 @@
   ],
   "certifications": [
     { "label": "CompTIA ITF+ Certification", "url": "assets/credentials/comptia-itf-plus.pdf" },
+    { "label": "Job Corps — Program Completion", "url": "assets/credentials/job-corps-completion.pdf" },
     { "label": "Certified Nursing Assistant (CNA) — Job Corps", "url": "assets/credentials/job-corps-cna.pdf" },
     { "label": "Employee of the Month — Konedu", "url": "assets/credentials/konedu-employee-of-the-month.pdf" },
     { "label": "Housatonic IT Bootcamp Certificate", "url": "assets/credentials/housatonic-it-bootcamp.pdf" },
