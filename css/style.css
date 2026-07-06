@@ -1575,8 +1575,42 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--display); font-size: clamp(1rem, 2.2vw, 1.4rem);
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--ruby-hot);
 }
-.bio__body { margin-top: 0.9rem; color: var(--cream-dim); font-size: 0.96rem; line-height: 1.6; max-width: 62ch; }
+.bio__body { margin-top: 0.9rem; color: var(--cream-dim); font-size: 0.96rem; line-height: 1.75; max-width: 62ch; }
 .bio__body em { color: var(--cream); font-style: italic; }
+
+/* proof links — every claim in the intro links to its evidence, and each one
+   carries its own original, extremely-subtle animated gradient underline */
+.bio__body .proof {
+  color: var(--cream); text-decoration: none;
+  background-repeat: no-repeat; background-position: 0 100%;
+  background-size: 100% 1.5px; padding-bottom: 2px;
+  transition: color 0.45s ease, background-size 0.45s ease;
+  cursor: pointer;
+}
+.bio__body .proof:hover { color: #fff; background-size: 100% 2.5px; }
+@media (prefers-reduced-motion: no-preference) {
+  /* 1 · McCluster Corp — ruby↔cream shimmer drifting left, very slow */
+  .proof--1 { background-image: linear-gradient(90deg, var(--ruby), var(--cream), var(--ruby)); background-size: 220% 1.5px; animation: proof1 9s linear infinite; }
+  @keyframes proof1 { to { background-position: -220% 100%; } }
+  /* 2 · Equity Uprise — faint gold sweep, right→left */
+  .proof--2 { background-image: linear-gradient(90deg, transparent 15%, #d4a017, transparent 85%); background-size: 240% 1.5px; animation: proof2 12s linear infinite; }
+  @keyframes proof2 { from { background-position: 140% 100%; } to { background-position: -140% 100%; } }
+  /* 3 · State of Georgia — barely-there glow breath under a steady line */
+  .proof--3 { background-image: linear-gradient(90deg, #4a7fb5, #4a7fb5); animation: proof3 7.5s ease-in-out infinite; }
+  @keyframes proof3 { 0%, 100% { text-shadow: none; } 50% { text-shadow: 0 0 7px rgba(74, 127, 181, 0.4); } }
+  /* 4 · City of Bridgeport — violet→cream sweep, left→right, slower */
+  .proof--4 { background-image: linear-gradient(90deg, transparent 12%, #8b5cf6, var(--cream), transparent 88%); background-size: 260% 1.5px; animation: proof4 14s linear infinite; }
+  @keyframes proof4 { from { background-position: -160% 100%; } to { background-position: 160% 100%; } }
+  /* 5 · Whip Equipped — slow ruby↔steel hue drift, easing back and forth */
+  .proof--5 { background-image: linear-gradient(90deg, var(--ruby), #2aa8a0, var(--ruby)); background-size: 220% 1.5px; animation: proof5 16s ease-in-out infinite alternate; }
+  @keyframes proof5 { to { background-position: 220% 100%; } }
+  /* 6 · Fireside — a faint warm wash breathing behind the words */
+  .proof--6 { background-image: linear-gradient(90deg, rgba(229, 56, 59, 0), rgba(229, 56, 59, 0.16), rgba(229, 56, 59, 0)); background-size: 240% 100%; padding: 0 0.15em 2px; border-radius: 3px; animation: proof6 10s linear infinite; }
+  @keyframes proof6 { to { background-position: -240% 0; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bio__body .proof { background-image: linear-gradient(90deg, var(--ruby), var(--ruby)); }
+}
 /* the character sheet: quest log + stat bars */
 .bio__grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr)); margin-top: 1.6rem; align-items: start; }
 .bio__h {
