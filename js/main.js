@@ -172,6 +172,9 @@
 
   function setCount(v) {
     preCount.textContent = String(Math.round(v)).padStart(3, "0");
+    // two-stage escalation: ignite at 50%, second hit near the end
+    preloader.classList.toggle("is-hot", v >= 50);
+    preloader.classList.toggle("is-blazing", v >= 85);
     // the mark pulls itself together as the load progresses
     var r = 1 - v / 100; // remaining distance
     if (preMarkL) {

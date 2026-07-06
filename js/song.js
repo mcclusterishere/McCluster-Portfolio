@@ -23,7 +23,7 @@
   var pre = (function () {
     var map = {
       "environmental-injustice": { logo: "assets/img/equity-uprise-logo.webp", cls: "spre--uprise" },
-      "vaunt": { logo: "assets/img/vaunt-logo.jpeg", cls: "spre--vaunt" },
+      "vaunt": { logo: "assets/img/vaunt-logo.webp", cls: "spre--vaunt" },
       "dealerplates": { logo: "assets/img/we-logo.webp", cls: "spre--we" },
       "antisocial": { logo: "assets/img/m-mark.png", cls: "spre--antisocial" },
       "whodidtheshoot": { logo: "assets/img/m-mark.png", cls: "spre--wdts" },
@@ -44,6 +44,9 @@
     var tick = setInterval(function () {
       shown += (target - shown) * 0.18;
       numEl.textContent = String(Math.round(shown)).padStart(3, "0");
+      // two-stage escalation: ignite at 50%, second hit near the end
+      el.classList.toggle("is-hot", shown >= 50);
+      el.classList.toggle("is-blazing", shown >= 85);
       if (done && shown > 99) {
         clearInterval(tick);
         finished = true;
