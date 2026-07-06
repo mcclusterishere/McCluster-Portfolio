@@ -37,4 +37,9 @@ jobs:
           git diff --cached --quiet && { echo "nothing new"; exit 0; }
           du -sh assets/dockets/516
           git commit -m "Mirror the Docket 516 public record"
-          git push
+          # the site deploys while this syncs — rebase onto whatever landed, then push
+          for i in 1 2 3 4; do
+            git pull --rebase origin production && git push && exit 0
+            echo "push race, retry $i" && sleep 5
+          done
+          exit 1
