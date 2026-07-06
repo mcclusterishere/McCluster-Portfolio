@@ -72,7 +72,11 @@
       return true;
     };
     seq.size = function () {
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // phones don't need a 2× backing store for a full-bleed film — cap the
+      // device-pixel-ratio to 1 on small screens so the canvas costs a quarter
+      // of the GPU memory and each drawImage is far cheaper (smoother scrub).
+      var maxDpr = window.matchMedia("(max-width: 768px)").matches ? 1 : 2;
+      var dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       seq.lastDrawn = -1; // force redraw
@@ -216,15 +220,22 @@
   fetch("assets/frames/manifest.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error("no manifest"); return r.json(); })
     .then(function (m) {
-      // the preloader holds until the WHOLE orbit is in — rolled back to
-      // the pre-perf-pass behavior: nothing opens half-loaded (2026-07-06)
-      var heroGate = m.hero.count;
+      // Open on a LEAD BATCH, not the whole orbit. The hero section is 520vh
+      // tall, so the viewer physically cannot scrub past the first frames
+      // instantly — by the time they scroll down, the rest of the orbit has
+      // streamed in behind them. loadSequence keeps loading all frames; the
+      // ticker's loadedMax clamp holds the newest decoded frame until each one
+      // arrives, so the scrub never shows black. This drops the blocking load
+      // from ~161 frames (~7.4 MB) to ~48 (~1.4 MB) without a half-loaded feel.
+      var full = m.hero.count;
+      var heroGate = Math.min(48, full);
       var opened = false;
-      loadSequence(sequences.hero, "hero", m.hero.count, function () {
-        var gp = Math.min(1, (sequences.hero.loadedMax + 1) / heroGate);
+      loadSequence(sequences.hero, "hero", full, function () {
+        var ready = sequences.hero.loadedMax + 1; // contiguous frames from 0
+        var gp = Math.min(1, ready / heroGate);
         var pct = gp * 100;
         if (pct > shown.v) { shown.v = pct * 0.99; setCount(shown.v); }
-        if (!opened && gp >= 1) { opened = true; openSite(); }
+        if (!opened && ready >= heroGate) { opened = true; openSite(); }
       });
       function openSite() {
         finishPreloader();
