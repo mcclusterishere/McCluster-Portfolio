@@ -1706,7 +1706,41 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
   color: var(--cream-dim); font-size: 0.84rem; line-height: 1.6; max-width: 70ch;
   border-left: 2px solid var(--ruby); margin-left: 1.2rem; padding-left: 0.9rem;
 }
+#dktCatDesc { margin: 0 0 1rem; padding: 0 0 0 0.9rem; }
 .dkt__cards { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); padding: 0 1.2rem 1.2rem; }
+
+/* the tab rail: one click sorts the room */
+.dkt__tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.2rem 0 1rem; }
+.dkt__sorts { display: flex; gap: 0.4rem; align-items: center; }
+.dkt__tab {
+  background: var(--ink-2); color: var(--cream-dim); cursor: pointer;
+  border: 1px solid rgba(244, 239, 230, 0.18); border-radius: 100px;
+  font-family: var(--body); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.5em 1em;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.dkt__tab i { font-style: normal; color: var(--ruby-hot); margin-left: 0.35em; }
+.dkt__tab:hover { color: var(--cream); border-color: var(--ruby); }
+.dkt__tab.is-on { background: var(--ruby); border-color: var(--ruby); color: var(--cream); }
+.dkt__tab.is-on i { color: var(--cream); }
+.dkt__tab.is-parsing { animation: loadFlash 1.2s steps(2) infinite; }
+@media (prefers-reduced-motion: reduce) { .dkt__tab.is-parsing { animation: none; } }
+
+/* compact case-file cards: the whole card is the click */
+.dkt__cards--flat { padding: 0; grid-template-columns: repeat(auto-fill, minmax(min(12.5rem, 100%), 1fr)); gap: 0.7rem; }
+.dkt__card--sm { display: block; color: inherit; padding: 0.8rem 0.9rem; }
+.dkt__card--sm h3 {
+  font-size: 0.8rem; line-height: 1.35; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.dkt__card--sm .dkt__badge { font-size: 0.5rem; padding: 0.25em 0.75em; margin-bottom: 0.45rem; }
+.dkt__card--sm .dkt__meta { font-size: 0.58rem; margin-top: 0.4rem; }
+.dkt__srclink {
+  display: inline-block; margin-top: 0.45rem; cursor: pointer;
+  font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ruby-hot); border-bottom: 1px dashed var(--ruby);
+}
+.dkt__srclink:hover { color: var(--cream); }
 .dkt > .dkt__cards { padding: 0; }
 .dkt__card {
   position: relative; overflow: hidden;

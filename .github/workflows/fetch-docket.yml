@@ -1,0 +1,40 @@
+name: Fetch Docket 516 record
+
+# The build environment can't reach portal.ct.gov directly, so this
+# workflow runs the docket sync on a runner, downloads the public
+# documents into assets/dockets/516/, regenerates the manifest, and
+# commits everything back to production (which redeploys the site).
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - production
+    paths:
+      - ".github/workflows/fetch-docket.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Sync the docket record
+        run: node tools/sync-docket-516.mjs
+
+      - name: Commit the archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets/dockets data/docket-516-files.json
+          git diff --cached --quiet && { echo "nothing new"; exit 0; }
+          du -sh assets/dockets/516
+          git commit -m "Mirror the Docket 516 public record"
+          git push

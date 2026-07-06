@@ -156,18 +156,15 @@
       <p class="dkt__note" id="dktStats">Loading the record…</p>
       <div class="dkt__toolbar">
         <input type="search" id="dktSearch" placeholder="Search the record…" aria-label="Search documents">
-        <select id="dktCat" aria-label="Filter by category"><option value="">All categories</option></select>
-        <select id="dktType" aria-label="Filter by document type">
-          <option value="">All types</option>
-          <option>Application</option><option>Testimony</option><option>Transcript</option>
-          <option>Exhibit</option><option>Correspondence</option><option>Agency Comment</option>
-          <option>Intervenor Filing</option><option>Hearing</option><option>Schedule</option>
-          <option>Brief</option><option>Final Decision</option><option>Remand</option><option>Map</option>
-        </select>
-        <select id="dktYear" aria-label="Filter by year"><option value="">All dates</option></select>
-        <input type="search" id="dktParty" placeholder="Party / source…" aria-label="Filter by party or source">
+        <div class="dkt__sorts" role="group" aria-label="Sort order">
+          <button class="dkt__tab is-on" data-sort="new" type="button">Newest</button>
+          <button class="dkt__tab" data-sort="old" type="button">Oldest</button>
+          <button class="dkt__tab" data-sort="az" type="button">A&ndash;Z</button>
+        </div>
       </div>
-      <div id="dktLibrary"></div>
+      <div class="dkt__tabs" id="dktTabs" aria-label="Filter by category"></div>
+      <p class="dkt__catdesc" id="dktCatDesc" hidden></p>
+      <div class="dkt__cards dkt__cards--flat" id="dktLibrary"></div>
     </section>
 
     <!-- ============ explainer cards ============ -->
@@ -287,96 +284,124 @@
       };
 
       var FILES = [];
+      var activeCat = "";
+      var sortMode = "new";
       var lib = document.getElementById("dktLibrary");
       var stats = document.getElementById("dktStats");
+      var tabs = document.getElementById("dktTabs");
+      var catDescEl = document.getElementById("dktCatDesc");
+      var CAT_SHORT = {
+        "Application": "Application", "Bulk-Filed Exhibits": "Bulk Exhibits",
+        "Municipal Consultation Filing": "Municipal", "Procedural Correspondence": "Procedural",
+        "State Agency Comments": "Agencies", "Public Official Comments": "Officials",
+        "Hearing Information": "Hearings", "Schedules": "Schedules", "Service Lists": "Service Lists",
+        "Transcripts": "Transcripts", "Applicant Exhibits — United Illuminating": "UI Exhibits",
+        "Party / Intervenor Exhibits": "Intervenors", "Motions and Objections": "Motions",
+        "Briefs / Findings of Fact": "Briefs", "Council Draft Findings": "Draft Findings",
+        "Final Decision": "Decision", "Court-Ordered Remand / Docket 516R": "516R"
+      };
+
+      function drawTabs() {
+        var counts = {};
+        FILES.forEach(function (f) { counts[f.category] = (counts[f.category] || 0) + 1; });
+        tabs.innerHTML =
+          '<button class="dkt__tab' + (activeCat ? "" : " is-on") + '" data-cat="" type="button">All <i>' + FILES.length + "</i></button>" +
+          CAT_ORDER.filter(function (c) { return counts[c]; }).map(function (c) {
+            return '<button class="dkt__tab' + (c === activeCat ? " is-on" : "") + '" data-cat="' + esc(c) + '" type="button">' +
+              esc(CAT_SHORT[c] || c) + " <i>" + counts[c] + "</i></button>";
+          }).join("");
+      }
 
       function render() {
         var q = document.getElementById("dktSearch").value.trim().toLowerCase();
-        var cat = document.getElementById("dktCat").value;
-        var type = document.getElementById("dktType").value;
-        var year = document.getElementById("dktYear").value;
-        var party = document.getElementById("dktParty").value.trim().toLowerCase();
         var shown = FILES.filter(function (f) {
-          if (q && (f.title + " " + f.summary).toLowerCase().indexOf(q) < 0) return false;
-          if (cat && f.category !== cat) return false;
-          if (type && badgeOf(f) !== type) return false;
-          if (year && (f.date || "").slice(0, 4) !== year) return false;
-          if (party && (f.title + " " + (f.subcategory || "") + " " + f.category).toLowerCase().indexOf(party) < 0) return false;
+          if (activeCat && f.category !== activeCat) return false;
+          if (q && (f.title + " " + f.summary + " " + f.category + " " + (f.subcategory || "")).toLowerCase().indexOf(q) < 0) return false;
           return true;
         });
+        shown.sort(function (a, b) {
+          if (sortMode === "az") return a.title.localeCompare(b.title);
+          var da = a.date || (sortMode === "new" ? "0000" : "9999");
+          var db = b.date || (sortMode === "new" ? "0000" : "9999");
+          return sortMode === "old" ? da.localeCompare(db) : db.localeCompare(da);
+        });
         var mirrored = FILES.filter(function (f) { return f.local_path; }).length;
-        stats.textContent = shown.length + " of " + FILES.length + " records shown · " + mirrored + " mirrored locally · source: Connecticut Siting Council";
-
-        var cats = CAT_ORDER.filter(function (c) { return shown.some(function (f) { return f.category === c; }); });
-        lib.innerHTML = cats.map(function (c) {
-          var files = shown.filter(function (f) { return f.category === c; });
-          return '<details class="dkt__group" id="' + slugAnchor(c) + '" open>' +
-            "<summary>" + esc(c) + ' <span class="dkt__count">' + files.length + "</span></summary>" +
-            (CAT_DESC[c] ? '<p class="dkt__catdesc">' + esc(CAT_DESC[c]) + "</p>" : "") +
-            '<div class="dkt__cards">' + files.map(function (f) {
-              return '<article class="dkt__card" data-id="' + esc(f.id) + '">' +
-                '<p class="dkt__badge">' + badgeOf(f) + "</p>" +
-                "<h3>" + esc(f.title) + "</h3>" +
-                (f.subcategory ? '<p class="dkt__sub">' + esc(f.subcategory) + "</p>" : "") +
-                '<p class="dkt__meta">' + (f.date ? esc(f.date) + " · " : "") + esc(f.source_agency) +
-                (f.external_only ? " · external only" : "") + "</p>" +
-                '<p class="dkt__desc">' + esc(f.summary) + "</p>" +
-                '<div class="dkt__acts">' +
-                '<a class="dkt__btn dkt__btn--official" href="' + esc(f.official_url) + '" target="_blank" rel="noopener" data-act="official">Official Source</a>' +
-                (f.local_path ? '<a class="dkt__btn dkt__btn--local" href="' + esc(f.local_path) + '" target="_blank" rel="noopener" data-act="local">Local Copy</a>' : "") +
-                "</div></article>";
-            }).join("") + "</div></details>";
-        }).join("") || '<p class="dkt__note">Nothing in the record matches those filters.</p>';
+        stats.textContent = shown.length + " of " + FILES.length + " records · " + mirrored + " hosted here · source: Connecticut Siting Council";
+        var showDesc = activeCat && CAT_DESC[activeCat];
+        catDescEl.hidden = !showDesc;
+        if (showDesc) catDescEl.textContent = CAT_DESC[activeCat];
+        lib.innerHTML = shown.map(function (f) {
+          return '<a class="dkt__card dkt__card--sm" data-id="' + esc(f.id) + '" href="' + esc(f.local_path || f.official_url) + '" target="_blank" rel="noopener">' +
+            '<span class="dkt__badge">' + badgeOf(f) + "</span>" +
+            "<h3>" + esc(f.title) + "</h3>" +
+            '<p class="dkt__meta">' + (f.date ? esc(f.date) + " · " : "") + (f.local_path ? "hosted here" : "external") + "</p>" +
+            (f.local_path ? '<span class="dkt__srclink" role="link" data-url="' + esc(f.official_url) + '">official &#8599;</span>' : "") +
+            "</a>";
+        }).join("") || '<p class="dkt__note">Nothing in the record matches.</p>';
       }
 
       fetch("data/docket-516-files.json", { cache: "no-cache" })
         .then(function (r) { return r.json(); })
         .then(function (files) {
           FILES = files;
-          var catSel = document.getElementById("dktCat");
-          CAT_ORDER.filter(function (c) { return files.some(function (f) { return f.category === c; }); })
-            .forEach(function (c) { var o = document.createElement("option"); o.textContent = c; catSel.appendChild(o); });
-          var years = Array.from(new Set(files.map(function (f) { return (f.date || "").slice(0, 4); }).filter(Boolean))).sort();
-          var ySel = document.getElementById("dktYear");
-          years.forEach(function (y) { var o = document.createElement("option"); o.textContent = y; ySel.appendChild(o); });
+          drawTabs();
           render();
         })
         .catch(function () { stats.textContent = "The manifest is offline — the official record is always at the Connecticut Siting Council."; });
 
+      tabs.addEventListener("click", function (ev) {
+        var tb = ev.target.closest(".dkt__tab");
+        if (!tb) return;
+        activeCat = tb.getAttribute("data-cat");
+        drawTabs();
+        render();
+        track("docket_filter", { filter_value: "tab:" + (activeCat || "all") });
+        track("docket_category_open", { category: activeCat || "all" });
+      });
+      document.querySelectorAll(".dkt__sorts .dkt__tab").forEach(function (s) {
+        s.addEventListener("click", function () {
+          sortMode = s.getAttribute("data-sort");
+          document.querySelectorAll(".dkt__sorts .dkt__tab").forEach(function (x) { x.classList.toggle("is-on", x === s); });
+          render();
+          track("docket_filter", { filter_value: "sort:" + sortMode });
+        });
+      });
       var t;
       document.getElementById("dktSearch").addEventListener("input", function () {
         clearTimeout(t);
         var v = this.value;
         t = setTimeout(function () { render(); if (v.trim()) track("docket_search", { search_query: v.trim().slice(0, 80) }); }, 350);
       });
-      document.getElementById("dktParty").addEventListener("input", function () {
-        clearTimeout(t);
-        var v = this.value;
-        t = setTimeout(function () { render(); if (v.trim()) track("docket_filter", { filter_value: "party:" + v.trim().slice(0, 80) }); }, 350);
-      });
-      ["dktCat", "dktType", "dktYear"].forEach(function (id) {
-        document.getElementById(id).addEventListener("change", function () {
-          render();
-          track("docket_filter", { filter_value: id.replace("dkt", "").toLowerCase() + ":" + this.value });
-        });
-      });
       lib.addEventListener("click", function (ev) {
-        var d = ev.target.closest("details.dkt__group summary");
-        if (d) { track("docket_category_open", { category: d.parentElement.querySelector("summary").textContent.trim() }); return; }
-        var a = ev.target.closest("a[data-act]");
-        if (!a) return;
-        var card = a.closest(".dkt__card");
+        var card = ev.target.closest(".dkt__card");
+        if (!card) return;
         var f = FILES.find(function (x) { return x.id === card.getAttribute("data-id"); }) || {};
         var base = { document_id: f.id, category: f.category, source_url: f.official_url, local_path: f.local_path || "" };
+        var src = ev.target.closest(".dkt__srclink");
+        if (src) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          track("docket_document_click", base);
+          track("docket_official_source_click", base);
+          window.open(src.getAttribute("data-url"), "_blank", "noopener");
+          return;
+        }
         track("docket_document_click", base);
-        track(a.getAttribute("data-act") === "local" ? "docket_local_copy_click" : "docket_official_source_click", base);
+        track(f.local_path ? "docket_local_copy_click" : "docket_official_source_click", base);
       });
       document.getElementById("dktTimeline").addEventListener("click", function (ev) {
         var li = ev.target.closest("li[data-t]");
         if (li) track("docket_timeline_click", { filter_value: li.getAttribute("data-t") });
       });
+      var JUMPS = { "application": "Application", "transcripts": "Transcripts", "final-decision": "Final Decision", "remand": "Court-Ordered Remand / Docket 516R" };
       document.querySelectorAll(".dkt__jump a").forEach(function (a) {
-        a.addEventListener("click", function () { track("docket_category_open", { category: a.getAttribute("data-jump"), filter_value: "hero-jump" }); });
+        a.setAttribute("href", "#library");
+        a.addEventListener("click", function () {
+          activeCat = JUMPS[a.getAttribute("data-jump")] || "";
+          drawTabs();
+          render();
+          track("docket_category_open", { category: a.getAttribute("data-jump"), filter_value: "hero-jump" });
+        });
       });
 
       /* ---------- the 516R Release: the song parses the evidence ----------
@@ -414,35 +439,43 @@
       ["wheel", "touchstart"].forEach(function (ev) {
         window.addEventListener(ev, function () { holdUntil = Date.now() + 4000; pos = null; }, { passive: true });
       });
-      var lastGroup = null;
+      var lastCat = null;
       function ride() {
         if (!playing) return;
         requestAnimationFrame(ride);
         if (audio.paused || !audio.duration) return;
-        var groups = Array.prototype.slice.call(document.querySelectorAll(".dkt__group"));
-        if (!groups.length) return;
+        var cats = CAT_ORDER.filter(function (c) { return FILES.some(function (x) { return x.category === c; }); });
+        if (!cats.length) return;
         var f = Math.min(0.9999, audio.currentTime / audio.duration);
-        var i = Math.floor(f * groups.length);
-        var seg = f * groups.length - i;
-        var g = groups[i];
-        var cat = g.querySelector("summary").textContent.trim().replace(/\s+\d+$/, "");
-        if (g !== lastGroup) {
-          if (lastGroup) lastGroup.classList.remove("is-parsing");
-          g.classList.add("is-parsing");
-          g.open = true;
-          lastGroup = g;
+        var i = Math.floor(f * cats.length);
+        var seg = f * cats.length - i;
+        var cat = cats[i];
+        if (cat !== lastCat) {
+          lastCat = cat;
+          activeCat = cat;
+          drawTabs();
+          render();
+          var on = tabs.querySelector(".dkt__tab.is-on");
+          if (on) on.classList.add("is-parsing");
         }
         var bar = lyricAt(audio.currentTime);
         hud.innerHTML = "<b>PARSING:</b> " + esc(cat) +
           (bar ? '<i class="dkt__bar">&ldquo;' + esc(bar) + "&rdquo;</i>" : "") +
           "<span>scored by " + esc(RELEASE[cat] || RELEASE_DEFAULT) + " &#183; Track 01 of 04</span>";
         if (Date.now() < holdUntil) return;
-        var top = g.getBoundingClientRect().top + window.scrollY;
-        var span = Math.max(0, g.offsetHeight - innerHeight * 0.6);
-        var wanted = top - 90 + span * seg;
+        var el = document.getElementById("library");
+        var top = el.getBoundingClientRect().top + window.scrollY;
+        var span = Math.max(0, el.offsetHeight - innerHeight * 0.6);
+        var wanted = top - 80 + span * seg;
         if (pos === null) pos = window.scrollY;
         pos += (wanted - pos) * 0.05;
         window.scrollTo(0, pos);
+      }
+      function parseOff() {
+        lastCat = null;
+        activeCat = "";
+        drawTabs();
+        render();
       }
       playBtn.addEventListener("click", function () {
         playing = !playing;
@@ -456,7 +489,7 @@
         } else {
           audio.pause();
           hud.hidden = true;
-          if (lastGroup) { lastGroup.classList.remove("is-parsing"); lastGroup = null; }
+          parseOff();
           track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release" });
         }
         playBtn.querySelector("span + span").textContent = playing ? "Pause the parse" : 'Play the evidence — "Money or the Power"';
@@ -466,7 +499,7 @@
         playBtn.classList.remove("is-on");
         playBtn.querySelector("span + span").textContent = 'Play the evidence — "Money or the Power"';
         hud.hidden = true;
-        if (lastGroup) { lastGroup.classList.remove("is-parsing"); lastGroup = null; }
+        parseOff();
         track("docket_song_stop", { document_id: "money-or-the-power", category: "516R Release", filter_value: "ended" });
       });
     })();

@@ -213,6 +213,14 @@ for (const r of records) {
     const res = await fetch(r.official_url, { headers: { "user-agent": UA }, redirect: "follow" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > 95 * 1024 * 1024) {
+      // GitHub refuses files over 100 MB — keep the giants external-only
+      r.download = false;
+      r.local_path = "";
+      r.summary += " (Too large to mirror — official link kept.)";
+      console.warn(`SKIPPED (too large, ${(buf.length / 1048576).toFixed(0)} MB): ${r.title}`);
+      continue;
+    }
     fs.writeFileSync(dest, buf);
     downloaded++;
     console.log(`saved ${r.local_path} (${(buf.length / 1024).toFixed(0)} KB)`);
