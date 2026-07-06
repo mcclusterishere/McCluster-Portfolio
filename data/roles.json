@@ -1,0 +1,78 @@
+{
+  "note": "The career timeline. Each role gets its own page at role.html?role=<slug>. Credentials arrays are staged empty — drop in { label, url } once the live credential links are ready and they render automatically.",
+  "roles": [
+    {
+      "slug": "mccluster-corp",
+      "dates": "2025 – Present",
+      "title": "Founder / Digital Program Operator",
+      "org": "McCluster Corp · Equity Uprise",
+      "location": "Connecticut & Georgia",
+      "summary": "Built and runs the digital platform behind a nonprofit cultural, educational, and community-development initiative — the sites, the socials, the campaigns, the movement.",
+      "bullets": [
+        "Built and managed the digital platforms for a nonprofit cultural, educational, and community-development initiative.",
+        "Created outreach content supporting youth engagement, creative programming, civic leadership, and public communication.",
+        "Managed website, social media, digital identity, content, and audience-engagement workflows.",
+        "Developed public-facing messaging for campaigns, community initiatives, recognition materials, and stakeholder communication.",
+        "Organized digital assets, program information, contact lists, and outreach materials.",
+        "Used media, storytelling, and digital platforms to drive community engagement and public visibility."
+      ],
+      "credentials": []
+    },
+    {
+      "slug": "freedom",
+      "dates": "January 2021 – 2026",
+      "title": "Digital Marketing & Outreach Platform Manager",
+      "org": "F.R.E.E.D.O.M. Inc.",
+      "location": "Bridgeport, CT",
+      "summary": "Ran the digital front for a community organization — social channels, outreach workflows, weekly live broadcasts, and the media production behind them.",
+      "bullets": [
+        "Managed digital platforms used for outreach, marketing, customer communication, and public engagement.",
+        "Created and maintained social media workflows across Facebook, Instagram, YouTube, LinkedIn, and other channels.",
+        "Supported community outreach by organizing content, announcements, event updates, and public-facing messages.",
+        "Managed customer and community contact workflows for follow-up, program updates, and general communication.",
+        "Coordinated live streaming, recording, and media production support for public programming and weekly broadcasts.",
+        "Improved digital visibility, audience engagement, and communication between the organization and the community.",
+        "Supported staff with platform access, content posting, technical issues, and digital workflow needs.",
+        "Moved traditional outreach and communication processes into modern digital systems."
+      ],
+      "credentials": []
+    },
+    {
+      "slug": "ipc-systems",
+      "dates": "March 2022 – December 2023",
+      "title": "Infrastructure Engineer",
+      "org": "IPC Systems, Inc.",
+      "location": "Fairfield, CT",
+      "summary": "Kept enterprise technology systems reliable under business, technical, and trading-floor pressure.",
+      "bullets": [
+        "Supported enterprise technology systems used by business, technical, and operations teams.",
+        "Troubleshot access, connectivity, platform, and system issues affecting users.",
+        "Assisted with documentation, system coordination, and workflow improvement.",
+        "Worked with cross-functional teams to support reliable digital operations.",
+        "Built experience supporting business systems that demanded strong communication, organization, and technical follow-through."
+      ],
+      "credentials": []
+    },
+    {
+      "slug": "robert-half",
+      "dates": "January 2018 – January 2021",
+      "title": "Desktop Support / IT Support Technician",
+      "org": "Robert Half",
+      "location": "Norwalk, CT",
+      "summary": "The tutorial levels — customer-facing technical support where every user got saved and every ticket got closed.",
+      "bullets": [
+        "Provided customer-facing technical support for hardware, software, desktop, laptop, and business-application issues.",
+        "Helped users with login problems, platform access, software issues, device troubleshooting, and connectivity.",
+        "Communicated technical information clearly to non-technical users.",
+        "Supported technology rollouts, system setup, workstation support, and user training.",
+        "Built a foundation in customer service, troubleshooting, documentation, and user support."
+      ],
+      "credentials": []
+    }
+  ],
+  "certifications": [
+    { "label": "CompTIA ITF+ Certification", "url": "" },
+    { "label": "Housatonic IT Bootcamp Certificate", "url": "" },
+    { "label": "DCI Academy — Information Technology Technical Program", "url": "" }
+  ]
+}
