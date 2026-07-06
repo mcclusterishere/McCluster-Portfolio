@@ -42,10 +42,12 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: auto; }
-/* nothing may widen the page — rotated props and pills stay clipped
-   (clip, not hidden: it never creates a scroll container, so sticky
-   sections keep working) */
-html, body { overflow-x: clip; }
+/* Nothing may widen the page — rotated props and pills stay clipped.
+   The clip lives on html ONLY: putting any non-visible overflow on
+   body turns body into a scroll container, which silently breaks
+   every position:sticky section (films stop pinning and the scroll
+   runs past them into black). */
+html { overflow-x: clip; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
@@ -55,7 +57,6 @@ body {
   font-family: var(--body);
   font-size: 16px;
   line-height: 1.5;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -1055,4 +1056,35 @@ a { color: inherit; text-decoration: none; }
 .songblock__img {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; will-change: transform;
+}
+
+/* ---------- phone-width fixes: the header must never wrap, the strips
+   must stack, and nothing may collide with the panel text ---------- */
+@media (max-width: 720px) {
+  .stats__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .site-head { padding: 0.85rem 0.9rem; }
+  .site-head__nav { gap: 0.55rem; }
+  .brand { font-size: 1.12rem; }
+  .sound-toggle, .head-cta {
+    font-size: 0.62rem; letter-spacing: 0.16em;
+    padding: 0.5em 0.95em;
+    white-space: nowrap;
+  }
+  /* the lyric reel crowds the scroll hint on small screens */
+  .hud__reel { display: none; }
+  /* the scene counter collides with panel copy — tuck it up by the head */
+  .command__count {
+    bottom: auto; top: 5.2rem;
+    font-size: 1rem;
+  }
+  .song-gate {
+    /* flex containers never ellipsize — block does */
+    display: block;
+    max-width: calc(100vw - 1.6rem);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    letter-spacing: 0.16em;
+  }
+  .song-gate__dot { display: inline-block; margin-right: 0.5em; vertical-align: middle; }
 }
