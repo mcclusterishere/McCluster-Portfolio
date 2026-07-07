@@ -1,0 +1,9 @@
+{
+  "note": "Per-track ISRC registrations from the US ISRC Agency locker (registrant McCluster Corp, prefix QT6KV). tools/tag-audio.py stamps these into the MP3 ID3 tags. artist here = the registered recording artist of record.",
+  "antisocial": { "isrc": "QT6KV2500002", "year": "2025" },
+  "who-did-the-shoot": { "isrc": "QT6KV2500001", "year": "2025" },
+  "vaunt": { "isrc": "QT6KV2402024", "year": "2024" },
+  "dealer-plates": { "isrc": "QT6KV2431011", "year": "2024" },
+  "environmental-injustice-brave": { "isrc": "QT6KV2500006", "year": "2025", "artist": "Equity Uprise" },
+  "money-or-the-power": { "isrc": "QT6KV2500007", "year": "2025", "artist": "Equity Uprise" }
+}

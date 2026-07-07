@@ -12,12 +12,12 @@ Run after adding audio or updating metadata, then commit the MP3s:
 import json
 import os
 
-from mutagen.id3 import ID3, TIT2, TPE1, TPE2, TALB, TRCK, TPUB, TCOP, TSRC, COMM, ID3NoHeaderError
+from mutagen.id3 import ID3, TIT2, TPE1, TPE2, TALB, TRCK, TPUB, TCOP, TSRC, TDRC, COMM, ID3NoHeaderError
 
 META = json.load(open("data/song-meta.json"))
 ISRC = {}
 if os.path.exists("data/isrc.json"):
-    ISRC = json.load(open("data/isrc.json"))
+    ISRC = {k: v for k, v in json.load(open("data/isrc.json")).items() if k != "note"}
 
 # main artist per track: the label credit line stays in COMM; TPE1 is the artist string
 ARTIST = {
@@ -36,7 +36,10 @@ def tag(path, slug, meta):
         id3 = ID3(path)
     except ID3NoHeaderError:
         id3 = ID3()
-    artist = ARTIST.get(slug, DEFAULT_ARTIST)
+    reg = ISRC.get(slug) or {}
+    if isinstance(reg, str):
+        reg = {"isrc": reg}
+    artist = reg.get("artist") or ARTIST.get(slug, DEFAULT_ARTIST)
     id3.setall("TIT2", [TIT2(encoding=3, text=meta.get("title", slug))])
     id3.setall("TPE1", [TPE1(encoding=3, text=artist)])
     id3.setall("TPE2", [TPE2(encoding=3, text=DEFAULT_ARTIST)])
@@ -48,10 +51,12 @@ def tag(path, slug, meta):
     id3.setall("TCOP", [TCOP(encoding=3, text=COPYRIGHT)])
     if meta.get("credit"):
         id3.setall("COMM", [COMM(encoding=3, lang="eng", desc="credit", text=meta["credit"])])
-    if ISRC.get(slug):
-        id3.setall("TSRC", [TSRC(encoding=3, text=ISRC[slug])])
+    if reg.get("isrc"):
+        id3.setall("TSRC", [TSRC(encoding=3, text=reg["isrc"])])
+    if reg.get("year"):
+        id3.setall("TDRC", [TDRC(encoding=3, text=reg["year"])])
     id3.save(path)
-    return artist, ISRC.get(slug, "-")
+    return artist, reg.get("isrc", "-")
 
 
 def main():
