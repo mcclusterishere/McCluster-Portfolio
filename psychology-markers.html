@@ -20,22 +20,20 @@
   </header>
   <main>
     <section class="pmk">
-      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Psychology Markers</p>
-      <h1 class="songhero__title" style="text-align:left">The Icon<br>Registry</h1>
-      <p class="songhero__sub" style="text-align:left;max-width:56ch">
-        Every shimmering phrase on a McCluster lyric page carries one of these markers —
-        an original icon for a pattern the song is really about. Tap one mid-song and the
-        record pauses to ask you a question. This page is the full legend.
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Identity Markers</p>
+      <h1 class="songhero__title" style="text-align:left">Two Sides<br>of You</h1>
+      <p class="songhero__sub" style="text-align:left;max-width:58ch">
+        Every one of these is a saying you already know, paired with its opposite. Tap one on a lyric
+        page and it flips to the other side. No right answer, no verdict. You just land where you land,
+        and the flip is always one tap away.
       </p>
       <div class="pmk__grid" id="pmkGrid"></div>
       <div class="pmk__consent">
-        <h3>The consent rules this system lives by</h3>
+        <h3>Just a mirror</h3>
         <p>
-          Every prompt is optional, anonymous, and shown in the open — nothing runs quietly in the
-          background. Your answers are never stored or tied to you, no personal profile is ever built,
-          and nothing here infers medical or clinical conditions or political beliefs. These markers
-          exist for one reason: the songs are about the scroll, and the scroll is about you.
-          For curiosity, not diagnosis.
+          These are common-sense sayings, not a diagnosis. Nothing is stored or tied to you, no profile
+          is ever built, and nothing here says anything clinical or political about you. Every marker has
+          a flip side and you can sit on either. For curiosity, not a verdict.
         </p>
       </div>
     </section>
@@ -52,9 +50,6 @@
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       var grid = document.getElementById("pmkGrid");
       var want = new URLSearchParams(location.search).get("marker");
-      function badgeStore() {
-        try { return JSON.parse(localStorage.getItem("mcc_marker_badges") || "{}"); } catch (e) { return {}; }
-      }
       function ic(id, style) {
         return '<svg class="psy__ic" aria-hidden="true"' + (style ? ' style="' + style + '"' : "") + '><use href="assets/icons/markers.svg#mk-' + id + '"></use></svg>';
       }
@@ -64,67 +59,32 @@
           var single = data.markers.find(function (m) { return m.id === want; });
 
           if (single) {
-            // this marker's own page: the full breakdown
-            document.title = single.name + " — Psychology Marker · McCluster";
+            // this marker's own page: both sides of the coin
+            document.title = single.name + " ↔ " + single.inverse.name + " · McCluster";
             var hero = document.querySelector(".pmk");
             hero.innerHTML =
-              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Psychology Marker · ' + single.id.replace(/_/g, " ") + "</p>" +
+              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Identity marker</p>' +
               '<div class="bexp__hero">' + ic(single.id, "width:4.2em;height:4.2em;color:var(--ruby-hot)") +
-              '<div><p class="bexp__section">' + single.short + "</p><h1 style='font-family:var(--display);font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;line-height:1'>" + single.name + "</h1></div></div>" +
-              '<div class="bexp__panel"><h3>The pattern</h3><p>' + single.interpretation + "</p></div>" +
-              '<div class="bexp__panel"><h3>The question it asks you</h3><p>&ldquo;' + single.deeper.q + "&rdquo;</p>" +
-              "<p style='margin-top:0.6rem'>On the lyric pages this question pauses the song — you answer it for yourself, on your screen, and nothing leaves the device.</p></div>" +
-              '<div class="bexp__panel"><h3>What it is / what it isn\'t</h3>' +
-              "<p>It is a common, well-documented behavioral pattern written in plain English. It isn't a diagnosis, a score, or a label — no answer here says anything clinical or political about you.</p></div>" +
-              '<div class="pmk__consent"><h3>Consent</h3><p>Optional and anonymous. Answers are never stored or tied to you; earned badges live only in your own browser until you choose otherwise.</p></div>' +
+              "<div><p class='bexp__section'>One side, and its flip</p><h1 style='font-family:var(--display);font-size:clamp(2rem,5.5vw,3.6rem);text-transform:uppercase;line-height:1'>" + single.name + "</h1></div></div>" +
+              '<div class="bexp__panel"><h3>' + single.name + "</h3><p>" + single.short + "</p><p style='margin-top:0.6rem;color:var(--cream-dim)'>" + single.interpretation + "</p></div>" +
+              "<div class='bexp__panel' style='border-color:rgba(120,200,150,0.4)'><h3>Flip side · " + single.inverse.name + "</h3><p>" + single.inverse.short + "</p></div>" +
+              "<div class='pmk__consent'><h3>Just a mirror</h3><p>A common saying and its opposite, not a diagnosis. Nothing is stored or tied to you, and you can sit on either side.</p></div>" +
               '<div class="finale__actions" style="margin-top:2rem">' +
               '<a class="btn btn--ruby" href="song-antisocial.html">Hear it in the bars</a>' +
-              '<a class="btn btn--ghost" href="psychology-markers.html">All 19 markers</a></div>';
-            track("psych_marker_page_view", { marker_id: single.id, page: "psychology-markers" });
+              '<a class="btn btn--ghost" href="psychology-markers.html">All the markers</a></div>';
+            track("marker_page_view", { marker_id: single.id, page: "psychology-markers" });
             return;
-          }
-
-          // the earned strip: badges this browser has collected, worn or hidden
-          var earned = badgeStore();
-          var keys = Object.keys(earned);
-          if (keys.length) {
-            var strip = document.createElement("div");
-            strip.className = "pmk__consent";
-            strip.style.marginBottom = "1.6rem";
-            strip.innerHTML = "<h3>Your badges — this device</h3><div class='pmk__mine'>" +
-              keys.map(function (k) {
-                var m = data.markers.find(function (x) { return x.id === k; });
-                if (!m) return "";
-                return '<button class="chat__chip pmk__minebtn" data-id="' + k + '" type="button" style="opacity:' + (earned[k].worn ? 1 : 0.45) + '">' +
-                  ic(k, "width:1.1em;height:1.1em;vertical-align:-0.2em;margin-right:0.4em") + m.name +
-                  " · " + (earned[k].worn ? "worn" : "hidden") + "</button>";
-              }).join("") +
-              "</div><p style='margin-top:0.6rem'>Tap to wear or hide. These live in this browser only — when profiles launch, you choose what carries over.</p>";
-            grid.parentNode.insertBefore(strip, grid);
-            strip.addEventListener("click", function (ev) {
-              var b = ev.target.closest(".pmk__minebtn");
-              if (!b) return;
-              var s = badgeStore();
-              var id = b.getAttribute("data-id");
-              s[id].worn = !s[id].worn;
-              try { localStorage.setItem("mcc_marker_badges", JSON.stringify(s)); } catch (e) {}
-              b.style.opacity = s[id].worn ? 1 : 0.45;
-              b.innerHTML = b.innerHTML.replace(/· (worn|hidden)$/, "· " + (s[id].worn ? "worn" : "hidden"));
-              track("psych_badge_wear", { marker_id: id, worn: s[id].worn, page: "psychology-markers" });
-            });
           }
 
           grid.innerHTML = data.markers.map(function (m) {
             return '<a class="pmk__card" href="psychology-markers.html?marker=' + m.id + '" style="display:block;color:inherit">' +
               ic(m.id) +
-              '<p class="pmk__id">' + m.id.replace(/_/g, " ") + "</p>" +
               "<h3>" + m.name + "</h3>" +
               "<p>" + m.short + "</p>" +
-              "<p>" + m.interpretation + "</p>" +
-              '<p class="pmk__id" style="margin-top:0.6rem">Full breakdown &#8594;</p>' +
+              '<p class="pmk__id" style="margin-top:0.6rem;color:var(--ruby-hot)">↔ ' + m.inverse.name + "</p>" +
               "</a>";
           }).join("");
-          track("psych_registry_view", { page: "psychology-markers", markers: data.markers.length });
+          track("marker_registry_view", { page: "psychology-markers", markers: data.markers.length });
         })
         .catch(function () { grid.innerHTML = "<p style='color:var(--cream-dim)'>The registry is offline — try again in a moment.</p>"; });
     })();
