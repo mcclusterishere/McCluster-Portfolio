@@ -25,7 +25,17 @@
       "file_id": "1yvCvO8rtRUh6WxxVtUWvpZbWk41ya7TM",
       "dest": "assets/incoming/clip5-preview.mp4",
       "mode": "video-preview"
+    },
+    {
+      "file_id": "1f9CDPHZsu65-zXoBvubLEEa60P71f38U",
+      "dest": "assets/incoming/clip6-preview.mp4",
+      "mode": "video-preview"
+    },
+    {
+      "file_id": "1cUmjeCU_-D1RqxEz1RZRkEZ6Mxs1Zuaw",
+      "dest": "assets/incoming/clip7-preview.mp4",
+      "mode": "video-preview"
     }
   ],
-  "run": 5
+  "run": 6
 }
