@@ -522,18 +522,22 @@
   function workVRSet(p) {
     if (!workVR.el || !window.VR360) return;
     var on = !workVR.landing && p >= workVR.band[0] && p <= workVR.band[1];
-    if (on && !workVR.viewer) {
+    // mount well before the band so the poster is up and the film is
+    // buffered by the time the look-around takes the screen
+    if (!workVR.viewer && p >= 0.12) {
       workVR.viewer = VR360.mount(document.getElementById("workVRCanvas"), {
-        src: "assets/video/vaunt-360.mp4", video: true,
+        src: "assets/video/vaunt-360.mp4", video: true, autoplay: false,
+        poster: "assets/img/vaunt-360-poster.jpg",
         // open facing McCluster in his seat (measured off the equirect frame)
-        yaw: 140, pitch: -32, touchAction: "none",
+        yaw: -140, pitch: -32, touchAction: "none",
         spots: [
           // pinned on the flight console between the pilots, and on the DSLR
           // standing in the aisle — both measured off the equirect frame
-          { yaw: 77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-          { yaw: -111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
+          { yaw: -77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+          { yaw: 111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
         ],
       });
+      window.__MCC_VR = workVR; // debug/verification handle
       var compass = document.getElementById("workVRCompass");
       document.getElementById("workVRCanvas").addEventListener("pointerdown", function () {
         compass.classList.add("is-gone");

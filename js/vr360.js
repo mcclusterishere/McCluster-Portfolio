@@ -68,13 +68,31 @@
       gyro: false, gyawBase: null,
     };
 
+    // a still poster fills the sphere the moment it decodes, so the
+    // look-around works instantly while the film is still buffering
+    if (opts.poster) {
+      var poster = new Image();
+      poster.crossOrigin = "anonymous";
+      poster.onload = function () {
+        if (state.ready) return; // the film beat us to it
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, poster);
+        state.poster = true;
+      };
+      poster.src = opts.poster;
+    }
+
     var media;
     if (state.isVideo) {
       media = document.createElement("video");
       media.muted = true; media.loop = true; media.playsInline = true;
       media.setAttribute("playsinline", ""); media.crossOrigin = "anonymous";
+      media.preload = "auto";
       media.src = opts.src;
-      media.addEventListener("canplay", function () { state.ready = true; media.play().catch(function(){}); });
+      media.addEventListener("canplay", function () {
+        state.ready = true;
+        if (opts.autoplay !== false) media.play().catch(function(){});
+      });
       media.load();
     } else {
       media = new Image();
@@ -171,7 +189,13 @@
           if (window.MCC_TRACK) window.MCC_TRACK("vr_spot_click", { label: s.label });
         });
         spotLayer.appendChild(el);
-        return { cfg: s, el: el, yaw: s.yaw * Math.PI / 180, pitch: s.pitch * Math.PI / 180 };
+        // its edge chip: when the tag is off-screen, an arrow at the border
+        // points the way to it so nothing pinned in the scene goes unfound
+        var edge = document.createElement("span");
+        edge.className = "vr360-edge";
+        edge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg>';
+        spotLayer.appendChild(edge);
+        return { cfg: s, el: el, edge: edge, yaw: s.yaw * Math.PI / 180, pitch: s.pitch * Math.PI / 180 };
       });
     }
     if (opts.spots) setSpots(opts.spots);
@@ -185,23 +209,44 @@
       if (!spots.length) return;
       var t = Math.tan(state.fov / 2);
       var aspect = canvas.width / canvas.height;
-      var cy = Math.cos(-state.yaw), sy = Math.sin(-state.yaw);
-      var cp = Math.cos(-state.pitch), sp = Math.sin(-state.pitch);
+      // inverse of the shader's world-from-camera (Ry(yaw) then Rx(pitch)):
+      // cam = Rx(-pitch) · Ry(-yaw) · world — which, with the shader's
+      // rotation convention, works out to these positive-angle terms
+      var cy = Math.cos(state.yaw), sy = Math.sin(state.yaw);
+      var cp = Math.cos(state.pitch), sp = Math.sin(state.pitch);
       var now = state.isVideo ? media.currentTime : null;
       spots.forEach(function (s) {
         if (now != null && s.cfg.from != null && (now < s.cfg.from || now > (s.cfg.to || 1e9))) {
-          s.el.style.display = "none"; return;
+          s.el.style.display = "none"; s.edge.style.display = "none"; return;
         }
         var w = dirOf(s.yaw, s.pitch);
         // rotate world into camera space: Ry(-yaw) then Rx(-pitch)
         var x1 = w[0] * cy - w[2] * sy, z1 = w[0] * sy + w[2] * cy, y1 = w[1];
         var y2 = y1 * cp + z1 * sp, z2 = -y1 * sp + z1 * cp;
-        if (z2 > -0.05) { s.el.style.display = "none"; return; } // behind you
-        var nx = (x1 / -z2) / (t * aspect), ny = (y2 / -z2) / t;
-        if (nx < -1.15 || nx > 1.15 || ny < -1.15 || ny > 1.15) { s.el.style.display = "none"; return; }
-        s.el.style.display = "";
-        s.el.style.left = ((nx * 0.5 + 0.5) * 100) + "%";
-        s.el.style.top = ((0.5 - ny * 0.5) * 100) + "%";
+        var off = z2 > -0.05; // behind you
+        var nx = 0, ny = 0;
+        if (!off) {
+          nx = (x1 / -z2) / (t * aspect); ny = (y2 / -z2) / t;
+          off = nx < -1.05 || nx > 1.05 || ny < -1.05 || ny > 1.05;
+        }
+        if (!off) {
+          s.el.style.display = "";
+          s.edge.style.display = "none";
+          s.el.style.left = ((nx * 0.5 + 0.5) * 100) + "%";
+          s.el.style.top = ((0.5 - ny * 0.5) * 100) + "%";
+          return;
+        }
+        // off-screen: park an arrow at the border, aimed at where the tag lives
+        s.el.style.display = "none";
+        var dx = x1, dy = y2;
+        if (z2 > 0) { dx = dx || 0.0001; } // straight behind still needs a direction
+        var len = Math.hypot(dx, dy) || 1;
+        var px = dx / len, py = dy / len;
+        s.edge.style.display = "";
+        s.edge.style.left = (50 + px * 44) + "%";
+        s.edge.style.top = (50 - py * 44) + "%";
+        s.edge.style.transform =
+          "translate(-50%, -50%) rotate(" + (Math.atan2(-py, px) * 180 / Math.PI) + "deg)";
       });
     }
 

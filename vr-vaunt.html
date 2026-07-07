@@ -75,6 +75,13 @@
       transition: background 0.25s, border-color 0.25s;
     }
     .vr360-spot:hover span { background: var(--ruby); border-color: var(--ruby-hot); }
+    .vr360-edge {
+      position: absolute; display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%; pointer-events: none;
+      background: rgba(10, 8, 7, 0.72); border: 2px solid #f84c0a;
+      box-shadow: 0 0 12px rgba(248, 76, 10, 0.75);
+    }
+    .vr360-edge svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
     @media (prefers-reduced-motion: reduce) { .vr360-spot i::after { animation: none; } }
 
     /* video transport: play/pause + scrub */
@@ -142,16 +149,17 @@
          { src: "assets/video/vaunt-360.mp4", video: true, spots: SPOTS } */
       var SPOTS = [
         // yaw/pitch in degrees; add from/to (seconds) to time-gate a tag on video
-        { yaw: -25, pitch: -42, label: "The six-string · hear Vaunt", href: "song-vaunt.html" },
-        { yaw: 155, pitch: -38, label: "The artist · book the energy", href: "hire.html" },
-        { yaw: 77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-        { yaw: -111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
+        { yaw: 71, pitch: -56, label: "The six-string · hear Vaunt", href: "song-vaunt.html" },
+        { yaw: -140, pitch: -40, label: "The artist · book the energy", href: "hire.html" },
+        { yaw: -77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+        { yaw: 111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
       ];
       var IS_VIDEO = true; // the real inside-the-jet 360 film
       var viewer = VR360.mount(document.getElementById("vrCanvas"), {
         src: "assets/video/vaunt-360.mp4",
+        poster: "assets/img/vaunt-360-poster.jpg",
         video: IS_VIDEO,
-        yaw: 140, pitch: -32, // open facing McCluster in his seat
+        yaw: -140, pitch: -32, // open facing McCluster in his seat
         spots: SPOTS,
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });

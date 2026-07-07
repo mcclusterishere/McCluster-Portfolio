@@ -2320,7 +2320,8 @@ html.vr-locked {
   animation: vrCoachIn 0.7s ease-out both;
 }
 @keyframes vrCoachIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.86); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-.workvr__compass.is-gone { opacity: 0; }
+/* animation:none here, or the entrance animation's fill would pin opacity at 1 */
+.workvr__compass.is-gone { opacity: 0; animation: none; }
 /* the gray caution sign sitting behind everything in the card */
 .workvr__caution {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%);
@@ -2425,6 +2426,15 @@ html.vr-locked {
   border-radius: 100px; padding: 0.45em 0.95em; backdrop-filter: blur(4px);
 }
 .vr360-spot:hover span { background: var(--ruby); border-color: var(--ruby-hot); }
+/* off-screen tags park an arrow chip at the border, aimed where they live */
+.vr360-edge {
+  position: absolute; display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%; pointer-events: none;
+  background: rgba(10, 8, 7, 0.72); border: 2px solid var(--ruby-hot);
+  box-shadow: 0 0 12px rgba(229, 56, 59, 0.7);
+}
+.vr360-edge svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+#work .vr360-edge { border-color: var(--vaunt); box-shadow: 0 0 12px rgba(248, 76, 10, 0.75); }
 @media (prefers-reduced-motion: reduce) { .vr360-spot i::after { animation: none; } }
 
 /* motion button: several small animations layered together so it reads as
