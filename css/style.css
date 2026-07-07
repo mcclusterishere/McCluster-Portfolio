@@ -659,7 +659,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- SERVICES slides ---------- */
-.services { height: 100vh; position: relative; }
+.services { height: 200vh; position: relative; }
 .services .command__count { display: none; }
 /* this frame is no longer services: it explains Antisocial + the site's
    purpose + the marker icons, and ends in one big click-through to the video.

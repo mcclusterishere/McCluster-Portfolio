@@ -101,9 +101,7 @@
 
   var sequences = {
     hero: createSequence("orbitCanvas", "heroFallback"),
-    designer: createSequence("pillarsCanvas", "pillarsVideo"),
-    editors: createSequence("svcCanvas0", null),
-    street: createSequence("svcCanvas1", null),
+    pillarsbg: createSequence("pillarsCanvas", "pillarsVideo"),
     keynote: createSequence("loadoutCanvas", null),
     vauntlive: createSequence("cmdCanvas5", null),
     uprise: createSequence("cmdCanvas0", null),
@@ -273,9 +271,7 @@
         }
         loadNear("#loadout", [["keynote", m.studio360 ? "studio360" : "keynote"]]);
         loadNear("#pillars", [
-          ["editors", "editors"],
-          ["street", m.warroom ? "warroom" : "street"],
-          ["designer", "designer"],
+          ["pillarsbg", "nightscroll"],
         ]);
         loadNear("#work", [
           ["uprise", "uprise"], ["church", "church"], ["citations", "citations"], ["prim3", "prim3"],
@@ -400,62 +396,29 @@
     scrollTrigger: { trigger: document.body, start: "top top", end: "max", scrub: 0.3 },
   });
 
-  /* ---------------- services: three slides over Antisocial ---------------- */
-  var svcScenes = [
-    { seq: "editors" },
-    { seq: "street" },
-    { seq: "designer" },
-  ];
-  var svcPanels = gsap.utils.toArray("#pillars .command__panel");
-  var svcCount = document.getElementById("svcCount");
-  var SVC_FADE = 0.05;
-
-  function svcSceneOpacity(p, i) {
-    var n = svcScenes.length;
-    var a = i / n, b = (i + 1) / n;
-    var oIn = i === 0 ? 1 : clamp01((p - (a - SVC_FADE)) / (2 * SVC_FADE));
-    var oOut = i === n - 1 ? 1 : clamp01(((b + SVC_FADE) - p) / (2 * SVC_FADE));
-    return Math.min(oIn, oOut);
-  }
-
-  var parSvcCanvases = svcScenes.map(function (sc) { return parCanvas(sc.seq); });
-  var parSvcPanels = PAR.attach(document.querySelector("#pillars .command__panels"), { depth: -7 });
-
-  function applyServices(p) {
-    var n = svcScenes.length;
-    var active = Math.min(n - 1, Math.floor(p * n));
-    svcScenes.forEach(function (sc, i) {
-      var s = sequences[sc.seq];
-      var q = clamp01(p * n - i);
-      s.target = q * (s.count - 1 || 0);
-      s.canvas.style.opacity = svcSceneOpacity(p, i);
-      PAR.set(parSvcCanvases[i], i === active ? PAR.ramp(q) : 0);
+  /* ---------------- Antisocial explainer: one scroll-locked film (night
+     descent into the house) behind the pinned copy ---------------- */
+  var pillarsBg = sequences.pillarsbg;
+  if (pillarsBg) {
+    pillarsBg.canvas.style.opacity = 1;
+    var parPillars = parCanvas("pillarsbg");
+    var parPanelsPB = PAR.attach(document.querySelector("#pillars .command__panels"), { depth: -7 });
+    ScrollTrigger.create({
+      trigger: "#pillars",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      onUpdate: function (st) {
+        pillarsBg.target = st.progress * (pillarsBg.count - 1 || 0);
+        var ps = st.isActive ? PAR.ramp(st.progress) : 0;
+        PAR.set(parPillars, ps);
+        PAR.set(parPanelsPB, ps);
+      },
+      onToggle: function (st) {
+        if (!st.isActive) { PAR.set(parPillars, 0); PAR.set(parPanelsPB, 0); }
+      },
     });
-    PAR.set(parSvcPanels, PAR.ramp(clamp01(p * n - active)));
-    svcPanels.forEach(function (el, i) { el.classList.toggle("is-active", i === active); });
-    svcCount.textContent = "0" + (active + 1) + " / 0" + n;
   }
-  applyServices(0);
-
-  ScrollTrigger.create({
-    trigger: "#pillars",
-    start: "top top",
-    end: "bottom bottom",
-    scrub: true,
-    onUpdate: function (st) {
-      applyServices(st.progress);
-      if (!st.isActive) {
-        parSvcCanvases.forEach(function (it) { PAR.set(it, 0); });
-        PAR.set(parSvcPanels, 0);
-      }
-    },
-    onToggle: function (st) {
-      if (!st.isActive) {
-        parSvcCanvases.forEach(function (it) { PAR.set(it, 0); });
-        PAR.set(parSvcPanels, 0);
-      }
-    },
-  });
   gsap.from("#pillars .command__head", {
     x: -80, opacity: 0, duration: 1, ease: "power3.out",
     scrollTrigger: { trigger: "#pillars", start: "top 60%" },
