@@ -28,6 +28,11 @@ window.ADS = {
   GADS_LABEL: "",
 };
 
+/* Lead intake — the Apps Script web app URL (ends in /exec) that appends
+   rows to the leads Sheet. While empty, every lead button keeps its plain
+   mailto behavior; paste the URL and the on-page form takes over. */
+window.INTAKE_ENDPOINT = "";
+
 /* PWA: register the service worker so the site is installable and loads
    instant/offline after the first visit. Registered from here because this
    file loads on every page, giving the worker site-wide scope. */
