@@ -1,0 +1,55 @@
+# Fetch a shared Google Drive file into the repo — the handoff pipe for
+# anything too big for chat. Give it the Drive file id and a destination;
+# it downloads at full quality, optionally re-encodes video for the web,
+# and commits the result.
+name: Fetch from Google Drive
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_id:
+        description: "Google Drive file id (from the share link)"
+        required: true
+      dest:
+        description: "Repo path to write (e.g. assets/video/vaunt-360-full.mp4)"
+        required: true
+      mode:
+        description: "raw | video-web (2880 max, crf23) | video-preview (960px, silent)"
+        default: "raw"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: production }
+      - name: Download from Drive
+        run: |
+          pip -q install gdown
+          gdown --fuzzy "https://drive.google.com/uc?id=${{ inputs.file_id }}" -O /tmp/dl.bin
+          ls -la /tmp/dl.bin
+          file /tmp/dl.bin
+      - name: Process
+        run: |
+          mkdir -p "$(dirname '${{ inputs.dest }}')"
+          case "${{ inputs.mode }}" in
+            video-web)
+              ffmpeg -y -i /tmp/dl.bin -vf "scale='min(2880,iw)':-2" -c:v libx264 -crf 23 -preset medium \
+                -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k "${{ inputs.dest }}" ;;
+            video-preview)
+              ffmpeg -y -i /tmp/dl.bin -vf "scale=960:-2" -c:v libx264 -crf 28 -preset veryfast \
+                -pix_fmt yuv420p -movflags +faststart -an "${{ inputs.dest }}" ;;
+            *)
+              cp /tmp/dl.bin "${{ inputs.dest }}" ;;
+          esac
+          ls -la "${{ inputs.dest }}"
+      - name: Commit
+        run: |
+          git config user.name "Matthew McCluster"
+          git config user.email "matthew@mccluster.org"
+          git add "${{ inputs.dest }}"
+          git commit -m "Fetch ${{ inputs.dest }} from Drive (${{ inputs.mode }})"
+          git push origin HEAD:production
