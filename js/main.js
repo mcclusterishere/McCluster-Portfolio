@@ -796,6 +796,9 @@
         btn.href = entry.link;
         btn.target = "_blank";
         btn.rel = "noopener";
+        btn.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: id === "subscribeBtn" ? "subscribe-home" : "book-call-home", page: "home" });
+        });
       } else {
         btn.classList.add("is-pending");
         btn.addEventListener("click", function (e) {

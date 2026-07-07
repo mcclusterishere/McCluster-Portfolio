@@ -17,6 +17,17 @@
 window.ANALYTICS_ID = "G-38KDY01Z2V";
 window.TRACK_ENDPOINT = "";
 
+/* Ad platforms — dormant until the IDs are pasted in.
+   META_PIXEL_ID: Meta Events Manager → your pixel → the 15-16 digit ID.
+   GADS_ID / GADS_LABEL: Google Ads → Tools → Conversions → your
+   "Booked call" action → tag setup ("AW-XXXXXXXXX" + label).
+   The win we count: a booked call. MCC_CONVERT fires it everywhere. */
+window.ADS = {
+  META_PIXEL_ID: "",
+  GADS_ID: "",
+  GADS_LABEL: "",
+};
+
 /* PWA: register the service worker so the site is installable and loads
    instant/offline after the first visit. Registered from here because this
    file loads on every page, giving the worker site-wide scope. */
@@ -44,9 +55,33 @@ window.MCC_TRACK = (function () {
     gtag("config", gaId, { anonymize_ip: true });
   }
 
+  /* ---- ad pixels: load only when an ID is configured ---- */
+  var ads = window.ADS || {};
+  if (ads.META_PIXEL_ID) {
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0"; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+    window.fbq("init", ads.META_PIXEL_ID);
+    window.fbq("track", "PageView");
+  }
+  if (ads.GADS_ID && gtag) gtag("config", ads.GADS_ID);
+
+  /* The one win that counts: a booked call. Fires GA4 + Google Ads + Meta. */
+  window.MCC_CONVERT = function (label) {
+    if (gtag) {
+      gtag("event", "book_call", { label: label || "" });
+      if (ads.GADS_ID && ads.GADS_LABEL) gtag("event", "conversion", { send_to: ads.GADS_ID + "/" + ads.GADS_LABEL });
+    }
+    if (window.fbq) window.fbq("track", "Schedule", { content_name: label || "book_call" });
+  };
+
   return function (name, params) {
     params = params || {};
     if (gtag) gtag("event", name, params);
+    // any booking CTA anywhere on the site counts as the conversion
+    if (name === "cta_click" && /book-call|offer-claim/.test(params.label || "")) window.MCC_CONVERT(params.label);
     if (endpoint) {
       // fire-and-forget; sendBeacon survives page exits
       var payload = JSON.stringify({ event: name, params: params, path: location.pathname, ts: Date.now() });
