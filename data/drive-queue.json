@@ -1,8 +1,21 @@
 {
   "note": "The Drive handoff queue. Add { file_id, dest, mode } and push; the fetch-drive workflow downloads each job whose dest doesn't exist yet. Modes: raw, video-web (2880 max, keeps audio), video-preview (960px, silent, for inspection).",
   "jobs": [
-    { "file_id": "16-GMgZjT6jDRQL49JSWR2IUtZ1w-esko", "dest": "assets/incoming/clip1-preview.mp4", "mode": "video-preview" },
-    { "file_id": "1Xq4PZ_B7IyFg-ZTucAxFH8tO3lUElakq", "dest": "assets/incoming/clip2-preview.mp4", "mode": "video-preview" },
-    { "file_id": "1hpn3lhcHtkrl7k8xrJo3yLdY1ucRbM8t", "dest": "assets/incoming/clip3-preview.mp4", "mode": "video-preview" }
-  ]
+    {
+      "file_id": "16-GMgZjT6jDRQL49JSWR2IUtZ1w-esko",
+      "dest": "assets/incoming/clip1-preview.mp4",
+      "mode": "video-preview"
+    },
+    {
+      "file_id": "1Xq4PZ_B7IyFg-ZTucAxFH8tO3lUElakq",
+      "dest": "assets/incoming/clip2-preview.mp4",
+      "mode": "video-preview"
+    },
+    {
+      "file_id": "1hpn3lhcHtkrl7k8xrJo3yLdY1ucRbM8t",
+      "dest": "assets/incoming/clip3-preview.mp4",
+      "mode": "video-preview"
+    }
+  ],
+  "run": 2
 }
