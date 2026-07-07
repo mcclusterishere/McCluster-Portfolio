@@ -440,9 +440,9 @@
   // two scenes, ONE project: Vaunt (the brand collab)
   var cmdProjects = [1, 1];
   var cmdProjectCount = 1;
-  // the full record carries the runway and the 360; the acoustic takes over
-  // for the fly-through into the cabin
-  var cmdSceneTracks = ["vauntfull", "vaunt"];
+  // the full record carries both flight legs — the runway liftoff and the
+  // fly-through landing; the acoustic plays only inside the 360 look-around
+  var cmdSceneTracks = ["vauntfull", "vauntfull"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades
@@ -558,6 +558,11 @@
       workVR.el.classList.toggle("is-live", on);
       if (workVR.viewer) { on ? workVR.viewer.play() : workVR.viewer.pause(); }
       lockPageScroll(on);
+      // inside the 360 the acoustic takes the cabin; either side of it,
+      // the full record flies
+      if (commandInView && commandAudioHook) {
+        commandAudioHook(on ? "vaunt" : cmdSceneTracks[lastCmdActive]);
+      }
     }
   }
 
