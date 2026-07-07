@@ -566,8 +566,8 @@
     onUpdate: function (st) {
       applyCommand(st.progress);
       workVRSet(st.progress);
-      // halfway through the fly-through, the film asks for a slow hand
-      if (workSlow) workSlow.classList.toggle("is-shown", st.progress > 0.56 && st.progress < 0.86);
+      // the last card opens on the ask for a slow hand (right where Land sets you down)
+      if (workSlow) workSlow.classList.toggle("is-shown", st.progress > 0.503 && st.progress < 0.86);
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);
