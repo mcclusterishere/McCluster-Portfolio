@@ -153,6 +153,75 @@
       return true;
     }
 
+    /* ---- hotspots: tags pinned to things in the scene ----
+       spot = { yaw, pitch (degrees), label, href, from, to (seconds, optional) } */
+    var spots = [];
+    var spotLayer = document.createElement("div");
+    spotLayer.className = "vr360-spots";
+    canvas.parentNode.insertBefore(spotLayer, canvas.nextSibling);
+
+    function setSpots(list) {
+      spots = (list || []).map(function (s) {
+        var el = document.createElement("a");
+        el.className = "vr360-spot";
+        el.href = s.href || "#";
+        el.innerHTML = "<i></i><span>" + s.label + "</span>";
+        el.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("vr_spot_click", { label: s.label });
+        });
+        spotLayer.appendChild(el);
+        return { cfg: s, el: el, yaw: s.yaw * Math.PI / 180, pitch: s.pitch * Math.PI / 180 };
+      });
+    }
+    if (opts.spots) setSpots(opts.spots);
+
+    // world direction the camera at (yaw,pitch) looks toward — same math as the shader
+    function dirOf(yaw, pitch) {
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      return [-cp * Math.sin(yaw), sp, -cp * Math.cos(yaw)];
+    }
+    function placeSpots() {
+      if (!spots.length) return;
+      var t = Math.tan(state.fov / 2);
+      var aspect = canvas.width / canvas.height;
+      var cy = Math.cos(-state.yaw), sy = Math.sin(-state.yaw);
+      var cp = Math.cos(-state.pitch), sp = Math.sin(-state.pitch);
+      var now = state.isVideo ? media.currentTime : null;
+      spots.forEach(function (s) {
+        if (now != null && s.cfg.from != null && (now < s.cfg.from || now > (s.cfg.to || 1e9))) {
+          s.el.style.display = "none"; return;
+        }
+        var w = dirOf(s.yaw, s.pitch);
+        // rotate world into camera space: Ry(-yaw) then Rx(-pitch)
+        var x1 = w[0] * cy - w[2] * sy, z1 = w[0] * sy + w[2] * cy, y1 = w[1];
+        var y2 = y1 * cp + z1 * sp, z2 = -y1 * sp + z1 * cp;
+        if (z2 > -0.05) { s.el.style.display = "none"; return; } // behind you
+        var nx = (x1 / -z2) / (t * aspect), ny = (y2 / -z2) / t;
+        if (nx < -1.15 || nx > 1.15 || ny < -1.15 || ny > 1.15) { s.el.style.display = "none"; return; }
+        s.el.style.display = "";
+        s.el.style.left = ((nx * 0.5 + 0.5) * 100) + "%";
+        s.el.style.top = ((0.5 - ny * 0.5) * 100) + "%";
+      });
+    }
+
+    /* ---- authoring: tap the scene, get its yaw/pitch/time to paste into the config ---- */
+    function pick(clientX, clientY) {
+      var r = canvas.getBoundingClientRect();
+      var t = Math.tan(state.fov / 2), aspect = canvas.width / canvas.height;
+      var nx = ((clientX - r.left) / r.width * 2 - 1) * t * aspect;
+      var ny = (1 - (clientY - r.top) / r.height * 2) * t;
+      var d = [nx, ny, -1];
+      // rotate view ray into the world: Rx(pitch) then Ry(yaw) — the shader's order
+      var cp = Math.cos(state.pitch), sp = Math.sin(state.pitch);
+      var y1 = d[1] * cp - d[2] * sp, z1 = d[1] * sp + d[2] * cp, x1 = d[0];
+      var cy = Math.cos(state.yaw), sy = Math.sin(state.yaw);
+      var x2 = x1 * cy + z1 * sy, z2 = -x1 * sy + z1 * cy;
+      var len = Math.hypot(x2, y1, z2);
+      var yaw = Math.atan2(-x2 / len, -z2 / len) * 180 / Math.PI;
+      var pitch = Math.asin(y1 / len) * 180 / Math.PI;
+      return { yaw: +yaw.toFixed(1), pitch: +pitch.toFixed(1), t: state.isVideo ? +media.currentTime.toFixed(1) : 0 };
+    }
+
     /* ---- render loop ---- */
     function frame() {
       size();
@@ -171,6 +240,7 @@
       gl.uniform1f(U.uAspect, canvas.width / canvas.height);
       gl.uniform2f(U.uRes, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      placeSpots();
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -179,6 +249,8 @@
       state: state,
       media: media,
       enableGyro: enableGyro,
+      setSpots: setSpots,
+      pick: pick,
       play: function () { if (state.isVideo) media.play().catch(function(){}); },
       pause: function () { if (state.isVideo) media.pause(); },
     };
