@@ -114,13 +114,22 @@
   "count": 101
  },
  "fps": 20,
- "jetwalk": {
+ "vperf1": {
   "count": 101
  },
- "nightlift": {
+ "vperf2": {
   "count": 101
  },
- "proofgrin": {
+ "vperf3": {
+  "count": 101
+ },
+ "vperf4": {
+  "count": 101
+ },
+ "vperf5": {
+  "count": 101
+ },
+ "vperf6": {
   "count": 101
  }
 }
