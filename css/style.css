@@ -3122,7 +3122,9 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 
 /* ---- Service Network frame: tags ride the right edge, buttons and seals sized down ---- */
 #loadout .command__panel { width: 100%; }
-#loadout .command__meta { justify-content: flex-end; margin-top: 0.5rem; }
+/* the tag shares the title's line on the right, so the whole panel pulls up */
+#loadout .command__meta { position: absolute; top: 0.35em; right: 0; margin: 0; justify-content: flex-end; }
+#loadout .command__title { margin-top: 0; }
 #loadout .book-huge {
   font-family: inherit; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.14em;
   padding: 0.45em 1em; border-radius: 6px; border: none; margin-top: 0.55rem; gap: 0.35em;
