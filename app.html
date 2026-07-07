@@ -130,7 +130,7 @@
     <header class="sp__head">
       <div class="sp__hi">
         <h1 class="sp__greet" id="greet">Good evening</h1>
-        <a class="sp__ava" href="index.html" aria-label="Back to the experience"><img src="assets/img/m-mark.png" alt="M"></a>
+        <button class="sp__ava" id="ava" type="button" aria-label="Account"><img src="assets/img/m-mark.png" alt="M"></button>
       </div>
       <div class="sp__pills" id="pills" role="tablist">
         <button class="sp__pill is-on" data-f="all" type="button">All</button>
@@ -201,6 +201,33 @@
     </div>
   </section>
 
+  <!-- account sheet: magic-link sign-in -->
+  <div class="leadov" id="acct" role="dialog" aria-modal="true">
+    <div class="leadov__box">
+      <button class="leadov__x" id="acctX" type="button" aria-label="Close">&#10005;</button>
+      <p class="leadov__kicker">Your account</p>
+      <div id="acctOut">
+        <h3 class="leadov__h">Carry it everywhere</h3>
+        <form class="leadov__form" id="acctForm" novalidate>
+          <input class="leadov__in" name="email" type="email" placeholder="Your email" autocomplete="email" required>
+          <button class="btn btn--ruby leadov__go" type="submit">Send my sign-in link</button>
+          <p class="leadov__note">No password. A link lands in your inbox, one tap signs you in, and your plays, likes and resume points follow you to every device.</p>
+        </form>
+        <div class="leadov__done" hidden>
+          <h3 class="leadov__h">Check your inbox.</h3>
+          <p class="leadov__note">The sign-in link is on the way. Open it on this device and you're in.</p>
+        </div>
+      </div>
+      <div id="acctIn" hidden>
+        <h3 class="leadov__h">Signed in</h3>
+        <p class="leadov__note" id="acctWho"></p>
+        <div class="leadov__form" style="margin-top:0.9rem">
+          <button class="btn btn--ghost" id="acctOutBtn" type="button">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <audio id="au" preload="none"></audio>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
@@ -220,6 +247,36 @@
 
       var h = new Date().getHours();
       $("greet").textContent = h < 5 ? "Late night, locked in" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+
+      /* ---------- account sheet ---------- */
+      function acctRender() {
+        var u = window.MCC_AUTH && window.MCC_AUTH.user();
+        $("acctOut").hidden = !!u;
+        $("acctIn").hidden = !u;
+        if (u) $("acctWho").textContent = u.email + " · your plays and likes sync everywhere.";
+        $("ava").style.borderColor = u ? "var(--ruby-hot)" : "rgba(229,56,59,0.6)";
+        $("ava").style.boxShadow = u ? "0 0 12px rgba(229,56,59,0.6)" : "none";
+      }
+      $("ava").addEventListener("click", function () { acctRender(); $("acct").classList.add("is-open"); });
+      $("acctX").addEventListener("click", function () { $("acct").classList.remove("is-open"); });
+      $("acct").addEventListener("click", function (e) { if (e.target === $("acct")) $("acct").classList.remove("is-open"); });
+      $("acctForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var em = this.email.value.trim();
+        if (!em) return;
+        var form = this;
+        window.MCC_AUTH.signIn(em).then(function () {
+          form.hidden = true;
+          form.parentNode.querySelector(".leadov__done").hidden = false;
+          if (window.MCC_TRACK) window.MCC_TRACK("auth_link_sent", {});
+        }).catch(function (err) {
+          form.querySelector(".leadov__note").textContent = "Couldn't send it: " + err.message + " — check the address and try again.";
+        });
+      });
+      $("acctOutBtn").addEventListener("click", function () {
+        window.MCC_AUTH.signOut().then(function () { location.reload(); });
+      });
+      acctRender();
 
       /* ---------- render ---------- */
       function card(it, wide) {
