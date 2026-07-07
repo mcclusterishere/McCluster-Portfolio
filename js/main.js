@@ -104,10 +104,7 @@
     pillarsbg: createSequence("pillarsCanvas", "pillarsVideo"),
     keynote: createSequence("loadoutCanvas", null),
     vauntlive: createSequence("cmdCanvas5", null),
-    uprise: createSequence("cmdCanvas0", null),
     vaunt: createSequence("cmdCanvas4", null),
-    whip: createSequence("cmdCanvas6", null),
-    bussalick: createSequence("cmdCanvas8", null),
   };
 
   function clamp01(v) { return Math.max(0, Math.min(1, v)); }
@@ -270,9 +267,7 @@
           ["pillarsbg", "nightscroll"],
         ]);
         loadNear("#work", [
-          ["uprise", "uprise"], ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
-          ["bussalick", "bussalick"],
-          ["whip", m.whip ? "whip" : "street"],
+          ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
         ]);
         ScrollTrigger.refresh();
       }
@@ -425,18 +420,13 @@
   // fraction of the film each band scrubs) so a two-part project plays as
   // one continuous film with no repeated footage.
   var cmdScenes = [
-    // Policy Fellowship: the full Equity Uprise film — the rally engineered
-    // from the booth, then the case file put on the record
-    { seq: "uprise", f0: 0, f1: 1, speed: 1 },
     { seq: "vauntlive", f0: 0, f1: 1, speed: 1 },    // runway performance up to the sky...
     { seq: "vaunt", f0: 0, f1: 1, speed: 1.75 },     // ...into the cabin fly-through
-    { seq: "bussalick", f0: 0, f1: 1, speed: 1.75 },  // Dealer Plates video: the dash — fast scrub, whole clip early
-    { seq: "whip", f0: 0, f1: 1, speed: 1 },         // Whip Equipped mini-series
   ];
-  // five scenes, three PROJECTS: the counter and numbering track projects
-  var cmdProjects = [1, 2, 2, 3, 3];
-  var cmdProjectCount = 3;
-  var cmdSceneTracks = ["environmental-injustice", "vaunt", "vaunt", "dealerplates", "dealerplates"];
+  // two scenes, ONE project: Vaunt (the brand collab)
+  var cmdProjects = [1, 1];
+  var cmdProjectCount = 1;
+  var cmdSceneTracks = ["vaunt", "vaunt"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades
