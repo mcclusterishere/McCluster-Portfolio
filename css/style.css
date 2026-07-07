@@ -2987,6 +2987,34 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 /* --- crisp focus ring --- */
 :focus-visible { outline: 2px solid var(--ruby-hot); outline-offset: 3px; border-radius: 3px; }
 
+/* ---- landscape phones: headline moves to the RIGHT column, panels keep the left,
+       so the pinned frames never stack on themselves in short viewports ---- */
+@media (orientation: landscape) and (max-height: 560px) {
+  .command__head {
+    left: auto; right: clamp(1.2rem, 4vw, 3rem);
+    top: clamp(4.8rem, 26vh, 6.5rem);
+    max-width: 42vw; text-align: right;
+  }
+  .command__head .kicker { justify-content: flex-end; }
+  .command__head .section-title { font-size: clamp(1.5rem, 11vh, 2.6rem); }
+  .command__head .work__answer { display: none; }
+  .command__panels { right: auto; left: clamp(1.2rem, 4vw, 3rem); width: min(52vw, 44rem); max-width: none; bottom: clamp(2.2rem, 10vh, 3.6rem); min-height: 0; }
+  .command__panel { max-width: 100%; }
+  .command__title { font-size: clamp(1.2rem, 9vh, 1.9rem); }
+  .command__pitch { font-size: clamp(0.8rem, 3.8vh, 0.95rem); line-height: 1.4; }
+  /* the Scroll Slow frame: height-based type so SLOW never swallows the panel */
+  .antiscroll__title { text-align: right; }
+  .antiscroll__l1 { font-size: clamp(1.1rem, 9vh, 1.9rem); }
+  .antiscroll__l2 { font-size: clamp(1.6rem, 15vh, 3rem); transform-origin: right center; }
+  .antiscroll__l3 { font-size: clamp(1.3rem, 12vh, 2.4rem); }
+  .antiabout { gap: 0.55rem; }
+  .antiabout__points span { font-size: clamp(0.95rem, 6.5vh, 1.4rem); }
+  .antiabout__phone { width: clamp(2.2rem, 12vh, 3rem); height: clamp(2.6rem, 15vh, 3.6rem); }
+  .antiabout__sound { font-size: clamp(0.7rem, 3.6vh, 0.85rem); }
+  .antiabout__enter-ic { width: clamp(3rem, 18vh, 4.2rem); height: clamp(3rem, 18vh, 4.2rem); }
+  .antiabout__enter-txt { font-size: clamp(0.95rem, 6vh, 1.4rem); }
+}
+
 /* ---- mobile: stop the command-section header and cards from stacking ---- */
 @media (max-width: 640px) {
   .command__head { top: clamp(3.6rem, 8.5vh, 4.8rem); max-width: 92vw; }
