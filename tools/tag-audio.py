@@ -25,6 +25,8 @@ ARTIST = {
     "environmental-injustice-brave": "McCluster ft. Ocho & Evangelist Angel",
     "environmental-injustice": "McCluster ft. Ocho & Evangelist Angel",
     "vaunt": "McCluster & Zakir",
+    "sjw": "Equity Uprise",
+    "scar-stories": "Equity Uprise",
 }
 DEFAULT_ARTIST = "McCluster"
 PUBLISHER = "McCluster Corp / M Network"
