@@ -31,7 +31,7 @@ window.ADS = {
 /* Lead intake — the Apps Script web app URL (ends in /exec) that appends
    rows to the leads Sheet. While empty, every lead button keeps its plain
    mailto behavior; paste the URL and the on-page form takes over. */
-window.INTAKE_ENDPOINT = "";
+window.INTAKE_ENDPOINT = "https://script.google.com/macros/s/AKfycby9Z086Bx-lEfTr6NnOyx3kTzdPpnEshJS7HX-XbmaEPQ2xhMe6mk2GAUzLIheAIR7bBA/exec";
 
 /* PWA: register the service worker so the site is installable and loads
    instant/offline after the first visit. Registered from here because this
