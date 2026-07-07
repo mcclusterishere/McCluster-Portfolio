@@ -18,7 +18,7 @@
   "use strict";
 
   /* paste from Supabase → Settings → API to arm the account layer */
-  var SUPABASE_URL = "";
+  var SUPABASE_URL = "https://fxbkvcrfbbcmrrupdcjt.supabase.co";
   var SUPABASE_ANON_KEY = "";
 
   var NS = "mccdb_";
