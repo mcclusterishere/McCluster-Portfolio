@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
         with: { ref: production }
       - name: Install gdown
-        run: pip -q install gdown
+        run: pip -q install --upgrade gdown
       - name: Process the queue
         run: |
           set -e
@@ -37,7 +37,7 @@ jobs:
             mode=$(jq -r ".jobs[$i].mode // \"raw\"" data/drive-queue.json)
             if [ -e "$dest" ]; then echo "skip (exists): $dest"; continue; fi
             echo "fetching $id -> $dest ($mode)"
-            gdown --fuzzy "https://drive.google.com/uc?id=$id" -O /tmp/dl.bin
+            gdown -O /tmp/dl.bin "$id"
             mkdir -p "$(dirname "$dest")"
             case "$mode" in
               video-web)
