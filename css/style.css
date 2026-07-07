@@ -2720,7 +2720,7 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 /* ---- floating pause: stop the music from anywhere ---- */
 .float-pause {
   position: fixed; z-index: 150;
-  right: clamp(1rem, 4vw, 2rem); bottom: clamp(1rem, 4vw, 2rem);
+  right: clamp(1rem, 4vw, 2rem); top: 38%; bottom: auto;
   height: 3.3rem; padding: 0 1.1rem 0 0.95rem; border: none; border-radius: 999px;
   background: var(--ruby); color: #fff; cursor: pointer;
   display: inline-flex; align-items: center; gap: 0.5rem;
