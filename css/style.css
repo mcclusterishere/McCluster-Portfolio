@@ -688,11 +688,11 @@ a { color: inherit; text-decoration: none; }
 }
 .antiscroll__title span { display: block; }
 .antiscroll__l1 {
-  font-size: clamp(3rem, 12vw, 8rem); color: var(--cream);
+  font-size: clamp(1.6rem, 6vw, 4rem); color: var(--cream);
   opacity: 0.92;
 }
 .antiscroll__l2 {
-  font-size: clamp(4.4rem, 20vw, 13rem);
+  font-size: clamp(2.3rem, 10vw, 6.5rem);
   background: linear-gradient(100deg, var(--ruby) 0%, var(--ruby-hot) 28%, #ffb3b5 48%, #fff 52%, var(--ruby-hot) 72%, var(--ruby) 100%);
   background-size: 260% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
