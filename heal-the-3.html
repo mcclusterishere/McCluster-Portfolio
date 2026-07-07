@@ -90,6 +90,42 @@
     .h3song__cta { display: inline-flex; align-items: center; gap: 0.5em; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ruby-hot); text-decoration: none; border: 1px solid rgba(229,56,59,0.5); border-radius: 100px; padding: 0.55em 1.1em; transition: background 0.25s, color 0.25s; }
     .h3song__cta:hover { background: var(--ruby); color: #fff; }
     @media (prefers-reduced-motion: reduce) { .h3orb__ring, .h3orb__img, .h3play { animation: none; } }
+
+    /* ---- karaoke overlay: Play starts it, lyrics scroll themselves in time ---- */
+    .h3lyr { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 5rem 1.2rem 6rem;
+      background: radial-gradient(120% 90% at 50% 20%, rgba(10,16,32,0.92), rgba(3,5,10,0.98));
+      backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+    .h3lyr.is-live { opacity: 1; pointer-events: auto; }
+    .h3lyr__head { position: absolute; top: 1.1rem; left: 0; right: 0; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 1.2rem; }
+    .h3lyr__badge { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.14em;
+      font-size: 0.8rem; color: var(--cream-dim); }
+    .h3lyr__badge b { color: var(--ruby-hot); }
+    .h3lyr__close { background: none; border: 1px solid rgba(244,239,230,0.3); color: var(--cream);
+      border-radius: 100px; padding: 0.4em 0.95em; font-size: 0.62rem; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer; transition: border-color 0.25s, background 0.25s; }
+    .h3lyr__close:hover { border-color: var(--ruby-hot); background: rgba(229,56,59,0.15); }
+    .h3lyr__view { position: relative; width: min(90vw, 46rem); height: 62vh; overflow: hidden;
+      mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent); }
+    .h3lyr__scroll { position: absolute; left: 0; right: 0; top: 50%;
+      transition: transform 0.55s cubic-bezier(0.22,0.61,0.36,1); will-change: transform; }
+    .h3lyr__line { text-align: center; padding: 0.55em 0.3em; font-family: var(--display);
+      text-transform: uppercase; line-height: 1.02; letter-spacing: 0.005em;
+      font-size: clamp(1.35rem, 5.4vw, 2.9rem); color: rgba(244,239,230,0.24);
+      transition: color 0.4s ease, opacity 0.4s ease, transform 0.4s ease; transform: scale(0.94); }
+    .h3lyr__line.is-past { color: rgba(244,239,230,0.16); }
+    .h3lyr__line.is-active { color: var(--cream); transform: scale(1);
+      text-shadow: 0 0 34px rgba(229,56,59,0.55), 0 0 10px rgba(255,255,255,0.25); }
+    .h3lyr__line.is-active b { color: var(--ruby-hot); }
+    .h3lyr__foot { position: absolute; bottom: 1.4rem; left: 0; right: 0; text-align: center; }
+    .h3lyr__bar { width: min(80vw, 30rem); height: 3px; margin: 0 auto 0.9rem; border-radius: 3px;
+      background: rgba(244,239,230,0.14); overflow: hidden; }
+    .h3lyr__bar > i { display: block; height: 100%; width: 0; border-radius: 3px;
+      background: linear-gradient(90deg, var(--ruby), var(--ruby-hot)); }
+    .h3lyr__note { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); }
+    @media (prefers-reduced-motion: reduce) { .h3lyr__scroll, .h3lyr__line { transition: none; } }
   </style>
 </head>
 <body class="h3">
@@ -129,9 +165,27 @@
       </div>
     </section>
 
+    <!-- Deep End audio drops in here; until the MP3 lands the lyrics run on their own clock -->
+    <audio id="h3audio" preload="none" src="assets/audio/deep-end.mp3"></audio>
+
+    <!-- karaoke overlay: built from data/heal-the-3-deep-end.json, Play scrolls it in time -->
+    <div class="h3lyr" id="h3lyr" aria-hidden="true">
+      <div class="h3lyr__head">
+        <span class="h3lyr__badge"><b>Deep End</b> · Heal the 3</span>
+        <button class="h3lyr__close" id="h3lyrClose" type="button">Close ✕</button>
+      </div>
+      <div class="h3lyr__view">
+        <div class="h3lyr__scroll" id="h3lyrScroll"></div>
+      </div>
+      <div class="h3lyr__foot">
+        <div class="h3lyr__bar"><i id="h3lyrBar"></i></div>
+        <p class="h3lyr__note" id="h3lyrNote">Lyrics · Deep End</p>
+      </div>
+    </div>
+
     <p class="h3note">
       A whole world seen from space, circling: fire, jets, and fallout on one side; forests, rivers, and
-      still water on the other. Two doves hold the line between them. Press play and <b>Heal the 3</b> plays
+      still water on the other. Two doves hold the line between them. Press play and <b>Deep End</b> plays
       itself, the lyrics scrolling in time. The full orbiting experience is in production.
     </p>
 
@@ -196,12 +250,98 @@
         else if (e.key === "Home") set(0);
       });
 
-      /* play(): the hook the song + karaoke autoscroll plug into later */
+      /* --- Karaoke: Play starts Deep End and scrolls the timed lyrics itself. ---
+         If the audio file exists it drives the clock (audio.currentTime); until the
+         MP3 lands we fall back to a virtual clock so the scroll still previews live. */
+      var overlay = document.getElementById("h3lyr");
+      var scroll = document.getElementById("h3lyrScroll");
+      var bar = document.getElementById("h3lyrBar");
+      var note = document.getElementById("h3lyrNote");
+      var audio = document.getElementById("h3audio");
+      var lines = [], nodes = [], dur = 165, active = -1;
+      var running = false, virtStart = 0, usingAudio = false, built = false;
+
+      function build(data) {
+        lines = data.lines || [];
+        dur = data.duration || 165;
+        scroll.innerHTML = lines.map(function (l, i) {
+          return '<div class="h3lyr__line" data-i="' + i + '">' + escapeHtml(l.text) + "</div>";
+        }).join("");
+        nodes = Array.prototype.slice.call(scroll.querySelectorAll(".h3lyr__line"));
+        built = true;
+      }
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>]/g, function (c) {
+          return c === "&" ? "&amp;" : c === "<" ? "&lt;" : "&gt;";
+        });
+      }
+
+      function centreOn(i) {
+        var el = nodes[i];
+        if (!el) { scroll.style.transform = "translateY(0)"; return; }
+        scroll.style.transform = "translateY(" + (-(el.offsetTop + el.offsetHeight / 2)) + "px)";
+      }
+      function paint(i) {
+        if (i === active) return;
+        active = i;
+        for (var k = 0; k < nodes.length; k++) {
+          nodes[k].classList.toggle("is-active", k === i);
+          nodes[k].classList.toggle("is-past", k < i);
+        }
+        centreOn(Math.max(0, i));
+      }
+      function activeIndexAt(t) {
+        var idx = -1;
+        for (var k = 0; k < lines.length; k++) { if (t >= lines[k].t) idx = k; else break; }
+        return idx;
+      }
+
+      function now() { return usingAudio ? audio.currentTime : (performance.now() - virtStart) / 1000; }
+      function frame() {
+        if (!running) return;
+        var t = now();
+        paint(activeIndexAt(t));
+        bar.style.width = Math.max(0, Math.min(1, t / dur)) * 100 + "%";
+        if (!usingAudio && t >= dur + 1) { stop(); return; }
+        requestAnimationFrame(frame);
+      }
+
+      function start() {
+        overlay.classList.add("is-live");
+        overlay.setAttribute("aria-hidden", "false");
+        active = -1; paint(-1); centreOn(0);
+        running = true;
+        // try the real track; if it can't play (not uploaded yet), run the virtual clock
+        usingAudio = false;
+        var p = audio.play();
+        if (p && p.then) {
+          p.then(function () {
+            usingAudio = true; note.textContent = "Deep End · playing";
+          }).catch(function () {
+            usingAudio = false; virtStart = performance.now();
+            note.textContent = "Preview · audio drops soon";
+          });
+        } else { virtStart = performance.now(); }
+        virtStart = performance.now();
+        requestAnimationFrame(frame);
+      }
+      function stop() {
+        running = false;
+        try { audio.pause(); audio.currentTime = 0; } catch (e) {}
+        overlay.classList.remove("is-live");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
       document.getElementById("h3play").addEventListener("click", function () {
-        if (window.MCC_TRACK) window.MCC_TRACK("h3_play_attempt", { page: "heal-the-3" });
-        status.textContent = "The songs are on the way — play + lyric sync go live when they drop.";
-        status.classList.add("is-shown");
+        if (window.MCC_TRACK) window.MCC_TRACK("h3_play", { page: "heal-the-3", song: "deep-end" });
+        if (built) { start(); return; }
+        status.textContent = "Cueing Deep End…"; status.classList.add("is-shown");
+        fetch("data/heal-the-3-deep-end.json").then(function (r) { return r.json(); })
+          .then(function (d) { build(d); status.classList.remove("is-shown"); start(); })
+          .catch(function () { status.textContent = "Couldn't load the lyrics — try again."; });
       });
+      document.getElementById("h3lyrClose").addEventListener("click", stop);
+      window.addEventListener("keydown", function (e) { if (e.key === "Escape" && running) stop(); });
     })();
   </script>
 </body>
