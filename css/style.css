@@ -2281,7 +2281,7 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 #work .command__link:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(248, 76, 10, 0.65); }
 #work .command__count { color: var(--vaunt); }
 #work .workvr__tag,
-#work .workvr__btn--skip { background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); box-shadow: 0 8px 26px rgba(248, 76, 10, 0.5); }
+#work .workvr__btn--land { background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); box-shadow: 0 8px 26px rgba(248, 76, 10, 0.5); }
 #work .workvr__btn:hover { border-color: var(--vaunt); background: rgba(248, 76, 10, 0.28); }
 #work .workvr__btn.is-on { border-color: var(--vaunt); color: #ffb38f; }
 #work .workvr__btn { --vr-flash: var(--vaunt); }
@@ -2340,9 +2340,46 @@ html.vr-locked {
 .workvr__icon { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .workvr__btn:hover { border-color: var(--ruby-hot); background: rgba(193, 18, 31, 0.3); }
 .workvr__btn.is-on { border-color: var(--ruby-hot); color: var(--ruby-hot); }
-.workvr__btn--skip { background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff; border: none;
-  box-shadow: 0 8px 24px rgba(229, 56, 59, 0.5); animation: vrSkipNudge 2.8s ease-in-out infinite; }
+.workvr__btn--land {
+  position: relative; overflow: hidden;
+  background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff; border: none;
+  font-weight: 700; letter-spacing: 0.2em; padding: 0.75em 1.25em;
+  box-shadow: 0 8px 24px rgba(229, 56, 59, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation: vrSkipNudge 2.8s ease-in-out infinite;
+}
+.workvr__btn--land::after { /* runway-sheen sweep across the pill */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, 0.4) 50%, transparent 68%);
+  transform: translateX(-100%); animation: vrLandSheen 3.4s ease-in-out infinite;
+}
+.workvr__icon--jet { width: 17px; height: 17px; animation: vrLandDip 2.8s ease-in-out infinite; }
 @keyframes vrSkipNudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+@keyframes vrLandSheen { 0%, 55% { transform: translateX(-100%); } 90%, 100% { transform: translateX(100%); } }
+@keyframes vrLandDip { 0%, 100% { transform: translate(0, -1.5px); } 50% { transform: translate(1px, 1px); } }
+
+/* hotspots: tags pinned to things inside the 360 scene (base styles —
+   the standalone vr-vaunt.html page carries its own copy of these) */
+.vr360-spots { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.vr360-spot {
+  position: absolute; transform: translate(-50%, -50%); pointer-events: auto;
+  display: flex; align-items: center; gap: 0.45em; text-decoration: none; color: var(--cream);
+}
+.vr360-spot i {
+  width: 16px; height: 16px; border-radius: 50%; flex: none; position: relative;
+  background: var(--ruby-hot); box-shadow: 0 0 12px rgba(229, 56, 59, 0.9);
+}
+.vr360-spot i::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid rgba(229, 56, 59, 0.7); animation: vrSpotPing 2s ease-out infinite;
+}
+@keyframes vrSpotPing { 0% { transform: scale(0.7); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
+.vr360-spot span {
+  font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+  background: rgba(10, 8, 7, 0.75); border: 1px solid rgba(229, 56, 59, 0.5);
+  border-radius: 100px; padding: 0.45em 0.95em; backdrop-filter: blur(4px);
+}
+.vr360-spot:hover span { background: var(--ruby); border-color: var(--ruby-hot); }
+@media (prefers-reduced-motion: reduce) { .vr360-spot i::after { animation: none; } }
 
 /* motion button: several small animations layered together so it reads as
    "tap me" — glow pulse, a soft bounce, and a border hue-shift, all tied to
@@ -2357,7 +2394,8 @@ html.vr-locked {
 @keyframes vrGyroBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
 @keyframes vrGyroHue { 0%, 100% { border-color: rgba(244, 239, 230, 0.4); } 50% { border-color: var(--vr-flash); color: var(--vr-flash); } }
 @media (prefers-reduced-motion: reduce) {
-  .workvr__compass svg, .workvr__btn--skip, #workVRGyro { animation: none; }
+  .workvr__compass svg, .workvr__btn--land, .workvr__btn--land::after,
+  .workvr__icon--jet, #workVRGyro { animation: none; }
 }
 
 /* ---- lead capture modal ---- */

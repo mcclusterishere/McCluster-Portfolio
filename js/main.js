@@ -520,7 +520,12 @@
     if (on && !workVR.viewer) {
       workVR.viewer = VR360.mount(document.getElementById("workVRCanvas"), {
         src: "assets/video/vaunt-360.mp4", video: true,
-        yaw: -25, pitch: -18, touchAction: "none",
+        // open facing McCluster in his seat (measured off the equirect frame)
+        yaw: 140, pitch: -32, touchAction: "none",
+        spots: [
+          { yaw: 79, pitch: -8, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+          { yaw: -110, pitch: -37, label: "The camera · the $5,000 system", href: "offer.html" },
+        ],
       });
       var compass = document.getElementById("workVRCompass");
       document.getElementById("workVRCanvas").addEventListener("pointerdown", function () {

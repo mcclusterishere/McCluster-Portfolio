@@ -165,6 +165,7 @@
         var el = document.createElement("a");
         el.className = "vr360-spot";
         el.href = s.href || "#";
+        if (s.blank) { el.target = "_blank"; el.rel = "noopener"; }
         el.innerHTML = "<i></i><span>" + s.label + "</span>";
         el.addEventListener("click", function () {
           if (window.MCC_TRACK) window.MCC_TRACK("vr_spot_click", { label: s.label });

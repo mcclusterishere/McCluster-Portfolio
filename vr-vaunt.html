@@ -142,13 +142,14 @@
         // yaw/pitch in degrees; add from/to (seconds) to time-gate a tag on video
         { yaw: -25, pitch: -42, label: "The six-string · hear Vaunt", href: "song-vaunt.html" },
         { yaw: 155, pitch: -38, label: "The artist · book the energy", href: "hire.html" },
-        { yaw: 79, pitch: -8, label: "The cockpit · the ecosystem", href: "ecosystem.html" },
+        { yaw: 79, pitch: -8, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+        { yaw: -110, pitch: -37, label: "The camera · the $5,000 system", href: "offer.html" },
       ];
       var IS_VIDEO = true; // the real inside-the-jet 360 film
       var viewer = VR360.mount(document.getElementById("vrCanvas"), {
         src: "assets/video/vaunt-360.mp4",
         video: IS_VIDEO,
-        yaw: -25, pitch: -20, // open facing the six-string
+        yaw: 140, pitch: -32, // open facing McCluster in his seat
         spots: SPOTS,
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });
