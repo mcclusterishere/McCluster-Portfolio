@@ -139,8 +139,8 @@
   <header class="site-head">
     <a class="brand" href="#top"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
     <nav class="site-head__nav">
-      <a href="#pillars">Antisocial</a>
       <a href="#work">Brand Collabs</a>
+      <a href="#pillars">Antisocial</a>
       <a href="resume.html">Résumé</a>
       <a href="ecosystem.html">Ecosystem</a>
       <a href="catalogue.html">Catalogue</a>
@@ -244,30 +244,7 @@
     </section>
 
     <!-- ============ SERVICES — three slides over Antisocial ============ -->
-    <section class="services" id="pillars">
-      <div class="command__sticky">
-        <canvas class="bg-canvas" id="pillarsCanvas" aria-label="Night drone descent toward a lit house, the blue glow of a phone in the window"></canvas>
-        <video class="bg-video" id="pillarsVideo" muted loop playsinline preload="none">
-          <source src="assets/video/nightscroll.mp4" type="video/mp4">
-        </video>
-        <div class="scrim scrim--deep" aria-hidden="true"></div>
-        <header class="command__head">
-          <p class="kicker">An experience, not a website</p>
-          <h2 class="antiscroll__title"><span class="antiscroll__l1">Scroll</span><span class="antiscroll__l2">Slow</span></h2>
-        </header>
-        <div class="command__panels antiabout">
-          <p class="antiabout__lead">Everything here is intentional. Some things take longer on purpose. We build for quality and we move with efficiency, but we never rush the art. What you're scrolling through took time, so give it a second and it gives it back.</p>
-          <p class="antiabout__sound"><span class="antiabout__spk" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a4 4 0 0 1 0 7M18.5 6a7.5 7.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span> Turn the sound on. Cut the distractions. Let it move you.</p>
-          <a class="antiabout__enter" href="song-antisocial.html" data-cta="antisocial-video">
-            <span class="antiabout__enter-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.79-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14z" fill="currentColor"/></svg></span>
-            <span class="antiabout__enter-txt">Play <b>Antisocial</b><br>the music video</span>
-          </a>
-        </div>
-        <div class="command__count" id="svcCount" hidden>01 / 03</div>
-      </div>
-    </section>
-
-    <!-- ============ IN COMMAND — mini scroll (selected work as scenes) ============ -->
+    <!-- ============ BRAND COLLABS — mini scroll (selected work as scenes) ============ -->
     <section class="command" id="work">
       <div class="command__sticky">
         <canvas class="bg-canvas command__canvas" id="cmdCanvas5" aria-label="Vaunt: Matthew singing and Zakir on guitar on the runway, the camera lifting to the jet in flight"></canvas>
@@ -294,6 +271,30 @@
       </div>
     </section>
 
+    <!-- ============ THE ANTISOCIAL EXPERIENCE — the last card before the finale ============ -->
+    <section class="services" id="pillars">
+      <div class="command__sticky">
+        <canvas class="bg-canvas" id="pillarsCanvas" aria-label="Night drone descent toward a lit house, the blue glow of a phone in the window"></canvas>
+        <video class="bg-video" id="pillarsVideo" muted loop playsinline preload="none">
+          <source src="assets/video/nightscroll.mp4" type="video/mp4">
+        </video>
+        <div class="scrim scrim--deep" aria-hidden="true"></div>
+        <header class="command__head">
+          <p class="kicker">An experience, not a website</p>
+          <h2 class="antiscroll__title"><span class="antiscroll__l1">Scroll</span><span class="antiscroll__l2">Slow</span></h2>
+        </header>
+        <div class="command__panels antiabout">
+          <p class="antiabout__lead">Everything here is intentional. Some things take longer on purpose. We build for quality and we move with efficiency, but we never rush the art. What you're scrolling through took time, so give it a second and it gives it back.</p>
+          <p class="antiabout__sound"><span class="antiabout__spk" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a4 4 0 0 1 0 7M18.5 6a7.5 7.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span> Turn the sound on. Cut the distractions. Let it move you.</p>
+          <a class="antiabout__enter" href="song-antisocial.html" data-cta="antisocial-video">
+            <span class="antiabout__enter-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.79-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14z" fill="currentColor"/></svg></span>
+            <span class="antiabout__enter-txt">Play <b>Antisocial</b><br>the music video</span>
+          </a>
+        </div>
+        <div class="command__count" id="svcCount" hidden>01 / 03</div>
+      </div>
+    </section>
+
     <!-- ============ FINALE ============ -->
     <section class="finale" id="book">
       <div class="finale__inner">
@@ -308,7 +309,7 @@
           <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Quote%20Request%20%E2%80%94%20McCluster">Request a Quote</a>
           <a class="btn btn--ghost magnetic" id="subscribeBtn" href="#">Subscribe</a>
         </div>
-        <p class="finale__believe">You could love it or leave it — as long as you believe it.</p>
+        <p class="finale__believe finale__more">Still not convinced? <a href="ecosystem.html" data-cta="more-work">See the rest of the work &#8594;</a></p>
       </div>
     </section>
   </main>
