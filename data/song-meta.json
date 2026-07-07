@@ -56,8 +56,8 @@
     },
     "vaunt": {
       "title": "Vaunt (Acoustic)",
-      "credit": "The Vaunt Private Flights jingle \u00b7 guitar by Zakir",
-      "album": "Singles",
+      "credit": "The Vaunt Private Flights jingle \u00b7 guitar by Zakir \u00b7 from the Vaunt EP (with \"Jet Pass\")",
+      "album": "Vaunt \u2014 EP",
       "page": "song-vaunt.html",
       "order": 8
     },
@@ -110,8 +110,8 @@
     },
     "vaunt-full": {
       "title": "Vaunt",
-      "credit": "The Vaunt Private Flights record \u00b7 full version",
-      "album": "Singles",
+      "credit": "The Vaunt Private Flights record \u00b7 full version \u00b7 from the Vaunt EP (with \"Jet Pass\")",
+      "album": "Vaunt \u2014 EP",
       "page": "song-vaunt.html",
       "order": 8,
       "catalogue": false

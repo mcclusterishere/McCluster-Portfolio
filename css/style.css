@@ -2520,32 +2520,33 @@ html.vr-locked {
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
 }
 
-/* the beta-one medal: the first-influencer story as a single button */
-.command__pitch--icons { display: flex; align-items: center; gap: 0.9rem; }
-.betaone {
-  display: inline-flex; align-items: center; justify-content: center; flex: none;
-  width: 58px; height: 58px; border-radius: 50%;
-  background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
-  box-shadow: 0 10px 30px rgba(229, 56, 59, 0.5);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-#work .betaone { background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); box-shadow: 0 10px 30px rgba(248, 76, 10, 0.5); }
-.betaone svg { width: 30px; height: 30px; stroke: #fff; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.betaone:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(248, 76, 10, 0.7); }
-/* the M seal beside it: flashing, glowing, and a door to the badge system */
-.mseal {
-  position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none;
-  width: 46px; height: 46px; border-radius: 50%;
-  border: 2px solid var(--badge-c, var(--ruby-hot)); background: rgba(10, 8, 7, 0.6);
+/* word pills: the credential as one bold pill — the M seal leads the words,
+   flashing and glowing; its Vaunt-branded sibling flies you to the referral */
+.command__pitch--icons { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; }
+.wordpill {
+  display: inline-flex; align-items: center; gap: 0.6em; flex: none;
+  border-radius: 100px; padding: 0.45em 1.2em 0.45em 0.45em; text-decoration: none;
+  border: 2px solid var(--badge-c, var(--ruby-hot)); background: rgba(10, 8, 7, 0.68);
+  color: var(--cream); font-weight: 800; font-size: 0.72rem;
+  letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap;
+  backdrop-filter: blur(4px); transition: transform 0.25s;
   animation: msealFlash 1.6s ease-in-out infinite;
-  transition: transform 0.25s;
 }
-.mseal:hover { transform: scale(1.1); }
-.mseal img { width: 22px; filter: drop-shadow(0 0 6px var(--badge-c, var(--ruby-hot))); }
+.wordpill:hover { transform: translateY(-2px); }
+.wordpill__seal {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--badge-c, var(--ruby-hot)); background: rgba(10, 8, 7, 0.7);
+}
+.wordpill__seal img { width: 17px; filter: drop-shadow(0 0 6px var(--badge-c, var(--ruby-hot))); }
+.wordpill--vaunt { --badge-c: var(--vaunt); background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); border-color: var(--vaunt); color: #fff; }
+.wordpill--vaunt .wordpill__seal { border-color: rgba(255, 255, 255, 0.85); background: #fff; overflow: hidden; }
+.wordpill--vaunt .wordpill__seal img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; filter: none; }
 @keyframes msealFlash {
-  0%, 100% { box-shadow: 0 0 8px 0 var(--badge-c, var(--ruby-hot)); border-color: var(--badge-c, var(--ruby-hot)); }
-  50% { box-shadow: 0 0 24px 7px var(--badge-c, var(--ruby-hot)); border-color: #fff; }
+  0%, 100% { box-shadow: 0 0 8px 0 var(--badge-c, var(--ruby-hot)); }
+  50% { box-shadow: 0 0 22px 6px var(--badge-c, var(--ruby-hot)); }
 }
+@media (prefers-reduced-motion: reduce) { .wordpill { animation: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   .workvr__compass, .workvr__rose, .workvr__btn--land, .workvr__btn--land::after,

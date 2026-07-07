@@ -160,9 +160,12 @@
         img.onload = img.onerror = function () {
           flags[i - 1] = true;
           loaded++;
-          if (onProgress) onProgress(loaded / count);
+          // advance the contiguous high-water mark BEFORE reporting progress —
+          // reporting first meant the 100% condition was computed against a
+          // stale loadedMax and the loader always sat at 99 until the failsafe
           while (s.loadedMax + 1 < count && flags[s.loadedMax + 1]) s.loadedMax++;
           if (!s.ready && s.loadedMax >= 0) { s.ready = true; s.draw(0); }
+          if (onProgress) onProgress(loaded / count);
         };
         s.frames[i - 1] = img;
       })(i);
