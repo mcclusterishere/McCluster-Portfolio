@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heal the 3 · EP · McCluster</title>
+  <meta name="description" content="Heal the 3 — a two-song EP by McCluster. War on one side, peace on the other, two doves above it all, seen from space.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <meta property="og:type" content="music.album">
+  <meta property="og:title" content="Heal the 3 · EP">
+  <meta property="og:description" content="Two songs. One planet, split between war and peace, with two doves above it all.">
+  <meta property="og:image" content="assets/img/heal-the-3/cover.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .h3 { background: #05070c; color: var(--cream); overflow-x: hidden; }
+    /* the orbit hero: split world in a starfield */
+    .h3hero {
+      position: relative; min-height: 100dvh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: clamp(5rem, 12vh, 8rem) 1.2rem 4rem; overflow: hidden;
+    }
+    .h3hero__field {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(60% 50% at 22% 45%, rgba(193, 18, 31, 0.30), transparent 60%),
+        radial-gradient(60% 50% at 78% 55%, rgba(34, 139, 87, 0.26), transparent 60%),
+        radial-gradient(120% 90% at 50% 20%, #0a1020, #05070c 70%);
+    }
+    .h3hero__stars { position: absolute; inset: 0; z-index: 0; opacity: 0.5;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 20%, #fff, transparent),
+        radial-gradient(1px 1px at 40% 70%, #cfe, transparent), radial-gradient(1.5px 1.5px at 85% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 55% 45%, #fff, transparent), radial-gradient(1px 1px at 10% 80%, #fff, transparent),
+        radial-gradient(1px 1px at 90% 85%, #fdd, transparent), radial-gradient(1px 1px at 30% 15%, #fff, transparent);
+      background-repeat: no-repeat; animation: h3twinkle 6s ease-in-out infinite;
+    }
+    @keyframes h3twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.7; } }
+    .h3orb { position: relative; z-index: 1; width: min(78vw, 30rem); aspect-ratio: 1; margin: 0 auto; }
+    /* slow orbital ring circling the planet = the 'from space, circling' 360 hint */
+    .h3orb__ring {
+      position: absolute; inset: -8%; border-radius: 50%;
+      border: 1px dashed rgba(244, 239, 230, 0.25); border-top-color: rgba(229, 56, 59, 0.8);
+      animation: h3spin 18s linear infinite;
+    }
+    .h3orb__ring--2 { inset: 2%; border-style: dotted; border-top-color: rgba(120, 200, 150, 0.8); animation-duration: 26s; animation-direction: reverse; }
+    @keyframes h3spin { to { transform: rotate(360deg); } }
+    .h3orb__img {
+      position: absolute; inset: 6%; width: 88%; height: 88%; object-fit: contain;
+      filter: drop-shadow(0 0 60px rgba(120, 180, 255, 0.25)) drop-shadow(0 0 30px rgba(229, 56, 59, 0.25));
+      animation: h3float 7s ease-in-out infinite;
+    }
+    @keyframes h3float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-1.4%) scale(1.012); } }
+    .h3hero__kicker { position: relative; z-index: 2; margin-top: 2.4rem; font-size: 0.66rem; letter-spacing: 0.36em; text-transform: uppercase; color: var(--cream-dim); }
+    .h3hero__title { position: relative; z-index: 2; font-family: var(--display); font-size: clamp(3rem, 13vw, 8rem); line-height: 0.9; text-transform: uppercase; margin: 0.4rem 0 0; }
+    .h3hero__title b { color: var(--ruby-hot); }
+    .h3hero__sub { position: relative; z-index: 2; margin-top: 0.8rem; color: var(--cream-dim); font-size: clamp(1rem, 2.6vw, 1.25rem); max-width: 40ch; }
+    .h3hero__scroll { position: relative; z-index: 2; margin-top: 2rem; font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--cream-dim); }
+
+    .h3note { max-width: 60ch; margin: 0 auto; padding: 3rem 1.4rem 1rem; text-align: center; color: var(--cream-dim); font-size: 1.05rem; line-height: 1.6; }
+    .h3note b { color: var(--cream); }
+
+    .h3songs { max-width: 56rem; margin: 1rem auto 0; padding: 1rem 1.2rem 4rem; display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr)); }
+    .h3song {
+      position: relative; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px;
+      padding: 1.6rem 1.5rem; background: linear-gradient(180deg, rgba(244,239,230,0.05), rgba(244,239,230,0.015));
+      transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1), border-color 0.35s;
+    }
+    .h3song:hover { transform: translateY(-4px); border-color: rgba(229,56,59,0.55); }
+    .h3song__no { font-family: var(--display); color: var(--ruby-hot); font-size: 1rem; letter-spacing: 0.1em; }
+    .h3song__title { font-family: var(--display); font-size: clamp(1.8rem, 6vw, 2.8rem); text-transform: uppercase; line-height: 1; margin: 0.3rem 0 0.8rem; }
+    .h3song__desc { color: var(--cream-dim); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.2rem; }
+    .h3song__cta { display: inline-flex; align-items: center; gap: 0.5em; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ruby-hot); text-decoration: none; border: 1px solid rgba(229,56,59,0.5); border-radius: 100px; padding: 0.55em 1.1em; transition: background 0.25s, color 0.25s; }
+    .h3song__cta:hover { background: var(--ruby); color: #fff; }
+    @media (prefers-reduced-motion: reduce) {
+      .h3orb__ring, .h3orb__img, .h3hero__stars { animation: none; }
+    }
+  </style>
+</head>
+<body class="h3">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Back to the site</a>
+      <a class="head-cta" href="#songs">The songs</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 360 ORBIT HERO — the Seedance clip drops in here later (same scrub engine as the site's hero) -->
+    <section class="h3hero">
+      <div class="h3hero__field" aria-hidden="true"></div>
+      <div class="h3hero__stars" aria-hidden="true"></div>
+      <div class="h3orb">
+        <div class="h3orb__ring" aria-hidden="true"></div>
+        <div class="h3orb__ring h3orb__ring--2" aria-hidden="true"></div>
+        <img class="h3orb__img" src="assets/img/heal-the-3/cover.png" alt="Heal the 3 cover: a planet split between war and peace, two doves above">
+      </div>
+      <p class="h3hero__kicker">A two-song EP · McCluster</p>
+      <h1 class="h3hero__title">Heal the <b>3</b></h1>
+      <p class="h3hero__sub">One planet, split down the middle. War on one side, peace on the other, and two doves above it all.</p>
+      <p class="h3hero__scroll">The 360 experience is coming ↓</p>
+    </section>
+
+    <p class="h3note">
+      A whole world seen from space, circling: fire, jets, and fallout on one side; forests, rivers, and
+      still water on the other. Two doves hold the line between them. <b>Heal the 3</b> is the sound of that
+      choice. The full orbiting experience is in production.
+    </p>
+
+    <!-- THE TWO SONGS -->
+    <section class="h3songs" id="songs">
+      <article class="h3song">
+        <p class="h3song__no">Track 1</p>
+        <h2 class="h3song__title">Heal the Three</h2>
+        <p class="h3song__desc">The title track. The plea and the promise, sung over the whole spinning world.</p>
+        <a class="h3song__cta" href="mailto:matthew@mccluster.org?subject=Heal%20the%203%20%E2%80%94%20notify%20me" data-cta="h3-notify-1">Notify me when it drops</a>
+      </article>
+      <article class="h3song">
+        <p class="h3song__no">Track 2</p>
+        <h2 class="h3song__title">Deep End</h2>
+        <p class="h3song__desc">The other side of the record. Where the still water goes all the way down.</p>
+        <a class="h3song__cta" href="mailto:matthew@mccluster.org?subject=Heal%20the%203%20%E2%80%94%20notify%20me" data-cta="h3-notify-2">Notify me when it drops</a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · Heal the 3 · in production.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+</body>
+</html>
