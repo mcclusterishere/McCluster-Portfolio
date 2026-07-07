@@ -1,0 +1,18 @@
+{
+  "release_id": "heal-the-3",
+  "title": "Heal the 3",
+  "kind": "EP",
+  "label": "McCluster Corp / M Network",
+  "upc": "",
+  "release_date": "2026-08-01",
+  "genre": "Hip Hop",
+  "party": { "name": "Matthew McCluster", "role": "MainArtist" },
+  "tracks": [
+    { "id": "heal-the-three", "title": "Heal the Three", "isrc": "", "duration_s": 0,
+      "audio": "assets/audio/heal-the-three.mp3",
+      "splits": [ { "party": "Matthew McCluster", "role": "Composer", "pct": 100 } ] },
+    { "id": "deep-end", "title": "Deep End", "isrc": "", "duration_s": 165,
+      "audio": "assets/audio/deep-end.mp3",
+      "splits": [ { "party": "Matthew McCluster", "role": "Composer", "pct": 100 } ] }
+  ]
+}

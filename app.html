@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The App · McCluster</title>
+  <meta name="description" content="The McCluster platform: the music, the films, the experiences and the record, in one place with a player that remembers where you left off.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .apx { max-width: 74rem; margin: 0 auto; padding: clamp(6.5rem, 11vw, 8rem) 0 7.5rem; }
+    .apx__head { padding: 0 clamp(1.2rem, 4vw, 3rem); margin-bottom: 0.6rem; }
+    .apx__h { font-family: var(--display); font-size: clamp(2.4rem, 9vw, 4.5rem); text-transform: uppercase; line-height: 0.9; }
+    .apx__h b { color: var(--ruby-hot); }
+    .apx__sub { color: var(--cream-dim); margin-top: 0.6rem; max-width: 52ch; line-height: 1.55; }
+    .apxrow { margin-top: 2rem; }
+    .apxrow__t { font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--cream-dim); padding: 0 clamp(1.2rem, 4vw, 3rem); margin-bottom: 0.7rem; }
+    .apxrow__t b { color: var(--ruby-hot); }
+    .apxrow__rail { display: flex; gap: 0.8rem; overflow-x: auto; padding: 0.2rem clamp(1.2rem, 4vw, 3rem) 0.6rem; scroll-snap-type: x proximity; scrollbar-width: none; }
+    .apxrow__rail::-webkit-scrollbar { display: none; }
+    .apxcard { flex: none; width: min(46vw, 13.5rem); scroll-snap-align: start; text-decoration: none; color: inherit; position: relative; }
+    .apxcard__art { position: relative; aspect-ratio: 16/10; border-radius: 12px; overflow: hidden; background: var(--ink-2); border: 1px solid rgba(244, 239, 230, 0.12); transition: transform 0.3s cubic-bezier(0.2,0.9,0.2,1), border-color 0.3s; }
+    .apxcard:hover .apxcard__art { transform: translateY(-4px); border-color: var(--ruby-hot); }
+    .apxcard__art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .apxcard__play { position: absolute; right: 0.55rem; bottom: 0.55rem; width: 2.2rem; height: 2.2rem; border: none; border-radius: 50%; cursor: pointer; display: grid; place-items: center; color: #fff; background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); box-shadow: 0 6px 18px rgba(229,56,59,0.55); opacity: 0.94; }
+    .apxcard__play svg { width: 44%; height: 44%; fill: currentColor; }
+    .apxcard__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(0,0,0,0.5); }
+    .apxcard__bar i { display: block; height: 100%; background: var(--ruby-hot); }
+    .apxcard__t { margin-top: 0.5rem; font-family: var(--display); text-transform: uppercase; font-size: 0.95rem; line-height: 1.05; }
+    .apxcard__s { color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.15rem; }
+    /* the persistent player */
+    .player { position: fixed; left: 0.6rem; right: 0.6rem; z-index: 150; bottom: calc(var(--appbar-h) + env(safe-area-inset-bottom) + 0.6rem);
+      display: none; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; border-radius: 14px;
+      background: rgba(18, 13, 12, 0.92); backdrop-filter: blur(14px); border: 1px solid rgba(244, 239, 230, 0.16);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6); }
+    .player.is-on { display: flex; }
+    .player__art { width: 2.9rem; height: 2.9rem; border-radius: 9px; object-fit: cover; flex: none; }
+    .player__mid { flex: 1; min-width: 0; }
+    .player__t { font-family: var(--display); text-transform: uppercase; font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .player__scrub { width: 100%; appearance: none; -webkit-appearance: none; height: 4px; border-radius: 4px; background: rgba(244,239,230,0.2); outline: none; cursor: pointer; margin-top: 0.35rem; }
+    .player__scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--ruby-hot); }
+    .player__btn { flex: none; width: 2.7rem; height: 2.7rem; border: none; border-radius: 50%; cursor: pointer; display: grid; place-items: center; color: #fff; background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); box-shadow: 0 6px 18px rgba(229,56,59,0.5); }
+    .player__btn svg { width: 45%; height: 45%; fill: currentColor; }
+    .player__like { flex: none; background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.15rem; padding: 0.2rem; }
+    .player__like.is-on { color: var(--ruby-hot); }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← The experience</a>
+      <a class="head-cta" href="catalogue.html">Catalogue</a>
+    </nav>
+  </header>
+  <main>
+    <section class="apx">
+      <div class="apx__head">
+        <h1 class="apx__h">The <b>App</b></h1>
+        <p class="apx__sub">Everything in one place: the music, the films, the experiences, the record.
+          Press play on anything, leave, come back, and it remembers exactly where you were.</p>
+      </div>
+      <div id="rows"></div>
+    </section>
+  </main>
+
+  <div class="player" id="player">
+    <img class="player__art" id="plArt" src="assets/img/m-mark.png" alt="">
+    <div class="player__mid">
+      <p class="player__t" id="plTitle">—</p>
+      <input class="player__scrub" id="plScrub" type="range" min="0" max="1000" value="0" aria-label="Scrub">
+    </div>
+    <button class="player__like" id="plLike" type="button" aria-label="Like">&#9829;</button>
+    <button class="player__btn" id="plPlay" type="button" aria-label="Play or pause">
+      <svg viewBox="0 0 24 24" id="plIc"><path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.79-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14z"/></svg>
+    </button>
+  </div>
+  <audio id="plAudio" preload="none"></audio>
+
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · The platform.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var DB = window.MCC_DB;
+      var CAT = {}; // id -> item
+      var rowsEl = document.getElementById("rows");
+      var audio = document.getElementById("plAudio");
+      var player = document.getElementById("player");
+      var plTitle = document.getElementById("plTitle");
+      var plArt = document.getElementById("plArt");
+      var plIc = document.getElementById("plIc");
+      var plScrub = document.getElementById("plScrub");
+      var plLike = document.getElementById("plLike");
+      var nowId = null, queue = [];
+      var PLAY = "M8 5.14v13.72a1 1 0 0 0 1.53.85l10.79-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14z";
+      var PAUSE = "M7 5h4v14H7zM13 5h4v14h-4z";
+
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function card(it, resume) {
+        var playable = !!it.audio;
+        return '<div class="apxcard">' +
+          '<a href="' + esc(it.page || "#") + '" aria-label="' + esc(it.title) + '"><span class="apxcard__art">' +
+          '<img loading="lazy" src="' + esc(it.poster) + '" alt="">' +
+          (resume ? '<span class="apxcard__bar"><i style="width:' + resume + '%"></i></span>' : "") +
+          "</span></a>" +
+          (playable ? '<button class="apxcard__play" type="button" data-play="' + esc(it.id) + '" aria-label="Play ' + esc(it.title) + '"><svg viewBox="0 0 24 24"><path d="' + PLAY + '"/></svg></button>' : "") +
+          '<p class="apxcard__t">' + esc(it.title) + "</p>" +
+          '<p class="apxcard__s">' + esc(it.subtitle || "") + "</p>" +
+          "</div>";
+      }
+
+      Promise.all([
+        fetch("data/platform.json").then(function (r) { return r.json(); }),
+        DB.recents(12),
+      ]).then(function (res) {
+        var data = res[0], recents = res[1];
+        data.rows.forEach(function (row) { row.items.forEach(function (it) { CAT[it.id] = it; }); });
+
+        var html = "";
+        // continue row from real listening state
+        var cont = recents.filter(function (r) { return CAT[r.item_id] && CAT[r.item_id].audio && r.position_s > 4; });
+        if (cont.length) {
+          html += '<div class="apxrow"><p class="apxrow__t"><b>Continue</b> · pick up where you left off</p><div class="apxrow__rail">' +
+            cont.map(function (r) {
+              var it = CAT[r.item_id];
+              var pct = it.duration_s ? Math.min(99, r.position_s / it.duration_s * 100) : 35;
+              return card(it, pct.toFixed(0));
+            }).join("") + "</div></div>";
+        }
+        html += data.rows.map(function (row) {
+          return '<div class="apxrow"><p class="apxrow__t">' + esc(row.title) + '</p><div class="apxrow__rail">' +
+            row.items.map(function (it) { return card(it); }).join("") + "</div></div>";
+        }).join("");
+        rowsEl.innerHTML = html;
+        if (window.MCC_TRACK) window.MCC_TRACK("app_view", { rows: data.rows.length });
+      });
+
+      /* ---------- the player ---------- */
+      function playItem(id) {
+        var it = CAT[id];
+        if (!it || !it.audio) return;
+        if (nowId === id) { audio.paused ? audio.play() : audio.pause(); return; }
+        nowId = id;
+        audio.src = it.audio;
+        plTitle.textContent = it.title;
+        plArt.src = it.poster;
+        player.classList.add("is-on");
+        DB.progress(id).then(function (p) {
+          if (p && p.position_s > 4) audio.currentTime = p.position_s;
+          audio.play().catch(function () {});
+        });
+        DB.like(id).then(function (on) { plLike.classList.toggle("is-on", !!on); });
+        if (window.MCC_TRACK) window.MCC_TRACK("app_play", { item: id });
+      }
+      rowsEl.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-play]");
+        if (!b) return;
+        e.preventDefault();
+        playItem(b.getAttribute("data-play"));
+      });
+      document.getElementById("plPlay").addEventListener("click", function () {
+        if (!nowId) return;
+        audio.paused ? audio.play() : audio.pause();
+      });
+      plLike.addEventListener("click", function () {
+        if (!nowId) return;
+        DB.like(nowId).then(function (on) { return DB.like(nowId, !on); })
+          .then(function (on) { plLike.classList.toggle("is-on", !!on); });
+      });
+      var scrubbing = false;
+      plScrub.addEventListener("input", function () { scrubbing = true; if (audio.duration) audio.currentTime = plScrub.value / 1000 * audio.duration; });
+      plScrub.addEventListener("change", function () { scrubbing = false; });
+      setInterval(function () {
+        if (!nowId) return;
+        plIc.firstChild.setAttribute("d", audio.paused ? PLAY : PAUSE);
+        if (audio.duration && !scrubbing) plScrub.value = audio.currentTime / audio.duration * 1000;
+      }, 300);
+      // save the resume point while playing
+      setInterval(function () {
+        if (nowId && !audio.paused) DB.progress(nowId, audio.currentTime);
+      }, 4000);
+      audio.addEventListener("ended", function () { DB.progress(nowId, 0); });
+    })();
+  </script>
+</body>
+</html>

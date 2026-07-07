@@ -1,0 +1,41 @@
+{
+  "note": "The platform catalogue. The app shell reads this statically today; the same rows sync into the catalogue table when the backend lands. Add media here, never hardcode it into pages.",
+  "rows": [
+    {
+      "title": "The Music",
+      "items": [
+        { "id": "antisocial", "kind": "song", "title": "Antisocial", "subtitle": "The scroll-slow anthem", "page": "song-antisocial.html", "audio": "assets/audio/antisocial.mp3", "poster": "assets/frames/gmcall_0060.jpg" },
+        { "id": "vaunt", "kind": "song", "title": "Vaunt (Acoustic)", "subtitle": "Zakir on the six-string", "page": "song-vaunt.html", "audio": "assets/audio/vaunt.mp3", "poster": "assets/frames/vauntlive_0020.jpg" },
+        { "id": "whodidtheshoot", "kind": "song", "title": "Who Did The Shoot", "subtitle": "The photographer's cut", "page": "song-who-did-the-shoot.html", "audio": "assets/audio/who-did-the-shoot.mp3", "poster": "assets/frames/keynote_0050.jpg" },
+        { "id": "gotwifi", "kind": "song", "title": "Got WiFi", "subtitle": "PRIM3 · study to it", "page": "song-got-wifi.html", "audio": "assets/audio/got-wifi.mp3", "poster": "assets/frames/study_0050.jpg" },
+        { "id": "environmental-injustice", "kind": "song", "title": "Environmental Injustice", "subtitle": "Equity Uprise on wax", "page": "song-environmental-injustice.html", "audio": "assets/audio/environmental-injustice.mp3", "poster": "assets/frames/uprise_0080.jpg" },
+        { "id": "dealerplates", "kind": "song", "title": "Dealer Plates", "subtitle": "Whip Equipped A-side", "page": "song-dealer-plates.html", "audio": "assets/audio/dealer-plates.mp3", "poster": "assets/frames/plates_0050.jpg" },
+        { "id": "moneyorthepower", "kind": "song", "title": "Money or the Power", "subtitle": "From the vault", "page": "catalogue.html", "audio": "assets/audio/money-or-the-power.mp3", "poster": "assets/frames/moneyglitch_0050.jpg" }
+      ]
+    },
+    {
+      "title": "Coming · Heal the 3",
+      "items": [
+        { "id": "heal-the-3", "kind": "record", "title": "Heal the 3", "subtitle": "Two-song EP · the split world", "page": "heal-the-3.html", "poster": "assets/img/heal-the-3/cover.png", "access": "unlisted" }
+      ]
+    },
+    {
+      "title": "Experiences",
+      "items": [
+        { "id": "vr-vaunt", "kind": "experience", "title": "Inside the Jet · VR", "subtitle": "360 look-around", "page": "vr-vaunt.html", "poster": "assets/frames/redjet_0050.jpg" },
+        { "id": "duality-quiz", "kind": "experience", "title": "Which Side Are You On?", "subtitle": "The duality quiz", "page": "psychology-markers.html", "poster": "assets/frames/dossier_0050.jpg" },
+        { "id": "scroll-slow", "kind": "experience", "title": "Scroll Slow, Homie", "subtitle": "The manifesto", "page": "index.html#pillars", "poster": "assets/frames/nightscroll_0050.jpg" },
+        { "id": "psmf-poll", "kind": "experience", "title": "Please Set Me Free", "subtitle": "The civic poll", "page": "song-please-set-me-free.html", "poster": "assets/frames/citations_0050.jpg" }
+      ]
+    },
+    {
+      "title": "The Record",
+      "items": [
+        { "id": "docket-516", "kind": "record", "title": "Docket 516", "subtitle": "The evidence room", "page": "docket-516.html", "poster": "assets/frames/docket_0050.jpg" },
+        { "id": "provenance", "kind": "record", "title": "Verify the Evidence", "subtitle": "300 files, fingerprinted", "page": "provenance.html", "poster": "assets/frames/citations_0050.jpg" },
+        { "id": "equity-uprise", "kind": "record", "title": "Equity Uprise", "subtitle": "The movement", "page": "equity-uprise.html", "poster": "assets/frames/equity_0050.jpg" },
+        { "id": "resume", "kind": "record", "title": "The Résumé", "subtitle": "Receipts and proclamations", "page": "resume.html", "poster": "assets/frames/keynote_0080.jpg" }
+      ]
+    }
+  ]
+}
