@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Inside the Jet · Vaunt VR · McCluster</title>
+  <meta name="description" content="Step inside the Vaunt jet in full 360. Drag to look anywhere, or move your phone and the cabin moves with you.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    .vr { position: fixed; inset: 0; background: #0a0807; }
+    .vr__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+    .vr__canvas:active { cursor: grabbing; }
+    .vr__top {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: calc(0.9rem + env(safe-area-inset-top)) 1.2rem 0.9rem;
+      background: linear-gradient(180deg, rgba(10,8,7,0.85), transparent);
+    }
+    .vr__brand { display: flex; align-items: center; gap: 0.6rem; color: var(--cream); text-decoration: none; }
+    .vr__brand img { width: 26px; }
+    .vr__brand b { font-family: var(--display); font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; }
+    .vr__badge { font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: #fff;
+      background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); border-radius: 100px; padding: 0.45em 1em; }
+    .vr__hud {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; text-align: center;
+      padding: 1rem 1.2rem calc(1.2rem + env(safe-area-inset-bottom));
+      background: linear-gradient(0deg, rgba(10,8,7,0.85), transparent);
+    }
+    .vr__hint { color: var(--cream-dim); font-size: 0.86rem; letter-spacing: 0.04em; margin-bottom: 0.7rem; }
+    .vr__hint b { color: var(--cream); }
+    .vr__actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+    .vr__btn {
+      border: 1px solid rgba(244, 239, 230, 0.35); border-radius: 100px; background: rgba(10,8,7,0.6);
+      color: var(--cream); font: inherit; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 0.6em 1.3em; cursor: pointer; transition: border-color 0.25s, background 0.25s;
+    }
+    .vr__btn:hover { border-color: var(--ruby-hot); background: rgba(193, 18, 31, 0.25); }
+    .vr__btn.is-on { border-color: var(--ruby-hot); color: var(--ruby-hot); }
+    /* first-touch coach mark */
+    .vr__coach {
+      position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none;
+      opacity: 1; transition: opacity 0.6s ease;
+    }
+    .vr__coach.is-gone { opacity: 0; }
+    .vr__coach-in { text-align: center; background: rgba(10,8,7,0.55); border-radius: 18px; padding: 1.4rem 1.8rem; backdrop-filter: blur(6px); }
+    .vr__coach-in svg { width: 54px; height: 54px; stroke: var(--cream); fill: none; stroke-width: 1.6; stroke-linecap: round; animation: vrSwipe 2.4s ease-in-out infinite; }
+    .vr__coach-in p { margin-top: 0.6rem; font-family: var(--display); text-transform: uppercase; letter-spacing: 0.1em; font-size: 1.05rem; color: var(--cream); }
+    @keyframes vrSwipe { 0%, 100% { transform: translateX(-14px); } 50% { transform: translateX(14px); } }
+    @media (prefers-reduced-motion: reduce) { .vr__coach-in svg { animation: none; } }
+  </style>
+</head>
+<body>
+  <div class="vr">
+    <canvas class="vr__canvas" id="vrCanvas"></canvas>
+    <div class="vr__top">
+      <a class="vr__brand" href="song-vaunt.html"><img src="assets/img/m-mark.png" alt="M"><b>Vaunt · Inside the Jet</b></a>
+      <span class="vr__badge">360 &middot; VR</span>
+    </div>
+    <div class="vr__coach" id="vrCoach">
+      <div class="vr__coach-in">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 24h28M14 18l-6 6 6 6M34 18l6 6-6 6"/></svg>
+        <p>Drag to look around</p>
+      </div>
+    </div>
+    <div class="vr__hud">
+      <p class="vr__hint" id="vrHint"><b>Drag</b> to look · <b>pinch</b> to zoom · this is the test cabin, the real 360 film drops in next</p>
+      <div class="vr__actions">
+        <button class="vr__btn" id="vrGyro" type="button">Use motion &middot; move the phone to look</button>
+        <button class="vr__btn" id="vrFull" type="button">Fullscreen</button>
+        <a class="vr__btn" href="song-vaunt.html">&#8592; Back to Vaunt</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/vr360.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      /* swap src to the exported equirectangular MP4 when it lands:
+         { src: "assets/video/vaunt-360.mp4", video: true } */
+      var viewer = VR360.mount(document.getElementById("vrCanvas"), {
+        src: "assets/img/vr-test-equirect.jpg",
+        video: false,
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });
+
+      var coach = document.getElementById("vrCoach");
+      var seen = false;
+      document.getElementById("vrCanvas").addEventListener("pointerdown", function () {
+        if (!seen) { seen = true; coach.classList.add("is-gone"); }
+      }, { once: false });
+
+      document.getElementById("vrGyro").addEventListener("click", function () {
+        viewer.enableGyro();
+        this.classList.add("is-on");
+        this.textContent = "Motion on · move the phone";
+        if (window.MCC_TRACK) window.MCC_TRACK("vr_gyro_on", { page: "vr-vaunt" });
+      });
+      document.getElementById("vrFull").addEventListener("click", function () {
+        var el = document.documentElement;
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (el.requestFullscreen) el.requestFullscreen();
+      });
+    })();
+  </script>
+</body>
+</html>
