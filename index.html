@@ -266,15 +266,22 @@
 
         <!-- the 360 band: between the runway performance and the fly-through,
              the real inside-the-jet film takes over and you can look anywhere -->
-        <div class="workvr" id="workVR" aria-label="Inside the jet: drag left and right or use motion to look around; swipe up and down to keep scrolling">
+        <div class="workvr" id="workVR" aria-label="Inside the jet: scroll locks here — drag in any direction to look around, then tap Skip to keep scrolling">
           <canvas class="workvr__canvas" id="workVRCanvas"></canvas>
           <div class="workvr__compass" id="workVRCompass" aria-hidden="true">
             <svg viewBox="0 0 48 48"><path d="M24 6v9M24 33v9M6 24h9M33 24h15" stroke-width="0"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8" /><path d="M20 9l4-5 4 5M20 39l4 5 4-5M9 20l-5 4 5 4M39 20l5 4-5 4"/></svg>
-            <p><b>Drag left/right</b> to look around<br><b>Swipe up/down</b> to keep moving</p>
+            <p class="workvr__warn">Scroll is locked here</p>
+            <p><b>Drag</b> in any direction to look around</p>
           </div>
           <div class="workvr__side">
-            <button class="workvr__btn" id="workVRGyro" type="button">Motion</button>
-            <button class="workvr__btn workvr__btn--skip" id="workVRSkip" type="button">Skip &#8595;</button>
+            <button class="workvr__btn" id="workVRGyro" type="button">
+              <svg class="workvr__icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
+              <span>Motion</span>
+            </button>
+            <button class="workvr__btn workvr__btn--skip" id="workVRSkip" type="button">
+              <svg class="workvr__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6l5 5 5-5M7 13l5 5 5-5"/></svg>
+              <span>Skip</span>
+            </button>
           </div>
           <p class="workvr__tag">Inside the jet &middot; 360 &middot; live footage</p>
         </div>

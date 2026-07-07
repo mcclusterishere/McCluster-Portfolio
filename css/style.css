@@ -2284,10 +2284,17 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 #work .workvr__btn--skip { background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); box-shadow: 0 8px 26px rgba(248, 76, 10, 0.5); }
 #work .workvr__btn:hover { border-color: var(--vaunt); background: rgba(248, 76, 10, 0.28); }
 #work .workvr__btn.is-on { border-color: var(--vaunt); color: #ffb38f; }
+#work .workvr__btn { --vr-flash: var(--vaunt); }
 #work .vr360-spot i { background: var(--vaunt); box-shadow: 0 0 12px rgba(248, 76, 10, 0.9); }
 #work .vr360-spot i::after { border-color: rgba(248, 76, 10, 0.7); }
 #work .vr360-spot span { border-color: rgba(248, 76, 10, 0.55); }
 #work .vr360-spot:hover span { background: var(--vaunt); border-color: var(--vaunt); }
+
+/* ---- scroll trap: while the 360 band is live, the page cannot be scrolled
+       away from underneath the viewer — Skip is the only sanctioned exit ---- */
+html.vr-locked {
+  overflow: hidden !important; touch-action: none; overscroll-behavior: none;
+}
 
 /* ---- the inline 360 band inside Brand Collabs ---- */
 .workvr {
@@ -2311,24 +2318,47 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .workvr__compass.is-gone { opacity: 0; }
 .workvr__compass svg { width: 52px; height: 52px; stroke: var(--cream); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: vrCompass 2.6s ease-in-out infinite; }
 @keyframes vrCompass { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.12); opacity: 1; } }
+.workvr__warn {
+  margin: 0 0 0.35rem; font-weight: 800; font-size: 0.86rem; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--cream);
+}
 .workvr__compass p { margin-top: 0.6rem; font-size: 0.78rem; line-height: 1.55; color: var(--cream-dim); }
+.workvr__compass p.workvr__warn { margin-top: 0.7rem; }
 .workvr__compass b { color: var(--cream); }
 .workvr__side {
   position: absolute; right: 0.7rem; top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; gap: 0.55rem;
 }
 .workvr__btn {
+  --vr-flash: var(--ruby-hot);
+  display: flex; align-items: center; gap: 0.45em; justify-content: center;
   border: 1px solid rgba(244, 239, 230, 0.4); border-radius: 100px; cursor: pointer;
   background: rgba(10, 8, 7, 0.65); color: var(--cream); font: inherit;
   font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.65em 1.1em;
   backdrop-filter: blur(4px); transition: border-color 0.25s, background 0.25s;
 }
+.workvr__icon { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .workvr__btn:hover { border-color: var(--ruby-hot); background: rgba(193, 18, 31, 0.3); }
 .workvr__btn.is-on { border-color: var(--ruby-hot); color: var(--ruby-hot); }
 .workvr__btn--skip { background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff; border: none;
   box-shadow: 0 8px 24px rgba(229, 56, 59, 0.5); animation: vrSkipNudge 2.8s ease-in-out infinite; }
 @keyframes vrSkipNudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-@media (prefers-reduced-motion: reduce) { .workvr__compass svg, .workvr__btn--skip { animation: none; } }
+
+/* motion button: several small animations layered together so it reads as
+   "tap me" — glow pulse, a soft bounce, and a border hue-shift, all tied to
+   one --vr-flash color so the Vaunt section can recolor it in one line */
+#workVRGyro:not(.is-on) {
+  animation: vrGyroGlow 2.2s ease-in-out infinite, vrGyroBounce 2.2s ease-in-out infinite, vrGyroHue 2.2s ease-in-out infinite;
+}
+@keyframes vrGyroGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+  50% { box-shadow: 0 0 10px 1px var(--vr-flash), 0 0 24px 4px color-mix(in srgb, var(--vr-flash) 55%, transparent); }
+}
+@keyframes vrGyroBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+@keyframes vrGyroHue { 0%, 100% { border-color: rgba(244, 239, 230, 0.4); } 50% { border-color: var(--vr-flash); color: var(--vr-flash); } }
+@media (prefers-reduced-motion: reduce) {
+  .workvr__compass svg, .workvr__btn--skip, #workVRGyro { animation: none; }
+}
 
 /* ---- lead capture modal ---- */
 .leadov {
