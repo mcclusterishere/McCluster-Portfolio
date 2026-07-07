@@ -2482,7 +2482,7 @@ html.vr-locked {
   100% { box-shadow: 0 0 0 16px rgba(255, 198, 26, 0); }
 }
 
-/* after touchdown: the last card opens on a full-frame, priority-red ask —
+/* after touchdown: the last card opens on a full-frame ask in Vaunt orange —
    eye level, a phone with a two-way swipe inside, the motto in tiny type */
 .work__slowhint {
   position: absolute; inset: 0; z-index: 4;
@@ -2493,15 +2493,15 @@ html.vr-locked {
 .work__slowhint.is-shown { opacity: 1; }
 .work__slowhint-big {
   font-family: var(--display); text-transform: uppercase; line-height: 0.92;
-  font-size: clamp(3.4rem, 14vw, 8rem); color: #ff2c1f;
+  font-size: clamp(1.7rem, 7vw, 4rem); color: var(--vaunt);
   text-shadow: 0 4px 34px rgba(0, 0, 0, 0.8);
 }
 .work__slowhint.is-shown .work__slowhint-big { animation: slowHintBreathe 2.6s ease-in-out infinite; }
 @keyframes slowHintBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 .work__slowhint-phone {
-  width: 54px; height: 96px; stroke: #ff2c1f; fill: none; stroke-width: 2.4;
+  width: 54px; height: 96px; stroke: var(--vaunt); fill: none; stroke-width: 2.4;
   stroke-linecap: round; stroke-linejoin: round;
-  filter: drop-shadow(0 0 16px rgba(255, 44, 31, 0.55));
+  filter: drop-shadow(0 0 16px rgba(248, 76, 10, 0.55));
 }
 .work__slowhint-swipe { animation: slowHintSwipe 1.8s ease-in-out infinite; }
 @keyframes slowHintSwipe { 0%, 100% { transform: translateY(-4px); } 50% { transform: translateY(4px); } }
