@@ -1,0 +1,126 @@
+{
+  "consent": {
+    "banner": "Just a mirror, not a verdict. There's no right answer, and nothing is stored or tied to you.",
+    "footer": "For curiosity, not diagnosis. You landed where you landed today, and every side has a flip. Come back tomorrow and you might sit somewhere else."
+  },
+  "meta": {
+    "title": "Which Side Are You On?",
+    "intro": "Nine sayings you already know, each against its opposite. No middle to hide in, you pick a side on every one. At the end you get your map. Then you can flip any of it.",
+    "cta": "Start"
+  },
+  "questions": [
+    {
+      "id": "habit",
+      "prompt": "There's a spare minute. Your hand is on your phone before you decide anything.",
+      "poleA": "Force of habit",
+      "poleB": "Look before you leap",
+      "options": [
+        { "v": -2, "label": "It's already in my hand" },
+        { "v": -1, "label": "Usually, yeah" },
+        { "v": 1, "label": "I catch myself most times" },
+        { "v": 2, "label": "I stop and think first" }
+      ]
+    },
+    {
+      "id": "greener",
+      "prompt": "You see everyone else's weekend and your own plans suddenly feel small.",
+      "poleA": "The grass is always greener",
+      "poleB": "Count your blessings",
+      "options": [
+        { "v": -2, "label": "Mine never measures up" },
+        { "v": -1, "label": "It stings sometimes" },
+        { "v": 1, "label": "I remember I've got it good" },
+        { "v": 2, "label": "I'm happy with mine" }
+      ]
+    },
+    {
+      "id": "joneses",
+      "prompt": "A friend gets the new thing. Part of you starts doing the math on getting yours.",
+      "poleA": "Keeping up with the Joneses",
+      "poleB": "March to your own beat",
+      "options": [
+        { "v": -2, "label": "I want to match it" },
+        { "v": -1, "label": "A little, I'll admit" },
+        { "v": 1, "label": "Good for them, not my race" },
+        { "v": 2, "label": "I set my own pace" }
+      ]
+    },
+    {
+      "id": "tomorrow",
+      "prompt": "The big thing you keep meaning to start. When does it actually begin?",
+      "poleA": "Tomorrow never comes",
+      "poleB": "No time like the present",
+      "options": [
+        { "v": -2, "label": "Always next week" },
+        { "v": -1, "label": "I push it more than I'd like" },
+        { "v": 1, "label": "I start small now" },
+        { "v": 2, "label": "No time like the present" }
+      ]
+    },
+    {
+      "id": "rug",
+      "prompt": "Something's wrong and you know it. Do you look at it, or scroll past?",
+      "poleA": "Sweep it under the rug",
+      "poleB": "Face the music",
+      "options": [
+        { "v": -2, "label": "I bury it" },
+        { "v": -1, "label": "I put it off" },
+        { "v": 1, "label": "I deal with it soon" },
+        { "v": 2, "label": "I face it head on" }
+      ]
+    },
+    {
+      "id": "safe",
+      "prompt": "A real chance shows up, but taking it means risking what you've already got.",
+      "poleA": "Better safe than sorry",
+      "poleB": "Nothing ventured, nothing gained",
+      "options": [
+        { "v": -2, "label": "I protect what I have" },
+        { "v": -1, "label": "I usually play it safe" },
+        { "v": 1, "label": "I'll take the swing" },
+        { "v": 2, "label": "The only loss is the shot I don't take" }
+      ]
+    },
+    {
+      "id": "bottle",
+      "prompt": "You're not okay. Who actually knows it?",
+      "poleA": "Bottling it up",
+      "poleB": "Wear your heart on your sleeve",
+      "options": [
+        { "v": -2, "label": "I keep it corked" },
+        { "v": -1, "label": "I hold most of it in" },
+        { "v": 1, "label": "The people close to me know" },
+        { "v": 2, "label": "I show what I feel" }
+      ]
+    },
+    {
+      "id": "moderation",
+      "prompt": "When you love something, how much of yourself do you give it?",
+      "poleA": "Everything in moderation",
+      "poleB": "Go big or go home",
+      "options": [
+        { "v": -2, "label": "A steady little bit" },
+        { "v": -1, "label": "I keep it balanced" },
+        { "v": 1, "label": "I go pretty all in" },
+        { "v": 2, "label": "Go big or go home" }
+      ]
+    },
+    {
+      "id": "birds",
+      "prompt": "The people you choose to be around, mostly they...",
+      "poleA": "Birds of a feather flock together",
+      "poleB": "Opposites attract",
+      "options": [
+        { "v": -2, "label": "Think and move like me" },
+        { "v": -1, "label": "Are mostly like me" },
+        { "v": 1, "label": "Stretch me a little" },
+        { "v": 2, "label": "Are nothing like me" }
+      ]
+    }
+  ],
+  "results": {
+    "leadIn": "Today you lean hardest toward",
+    "sub": "Here's where you landed on all nine. The mirrored icons are the sides you flipped to.",
+    "balancedNote": "You split it right down the middle. Rare. You carry both sides at once."
+  }
+}

@@ -2026,6 +2026,79 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .pmk__card h3 { font-family: var(--display); font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.03em; }
 .pmk__card .pmk__id { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ruby-hot); }
 .pmk__card p { margin-top: 0.5rem; color: var(--cream-dim); font-size: 0.86rem; line-height: 1.55; }
+.pmk__gridlead { margin: 2.6rem 0 0.2rem; font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--cream-dim); }
+
+/* ---- the duality quiz ---- */
+.dq { margin: 2.4rem 0 0.5rem; }
+.dq__offline { color: var(--cream-dim); font-size: 0.9rem; }
+.dq__card {
+  border: 1px solid rgba(244, 239, 230, 0.16); border-radius: 18px;
+  background: linear-gradient(180deg, rgba(244, 239, 230, 0.05), rgba(244, 239, 230, 0.015));
+  padding: clamp(1.5rem, 4vw, 2.6rem); position: relative; overflow: hidden;
+}
+.dq__card::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5;
+  background: radial-gradient(70% 60% at 15% 0%, rgba(47, 107, 255, 0.12), transparent 60%),
+              radial-gradient(70% 60% at 85% 100%, rgba(229, 56, 59, 0.14), transparent 60%);
+}
+.dq__card > * { position: relative; z-index: 1; }
+.dq__consent { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 0.9rem; }
+.dq__h { font-family: var(--display); font-size: clamp(2rem, 7vw, 3.4rem); text-transform: uppercase; line-height: 0.95; }
+.dq__lead { color: var(--cream-dim); font-size: 1rem; line-height: 1.6; max-width: 52ch; margin: 0.8rem 0 1.6rem; }
+.dq__start { font-family: var(--display); }
+
+/* progress + question */
+.dq__bar { height: 3px; border-radius: 3px; background: rgba(244, 239, 230, 0.14); overflow: hidden; margin-bottom: 0.7rem; }
+.dq__bar > i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2f6bff, var(--ruby-hot)); transition: width 0.35s ease; }
+.dq__count { font-size: 0.6rem; letter-spacing: 0.24em; color: var(--cream-dim); }
+.dq__poles { display: flex; align-items: center; gap: 0.7rem; margin: 1.1rem 0 0.2rem; }
+.dq__pole { font-family: var(--display); text-transform: uppercase; font-size: clamp(0.8rem, 2.6vw, 1.05rem); line-height: 1; color: #7fa0ff; letter-spacing: 0.02em; flex: 1; }
+.dq__pole--b { color: #6fe0a0; text-align: right; }
+.dq__vs { font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); }
+.dq__prompt { font-size: clamp(1.15rem, 3.6vw, 1.7rem); line-height: 1.35; margin: 0.9rem 0 1.4rem; color: var(--cream); }
+.dq__opts { display: grid; gap: 0.6rem; }
+.dq__opt {
+  text-align: left; border: 1px solid rgba(244, 239, 230, 0.18); border-radius: 12px;
+  background: rgba(244, 239, 230, 0.03); color: var(--cream); padding: 0.85em 1.1em;
+  font: inherit; font-size: 0.98rem; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.dq__opt:hover { transform: translateX(3px); }
+.dq__opt--a:hover, .dq__opt--a.is-on { border-color: #2f6bff; background: rgba(47, 107, 255, 0.14); }
+.dq__opt--b:hover, .dq__opt--b.is-on { border-color: #38c06f; background: rgba(56, 192, 111, 0.14); }
+.dq__nav { display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; }
+.dq__back { background: none; border: none; color: var(--cream-dim); font: inherit; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.04em; }
+.dq__back:hover { color: var(--cream); }
+.dq__skiphint { font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(244, 239, 230, 0.35); }
+
+/* results */
+.dq__reshead { text-align: center; margin-bottom: 1.6rem; }
+.dq__reskick { font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ruby-hot); }
+.dq__resleadin { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-dim); margin-top: 0.6rem; }
+.dq__resh { font-family: var(--display); font-size: clamp(2.1rem, 8vw, 4rem); text-transform: uppercase; line-height: 0.92; margin-top: 0.2rem; }
+.dq__resh--split { color: var(--cream); }
+.dq__ressub { color: var(--cream-dim); font-size: 0.92rem; line-height: 1.55; max-width: 46ch; margin: 0.7rem auto 0; }
+.dq__resgrid { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, 100%), 1fr)); }
+.dq__res {
+  text-align: left; border: 1px solid rgba(47, 107, 255, 0.35); border-radius: 13px;
+  background: rgba(47, 107, 255, 0.06); color: var(--cream); padding: 0.9rem 0.95rem;
+  cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 0.35rem;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.dq__res.is-b { border-color: rgba(56, 192, 111, 0.4); background: rgba(56, 192, 111, 0.07); }
+.dq__res:hover { transform: translateY(-3px); }
+.dq__resic .psy__ic { width: 1.8em; height: 1.8em; margin: 0; animation: none; display: block; color: #7fa0ff; transition: transform 0.3s ease, color 0.3s ease; }
+.dq__res.is-b .psy__ic { color: #6fe0a0; }
+.dq__ic.is-flipped { transform: scaleX(-1); }
+.dq__ressay { font-family: var(--display); font-size: 0.98rem; text-transform: uppercase; line-height: 1.02; letter-spacing: 0.01em; }
+.dq__resmeta { display: flex; align-items: center; gap: 0.45rem; margin-top: 0.1rem; }
+.dq__dots { display: inline-flex; gap: 3px; }
+.dq__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ruby-hot); display: block; }
+.dq__mag { font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); }
+.dq__flip { font-size: 0.5rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(244, 239, 230, 0.4); margin-top: 0.15rem; }
+.dq__footnote { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; max-width: 54ch; margin: 1.6rem 0 0; }
+.dq__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.3rem; }
+@media (prefers-reduced-motion: reduce) { .dq__opt, .dq__res, .dq__bar > i, .dq__resic .psy__ic { transition: none; } }
+
 .pmk__consent {
   border: 1px solid rgba(229, 56, 59, 0.4); border-radius: 14px;
   background: rgba(193, 18, 31, 0.08); padding: 1.2rem 1.4rem; margin-top: 2rem;
