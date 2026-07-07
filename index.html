@@ -330,6 +330,14 @@
 
   </main>
 
+  <!-- the sound ask: Motion tapped with the sound off — one tap fixes it -->
+  <div class="soundask" id="soundAsk" hidden>
+    <svg class="soundask__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 17 7"/><path d="M8.5 6H18v9.5"/></svg>
+    <p class="soundask__big">Turn the<br><mark>sound on</mark></p>
+    <p class="soundask__sub">This flight has a soundtrack &middot; tap anywhere</p>
+    <button class="soundask__no" id="soundAskNo" type="button">Keep it silent &#10005;</button>
+  </div>
+
   <!-- floating pause: kill the music from anywhere on the page -->
   <button class="float-pause" id="floatPause" type="button" aria-label="Pause the music" hidden>
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4.2" height="15" rx="1.2"></rect><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.2"></rect></svg>
@@ -404,6 +412,9 @@
   <audio id="track-vaunt" preload="none" loop>
     <source src="assets/audio/vaunt.mp3" type="audio/mpeg">
     <source src="assets/audio/vaunt.m4a" type="audio/mp4">
+  </audio>
+  <audio id="track-vauntfull" preload="none" loop>
+    <source src="assets/audio/vaunt-full.mp3" type="audio/mpeg">
   </audio>
   <audio id="track-gotwifi" preload="none" loop>
     <source src="assets/audio/got-wifi.mp3" type="audio/mpeg">

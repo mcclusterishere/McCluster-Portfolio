@@ -2439,6 +2439,49 @@ html.vr-locked {
 }
 @keyframes vrGyroBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
 @keyframes vrGyroHue { 0%, 100% { border-color: rgba(244, 239, 230, 0.4); } 50% { border-color: var(--vr-flash); color: var(--vr-flash); } }
+/* the sound ask: Motion tapped with the sound off — huge, center screen,
+   arrow up to the SOUND pill (which stays above the dim and glows) */
+.soundask {
+  position: fixed; inset: 0; z-index: 130; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  background: rgba(8, 6, 5, 0.84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  text-align: center; animation: soundAskIn 0.45s ease-out both;
+}
+.soundask[hidden] { display: none; }
+@keyframes soundAskIn { from { opacity: 0; } to { opacity: 1; } }
+.soundask__big {
+  font-family: var(--display); text-transform: uppercase; line-height: 0.95;
+  font-size: clamp(3.2rem, 13vw, 7.5rem); color: var(--cream);
+  animation: soundAskPulse 1.6s ease-in-out infinite;
+}
+.soundask__big mark {
+  background: linear-gradient(180deg, #ffd84f, #ffc61a); color: #191204;
+  padding: 0.02em 0.16em; border-radius: 8px;
+}
+@keyframes soundAskPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+.soundask__sub { font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); }
+.soundask__arrow {
+  position: absolute; top: 4.6rem; right: clamp(4rem, 13vw, 11rem);
+  width: 62px; height: 62px; stroke: #fff; fill: none; stroke-width: 2.4;
+  stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+  filter: drop-shadow(0 0 12px rgba(255, 198, 26, 0.9));
+  animation: soundAskArrow 1.1s ease-in-out infinite;
+}
+@keyframes soundAskArrow { 0%, 100% { transform: translate(-6px, 6px); } 50% { transform: translate(6px, -6px); } }
+.soundask__no {
+  margin-top: 1.6rem; background: none; cursor: pointer; font: inherit;
+  border: 1px solid rgba(244, 239, 230, 0.3); border-radius: 100px; color: var(--cream-dim);
+  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.65em 1.3em;
+}
+.sound-toggle.is-asked {
+  border-color: #ffc61a; color: var(--cream);
+  animation: soundAskTarget 1.2s ease-out infinite;
+}
+@keyframes soundAskTarget {
+  0% { box-shadow: 0 0 0 0 rgba(255, 198, 26, 0.75); }
+  100% { box-shadow: 0 0 0 16px rgba(255, 198, 26, 0); }
+}
+
 /* after touchdown: halfway through the fly-through, ask for a slow hand */
 .work__slowhint {
   position: absolute; left: 50%; bottom: calc(13vh + env(safe-area-inset-bottom)); z-index: 4;
@@ -2453,7 +2496,8 @@ html.vr-locked {
 @media (prefers-reduced-motion: reduce) {
   .workvr__compass, .workvr__rose, .workvr__btn--land, .workvr__btn--land::after,
   .workvr__icon--jet, .workvr__motionhint, .workvr__pointer, #workVRGyro,
-  #workVRGyro:not(.is-on)::after, .work__slowhint.is-shown { animation: none; }
+  #workVRGyro:not(.is-on)::after, .work__slowhint.is-shown,
+  .soundask__big, .soundask__arrow, .sound-toggle.is-asked { animation: none; }
 }
 
 /* ---- lead capture modal ---- */

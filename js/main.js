@@ -440,7 +440,9 @@
   // two scenes, ONE project: Vaunt (the brand collab)
   var cmdProjects = [1, 1];
   var cmdProjectCount = 1;
-  var cmdSceneTracks = ["vaunt", "vaunt"];
+  // the full record carries the runway and the 360; the acoustic takes over
+  // for the fly-through into the cabin
+  var cmdSceneTracks = ["vauntfull", "vaunt"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades
@@ -542,6 +544,7 @@
         this.querySelector("span").textContent = "Motion on";
         var pointer = document.querySelector(".workvr__pointer");
         if (pointer) pointer.style.display = "none"; // the arrow's job is done
+        askForSound(); // this flight has a soundtrack — offer it if it's off
         if (window.MCC_TRACK) window.MCC_TRACK("vr_gyro_on", { page: "home" });
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_inline_view", { page: "home" });
@@ -599,6 +602,41 @@
     if (window.MCC_TRACK) window.MCC_TRACK("vr_skip", { page: "home" });
   });
 
+  /* ---- the sound ask: Motion tapped while the site is silent. One huge
+         prompt, one arrow up to the SOUND pill, one tap anywhere to fix it. ---- */
+  var soundAsk = document.getElementById("soundAsk");
+  var soundAskNo = document.getElementById("soundAskNo");
+  var soundAskDeclined = false; // "keep it silent" is respected for the visit
+  function askForSound() {
+    var tgl = document.getElementById("soundToggle");
+    if (!soundAsk || !tgl || soundAskDeclined || tgl.classList.contains("is-on")) return;
+    soundAsk.hidden = false;
+    tgl.classList.add("is-asked");
+    if (window.MCC_TRACK) window.MCC_TRACK("sound_prompt", { from: "vr-motion", page: "home" });
+  }
+  function closeSoundAsk() {
+    if (!soundAsk) return;
+    soundAsk.hidden = true;
+    var tgl = document.getElementById("soundToggle");
+    if (tgl) tgl.classList.remove("is-asked");
+  }
+  if (soundAsk) {
+    soundAsk.addEventListener("click", function (e) {
+      if (e.target === soundAskNo) return;
+      closeSoundAsk();
+      var tgl = document.getElementById("soundToggle");
+      if (tgl && !tgl.classList.contains("is-on")) tgl.click();
+    });
+    if (soundAskNo) soundAskNo.addEventListener("click", function (e) {
+      e.stopPropagation();
+      soundAskDeclined = true;
+      closeSoundAsk();
+      if (window.MCC_TRACK) window.MCC_TRACK("sound_prompt_dismiss", { page: "home" });
+    });
+    var soundTgl = document.getElementById("soundToggle");
+    if (soundTgl) soundTgl.addEventListener("click", closeSoundAsk);
+  }
+
   gsap.from(".command__head", {
     y: 70, opacity: 0, duration: 1, ease: "power3.out",
     scrollTrigger: { trigger: "#work", start: "top 60%" },
@@ -654,6 +692,7 @@
       "whodidtheshoot": document.getElementById("track-whodidtheshoot"),
       "environmental-injustice": document.getElementById("track-environmental-injustice"),
       "vaunt": document.getElementById("track-vaunt"),
+      "vauntfull": document.getElementById("track-vauntfull"),
       "gotwifi": document.getElementById("track-gotwifi"),
       "dealerplates": document.getElementById("track-dealerplates"),
     };
@@ -686,6 +725,8 @@
     var unlocked = {};
 
     function fadeTo(name) {
+      // if a variant isn't in the manifest (yet), fall back to the main cut
+      if (!avail[name] && name === "vauntfull") name = "vaunt";
       var previous = currentTrack;
       if (soundOn && name !== currentTrack) {
         var prev = tracks[currentTrack];

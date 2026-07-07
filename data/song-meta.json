@@ -1,112 +1,120 @@
 {
- "note": "The catalogue database. tools/build-catalogue.mjs scans assets/audio/*.mp3 and emits data/catalogue.json for whatever files are actually present — durations measured from the files. Add a song here and drop its mp3 in assets/audio/ and it appears in the catalogue automatically. A file present with no entry here still shows, with a title derived from its filename. 'soon: true' lists a known track before its mp3 lands. 'catalogue: false' keeps a file out of the QT6KV catalogue (e.g. release-only cuts by other artists).",
- "isrc_prefix": "QT6KV",
- "songs": {
-  "who-did-the-shoot": {
-   "title": "Who Did The Shoot",
-   "credit": "Written & performed by McCluster",
-   "album": "Here",
-   "page": "song-who-did-the-shoot.html",
-   "order": 1
-  },
-  "antisocial": {
-   "title": "Antisocial",
-   "credit": "Written & performed by McCluster",
-   "album": "Here",
-   "page": "song-antisocial.html",
-   "order": 2
-  },
-  "lightroom": {
-   "title": "Lightroom",
-   "credit": "Written & performed by McCluster",
-   "album": "Here",
-   "page": "catalogue.html",
-   "order": 3,
-   "soon": true
-  },
-  "runway-walk": {
-   "title": "Runway Walk",
-   "credit": "Written & performed by McCluster",
-   "album": "Here",
-   "page": "catalogue.html",
-   "order": 4,
-   "soon": true
-  },
-  "here": {
-   "title": "Here",
-   "credit": "The title track · written & performed by McCluster",
-   "album": "Here",
-   "page": "catalogue.html",
-   "order": 5,
-   "soon": true
-  },
-  "got-wifi": {
-   "title": "Got WiFi?",
-   "credit": "The PRIM3 blue-team anthem",
-   "album": "PRIM3",
-   "page": "song-got-wifi.html",
-   "order": 6
-  },
-  "environmental-injustice": {
-   "title": "Environmental Injustice",
-   "credit": "ft. Ocho & Evangelist Angel · the Equity Uprise anthem",
-   "album": "Equity Uprise",
-   "page": "song-environmental-injustice.html",
-   "order": 7
-  },
-  "vaunt": {
-   "title": "Vaunt (Acoustic)",
-   "credit": "The Vaunt Private Flights jingle · guitar by Zakir",
-   "album": "Singles",
-   "page": "song-vaunt.html",
-   "order": 8
-  },
-  "dealer-plates": {
-   "title": "Dealer Plates (A-Side)",
-   "credit": "Prod. Zakir & McCluster",
-   "album": "Whip Equipped",
-   "page": "song-dealer-plates.html",
-   "order": 9
-  },
-  "dealer-plates-b": {
-   "title": "Dealer Plates (B-Side)",
-   "credit": "Prod. Zakir & McCluster",
-   "album": "Whip Equipped",
-   "page": "song-dealer-plates-b.html",
-   "order": 10,
-   "soon": true
-  },
-  "money-or-the-power": {
-   "title": "Money or the Power",
-   "credit": "Old Jay ft. Ocho · prod. Pax",
-   "album": "The 516R Release",
-   "page": "docket-516.html",
-   "order": 20,
-   "catalogue": false
-  },
-  "environmental-injustice-brave": {
-   "title": "Environmental Injustice / Brave",
-   "credit": "McCluster ft. Ocho & Angel",
-   "album": "The 516R Release",
-   "page": "docket-516.html",
-   "order": 21,
-   "catalogue": false
-  },
-  "sjw": {
-   "title": "SJW",
-   "credit": "Equity Uprise · prod. McCluster · written by A$shon Voyage",
-   "album": "Docket No. 516R Deluxe Edition",
-   "page": "docket-516.html",
-   "order": 22,
-   "catalogue": false
-  },
-  "scar-stories": {
-   "title": "Scar Stories",
-   "credit": "Equity Uprise · prod. Pax The Collector · ft. Angel Castellano, McCluster & Pax",
-   "album": "Docket No. 516R Deluxe Edition",
-   "page": "docket-516.html",
-   "order": 23,
-   "catalogue": false
+  "note": "The catalogue database. tools/build-catalogue.mjs scans assets/audio/*.mp3 and emits data/catalogue.json for whatever files are actually present \u2014 durations measured from the files. Add a song here and drop its mp3 in assets/audio/ and it appears in the catalogue automatically. A file present with no entry here still shows, with a title derived from its filename. 'soon: true' lists a known track before its mp3 lands. 'catalogue: false' keeps a file out of the QT6KV catalogue (e.g. release-only cuts by other artists).",
+  "isrc_prefix": "QT6KV",
+  "songs": {
+    "who-did-the-shoot": {
+      "title": "Who Did The Shoot",
+      "credit": "Written & performed by McCluster",
+      "album": "Here",
+      "page": "song-who-did-the-shoot.html",
+      "order": 1
+    },
+    "antisocial": {
+      "title": "Antisocial",
+      "credit": "Written & performed by McCluster",
+      "album": "Here",
+      "page": "song-antisocial.html",
+      "order": 2
+    },
+    "lightroom": {
+      "title": "Lightroom",
+      "credit": "Written & performed by McCluster",
+      "album": "Here",
+      "page": "catalogue.html",
+      "order": 3,
+      "soon": true
+    },
+    "runway-walk": {
+      "title": "Runway Walk",
+      "credit": "Written & performed by McCluster",
+      "album": "Here",
+      "page": "catalogue.html",
+      "order": 4,
+      "soon": true
+    },
+    "here": {
+      "title": "Here",
+      "credit": "The title track \u00b7 written & performed by McCluster",
+      "album": "Here",
+      "page": "catalogue.html",
+      "order": 5,
+      "soon": true
+    },
+    "got-wifi": {
+      "title": "Got WiFi?",
+      "credit": "The PRIM3 blue-team anthem",
+      "album": "PRIM3",
+      "page": "song-got-wifi.html",
+      "order": 6
+    },
+    "environmental-injustice": {
+      "title": "Environmental Injustice",
+      "credit": "ft. Ocho & Evangelist Angel \u00b7 the Equity Uprise anthem",
+      "album": "Equity Uprise",
+      "page": "song-environmental-injustice.html",
+      "order": 7
+    },
+    "vaunt": {
+      "title": "Vaunt (Acoustic)",
+      "credit": "The Vaunt Private Flights jingle \u00b7 guitar by Zakir",
+      "album": "Singles",
+      "page": "song-vaunt.html",
+      "order": 8
+    },
+    "dealer-plates": {
+      "title": "Dealer Plates (A-Side)",
+      "credit": "Prod. Zakir & McCluster",
+      "album": "Whip Equipped",
+      "page": "song-dealer-plates.html",
+      "order": 9
+    },
+    "dealer-plates-b": {
+      "title": "Dealer Plates (B-Side)",
+      "credit": "Prod. Zakir & McCluster",
+      "album": "Whip Equipped",
+      "page": "song-dealer-plates-b.html",
+      "order": 10,
+      "soon": true
+    },
+    "money-or-the-power": {
+      "title": "Money or the Power",
+      "credit": "Old Jay ft. Ocho \u00b7 prod. Pax",
+      "album": "The 516R Release",
+      "page": "docket-516.html",
+      "order": 20,
+      "catalogue": false
+    },
+    "environmental-injustice-brave": {
+      "title": "Environmental Injustice / Brave",
+      "credit": "McCluster ft. Ocho & Angel",
+      "album": "The 516R Release",
+      "page": "docket-516.html",
+      "order": 21,
+      "catalogue": false
+    },
+    "sjw": {
+      "title": "SJW",
+      "credit": "Equity Uprise \u00b7 prod. McCluster \u00b7 written by A$shon Voyage",
+      "album": "Docket No. 516R Deluxe Edition",
+      "page": "docket-516.html",
+      "order": 22,
+      "catalogue": false
+    },
+    "scar-stories": {
+      "title": "Scar Stories",
+      "credit": "Equity Uprise \u00b7 prod. Pax The Collector \u00b7 ft. Angel Castellano, McCluster & Pax",
+      "album": "Docket No. 516R Deluxe Edition",
+      "page": "docket-516.html",
+      "order": 23,
+      "catalogue": false
+    },
+    "vaunt-full": {
+      "title": "Vaunt",
+      "credit": "The Vaunt Private Flights record \u00b7 full version",
+      "album": "Singles",
+      "page": "song-vaunt.html",
+      "order": 8,
+      "catalogue": false
+    }
   }
- }
 }
