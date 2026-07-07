@@ -659,7 +659,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- SERVICES slides ---------- */
-.services { height: 200vh; position: relative; }
+/* height is auto so GSAP's pinSpacing drives the scrub scroll (a fixed height
+   would clip the pin-spacer and let the next section overlap) */
+.services { height: auto; position: relative; }
+.services .command__sticky { position: relative; }
 .services .command__count { display: none; }
 /* this frame is no longer services: it explains Antisocial + the site's
    purpose + the marker icons, and ends in one big click-through to the video.
@@ -677,6 +680,42 @@ a { color: inherit; text-decoration: none; }
 }
 .antiabout__lead b { color: var(--ruby-hot); }
 .antiabout__lead em { font-style: italic; color: var(--cream); }
+
+/* the big animated SCROLL SLOW headline */
+.antiscroll__title {
+  font-family: var(--display); font-weight: 400; margin: 0;
+  text-transform: uppercase; line-height: 0.82; letter-spacing: -0.01em;
+}
+.antiscroll__title span { display: block; }
+.antiscroll__l1 {
+  font-size: clamp(3rem, 12vw, 8rem); color: var(--cream);
+  opacity: 0.92;
+}
+.antiscroll__l2 {
+  font-size: clamp(4.4rem, 20vw, 13rem);
+  background: linear-gradient(100deg, var(--ruby) 0%, var(--ruby-hot) 28%, #ffb3b5 48%, #fff 52%, var(--ruby-hot) 72%, var(--ruby) 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: slowSheen 5.5s linear infinite, slowBreath 4.5s ease-in-out infinite;
+  transform-origin: left center;
+  filter: drop-shadow(0 0 34px rgba(229, 56, 59, 0.35));
+}
+@keyframes slowSheen { to { background-position: 260% 0; } }
+@keyframes slowBreath { 0%, 100% { transform: scale(1); letter-spacing: -0.01em; } 50% { transform: scale(1.015); letter-spacing: 0.015em; } }
+@media (prefers-reduced-motion: reduce) {
+  .antiscroll__l2 { animation: none; color: var(--ruby-hot); }
+}
+
+/* subtle 'turn on the sound' cue */
+.antiabout__sound {
+  display: inline-flex; align-items: center; gap: 0.55em;
+  font-size: 0.9rem; letter-spacing: 0.04em; color: var(--cream-dim);
+  animation: soundCue 3s ease-in-out infinite;
+}
+.antiabout__spk { display: inline-grid; place-items: center; width: 1.4rem; height: 1.4rem; color: var(--ruby-hot); flex: none; }
+.antiabout__spk svg { width: 100%; height: 100%; }
+@keyframes soundCue { 0%, 100% { color: var(--cream-dim); } 50% { color: var(--cream); } }
+@media (prefers-reduced-motion: reduce) { .antiabout__sound { animation: none; } }
 .antiabout__cap {
   font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--cream-dim);
@@ -707,13 +746,13 @@ a { color: inherit; text-decoration: none; }
 .antiabout__enter-ic {
   flex: none; display: grid; place-items: center;
   width: clamp(4.6rem, 15vw, 6rem); height: clamp(4.6rem, 15vw, 6rem);
-  border-radius: 50%; font-size: clamp(1.5rem, 5vw, 2.1rem); color: #fff;
+  border-radius: 50%; color: #fff;
   background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
   box-shadow: 0 12px 40px rgba(229, 56, 59, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.16) inset;
-  padding-left: 0.15em;
   animation: antiEnterPulse 2s ease-in-out infinite;
   transition: transform 0.3s;
 }
+.antiabout__enter-ic svg { width: 42%; height: 42%; margin-left: 6%; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35)); }
 .antiabout__enter:hover .antiabout__enter-ic { transform: scale(1.07); }
 .antiabout__enter-txt {
   font-family: var(--display); font-weight: 400; line-height: 1.05;

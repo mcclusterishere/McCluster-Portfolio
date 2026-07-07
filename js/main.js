@@ -396,8 +396,12 @@
     ScrollTrigger.create({
       trigger: "#pillars",
       start: "top top",
-      end: "bottom bottom",
+      end: "+=140%",
       scrub: true,
+      pin: "#pillars .command__sticky",
+      pinSpacing: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
       onUpdate: function (st) {
         pillarsBg.target = st.progress * (pillarsBg.count - 1 || 0);
         var ps = st.isActive ? PAR.ramp(st.progress) : 0;
@@ -409,10 +413,6 @@
       },
     });
   }
-  gsap.from("#pillars .command__head", {
-    x: -80, opacity: 0, duration: 1, ease: "power3.out",
-    scrollTrigger: { trigger: "#pillars", start: "top 60%" },
-  });
 
   /* ---------------- IN COMMAND mini scroll: three scenes, ~equal scroll bands,
      each scrubbed within its band and crossfaded at the boundaries ---------------- */
