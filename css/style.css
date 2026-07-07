@@ -766,8 +766,18 @@ a { color: inherit; text-decoration: none; }
 }
 @keyframes slowSheen { to { background-position: 260% 0; } }
 @keyframes slowBreath { 0%, 100% { transform: scale(1); letter-spacing: -0.01em; } 50% { transform: scale(1.015); letter-spacing: 0.015em; } }
+/* the sign-off: hollow letters, drops in a beat after the rest */
+.antiscroll__l3 {
+  font-size: clamp(1.9rem, 8vw, 5.2rem); margin-top: 0.04em;
+  color: transparent; -webkit-text-stroke: 1.5px var(--cream); text-stroke: 1.5px var(--cream);
+  opacity: 0; transform: translateY(-0.25em);
+  animation: homieIn 0.8s cubic-bezier(0.2, 0.9, 0.2, 1) 0.55s forwards;
+  text-shadow: 0 0 30px rgba(244, 239, 230, 0.18);
+}
+@keyframes homieIn { to { opacity: 0.95; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) {
   .antiscroll__l2 { animation: none; color: var(--ruby-hot); }
+  .antiscroll__l3 { animation: none; opacity: 0.95; transform: none; }
 }
 
 /* subtle 'turn on the sound' cue */
