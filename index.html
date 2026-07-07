@@ -234,11 +234,14 @@
         <div class="workvr" id="workVR" aria-label="Inside the jet: scroll locks here — drag in any direction to look around, then tap Land to touch down and keep scrolling">
           <canvas class="workvr__canvas" id="workVRCanvas"></canvas>
           <div class="workvr__compass" id="workVRCompass" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M24 6v9M24 33v9M6 24h9M33 24h15" stroke-width="0"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8" /><path d="M20 9l4-5 4 5M20 39l4 5 4-5M9 20l-5 4 5 4M39 20l5 4-5 4"/></svg>
-            <p class="workvr__warn">Scroll is locked here</p>
-            <p><b>Drag</b> in any direction to look around</p>
+            <svg class="workvr__caution" viewBox="0 0 24 24"><path d="M12 2.5 1.6 20.5h20.8Z"/><path d="M12 9v5.4"/><path d="M12 17.2v0.1"/></svg>
+            <svg class="workvr__rose" viewBox="0 0 48 48"><path d="M24 6v9M24 33v9M6 24h9M33 24h15" stroke-width="0"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8" /><path d="M20 9l4-5 4 5M20 39l4 5 4-5M9 20l-5 4 5 4M39 20l5 4-5 4"/></svg>
+            <p class="workvr__warn"><mark>Scroll is locked here</mark></p>
+            <p class="workvr__how"><mark><b>Drag</b> in any direction to look around</mark></p>
+            <p class="workvr__motionhint">Tap <b>Motion</b> &#8594; move the phone to look</p>
           </div>
           <div class="workvr__side">
+            <svg class="workvr__pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h14"/><path d="M13 6l6 6-6 6"/></svg>
             <button class="workvr__btn" id="workVRGyro" type="button">
               <svg class="workvr__icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
               <span>Motion</span>
@@ -250,6 +253,8 @@
           </div>
           <p class="workvr__tag">Inside the jet &middot; 360 &middot; live footage</p>
         </div>
+        <!-- after touchdown: the fly-through asks for a slow hand -->
+        <p class="work__slowhint" id="workSlowHint" aria-hidden="true">Scroll slow &middot; appreciate the art</p>
         <header class="command__head">
           <h2 class="section-title">Brand<br>Collabs</h2>
           <p class="work__answer">The campaigns and the spots.</p>
@@ -323,39 +328,6 @@
       </div>
     </section>
 
-    <!-- ============ THE M NETWORK — the resources, closing out the site ============ -->
-    <section class="loadout" id="loadout">
-      <div class="loadout__sticky command__sticky">
-        <canvas class="bg-canvas" id="loadoutCanvas" aria-label="360 pan from the center of a multipurpose production studio: photo/video corner, recording corner, and a conference stage"></canvas>
-        <div class="scrim scrim--deep" aria-hidden="true"></div>
-        <header class="command__head">
-          <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Network</p>
-          <h2 class="section-title">The<br>Resources</h2>
-        </header>
-        <div class="command__panels">
-          <article class="command__panel panel-fx panel-fx--photo" data-scene="0">
-            <p class="command__meta"><span class="command__tag">Service Network</span></p>
-            <h3 class="command__title">Photo &amp; Studio<br>Network</h3>
-            <p class="command__pitch"><a class="book-huge" href="network-photo.html" data-cta="network-photo">Book a Photo Studio <span class="book-huge__arrow">&#8594;</span></a></p>
-            <div class="mbadge-set" data-orgbadges="venue,creator" aria-label="Org types verified in the photo network"></div>
-          </article>
-          <article class="command__panel panel-fx panel-fx--sound" data-scene="1">
-            <p class="command__meta"><span class="command__tag"><span class="rec-dot" aria-hidden="true"></span>Recording Studios</span></p>
-            <h3 class="command__title">Music<br>Network</h3>
-            <p class="command__pitch"><a class="book-huge" href="network-recording.html" data-cta="network-recording">Book a Recording Studio <span class="book-huge__arrow">&#8594;</span></a></p>
-            <div class="mbadge-set" data-orgbadges="performer,rights-owner" aria-label="Org types verified in the recording network"></div>
-          </article>
-          <article class="command__panel panel-fx panel-fx--live" data-scene="2">
-            <p class="command__meta"><span class="command__tag">Event Spaces <a class="live-bug" href="mailto:matthew@mccluster.org?subject=Book%20a%20Venue%2C%20McCluster&body=I%27d%20like%20to%20book%20a%20venue%2Fstage.%0AType%20of%20event%3A%0ADate%3A%0ALocation%3A%0A" data-cta="book-venue">&#9679; GO LIVE</a></span></p>
-            <h3 class="command__title">Conference &amp;<br>Broadcast</h3>
-            <p class="command__pitch"><a class="live-link" href="list-your-space.html" data-cta="list-your-space">List your stage &#8594;</a></p>
-            <div class="mbadge-set" data-orgbadges="nonprofit,federal" aria-label="Org types verified in the event and broadcast network"></div>
-          </article>
-        </div>
-        <div class="command__count" id="loCount">01 / 03</div>
-        <a class="song-gate" href="song-who-did-the-shoot.html"><span class="song-gate__dot"></span> Now playing: "Who Did The Shoot" · listen</a>
-      </div>
-    </section>
   </main>
 
   <!-- floating pause: kill the music from anywhere on the page -->
@@ -400,6 +372,7 @@
       <a href="song-dealer-plates.html">♫ Dealer Plates</a>
       <a href="song-please-set-me-free.html">♫ Please Set Me Free — The Civic Poll</a>
       <a href="ecosystem.html">The Ecosystem</a>
+      <a href="m-network.html">The M Network</a>
       <a href="ip.html">Intellectual Property</a>
       <a href="badge-explainer.html">The Badge System</a>
       <a href="docket-516.html">Docket 516 Explainer</a>

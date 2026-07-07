@@ -262,7 +262,8 @@
             onEnter: function () { loadGroup(specs); },
           });
         }
-        loadNear("#loadout", [["keynote", m.studio360 ? "studio360" : "keynote"]]);
+        if (document.getElementById("loadout"))
+          loadNear("#loadout", [["keynote", m.studio360 ? "studio360" : "keynote"]]);
         loadNear("#pillars", [
           ["pillarsbg", "nightscroll"],
         ]);
@@ -274,7 +275,7 @@
     })
     .catch(function () {
       // no frames committed — fall back to raw videos everywhere
-      Object.keys(sequences).forEach(function (k) { sequences[k].fallback(); });
+      Object.keys(sequences).forEach(function (k) { if (sequences[k]) sequences[k].fallback(); });
       finishPreloader();
     });
 
@@ -316,8 +317,10 @@
     .to(".hero__sub, .hero__eyebrow", { opacity: 0, yPercent: -60 }, 0)
     .to(".hud__scroll", { opacity: 0 }, 0);
 
-  /* ---------------- the loadout: 360 studio pan, three corners ---------------- */
+  /* ---------------- the loadout: 360 studio pan, three corners ----------------
+     (lives on its own page when absent from this one — guard and move on) */
   (function () {
+    if (!document.getElementById("loadout")) return;
     var loPanels = gsap.utils.toArray("#loadout .command__panel");
     var loCount = document.getElementById("loCount");
     var current = 0;
@@ -537,6 +540,8 @@
         workVR.viewer.enableGyro();
         this.classList.add("is-on");
         this.querySelector("span").textContent = "Motion on";
+        var pointer = document.querySelector(".workvr__pointer");
+        if (pointer) pointer.style.display = "none"; // the arrow's job is done
         if (window.MCC_TRACK) window.MCC_TRACK("vr_gyro_on", { page: "home" });
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_inline_view", { page: "home" });
@@ -549,6 +554,7 @@
     }
   }
 
+  var workSlow = document.getElementById("workSlowHint");
   var workST = ScrollTrigger.create({
     trigger: "#work",
     start: "top top",
@@ -557,6 +563,8 @@
     onUpdate: function (st) {
       applyCommand(st.progress);
       workVRSet(st.progress);
+      // halfway through the fly-through, the film asks for a slow hand
+      if (workSlow) workSlow.classList.toggle("is-shown", st.progress > 0.56 && st.progress < 0.86);
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);
@@ -716,6 +724,7 @@
     commandAudioHook = fadeTo;
 
     zones.forEach(function (z) {
+      if (!document.querySelector(z.sel)) return;
       ScrollTrigger.create({
         trigger: z.sel,
         start: "top 55%",
@@ -822,6 +831,7 @@
     function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
     // each section counts once per visit as the visitor reaches it
     ["#hero", "#loadout", "#pillars", "#work", "#book"].forEach(function (sel) {
+      if (!document.querySelector(sel)) return;
       ScrollTrigger.create({
         trigger: sel, start: "top 60%", once: true,
         onEnter: function () { track("section_view", { section: sel.slice(1), page: "home" }); },
