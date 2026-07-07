@@ -48,6 +48,9 @@ jobs:
               video-web)
                 ffmpeg -y -i /tmp/dl.bin -vf "scale='min(2880,iw)':-2" -c:v libx264 -crf 23 -preset medium \
                   -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k "$dest" ;;
+              video-1600)
+                ffmpeg -y -i /tmp/dl.bin -vf "scale='min(1600,iw)':-2" -c:v libx264 -crf 26 -preset medium \
+                  -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k "$dest" ;;
               video-preview)
                 ffmpeg -y -i /tmp/dl.bin -vf "scale=960:-2" -c:v libx264 -crf 28 -preset veryfast \
                   -pix_fmt yuv420p -movflags +faststart -an "$dest" ;;
