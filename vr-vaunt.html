@@ -54,8 +54,10 @@
     /* hotspots: tags pinned to things in the scene */
     .vr360-spots { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
     .vr360-spot {
-      position: absolute; transform: translate(-50%, -50%); pointer-events: auto;
+      /* the DOT sits exactly on the pinned point; the label flows right */
+      position: absolute; transform: translate(-8px, -50%); pointer-events: auto;
       display: flex; align-items: center; gap: 0.45em; text-decoration: none; color: var(--cream);
+      padding: 6px 6px 6px 0; margin: -6px -6px -6px 0;
     }
     .vr360-spot i {
       width: 16px; height: 16px; border-radius: 50%; flex: none; position: relative;
@@ -142,8 +144,8 @@
         // yaw/pitch in degrees; add from/to (seconds) to time-gate a tag on video
         { yaw: -25, pitch: -42, label: "The six-string · hear Vaunt", href: "song-vaunt.html" },
         { yaw: 155, pitch: -38, label: "The artist · book the energy", href: "hire.html" },
-        { yaw: 79, pitch: -8, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-        { yaw: -110, pitch: -37, label: "The camera · the $5,000 system", href: "offer.html" },
+        { yaw: 77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+        { yaw: -111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
       ];
       var IS_VIDEO = true; // the real inside-the-jet 360 film
       var viewer = VR360.mount(document.getElementById("vrCanvas"), {

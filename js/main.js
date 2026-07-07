@@ -523,8 +523,10 @@
         // open facing McCluster in his seat (measured off the equirect frame)
         yaw: 140, pitch: -32, touchAction: "none",
         spots: [
-          { yaw: 79, pitch: -8, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-          { yaw: -110, pitch: -37, label: "The camera · the $5,000 system", href: "offer.html" },
+          // pinned on the flight console between the pilots, and on the DSLR
+          // standing in the aisle — both measured off the equirect frame
+          { yaw: 77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
+          { yaw: -111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
         ],
       });
       var compass = document.getElementById("workVRCompass");
