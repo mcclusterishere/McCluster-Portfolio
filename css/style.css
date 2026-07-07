@@ -708,12 +708,42 @@ a { color: inherit; text-decoration: none; }
   max-width: 52rem; pointer-events: auto;
   display: flex; flex-direction: column; gap: 1rem;
 }
-.antiabout__lead {
-  font-size: clamp(1.05rem, 2.6vw, 1.5rem); line-height: 1.5;
-  color: var(--cream); max-width: 46ch; font-weight: 500;
+/* fact + observation: the whole pitch in six words, next to a buzzing phone */
+.antiabout__duo { display: flex; align-items: center; gap: clamp(0.9rem, 3vw, 1.4rem); }
+.antiabout__phone {
+  flex: none; display: grid; place-items: center;
+  width: clamp(3rem, 9vw, 4rem); height: clamp(3.6rem, 11vw, 4.8rem);
+  animation: phonePolice 1.32s steps(1, end) infinite, phoneBuzz 3.6s ease-in-out infinite;
 }
-.antiabout__lead b { color: var(--ruby-hot); }
-.antiabout__lead em { font-style: italic; color: var(--cream); }
+.antiabout__phone svg { width: 100%; height: 100%; }
+@keyframes phonePolice {
+  0%, 49.9% { color: #2f6bff; filter: drop-shadow(0 0 16px rgba(47, 107, 255, 0.75)); }
+  50%, 100% { color: #ff3535; filter: drop-shadow(0 0 16px rgba(255, 53, 53, 0.75)); }
+}
+@keyframes phoneBuzz {
+  0%, 86%, 100% { transform: rotate(0); }
+  88% { transform: rotate(-6deg); } 90% { transform: rotate(5deg); }
+  92% { transform: rotate(-4deg); } 94% { transform: rotate(2deg); } 96% { transform: rotate(0); }
+}
+.antiabout__points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.antiabout__points li { display: flex; align-items: center; gap: 0.7em; opacity: 0; transform: translateX(-14px); animation: ptIn 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) forwards; animation-play-state: paused; }
+.antiabout__points li + li { animation-delay: 0.22s; }
+.antiabout__duo.is-in .antiabout__points li { animation-play-state: running; }
+.antiabout__points i {
+  font-style: normal; flex: none; font-size: 0.52rem; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--ruby-hot); border: 1px solid rgba(229, 56, 59, 0.55); border-radius: 100px;
+  padding: 0.36em 0.9em; background: rgba(193, 18, 31, 0.12);
+}
+.antiabout__points span {
+  font-family: var(--display); text-transform: uppercase; line-height: 0.95; letter-spacing: 0.01em;
+  font-size: clamp(1.25rem, 4.6vw, 2.3rem); color: var(--cream);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+@keyframes ptIn { to { opacity: 1; transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .antiabout__phone { animation: none; color: var(--ruby-hot); }
+  .antiabout__points li { animation: none; opacity: 1; transform: none; }
+}
 
 /* the big animated SCROLL SLOW headline */
 .antiscroll__title {
@@ -774,33 +804,62 @@ a { color: inherit; text-decoration: none; }
 
 /* the big click-through: the largest icon on the frame */
 .antiabout__enter {
-  display: inline-flex; align-items: center; gap: 1rem; margin-top: 0.6rem;
+  display: inline-flex; align-items: center; gap: 1.1rem; margin-top: 0.6rem;
   text-decoration: none; color: var(--cream); width: fit-content;
 }
 .antiabout__enter-ic {
-  flex: none; display: grid; place-items: center;
+  flex: none; position: relative; display: grid; place-items: center;
   width: clamp(4.6rem, 15vw, 6rem); height: clamp(4.6rem, 15vw, 6rem);
-  border-radius: 50%; color: #fff;
+  border-radius: 50%; color: #fff; overflow: hidden;
   background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
   box-shadow: 0 12px 40px rgba(229, 56, 59, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.16) inset;
   animation: antiEnterPulse 2s ease-in-out infinite;
-  transition: transform 0.3s;
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
+/* shine sweep across the face of the button */
+.antiabout__enter-ic::after {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -70%; width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-18deg); animation: antiShine 3.4s ease-in-out infinite;
+}
+@keyframes antiShine { 0%, 55% { left: -70%; } 85%, 100% { left: 140%; } }
+/* sonar rings rippling off the button */
+.antiabout__enter-rings { position: absolute; inset: 0; pointer-events: none; }
+.antiabout__enter-rings::before, .antiabout__enter-rings::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(229, 56, 59, 0.7); animation: antiRing 2.4s ease-out infinite;
+}
+.antiabout__enter-rings::after { animation-delay: 1.2s; }
+@keyframes antiRing { 0% { transform: scale(1); opacity: 0.85; } 100% { transform: scale(1.9); opacity: 0; } }
+.antiabout__enter-icwrap { position: relative; flex: none; }
 .antiabout__enter-ic svg { width: 42%; height: 42%; margin-left: 6%; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.35)); }
-.antiabout__enter:hover .antiabout__enter-ic { transform: scale(1.07); }
+.antiabout__enter:hover .antiabout__enter-ic { transform: scale(1.1) rotate(4deg); }
+.antiabout__enter:active .antiabout__enter-ic { transform: scale(0.96); }
 .antiabout__enter-txt {
   font-family: var(--display); font-weight: 400; line-height: 1.05;
   font-size: clamp(1.2rem, 3.6vw, 1.8rem); text-transform: uppercase; letter-spacing: 0.02em;
 }
-.antiabout__enter-txt b { color: var(--ruby-hot); }
+.antiabout__enter-txt b {
+  color: var(--ruby-hot); background: linear-gradient(100deg, var(--ruby-hot), #ffb3b5, var(--ruby-hot));
+  background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: slowSheen 4s linear infinite;
+}
+.antiabout__enter-txt::after {
+  content: ""; display: block; height: 2px; margin-top: 0.25em; width: 0;
+  background: linear-gradient(90deg, var(--ruby), var(--ruby-hot)); transition: width 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.antiabout__enter:hover .antiabout__enter-txt::after { width: 100%; }
 @keyframes antiEnterPulse {
   0%, 100% { box-shadow: 0 12px 40px rgba(229, 56, 59, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.16) inset; }
   50% { box-shadow: 0 14px 56px rgba(229, 56, 59, 0.85), 0 0 28px rgba(229, 56, 59, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.3) inset; }
 }
-@media (prefers-reduced-motion: reduce) { .antiabout__enter-ic { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .antiabout__enter-ic, .antiabout__enter-ic::after, .antiabout__enter-rings::before, .antiabout__enter-rings::after, .antiabout__enter-txt b { animation: none; }
+}
 @media (max-width: 720px) {
   .antiabout { gap: 0.8rem; bottom: clamp(1.5rem, 5vh, 3rem); }
-  .antiabout__lead { font-size: 1.05rem; }
+  .antiabout__points { gap: 0.45rem; }
+  .antiabout__points i { font-size: 0.48rem; padding: 0.3em 0.75em; }
   .antiabout__icons { gap: 0.5rem; }
   .antiabout__ic { min-width: 4.4rem; padding: 0.5rem; }
 }

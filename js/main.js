@@ -414,6 +414,17 @@
     });
   }
 
+  // the fact/observation bullets hold their slide-in until the frame is actually on screen
+  var antiDuo = document.querySelector(".antiabout__duo");
+  if (antiDuo && "IntersectionObserver" in window) {
+    var duoIO = new IntersectionObserver(function (en) {
+      if (en[0].isIntersecting) { antiDuo.classList.add("is-in"); duoIO.disconnect(); }
+    }, { threshold: 0.35 });
+    duoIO.observe(antiDuo);
+  } else if (antiDuo) {
+    antiDuo.classList.add("is-in");
+  }
+
   /* ---------------- IN COMMAND mini scroll: three scenes, ~equal scroll bands,
      each scrubbed within its band and crossfaded at the boundaries ---------------- */
   // Scenes may share one sequence across consecutive bands (f0..f1 are the
