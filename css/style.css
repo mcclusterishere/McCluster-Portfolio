@@ -2265,6 +2265,30 @@ html.psy-locked, html.psy-locked body { overflow: hidden; }
 .pmkd__bar q { display: block; font-family: var(--display); font-size: clamp(1.15rem, 3.6vw, 1.7rem); text-transform: uppercase; line-height: 1.1; margin: 0.4rem 0; quotes: "\201C" "\201D"; }
 .pmkd__bar i { font-style: normal; font-size: 0.72rem; color: var(--cream-dim); letter-spacing: 0.08em; text-transform: uppercase; }
 
+/* ---- Vaunt brand skin: the Brand Collabs frame carries their orange ---- */
+:root { --vaunt: #f84c0a; --vaunt-deep: #c93a04; }
+#work .command__tag {
+  color: #ffb38f; border: 1px solid rgba(248, 76, 10, 0.5); border-radius: 100px;
+  padding: 0.4em 0.95em; background: rgba(248, 76, 10, 0.1); backdrop-filter: blur(3px);
+}
+#work .command__panel { border-left-color: var(--vaunt); }
+#work .command__link {
+  display: inline-block; margin-top: 0.5rem; color: #fff !important; text-decoration: none;
+  background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); border-radius: 100px;
+  padding: 0.5em 1.2em; font-weight: 700; letter-spacing: 0.06em;
+  box-shadow: 0 8px 26px rgba(248, 76, 10, 0.45); transition: transform 0.25s, box-shadow 0.25s;
+}
+#work .command__link:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(248, 76, 10, 0.65); }
+#work .command__count { color: var(--vaunt); }
+#work .workvr__tag,
+#work .workvr__btn--skip { background: linear-gradient(120deg, var(--vaunt-deep), var(--vaunt)); box-shadow: 0 8px 26px rgba(248, 76, 10, 0.5); }
+#work .workvr__btn:hover { border-color: var(--vaunt); background: rgba(248, 76, 10, 0.28); }
+#work .workvr__btn.is-on { border-color: var(--vaunt); color: #ffb38f; }
+#work .vr360-spot i { background: var(--vaunt); box-shadow: 0 0 12px rgba(248, 76, 10, 0.9); }
+#work .vr360-spot i::after { border-color: rgba(248, 76, 10, 0.7); }
+#work .vr360-spot span { border-color: rgba(248, 76, 10, 0.55); }
+#work .vr360-spot:hover span { background: var(--vaunt); border-color: var(--vaunt); }
+
 /* ---- the inline 360 band inside Brand Collabs ---- */
 .workvr {
   position: absolute; inset: 0; z-index: 4;
