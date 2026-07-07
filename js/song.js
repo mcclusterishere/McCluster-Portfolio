@@ -37,6 +37,8 @@
       '<div class="songpre__inner">' +
       '<div class="songpre__chip"><img class="songpre__logo" src="' + meta.logo + '" alt=""></div>' +
       '<div class="songpre__count"><span class="songpre__num">000</span><span class="songpre__pct">%</span></div>' +
+      '<div class="zencue"><span class="zencue__orb" aria-hidden="true"></span>' +
+      '<p class="zencue__msg">This wait is yours. Let your shoulders drop. Two breaths in through the nose, one long breath out. That\'s a physiological sigh, and it resets you. Nothing to do here but arrive.</p></div>' +
       "</div>";
     document.body.appendChild(el);
     var numEl = el.querySelector(".songpre__num");
