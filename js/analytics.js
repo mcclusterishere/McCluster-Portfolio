@@ -17,6 +17,15 @@
 window.ANALYTICS_ID = "G-38KDY01Z2V";
 window.TRACK_ENDPOINT = "";
 
+/* PWA: register the service worker so the site is installable and loads
+   instant/offline after the first visit. Registered from here because this
+   file loads on every page, giving the worker site-wide scope. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
+
 window.MCC_TRACK = (function () {
   var gaId = window.ANALYTICS_ID;
   var endpoint = window.TRACK_ENDPOINT;
