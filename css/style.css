@@ -3119,6 +3119,23 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 }
 @keyframes bookHugeArrow { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
 @keyframes bookHugeSweep { 0% { left: -70%; } 55%, 100% { left: 135%; } }
+
+/* ---- Service Network frame: tags ride the right edge, buttons and seals sized down ---- */
+#loadout .command__panel { width: 100%; }
+#loadout .command__meta { justify-content: flex-end; margin-top: 0.5rem; }
+#loadout .book-huge {
+  font-family: inherit; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.14em;
+  padding: 0.45em 1em; border-radius: 6px; border: none; margin-top: 0.55rem; gap: 0.35em;
+  background: var(--ruby); box-shadow: 0 0 18px rgba(229, 56, 59, 0.55);
+  animation: fxJolt 3.4s linear infinite;
+}
+#loadout .book-huge::after { content: none; }
+#loadout .book-huge__arrow { animation: none; }
+#loadout .book-huge:hover { background: var(--ruby-hot); transform: none; }
+#loadout .mbadge-set { margin-top: 0.7rem; gap: 0.4rem 0.55rem; }
+#loadout .mbadge-set .mbadge-chip--org { width: 4.6rem; }
+#loadout .mbadge-set .mbadge-chip--org .mbadge { width: 2em; }
+#loadout .mbadge-set .mbadge-chip--org small { font-size: 0.46rem; }
 @media (prefers-reduced-motion: reduce) {
   .book-huge, .book-huge__arrow, .book-huge::after { animation: none; }
   .lo-offer.is-shown, .lo-offer.is-shown b { animation: none; }
