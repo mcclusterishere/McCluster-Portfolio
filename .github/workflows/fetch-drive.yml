@@ -37,7 +37,10 @@ jobs:
             mode=$(jq -r ".jobs[$i].mode // \"raw\"" data/drive-queue.json)
             if [ -e "$dest" ]; then echo "skip (exists): $dest"; continue; fi
             echo "fetching $id -> $dest ($mode)"
-            gdown -O /tmp/dl.bin "$id"
+            if ! gdown -O /tmp/dl.bin "$id"; then
+              echo "::warning::could not fetch $id (still restricted?) — skipping"
+              continue
+            fi
             mkdir -p "$(dirname "$dest")"
             case "$mode" in
               video-web)
