@@ -16,7 +16,6 @@
     <nav class="site-head__nav">
       <a href="index.html">← Back to the site</a>
       <a href="fellowship.html">The Fellowship</a>
-      <a href="provenance.html">Verify a file</a>
       <a class="head-cta" href="#library">The Record</a>
     </nav>
   </header>
@@ -285,17 +284,15 @@
           var db = b.date || (sortMode === "new" ? "0000" : "9999");
           return sortMode === "old" ? da.localeCompare(db) : db.localeCompare(da);
         });
-        var mirrored = FILES.filter(function (f) { return f.local_path; }).length;
-        stats.textContent = shown.length + " of " + FILES.length + " records · " + mirrored + " hosted here · source: Connecticut Siting Council";
+        stats.textContent = shown.length + " of " + FILES.length + " records · every link opens the official Connecticut Siting Council copy";
         var showDesc = activeCat && CAT_DESC[activeCat];
         catDescEl.hidden = !showDesc;
         if (showDesc) catDescEl.textContent = CAT_DESC[activeCat];
         lib.innerHTML = shown.map(function (f) {
-          return '<a class="dkt__card dkt__card--sm" data-id="' + esc(f.id) + '" href="' + esc(f.local_path || f.official_url) + '" target="_blank" rel="noopener">' +
+          return '<a class="dkt__card dkt__card--sm" data-id="' + esc(f.id) + '" href="' + esc(f.official_url) + '" target="_blank" rel="noopener">' +
             '<span class="dkt__badge">' + badgeOf(f) + "</span>" +
             "<h3>" + esc(f.title) + "</h3>" +
-            '<p class="dkt__meta">' + (f.date ? esc(f.date) + " · " : "") + (f.local_path ? "hosted here" : "external") + "</p>" +
-            (f.local_path ? '<span class="dkt__srclink" role="link" data-url="' + esc(f.official_url) + '">official &#8599;</span>' : "") +
+            '<p class="dkt__meta">' + (f.date ? esc(f.date) + " · " : "") + "official record &#8599;</p>" +
             "</a>";
         }).join("") || '<p class="dkt__note">Nothing in the record matches.</p>';
       }
@@ -336,18 +333,8 @@
         var card = ev.target.closest(".dkt__card");
         if (!card) return;
         var f = FILES.find(function (x) { return x.id === card.getAttribute("data-id"); }) || {};
-        var base = { document_id: f.id, category: f.category, source_url: f.official_url, local_path: f.local_path || "" };
-        var src = ev.target.closest(".dkt__srclink");
-        if (src) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          track("docket_document_click", base);
-          track("docket_official_source_click", base);
-          window.open(src.getAttribute("data-url"), "_blank", "noopener");
-          return;
-        }
-        track("docket_document_click", base);
-        track(f.local_path ? "docket_local_copy_click" : "docket_official_source_click", base);
+        track("docket_document_click", { document_id: f.id, category: f.category, source_url: f.official_url });
+        track("docket_official_source_click", { document_id: f.id, category: f.category, source_url: f.official_url });
       });
       document.getElementById("dktTimeline").addEventListener("click", function (ev) {
         var li = ev.target.closest("li[data-t]");

@@ -97,7 +97,7 @@
 
     /* ---- drag with inertia ---- */
     var px = 0, py = 0, pinch0 = 0, fov0 = 0;
-    canvas.style.touchAction = "none";
+    canvas.style.touchAction = opts.touchAction || "none";
     canvas.addEventListener("pointerdown", function (e) {
       state.dragging = true; px = e.clientX; py = e.clientY;
       state.vyaw = 0; state.vpitch = 0;

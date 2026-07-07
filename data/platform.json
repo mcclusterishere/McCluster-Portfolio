@@ -132,14 +132,6 @@
           "poster": "assets/frames/docket_0050.jpg"
         },
         {
-          "id": "provenance",
-          "kind": "record",
-          "title": "Verify the Evidence",
-          "subtitle": "300 files, fingerprinted",
-          "page": "provenance.html",
-          "poster": "assets/frames/citations_0050.jpg"
-        },
-        {
           "id": "equity-uprise",
           "kind": "record",
           "title": "Equity Uprise",

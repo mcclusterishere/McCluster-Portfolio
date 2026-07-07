@@ -502,13 +502,47 @@
   }
   applyCommand(0);
 
-  ScrollTrigger.create({
+  /* ---- the 360 band: between the runway performance and the fly-through,
+         the real inside-the-jet film takes over. Horizontal drags + motion
+         look around; vertical swipes still scroll the page (touch-action). ---- */
+  var workVR = {
+    el: document.getElementById("workVR"),
+    viewer: null, live: false, band: [0.40, 0.64],
+  };
+  function workVRSet(p) {
+    if (!workVR.el || !window.VR360) return;
+    var on = p >= workVR.band[0] && p <= workVR.band[1];
+    if (on && !workVR.viewer) {
+      workVR.viewer = VR360.mount(document.getElementById("workVRCanvas"), {
+        src: "assets/video/vaunt-360.mp4", video: true,
+        yaw: -25, pitch: -18, touchAction: "pan-y",
+      });
+      var compass = document.getElementById("workVRCompass");
+      document.getElementById("workVRCanvas").addEventListener("pointerdown", function () {
+        compass.classList.add("is-gone");
+      });
+      document.getElementById("workVRGyro").addEventListener("click", function () {
+        workVR.viewer.enableGyro();
+        this.classList.add("is-on"); this.textContent = "Motion on";
+        if (window.MCC_TRACK) window.MCC_TRACK("vr_gyro_on", { page: "home" });
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("vr_inline_view", { page: "home" });
+    }
+    if (on !== workVR.live) {
+      workVR.live = on;
+      workVR.el.classList.toggle("is-live", on);
+      if (workVR.viewer) { on ? workVR.viewer.play() : workVR.viewer.pause(); }
+    }
+  }
+
+  var workST = ScrollTrigger.create({
     trigger: "#work",
     start: "top top",
     end: "bottom bottom",
     scrub: true,
     onUpdate: function (st) {
       applyCommand(st.progress);
+      workVRSet(st.progress);
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);
@@ -520,6 +554,13 @@
         PAR.set(parCmdPanels, 0);
       }
     },
+  });
+
+  // the escape hatch: one tap jumps past the 360 band to the end of the section
+  var workSkip = document.getElementById("workVRSkip");
+  if (workSkip) workSkip.addEventListener("click", function () {
+    lenis.scrollTo(workST.end + 2, { duration: 1.1 });
+    if (window.MCC_TRACK) window.MCC_TRACK("vr_skip", { page: "home" });
   });
 
   gsap.from(".command__head", {

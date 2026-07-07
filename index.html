@@ -263,6 +263,21 @@
         <canvas class="bg-canvas command__canvas" id="cmdCanvas5" aria-label="Vaunt: Matthew singing and Zakir on guitar on the runway, the camera lifting to the jet in flight"></canvas>
         <canvas class="bg-canvas command__canvas" id="cmdCanvas4" aria-label="Vaunt: fly-through from open sky past Matthew into the cockpit"></canvas>
         <div class="scrim scrim--deep" aria-hidden="true"></div>
+
+        <!-- the 360 band: between the runway performance and the fly-through,
+             the real inside-the-jet film takes over and you can look anywhere -->
+        <div class="workvr" id="workVR" aria-label="Inside the jet: drag left and right or use motion to look around; swipe up and down to keep scrolling">
+          <canvas class="workvr__canvas" id="workVRCanvas"></canvas>
+          <div class="workvr__compass" id="workVRCompass" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path d="M24 6v9M24 33v9M6 24h9M33 24h15" stroke-width="0"/><path d="M24 5v8M24 35v8M5 24h8M35 24h8" /><path d="M20 9l4-5 4 5M20 39l4 5 4-5M9 20l-5 4 5 4M39 20l5 4-5 4"/></svg>
+            <p><b>Drag left/right</b> to look around<br><b>Swipe up/down</b> to keep moving</p>
+          </div>
+          <div class="workvr__side">
+            <button class="workvr__btn" id="workVRGyro" type="button">Motion</button>
+            <button class="workvr__btn workvr__btn--skip" id="workVRSkip" type="button">Skip &#8595;</button>
+          </div>
+          <p class="workvr__tag">Inside the jet &middot; 360 &middot; live footage</p>
+        </div>
         <header class="command__head">
           <h2 class="section-title">Brand<br>Collabs</h2>
           <p class="work__answer">The campaigns and the spots.</p>
@@ -424,6 +439,7 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/lead.js?v=__STAMP__"></script>
+  <script src="js/vr360.js?v=__STAMP__"></script>
   <script src="vendor/lenis.min.js?v=__STAMP__"></script>
   <script src="vendor/gsap.min.js?v=__STAMP__"></script>
   <script src="vendor/ScrollTrigger.min.js?v=__STAMP__"></script>

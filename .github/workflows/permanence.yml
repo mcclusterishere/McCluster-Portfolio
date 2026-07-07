@@ -19,9 +19,9 @@ jobs:
       - name: Request Wayback snapshots of the key pages
         run: |
           BASE="https://mcclusterishere.github.io/McCluster-Portfolio"
-          for path in "/" "/resume.html" "/docket-516.html" "/provenance.html" \
+          for path in "/" "/resume.html" "/docket-516.html" \
                       "/psychology-markers.html" "/hire.html" "/offer.html" \
-                      "/ecosystem.html" "/data/evidence-manifest.json"; do
+                      "/ecosystem.html"; do
             echo "archiving $BASE$path"
             curl -sS -m 60 -o /dev/null -w "%{http_code}\n" "https://web.archive.org/save/$BASE$path" || true
             sleep 20
