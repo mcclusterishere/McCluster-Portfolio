@@ -1806,6 +1806,40 @@ a { color: inherit; text-decoration: none; }
 .command__logo--transparent { background: transparent; padding: 0; border-radius: 0; }
 
 /* ============ Equity Uprise platform CTAs ============ */
+/* the two portals: terminal (computer) left, evidence room (safe) right */
+.eu-portals {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem 1.5rem; flex-wrap: wrap; margin-top: 1rem; max-width: 46rem; pointer-events: auto;
+}
+.eu-portal {
+  display: inline-flex; align-items: center; gap: 0.55em; text-decoration: none;
+  color: var(--cream); font-family: var(--display); font-weight: 400;
+  font-size: clamp(1rem, 2.6vw, 1.35rem); letter-spacing: 0.03em; text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(229, 56, 59, 0.55), 0 0 26px rgba(229, 56, 59, 0.28);
+  transition: color 0.25s, text-shadow 0.25s, transform 0.25s;
+  animation: euPortalGlow 2.2s ease-in-out infinite;
+}
+.eu-portal--safe { flex-direction: row-reverse; }
+.eu-portal:hover { color: #fff; text-shadow: 0 0 20px rgba(229, 56, 59, 0.95), 0 0 40px rgba(229, 56, 59, 0.5); transform: scale(1.04); }
+.eu-portal__ic {
+  width: clamp(1.7rem, 5.5vw, 2.4rem); height: clamp(1.7rem, 5.5vw, 2.4rem);
+  color: var(--ruby-hot); flex: none;
+  filter: drop-shadow(0 0 6px rgba(229, 56, 59, 0.85));
+  animation: euPortalFlash 1.3s steps(1, end) infinite;
+}
+.eu-portal--safe .eu-portal__ic { animation-delay: 0.65s; }
+@keyframes euPortalFlash {
+  0%, 54% { opacity: 1; filter: drop-shadow(0 0 9px rgba(229, 56, 59, 0.95)); }
+  55%, 100% { opacity: 0.4; filter: drop-shadow(0 0 2px rgba(229, 56, 59, 0.35)); }
+}
+@keyframes euPortalGlow {
+  0%, 100% { text-shadow: 0 0 12px rgba(229, 56, 59, 0.5), 0 0 26px rgba(229, 56, 59, 0.22); }
+  50% { text-shadow: 0 0 18px rgba(229, 56, 59, 0.9), 0 0 38px rgba(229, 56, 59, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eu-portal, .eu-portal__ic { animation: none; }
+}
+
 .eu-ctas { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.9rem; pointer-events: auto; }
 .eu-ctas a {
   font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
