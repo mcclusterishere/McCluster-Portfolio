@@ -62,7 +62,7 @@
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
     var state = {
-      yaw: 0, pitch: 0, fov: 75 * Math.PI / 180,
+      yaw: (opts.yaw || 0) * Math.PI / 180, pitch: (opts.pitch || 0) * Math.PI / 180, fov: 75 * Math.PI / 180,
       vyaw: 0, vpitch: 0, dragging: false,
       src: null, isVideo: !!opts.video, ready: false,
       gyro: false, gyawBase: null,

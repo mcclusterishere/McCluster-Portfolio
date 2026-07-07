@@ -128,14 +128,15 @@
          { src: "assets/video/vaunt-360.mp4", video: true, spots: SPOTS } */
       var SPOTS = [
         // yaw/pitch in degrees; add from/to (seconds) to time-gate a tag on video
-        { yaw: 10, pitch: -4, label: "The campaign track", href: "song-vaunt.html" },
-        { yaw: -13, pitch: -14, label: "Book this energy", href: "hire.html" },
-        { yaw: 178, pitch: 4, label: "The whole ecosystem", href: "ecosystem.html" },
+        { yaw: -25, pitch: -42, label: "The six-string · hear Vaunt", href: "song-vaunt.html" },
+        { yaw: 155, pitch: -38, label: "The artist · book the energy", href: "hire.html" },
+        { yaw: 79, pitch: -8, label: "The cockpit · the ecosystem", href: "ecosystem.html" },
       ];
-      var IS_VIDEO = false; // flips to true with the real 360 MP4
+      var IS_VIDEO = true; // the real inside-the-jet 360 film
       var viewer = VR360.mount(document.getElementById("vrCanvas"), {
-        src: "assets/img/vr-test-equirect.jpg",
+        src: "assets/video/vaunt-360.mp4",
         video: IS_VIDEO,
+        yaw: -25, pitch: -20, // open facing the six-string
         spots: SPOTS,
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });
