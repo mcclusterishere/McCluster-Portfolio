@@ -2931,3 +2931,36 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
   .wantsite__glow, .wantsite__l2, .wantsite__btn, .wantsite__btn-arrow, .wantsite__btn-shine, .wantsite__spark, .wantsite__pulse { animation: none; }
   .wantsite__l2 { color: var(--ruby-hot); }
 }
+
+/* ============ app-style bottom tab bar ============ */
+:root { --appbar-h: 3.7rem; }
+.appbar {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
+  z-index: 200; width: 100%; max-width: 34rem;
+  height: calc(var(--appbar-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex; align-items: stretch;
+  background: rgba(10, 8, 7, 0.72); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(244, 239, 230, 0.12);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+}
+.appbar__tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  text-decoration: none; color: var(--cream-dim);
+  font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: color 0.2s, transform 0.2s;
+}
+.appbar__tab svg { width: 1.35rem; height: 1.35rem; stroke: currentColor; stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.appbar__tab:active { transform: scale(0.92); }
+.appbar__tab:hover, .appbar__tab.is-active { color: var(--ruby-hot); }
+.appbar__tab.is-active svg { filter: drop-shadow(0 0 6px rgba(229, 56, 59, 0.7)); }
+
+/* clear the bar: lift bottom-anchored immersive content + page chrome above it */
+.antiabout { bottom: calc(clamp(2rem, 7vh, 4rem) + var(--appbar-h)); }
+.finale { padding-bottom: calc(6rem + var(--appbar-h)); }
+.site-foot { padding-bottom: calc(2.5rem + var(--appbar-h)); }
+.float-pause { bottom: auto; }
+@media (min-width: 900px) {
+  /* on wide screens keep it app-like but out of the way */
+  .appbar { max-width: 30rem; border-radius: 18px 18px 0 0; }
+}
