@@ -19,19 +19,20 @@
     </nav>
   </header>
   <main>
-    <section class="pmk">
+    <section class="pmk pmk--split">
+      <div class="pmk__field" aria-hidden="true"></div>
       <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The Identity Markers</p>
-      <h1 class="songhero__title" style="text-align:left">Two Sides<br>of You</h1>
+      <h1 class="songhero__title pmk__title" style="text-align:left"><span class="pmk__t-a">Two Sides</span><br><span class="pmk__t-b">of You</span></h1>
       <p class="songhero__sub" style="text-align:left;max-width:58ch">
-        Every one of these is a saying you already know, paired with its opposite. Tap one on a lyric
-        page and it flips to the other side. No right answer, no verdict. You just land where you land,
-        and the flip is always one tap away.
+        Nine sayings you grew up on, each chained to its exact opposite. Both are true, both are traps,
+        and you slide between them all day without noticing. Tap any pair for the full dossier: what
+        each side costs, where it shows up in the bars, and a one-day experiment to taste the flip.
       </p>
 
       <!-- the duality quiz: nine sayings vs their opposites; result is your own map -->
       <div class="dq" id="quiz" aria-label="Which side are you on — the duality quiz"></div>
 
-      <p class="pmk__gridlead">The full set. Tap any one for both sides of the coin.</p>
+      <p class="pmk__gridlead">The full set. Blue is one pole, green is its flip. If you've taken the quiz, your side is marked.</p>
       <div class="pmk__grid" id="pmkGrid"></div>
       <div class="pmk__consent">
         <h3>Just a mirror</h3>
@@ -59,35 +60,62 @@
       function ic(id, style) {
         return '<svg class="psy__ic" aria-hidden="true"' + (style ? ' style="' + style + '"' : "") + '><use href="assets/icons/markers.svg#mk-' + id + '"></use></svg>';
       }
+      // your quiz answers, if you've taken it (device-local only)
+      var mine = {};
+      try { mine = JSON.parse(localStorage.getItem("mcc_duality_v1")) || {}; } catch (e) {}
+      function sideOf(id) { return mine[id] == null ? null : (mine[id] < 0 ? "a" : "b"); }
+
       fetch("data/psychology-markers.json", { cache: "no-cache" })
         .then(function (r) { return r.json(); })
         .then(function (data) {
           var single = data.markers.find(function (m) { return m.id === want; });
 
           if (single) {
-            // this marker's own page: both sides of the coin
+            // the pair's own dossier: both sides, the cost, the bar, the flip experiment
             document.title = single.name + " ↔ " + single.inverse.name + " · McCluster";
+            var side = sideOf(single.id);
             var hero = document.querySelector(".pmk");
             hero.innerHTML =
-              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Identity marker</p>' +
-              '<div class="bexp__hero">' + ic(single.id, "width:4.2em;height:4.2em;color:var(--ruby-hot)") +
-              "<div><p class='bexp__section'>One side, and its flip</p><h1 style='font-family:var(--display);font-size:clamp(2rem,5.5vw,3.6rem);text-transform:uppercase;line-height:1'>" + single.name + "</h1></div></div>" +
-              '<div class="bexp__panel"><h3>' + single.name + "</h3><p>" + single.short + "</p><p style='margin-top:0.6rem;color:var(--cream-dim)'>" + single.interpretation + "</p></div>" +
-              "<div class='bexp__panel' style='border-color:rgba(120,200,150,0.4)'><h3>Flip side · " + single.inverse.name + "</h3><p>" + single.inverse.short + "</p></div>" +
-              "<div class='pmk__consent'><h3>Just a mirror</h3><p>A common saying and its opposite, not a diagnosis. Nothing is stored or tied to you, and you can sit on either side.</p></div>" +
+              '<div class="pmk__field" aria-hidden="true"></div>' +
+              '<p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Identity marker · a pair</p>' +
+              '<div class="pmkd__head">' +
+                '<span class="pmkd__ics">' + ic(single.id, "width:3.2em;height:3.2em;color:#7fa0ff") +
+                ic(single.id, "width:3.2em;height:3.2em;color:#6fe0a0;transform:scaleX(-1)") + "</span>" +
+                "<h1 class='pmkd__h'>" + single.name + ' <i class="pmkd__vs">&#8646;</i> ' + single.inverse.name + "</h1>" +
+              "</div>" +
+              '<div class="pmkd__grid">' +
+                '<div class="pmkd__panel pmkd__panel--a">' +
+                  (side === "a" ? '<span class="pmkd__you">Your side today</span>' : "") +
+                  "<h3>" + single.name + "</h3><p>" + single.short + "</p>" +
+                  "<p class='pmkd__dim'>" + single.interpretation + "</p>" +
+                  '<div class="pmkd__try"><b>Taste the flip</b>' + single.challenge + "</div>" +
+                "</div>" +
+                '<div class="pmkd__panel pmkd__panel--b">' +
+                  (side === "b" ? '<span class="pmkd__you">Your side today</span>' : "") +
+                  "<h3>" + single.inverse.name + "</h3><p>" + single.inverse.short + "</p>" +
+                  '<div class="pmkd__try"><b>Taste the flip</b>' + single.inverse.challenge + "</div>" +
+                "</div>" +
+              "</div>" +
+              (single.bar ?
+                '<a class="pmkd__bar" href="' + single.bar.href + '"><span>Hear it in the bars</span>' +
+                "<q>" + single.bar.line + "</q><i>" + single.bar.song + " &#8594;</i></a>" : "") +
+              "<div class='pmk__consent'><h3>Just a mirror</h3><p>A common saying and its opposite, not a diagnosis. Nothing is stored or tied to you, and you can sit on either side. Both panels are true; the power is knowing which one is driving today.</p></div>" +
               '<div class="finale__actions" style="margin-top:2rem">' +
-              '<a class="btn btn--ruby" href="song-antisocial.html">Hear it in the bars</a>' +
-              '<a class="btn btn--ghost" href="psychology-markers.html">All the markers</a></div>';
+              '<a class="btn btn--ruby" href="psychology-markers.html#quiz">' + (side ? "Retake the quiz" : "Which side are you? Take the quiz") + "</a>" +
+              '<a class="btn btn--ghost" href="psychology-markers.html">All nine pairs</a></div>';
             track("marker_page_view", { marker_id: single.id, page: "psychology-markers" });
             return;
           }
 
           grid.innerHTML = data.markers.map(function (m) {
-            return '<a class="pmk__card" href="psychology-markers.html?marker=' + m.id + '" style="display:block;color:inherit">' +
-              ic(m.id) +
-              "<h3>" + m.name + "</h3>" +
+            var side = sideOf(m.id);
+            return '<a class="pmk__card pmk__card--duo" href="psychology-markers.html?marker=' + m.id + '">' +
+              '<span class="pmk__row pmk__row--a">' + ic(m.id) + "<b>" + m.name + "</b>" +
+                (side === "a" ? '<i class="pmk__you">you</i>' : "") + "</span>" +
+              '<span class="pmk__row pmk__row--b">' + ic(m.id, "transform:scaleX(-1)") + "<b>" + m.inverse.name + "</b>" +
+                (side === "b" ? '<i class="pmk__you">you</i>' : "") + "</span>" +
               "<p>" + m.short + "</p>" +
-              '<p class="pmk__id" style="margin-top:0.6rem;color:var(--ruby-hot)">↔ ' + m.inverse.name + "</p>" +
+              '<span class="pmk__open">Open the pair &#8594;</span>' +
               "</a>";
           }).join("");
           track("marker_registry_view", { page: "psychology-markers", markers: data.markers.length });

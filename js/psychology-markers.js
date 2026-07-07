@@ -49,7 +49,9 @@
       '<div class="psycard__ichead">' + icon(d.id, "psy__ic" + (flipped ? " is-flipped" : "")) + "<h4>" + side.name + "</h4></div>" +
       "<p class='psycard__body'>" + side.short + "</p>" +
       (flipped ? "" : "<p class='psycard__body psycard__body--dim'>" + d.interpretation + "</p>") +
+      (side.challenge ? "<p class='psycard__body psycard__body--dim'><b style='color:var(--ruby-hot)'>Taste the flip:</b> " + side.challenge + "</p>" : "") +
       '<button class="psycard__deep" type="button">Flip it ↔ ' + otherName + "</button>" +
+      '<a class="psycard__foot" href="psychology-markers.html?marker=' + d.id + '" style="display:block;color:var(--ruby-hot)">The full pair &#8594;</a>' +
       '<p class="psycard__foot">' + CONSENT.footer + "</p>";
     card.querySelector(".psycard__x").addEventListener("click", function () { close("x"); });
     card.querySelector(".psycard__deep").addEventListener("click", function (ev) {

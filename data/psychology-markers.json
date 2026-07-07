@@ -9,63 +9,153 @@
       "name": "Force of habit",
       "short": "You do it before you decide to. The phone, the snack, the same reply. Pure autopilot.",
       "interpretation": "A groove worn so deep you don't feel yourself fall in. Most of the day runs on it.",
-      "inverse": { "name": "Look before you leap", "short": "You check the drop before you jump. A beat of thought before the move." }
+      "inverse": {
+        "name": "Look before you leap",
+        "short": "You check the drop before you jump. A beat of thought before the move.",
+        "challenge": "Pick one tiny thing you do daily and do it on purpose, same time, all week. Habit as a tool, not a trap."
+      },
+      "challenge": "One hour today, phone in the other room. Notice what your hands reach for.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "Scroll slow homie…",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "greener",
       "name": "The grass is always greener",
       "short": "Everyone else's life looks better from where you're standing. Yours comes up short.",
       "interpretation": "The oldest trap there is, and the feed made it a 24/7 thing: your ordinary Tuesday against everyone's highlight reel.",
-      "inverse": { "name": "Count your blessings", "short": "You look at what you've actually got, and it's usually more than you thought." }
+      "inverse": {
+        "name": "Count your blessings",
+        "short": "You look at what you've actually got, and it's usually more than you thought.",
+        "challenge": "Let yourself want something big today, out loud. Wanting more isn't ingratitude."
+      },
+      "challenge": "Write down three things you already have that last-year you was praying for.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "to places I wanna go to",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "joneses",
       "name": "Keeping up with the Joneses",
       "short": "You measure your worth by what the people around you have and do.",
       "interpretation": "Status is a moving target. The second you catch up, the finish line moves again.",
-      "inverse": { "name": "March to your own beat", "short": "You set your own pace and don't much care who's watching." }
+      "inverse": {
+        "name": "March to your own beat",
+        "short": "You set your own pace and don't much care who's watching.",
+        "challenge": "Ask somebody you respect how they got the thing you admire. Studying isn't copying."
+      },
+      "challenge": "Mute one account that makes you spend. Just one, just a week.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "your hobby into an occupation",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "tomorrow",
       "name": "Tomorrow never comes",
       "short": "You'll start Monday. Then next Monday. The plan is always one day out.",
       "interpretation": "Putting it off feels like rest, but it just hands the weight to a version of you that hasn't shown up yet.",
-      "inverse": { "name": "No time like the present", "short": "You start now, small and imperfect, because now is the only time you actually have." }
+      "inverse": {
+        "name": "No time like the present",
+        "short": "You start now, small and imperfect, because now is the only time you actually have.",
+        "challenge": "Pick one thing you keep forcing at midnight and give it a real deadline instead."
+      },
+      "challenge": "Do the first five minutes of the thing tonight. Just five.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "ion no, I'm no prophet, I just make them",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "rug",
       "name": "Sweep it under the rug",
       "short": "If you don't look at it, maybe it isn't there. You bury the hard thing and scroll past.",
       "interpretation": "Avoidance buys ten quiet minutes and charges interest. The pile under the rug only grows.",
-      "inverse": { "name": "Face the music", "short": "You turn toward the hard thing and deal with it while it's still small." }
+      "inverse": {
+        "name": "Face the music",
+        "short": "You turn toward the hard thing and deal with it while it's still small.",
+        "challenge": "Pick one battle that isn't yours this week and let it stay under the rug. Not every mess is your mess."
+      },
+      "challenge": "Say the hard thing out loud once today, even if it's just to yourself in the car.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "But in truth and reality…",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "safe",
       "name": "Better safe than sorry",
       "short": "You'd rather protect what you have than risk it for what you could get.",
       "interpretation": "Caution keeps you whole and keeps you small. The safe road rarely goes anywhere new.",
-      "inverse": { "name": "Nothing ventured, nothing gained", "short": "You take the swing, because the only guaranteed loss is the shot you never take." }
+      "inverse": {
+        "name": "Nothing ventured, nothing gained",
+        "short": "You take the swing, because the only guaranteed loss is the shot you never take.",
+        "challenge": "Before the next leap, sleep on it one night. The shot will still be there tomorrow."
+      },
+      "challenge": "Take one small swing this week you'd normally talk yourself out of.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "(sounds like you… really know you)",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "bottle",
       "name": "Bottling it up",
       "short": "You keep it in, cork it tight, and tell everyone you're fine.",
       "interpretation": "Feelings don't evaporate when you cap them. They build pressure until something pops.",
-      "inverse": { "name": "Wear your heart on your sleeve", "short": "You show what you feel as you feel it. Nothing to guess, nothing to leak." }
+      "inverse": {
+        "name": "Wear your heart on your sleeve",
+        "short": "You show what you feel as you feel it. Nothing to guess, nothing to leak.",
+        "challenge": "Hold one reaction for an hour before you send it. See if it still needs saying."
+      },
+      "challenge": "Tell one person one true thing about how you're actually doing.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "but I'm never really social",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "moderation",
       "name": "Everything in moderation",
       "short": "A little of this, a little of that. You keep the dial in the middle.",
       "interpretation": "Balance keeps you steady, but the middle rarely makes history. Some things deserve the whole heart.",
-      "inverse": { "name": "Go big or go home", "short": "You pour it all in or you don't bother. Half-measures aren't your thing." }
+      "inverse": {
+        "name": "Go big or go home",
+        "short": "You pour it all in or you don't bother. Half-measures aren't your thing.",
+        "challenge": "Take the thing you binge and ration it this week. See if it hits different in small doses."
+      },
+      "challenge": "Take the thing you love most and give it one whole day. No splitting it.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "And show you the ropes before you get roped in",
+        "href": "song-antisocial.html"
+      }
     },
     {
       "id": "birds",
       "name": "Birds of a feather flock together",
       "short": "You gravitate to people who think, talk, and move like you.",
       "interpretation": "Same-minded company feels like home, but an echo chamber is still a cage with nice wallpaper.",
-      "inverse": { "name": "Opposites attract", "short": "You're drawn to what you're not, the people who stretch you instead of mirror you." }
+      "inverse": {
+        "name": "Opposites attract",
+        "short": "You're drawn to what you're not, the people who stretch you instead of mirror you.",
+        "challenge": "Call the friend who's most like you. Sameness is rest, and you're allowed to rest."
+      },
+      "challenge": "Have one real conversation this week with somebody who sees it completely differently.",
+      "bar": {
+        "song": "Antisocial",
+        "line": "as long as you believe it",
+        "href": "song-antisocial.html"
+      }
     }
   ]
 }

@@ -117,6 +117,10 @@
     var balanced = Math.abs(sum) <= 1;
     var leadSay = lead ? (sideOf(lead) === "b" ? lead.poleB : lead.poleA) : "";
 
+    var aCount = 0, bCount = 0;
+    DATA.questions.forEach(function (q) { (answers[q.id] < 0 ? aCount++ : bCount++); });
+    var needle = ((sum / (2 * DATA.questions.length)) + 1) / 2; // 0 = all one way, 1 = all the other
+
     var head =
       '<div class="dq__reshead">' +
         '<p class="dq__reskick">Your two sides</p>' +
@@ -125,6 +129,10 @@
           : '<p class="dq__resleadin">' + esc(DATA.results.leadIn) + "</p>" +
             '<h2 class="dq__resh">' + esc(leadSay) + "</h2>" +
             '<p class="dq__ressub">' + esc(DATA.results.sub) + "</p>") +
+        '<div class="dq__meter" aria-label="Your balance across the nine pairs">' +
+          '<i class="dq__needle" style="left:' + (needle * 100).toFixed(1) + '%"></i>' +
+        "</div>" +
+        '<p class="dq__meterkey"><span>' + aCount + " on the blue side</span><span>" + bCount + " on the green side</span></p>" +
       "</div>";
 
     var grid = '<div class="dq__resgrid">' + DATA.questions.map(function (q) {
