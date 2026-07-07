@@ -840,6 +840,14 @@
         btn.addEventListener("click", function () {
           if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: id === "subscribeBtn" ? "subscribe-home" : "book-call-home", page: "home" });
         });
+      } else if (id === "bookCallBtn") {
+        // no calendar yet: a working booking email beats a dead button
+        btn.href = "mailto:matthew@mccluster.org?subject=" +
+          encodeURIComponent("Book a Paid Call — McCluster") +
+          "&body=" + encodeURIComponent("I'd like to book a paid discovery call. Here's what I'm looking to do:\n\n");
+        btn.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: "book-call-home", page: "home" });
+        });
       } else {
         btn.classList.add("is-pending");
         btn.addEventListener("click", function (e) {

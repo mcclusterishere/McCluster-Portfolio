@@ -3407,6 +3407,14 @@ body.has-appbar { padding-bottom: calc(var(--appbar-h) + env(safe-area-inset-bot
   border-top: 1px solid rgba(244, 239, 230, 0.12);
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
 }
+/* wider than a phone: the strip becomes a floating dock */
+@media (min-width: 640px) {
+  .appbar {
+    bottom: 0.7rem; height: var(--appbar-h); padding-bottom: 0;
+    border-radius: 16px; border: 1px solid rgba(244, 239, 230, 0.14);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55);
+  }
+}
 .appbar__tab {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   text-decoration: none; color: var(--cream-dim);
