@@ -105,12 +105,8 @@
     keynote: createSequence("loadoutCanvas", null),
     vauntlive: createSequence("cmdCanvas5", null),
     uprise: createSequence("cmdCanvas0", null),
-    prim3: createSequence("cmdCanvas2", null),
-    study: createSequence("cmdCanvas3", null),
     vaunt: createSequence("cmdCanvas4", null),
     whip: createSequence("cmdCanvas6", null),
-    citations: createSequence("cmdCanvas7", null),
-    church: createSequence("cmdCanvas9", null),
     bussalick: createSequence("cmdCanvas8", null),
   };
 
@@ -274,8 +270,7 @@
           ["pillarsbg", "nightscroll"],
         ]);
         loadNear("#work", [
-          ["uprise", "uprise"], ["church", "church"], ["citations", "citations"], ["prim3", "prim3"],
-          ["study", "study"], ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
+          ["uprise", "uprise"], ["vauntlive", "vauntlive"], ["vaunt", "vaunt"],
           ["bussalick", "bussalick"],
           ["whip", m.whip ? "whip" : "street"],
         ]);
@@ -430,23 +425,18 @@
   // fraction of the film each band scrubs) so a two-part project plays as
   // one continuous film with no repeated footage.
   var cmdScenes = [
-    // the uprise film is equity (frames 1-101) + docket slam (frames 102-202):
-    // Event Production scrubs only the booth half, Policy Change only the slam
-    { seq: "uprise", f0: 0, f1: 0.4975, speed: 1 },
-    { seq: "uprise", f0: 0.5025, f1: 1, speed: 1 },
-    { seq: "church", f0: 0, f1: 1, speed: 1 },     // the Fellowship: the community at the church
-    { seq: "citations", f0: 0, f1: 1, speed: 1 },  // the citations on the podium, empty church
-    { seq: "prim3", f0: 0, f1: 1, speed: 1 },
-    { seq: "study", f0: 0, f1: 1, speed: 1 },
+    // Policy Fellowship: the full Equity Uprise film — the rally engineered
+    // from the booth, then the case file put on the record
+    { seq: "uprise", f0: 0, f1: 1, speed: 1 },
     { seq: "vauntlive", f0: 0, f1: 1, speed: 1 },    // runway performance up to the sky...
     { seq: "vaunt", f0: 0, f1: 1, speed: 1.75 },     // ...into the cabin fly-through
     { seq: "bussalick", f0: 0, f1: 1, speed: 1.75 },  // Dealer Plates video: the dash — fast scrub, whole clip early
     { seq: "whip", f0: 0, f1: 1, speed: 1 },         // Whip Equipped mini-series
   ];
-  // six scenes, three PROJECTS: the counter and numbering track projects
-  var cmdProjects = [1, 1, 1, 1, 2, 2, 3, 3, 4, 4];
-  var cmdProjectCount = 4;
-  var cmdSceneTracks = ["environmental-injustice", "environmental-injustice", "environmental-injustice", "environmental-injustice", "gotwifi", "gotwifi", "vaunt", "vaunt", "dealerplates", "dealerplates"];
+  // five scenes, three PROJECTS: the counter and numbering track projects
+  var cmdProjects = [1, 2, 2, 3, 3];
+  var cmdProjectCount = 3;
+  var cmdSceneTracks = ["environmental-injustice", "vaunt", "vaunt", "dealerplates", "dealerplates"];
   var cmdPanels = gsap.utils.toArray("#work .command__panel");
   var cmdCount = document.getElementById("cmdCount");
   var CMD_FADE = 0.03; // narrower bands with six scenes need tighter crossfades
