@@ -119,38 +119,119 @@ a { color: inherit; text-decoration: none; }
   color: var(--cream-dim);
 }
 
-/* ---------- the breathing cue: every loading screen guides a physiological sigh ---------- */
+/* ---------- the mindfulness cue: every loading screen teaches its own exercise ---------- */
 .zencue {
-  margin: 1.9rem auto 0; max-width: 30ch; display: flex; flex-direction: column;
-  align-items: center; gap: 0.95rem; opacity: 0; animation: zenIn 1.1s ease 0.4s forwards;
+  margin: 2rem auto 0; max-width: 42ch; display: flex; flex-direction: column;
+  align-items: center; gap: 1.05rem; padding: 0 1rem;
+  opacity: 0; animation: zenIn 1.1s ease 0.4s forwards;
 }
+.zencue__title {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(1.1rem, 3.6vw, 1.4rem); letter-spacing: 0.1em; color: var(--ruby-hot);
+}
+.zencue__msg {
+  font-size: clamp(1rem, 3.1vw, 1.2rem); line-height: 1.7; letter-spacing: 0.015em;
+  color: rgba(244, 239, 230, 0.94); text-align: center;
+}
+@keyframes zenIn { to { opacity: 1; } }
+
+/* 1 · the physiological sigh: two inhales up, one long exhale down */
 .zencue__orb {
-  width: 34px; height: 34px; border-radius: 50%;
-  border: 1px solid rgba(244, 239, 230, 0.45); position: relative;
-  box-shadow: 0 0 24px rgba(244, 239, 230, 0.12);
-  /* paced to the sigh: two inhales up, then one long exhale down */
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  border: 1.5px solid rgba(244, 239, 230, 0.5); position: relative;
+  box-shadow: 0 0 24px rgba(244, 239, 230, 0.14);
   animation: zenBreath 11s ease-in-out infinite;
 }
 .zencue__orb::after {
   content: ""; position: absolute; inset: 30%; border-radius: 50%;
-  background: rgba(244, 239, 230, 0.55);
+  background: rgba(244, 239, 230, 0.6);
 }
-.zencue__msg {
-  font-size: 0.68rem; line-height: 1.85; letter-spacing: 0.05em;
-  color: var(--cream-dim); text-align: center;
-}
-@keyframes zenIn { to { opacity: 1; } }
 @keyframes zenBreath {
-  0%   { transform: scale(0.8); opacity: 0.5; }   /* empty */
-  18%  { transform: scale(1.32); opacity: 1; }    /* first inhale */
-  30%  { transform: scale(1.2); opacity: 0.92; }  /* brief settle */
-  42%  { transform: scale(1.5); opacity: 1; }     /* top-up inhale */
-  50%  { transform: scale(1.5); opacity: 1; }     /* hold the top */
-  100% { transform: scale(0.8); opacity: 0.5; }   /* long exhale */
+  0%   { transform: scale(0.8); opacity: 0.5; }
+  18%  { transform: scale(1.32); opacity: 1; }
+  30%  { transform: scale(1.2); opacity: 0.92; }
+  42%  { transform: scale(1.5); opacity: 1; }
+  50%  { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
 }
+
+/* 2 · box breathing: the dot walks the square, 4 counts a side */
+.zenbox { position: relative; width: 52px; height: 52px; flex: none;
+  border: 1.5px solid rgba(244, 239, 230, 0.5); border-radius: 8px;
+  box-shadow: 0 0 20px rgba(244, 239, 230, 0.1); }
+.zenbox i { position: absolute; top: -5px; left: -5px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ruby-hot); box-shadow: 0 0 10px rgba(229, 56, 59, 0.9);
+  animation: zenBoxDot 16s linear infinite; }
+@keyframes zenBoxDot {
+  0% { transform: translate(0, 52px); }      /* bottom-left */
+  25% { transform: translate(0, 0); }        /* in: climb */
+  50% { transform: translate(52px, 0); }     /* hold: across */
+  75% { transform: translate(52px, 52px); }  /* out: descend */
+  100% { transform: translate(0, 52px); }    /* hold: back */
+}
+
+/* 3 · 4-7-8: grow 4, stay full 7, empty slow for 8 */
+.zen478 {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  border: 1.5px solid rgba(244, 239, 230, 0.5); position: relative;
+  box-shadow: 0 0 24px rgba(244, 239, 230, 0.14);
+  animation: zen478 19s ease-in-out infinite;
+}
+.zen478::after { content: ""; position: absolute; inset: 26%; border-radius: 50%; background: rgba(244, 239, 230, 0.6); }
+@keyframes zen478 {
+  0% { transform: scale(0.72); opacity: 0.5; }
+  21% { transform: scale(1.45); opacity: 1; }   /* in for 4 */
+  58% { transform: scale(1.45); opacity: 1; }   /* hold for 7 */
+  100% { transform: scale(0.72); opacity: 0.5; } /* out for 8 */
+}
+
+/* 4 · even breathing: five in, five out, smooth */
+.zeneven {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  border: 1.5px solid rgba(244, 239, 230, 0.5); position: relative;
+  box-shadow: 0 0 24px rgba(244, 239, 230, 0.14);
+  animation: zenEven 10s ease-in-out infinite;
+}
+.zeneven::after { content: ""; position: absolute; inset: 28%; border-radius: 50%; background: rgba(244, 239, 230, 0.6); }
+@keyframes zenEven { 0%, 100% { transform: scale(0.8); opacity: 0.55; } 50% { transform: scale(1.42); opacity: 1; } }
+
+/* 5 · 5-4-3-2-1 grounding: one dot per sense, lighting in turn */
+.zendots { display: flex; gap: 10px; flex: none; }
+.zendots i { width: 11px; height: 11px; border-radius: 50%; background: rgba(244, 239, 230, 0.28);
+  animation: zenDot 10s ease-in-out infinite; }
+.zendots i:nth-child(2) { animation-delay: 2s; }
+.zendots i:nth-child(3) { animation-delay: 4s; }
+.zendots i:nth-child(4) { animation-delay: 6s; }
+.zendots i:nth-child(5) { animation-delay: 8s; }
+@keyframes zenDot {
+  0%, 24%, 100% { background: rgba(244, 239, 230, 0.28); transform: scale(1); box-shadow: none; }
+  6% { background: var(--ruby-hot); transform: scale(1.5); box-shadow: 0 0 12px rgba(229, 56, 59, 0.9); }
+  18% { background: rgba(244, 239, 230, 0.28); transform: scale(1); }
+}
+
+/* 6 · the body scan: light sweeps from the head down */
+.zensweep { position: relative; width: 26px; height: 58px; flex: none;
+  border: 1.5px solid rgba(244, 239, 230, 0.5); border-radius: 13px; overflow: hidden;
+  box-shadow: 0 0 20px rgba(244, 239, 230, 0.1); }
+.zensweep i { position: absolute; left: 0; right: 0; top: -30%; height: 30%;
+  background: linear-gradient(180deg, transparent, rgba(229, 56, 59, 0.85), transparent);
+  animation: zenSweep 8s ease-in-out infinite; }
+@keyframes zenSweep { 0% { top: -30%; } 70%, 100% { top: 100%; } }
+
+/* 7 · the release: rings let go of the center */
+.zenrings { position: relative; width: 48px; height: 48px; flex: none; }
+.zenrings::before, .zenrings::after {
+  content: ""; position: absolute; inset: 30%; border-radius: 50%;
+  border: 1.5px solid rgba(229, 56, 59, 0.8);
+  animation: zenRing 6s ease-out infinite;
+}
+.zenrings::after { animation-delay: 3s; }
+.zenrings i { position: absolute; inset: 38%; border-radius: 50%; background: rgba(244, 239, 230, 0.6); }
+@keyframes zenRing { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.1); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   .zencue { animation: none; opacity: 1; }
-  .zencue__orb { animation: none; transform: scale(1.15); }
+  .zencue__orb, .zenbox i, .zen478, .zeneven, .zendots i, .zensweep i, .zenrings::before, .zenrings::after { animation: none; }
 }
 
 /* ---------- grain ---------- */

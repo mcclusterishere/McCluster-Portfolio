@@ -19,6 +19,50 @@
 
   function pad4(n) { return String(n).padStart(4, "0"); }
 
+  /* ---------- every song's loading screen teaches its own mindfulness exercise ---------- */
+  function zenCue(key) {
+    var Z = {
+      "antisocial": {
+        anim: '<span class="zenbox" aria-hidden="true"><i></i></span>',
+        title: "Box Breathing",
+        msg: "Follow the dot around the square. Breathe in for 4 counts as it climbs, hold for 4 across the top, breathe out for 4 coming down, hold for 4 along the bottom. Four even sides, a calm square drawn around a racing mind. It's what people use before the biggest moments of their lives.",
+      },
+      "whodidtheshoot": {
+        anim: '<span class="zendots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>',
+        title: "5 · 4 · 3 · 2 · 1 Grounding",
+        msg: "Each dot is one of your senses. While this loads, look up and name five things you can see, four you can feel, three you can hear, two you can smell, one you can taste. It walks your mind out of the scroll and back into the room you're actually standing in.",
+      },
+      "gotwifi": {
+        anim: '<span class="zen478" aria-hidden="true"></span>',
+        title: "The 4 · 7 · 8 Breath",
+        msg: "Breathe in through your nose for 4 counts while the circle grows. Hold for 7 while it stays full. Let it out slow through your mouth for 8 as it empties. That long exhale is the off switch for a racing mind. Three rounds feels like a reboot.",
+      },
+      "vaunt": {
+        anim: '<span class="zeneven" aria-hidden="true"></span>',
+        title: "Even Breathing",
+        msg: "Match the circle. In for 5 counts as it fills, out for 5 as it settles. No holds, no forcing, just smooth and level. A minute of this steadies your heartbeat the way a metronome steadies a song.",
+      },
+      "environmental-injustice": {
+        anim: '<span class="zensweep" aria-hidden="true"><i></i></span>',
+        title: "The Body Scan",
+        msg: "Follow the light down. Start at your forehead and let it soften. Unclench your jaw. Drop your shoulders away from your ears. Loosen your hands. Wherever the light finds something tight, breathe into it once and let it go.",
+      },
+      "dealerplates": {
+        anim: '<span class="zenrings" aria-hidden="true"><i></i></span>',
+        title: "The Release",
+        msg: "Watch the rings let go of the center, then do it yourself. Squeeze your shoulders up to your ears, hold for 3, and drop them. Make two fists, hold for 3, and let your hands fall open. Tension you put down on purpose stays down.",
+      },
+    };
+    var z = Z[key] || {
+      anim: '<span class="zencue__orb" aria-hidden="true"></span>',
+      title: "The Physiological Sigh",
+      msg: "Two quick breaths in through your nose, one long, slow breath out through your mouth. The double inhale opens your lungs all the way, and the long exhale tells your heart to slow down. Two rounds and the weight comes off your shoulders.",
+    };
+    return '<div class="zencue">' + z.anim +
+      '<p class="zencue__title">' + z.title + "</p>" +
+      '<p class="zencue__msg">' + z.msg + "</p></div>";
+  }
+
   /* ---------- page loader: percentage + a genre animation per label ---------- */
   var pre = (function () {
     var map = {
@@ -37,8 +81,7 @@
       '<div class="songpre__inner">' +
       '<div class="songpre__chip"><img class="songpre__logo" src="' + meta.logo + '" alt=""></div>' +
       '<div class="songpre__count"><span class="songpre__num">000</span><span class="songpre__pct">%</span></div>' +
-      '<div class="zencue"><span class="zencue__orb" aria-hidden="true"></span>' +
-      '<p class="zencue__msg">This wait is yours. Let your shoulders drop. Two breaths in through the nose, one long breath out. That\'s a physiological sigh, and it resets you. Nothing to do here but arrive.</p></div>' +
+      zenCue(window.SONG.key) +
       "</div>";
     document.body.appendChild(el);
     var numEl = el.querySelector(".songpre__num");
