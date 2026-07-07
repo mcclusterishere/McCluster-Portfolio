@@ -512,11 +512,11 @@
   }
   var workVR = {
     el: document.getElementById("workVR"),
-    viewer: null, live: false, band: [0.40, 0.64],
+    viewer: null, live: false, landing: false, band: [0.40, 0.50],
   };
   function workVRSet(p) {
     if (!workVR.el || !window.VR360) return;
-    var on = p >= workVR.band[0] && p <= workVR.band[1];
+    var on = !workVR.landing && p >= workVR.band[0] && p <= workVR.band[1];
     if (on && !workVR.viewer) {
       workVR.viewer = VR360.mount(document.getElementById("workVRCanvas"), {
         src: "assets/video/vaunt-360.mp4", video: true,
@@ -569,15 +569,23 @@
     },
   });
 
-  // the escape hatch: the only way out while scroll is locked — unlocks, then
-  // jumps past the 360 band to the end of the section
+  // Land: the only way out while scroll is locked. Touches down right at the
+  // start of the fly-through film — the jet in open air — then hands the
+  // scroll back to the user; no auto-ride to the end of the section.
   var workSkip = document.getElementById("workVRSkip");
   if (workSkip) workSkip.addEventListener("click", function () {
+    workVR.landing = true;
     workVR.live = false;
     if (workVR.el) workVR.el.classList.remove("is-live");
     if (workVR.viewer) workVR.viewer.pause();
     lockPageScroll(false);
-    lenis.scrollTo(workST.end + 2, { duration: 1.1 });
+    var y = workST.start + (workST.end - workST.start) * (workVR.band[1] + 0.005);
+    lenis.scrollTo(y, {
+      duration: 0.9,
+      onComplete: function () { workVR.landing = false; },
+    });
+    // if the glide is interrupted before onComplete, re-arm the band anyway
+    setTimeout(function () { workVR.landing = false; }, 1400);
     if (window.MCC_TRACK) window.MCC_TRACK("vr_skip", { page: "home" });
   });
 
