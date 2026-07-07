@@ -77,4 +77,29 @@
       document.documentElement.classList.remove("pt-out");
     });
   }
+
+  /* ---------- the app bar, everywhere ----------
+     The home page ships its own; every other page gets the same bar
+     injected here so the whole site handles like one app. */
+  if (!document.querySelector(".appbar")) {
+    var here = location.pathname.split("/").pop() || "index.html";
+    var tabs = [
+      ["index.html#top", "home", "Home", '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/>'],
+      ["index.html#work", "collabs", "Collabs", '<path d="M12 3l2.2 6.2L20.5 9l-5 4 1.7 6.4L12 16l-5.2 3.4L8.5 13l-5-4 6.3.2z"/>'],
+      ["index.html#pillars", "antisocial", "Antisocial", '<circle cx="12" cy="12" r="8.2"/><path d="M10.3 8.5l5.2 3.5-5.2 3.5z" fill="currentColor" stroke="none"/>'],
+      ["ecosystem.html", "ecosystem", "Ecosystem", '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>'],
+      ["hire.html", "hire", "Hire", '<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>'],
+    ];
+    var bar = document.createElement("nav");
+    bar.className = "appbar";
+    bar.setAttribute("aria-label", "Sections");
+    bar.innerHTML = tabs.map(function (t) {
+      var active = t[0].split("#")[0] === here ? " is-active" : "";
+      return '<a class="appbar__tab' + active + '" href="' + t[0] + '" data-appnav="' + t[1] + '">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[3] + "</svg>" +
+        "<span>" + t[2] + "</span></a>";
+    }).join("");
+    document.body.appendChild(bar);
+    document.body.classList.add("has-appbar");
+  }
 })();

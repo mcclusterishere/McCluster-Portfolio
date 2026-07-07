@@ -6,15 +6,15 @@
      so the first view caches them and every visit after is instant + offline,
      while a fresh copy is fetched in the background for next time.
    Bump CACHE_VERSION to force-clear old caches on a major change. */
-const CACHE_VERSION = "mccluster-v1";
-const OFFLINE_FALLBACK = "./index.html";
+const CACHE_VERSION = "mccluster-v2";
+const OFFLINE_FALLBACK = "./offline.html";
 
 self.addEventListener("install", function (e) {
   self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_VERSION).then(function (c) {
       // seed the shell so a cold offline open still works
-      return c.addAll(["./", "./index.html"]).catch(function () {});
+      return c.addAll(["./", "./index.html", "./offline.html", "./assets/img/m-mark.png"]).catch(function () {});
     })
   );
 });
@@ -47,7 +47,12 @@ self.addEventListener("fetch", function (e) {
         caches.open(CACHE_VERSION).then(function (c) { c.put(req, copy); });
         return res;
       }).catch(function () {
-        return caches.match(req).then(function (hit) { return hit || caches.match(OFFLINE_FALLBACK); });
+        return caches.match(req).then(function (hit) {
+          // best cached copy first, then the shell, then the offline page
+          return hit || caches.match("./index.html").then(function (shell) {
+            return shell || caches.match(OFFLINE_FALLBACK);
+          });
+        });
       })
     );
     return;

@@ -1,17 +1,70 @@
 {
   "name": "McCluster",
   "short_name": "McCluster",
-  "description": "McCluster Corp — an interactive, cinematic experience. Creative direction, photography, web, and music.",
+  "description": "McCluster Corp \u2014 an interactive, cinematic experience. Creative direction, photography, web, and music.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0807",
   "theme_color": "#0a0807",
-  "categories": ["entertainment", "music", "business"],
+  "categories": [
+    "entertainment",
+    "music",
+    "business"
+  ],
   "icons": [
-    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "./",
+  "shortcuts": [
+    {
+      "name": "Antisocial \u2014 the music video",
+      "short_name": "Antisocial",
+      "url": "./song-antisocial.html",
+      "icons": [
+        {
+          "src": "assets/img/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "The Ecosystem",
+      "short_name": "Ecosystem",
+      "url": "./ecosystem.html",
+      "icons": [
+        {
+          "src": "assets/img/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Hire McCluster",
+      "short_name": "Hire",
+      "url": "./hire.html",
+      "icons": [
+        {
+          "src": "assets/img/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

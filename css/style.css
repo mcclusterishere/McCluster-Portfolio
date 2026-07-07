@@ -3133,6 +3133,7 @@ html.pt-out .pt-veil { transform: translateY(0); transition: transform .48s cubi
 
 /* ============ app-style bottom tab bar ============ */
 :root { --appbar-h: 3.7rem; }
+body.has-appbar { padding-bottom: calc(var(--appbar-h) + env(safe-area-inset-bottom)); }
 .appbar {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
   z-index: 200; width: 100%; max-width: 34rem;
