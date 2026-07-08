@@ -11,7 +11,19 @@
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
     body { background: #0a0807; }
-    .sp { max-width: 60rem; margin: 0 auto; padding: 0 0 9.5rem; }
+    .sp { max-width: 60rem; margin: 0 auto; padding: 0 0 9.5rem; position: relative; }
+    /* the vibe: a time-of-day gradient wash behind the shelf, Spotify-style */
+    .sp__glow { position: absolute; top: 0; left: 0; right: 0; height: 44vh; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(120% 90% at 12% 0%, rgba(164, 22, 26, 0.5), transparent 62%),
+        radial-gradient(100% 80% at 92% 4%, rgba(88, 28, 135, 0.38), transparent 62%);
+      filter: saturate(1.1); }
+    body.is-morning .sp__glow { background:
+        radial-gradient(120% 90% at 12% 0%, rgba(180, 83, 9, 0.45), transparent 62%),
+        radial-gradient(100% 80% at 92% 4%, rgba(164, 22, 26, 0.35), transparent 62%); }
+    body.is-day .sp__glow { background:
+        radial-gradient(120% 90% at 12% 0%, rgba(29, 78, 216, 0.32), transparent 62%),
+        radial-gradient(100% 80% at 92% 4%, rgba(164, 22, 26, 0.38), transparent 62%); }
 
     /* ---- header: greeting + filter pills ---- */
     .sp__head { position: sticky; top: 0; z-index: 60; padding: calc(0.9rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 0.75rem;
@@ -64,9 +76,32 @@
     .sp__cta--ghost { background: rgba(10,8,7,0.55); color: var(--cream); border: 1px solid rgba(244,239,230,0.35); }
 
     /* ---- carousels ---- */
-    .sprow { margin-top: 1.7rem; }
-    .sprow__t { display: flex; align-items: baseline; justify-content: space-between; padding: 0 clamp(1rem, 4vw, 2rem); margin-bottom: 0.65rem; }
-    .sprow__t h2 { font-family: var(--display); font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .sprow { margin-top: 1.9rem; }
+    .sprow__t { display: flex; align-items: flex-end; justify-content: space-between; padding: 0 clamp(1rem, 4vw, 2rem); margin-bottom: 0.7rem; }
+    .sprow__t h2 { font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .sprow__k { font-size: 0.56rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; margin-bottom: 0.15rem; }
+    .sprow__n { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream-dim); }
+
+    /* kind chips: every tile says what it is */
+    .spc__kind { position: absolute; top: 0.45rem; left: 0.45rem; z-index: 2;
+      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 800; color: #fff;
+      background: rgba(10, 8, 7, 0.72); border: 1px solid rgba(244, 239, 230, 0.25);
+      border-radius: 100px; padding: 0.35em 0.8em; backdrop-filter: blur(4px); }
+
+    /* artist circles */
+    .spa { flex: none; width: 7.6rem; text-align: center; text-decoration: none; color: inherit; scroll-snap-align: start; }
+    .spa__ring { display: block; width: 7.6rem; height: 7.6rem; border-radius: 50%; overflow: hidden; margin-bottom: 0.55rem;
+      border: 2px solid rgba(229, 56, 59, 0.55); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+    .spa__ring img { width: 100%; height: 100%; object-fit: cover; }
+    .spa b { display: block; font-size: 0.85rem; }
+    .spa small { color: var(--cream-dim); font-size: 0.66rem; }
+
+    /* the listening stats strip */
+    .sp__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; padding: 0 clamp(1rem, 4vw, 2rem); }
+    .sp__stat { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.85rem 0.6rem; text-align: center;
+      background: rgba(244, 239, 230, 0.05); }
+    .sp__stat b { display: block; font-family: var(--display); font-size: 1.5rem; color: var(--ruby-hot); }
+    .sp__stat span { font-size: 0.54rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-dim); }
     .sprow__rail { display: flex; gap: 0.7rem; overflow-x: auto; padding: 0.1rem clamp(1rem, 4vw, 2rem) 0.4rem; scroll-snap-type: x proximity; scrollbar-width: none; }
     .sprow__rail::-webkit-scrollbar { display: none; }
     .spc { flex: none; width: 8.6rem; scroll-snap-align: start; position: relative; color: inherit; text-decoration: none; }
@@ -140,6 +175,7 @@
 <body>
   <div class="grain" aria-hidden="true"></div>
   <main class="sp">
+    <div class="sp__glow" aria-hidden="true"></div>
     <header class="sp__head">
       <div class="sp__hi">
         <h1 class="sp__greet" id="greet">Good evening</h1>
@@ -165,7 +201,35 @@
       <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
     </a>
     <div id="bill"></div>
+
+    <!-- your listening: the analytics strip -->
+    <section class="sprow" id="statsRow" style="display:none">
+      <div class="sprow__t"><div><p class="sprow__k">Your data &middot; lives on this device</p><h2>Your listening</h2></div></div>
+      <div class="sp__stats" id="stats"></div>
+    </section>
+
+    <!-- the people: artist circles -->
+    <section class="sprow">
+      <div class="sprow__t"><div><p class="sprow__k">The people behind it</p><h2>Artists</h2></div></div>
+      <div class="sprow__rail" id="people">
+        <a class="spa" href="hire.html"><span class="spa__ring"><img src="assets/img/vaunt-arrival.jpg" alt="Matthew McCluster"></span><b>McCluster</b><small>Artist &middot; Director</small></a>
+        <a class="spa" href="profile-zakir.html"><span class="spa__ring"><img src="assets/frames/vperf1_0001.jpg" alt="Zakir on the six-string"></span><b>Zakir</b><small>The six-string</small></a>
+      </div>
+    </section>
+
     <div id="rows"></div>
+
+    <!-- the systems: every wing of the platform, one shelf -->
+    <section class="sprow">
+      <div class="sprow__t"><div><p class="sprow__k">One platform &middot; every wing</p><h2>The Systems</h2></div></div>
+      <div class="sprow__rail">
+        <a class="spc spc--wide" href="providers.html"><span class="spc__art"><span class="spc__kind">Network</span><img loading="lazy" src="assets/frames/keynote_0080.jpg" alt=""></span><p class="spc__t">Hire a Provider</p><p class="spc__s">M-Verified talent, booked direct</p></a>
+        <a class="spc spc--wide" href="vr-vaunt.html"><span class="spc__art"><span class="spc__kind">VR</span><img loading="lazy" src="assets/img/vaunt-arrival.jpg" alt=""></span><p class="spc__t">Inside the Jet</p><p class="spc__s">The 360 session &middot; stand in it</p></a>
+        <a class="spc spc--wide" href="members.html"><span class="spc__art"><span class="spc__kind">The Org</span><img loading="lazy" src="assets/frames/uprise_0080.jpg" alt=""></span><p class="spc__t">Join the Organization</p><p class="spc__s">Boards &middot; programs &middot; the donor circle</p></a>
+        <a class="spc spc--wide" href="docket-516.html"><span class="spc__art"><span class="spc__kind">Civic</span><img loading="lazy" src="assets/frames/docket_0050.jpg" alt=""></span><p class="spc__t">Docket 516</p><p class="spc__s">The public record, explained</p></a>
+        <a class="spc spc--wide" href="talent.html"><span class="spc__art"><span class="spc__kind">For talent</span><img loading="lazy" src="assets/frames/studio360_0050.jpg" alt=""></span><p class="spc__t">The Talent App</p><p class="spc__s">Your listing &middot; your inbox &middot; your rate</p></a>
+      </div>
+    </section>
   </main>
 
   <!-- mini player -->
@@ -270,7 +334,8 @@
       function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
 
       var h = new Date().getHours();
-      $("greet").textContent = h < 5 ? "Late night, locked in" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+      $("greet").textContent = h < 5 ? "After hours" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+      document.body.classList.add("is-" + (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 18 ? "day" : "night"));
 
       /* ---------- account sheet ---------- */
       function acctRender() {
@@ -303,15 +368,23 @@
       acctRender();
 
       /* ---------- render ---------- */
+      var KIND_LABEL = { song: "Song", ep: "EP", experience: "Experience", vr: "VR", film: "Film", record: "Record", page: "Page" };
       function card(it, wide) {
         var playable = !!it.audio;
+        var kind = KIND_LABEL[it.kind] || (it.kind || "").replace(/^./, function (c) { return c.toUpperCase(); });
         return '<div class="spc' + (wide ? " spc--wide" : "") + '">' +
           '<a href="' + esc(it.page || "#") + '" aria-label="' + esc(it.title) + '">' +
-            '<span class="spc__art"><img loading="lazy" src="' + esc(it.poster) + '" alt=""></span></a>' +
+            '<span class="spc__art">' + (kind ? '<span class="spc__kind">' + esc(kind) + "</span>" : "") +
+            '<img loading="lazy" src="' + esc(it.poster) + '" alt=""></span></a>' +
           (playable ? '<button class="spc__play" type="button" data-play="' + esc(it.id) + '" aria-label="Play ' + esc(it.title) + '"><svg viewBox="0 0 24 24"><path d="' + PLAY + '"/></svg></button>' : "") +
           '<p class="spc__t">' + esc(it.title) + '</p><p class="spc__s">' + esc(it.subtitle || "") + "</p></div>";
       }
 
+      var ROW_KICKER = {
+        "The Music": "Made by McCluster",
+        "Experiences": "Step inside",
+        "The Record": "The receipts",
+      };
       function renderRows(filter) {
         var html = "";
         ROWS.forEach(function (row) {
@@ -319,10 +392,27 @@
           var items = row.items.filter(function (it) { return filter === "all" || it.kind === filter; });
           if (!items.length) return;
           var wide = items[0].kind !== "song";
-          html += '<section class="sprow"><div class="sprow__t"><h2>' + esc(row.title) + '</h2></div><div class="sprow__rail">' +
+          var kick = ROW_KICKER[row.title] || "The catalogue";
+          html += '<section class="sprow"><div class="sprow__t"><div><p class="sprow__k">' + esc(kick) + '</p><h2>' + esc(row.title) +
+            '</h2></div><span class="sprow__n">' + items.length + (items.length === 1 ? " title" : " titles") + '</span></div><div class="sprow__rail">' +
             items.map(function (it) { return card(it, wide); }).join("") + "</div></section>";
         });
         $("rows").innerHTML = html;
+      }
+
+      /* your listening: the personal analytics strip, from your own device data */
+      function renderStats() {
+        Promise.all([DB.recents(50), DB.likes()]).then(function (r) {
+          var recents = (r[0] || []).filter(function (x) { return CAT[x.item_id]; });
+          var likes = (r[1] || []).filter(function (id) { return CAT[id]; });
+          if (!recents.length && !likes.length) return;
+          var top = recents[0] ? CAT[recents[0].item_id].title : "—";
+          $("statsRow").style.display = "";
+          $("stats").innerHTML =
+            '<div class="sp__stat"><b>' + recents.length + "</b><span>in rotation</span></div>" +
+            '<div class="sp__stat"><b>' + likes.length + "</b><span>liked</span></div>" +
+            '<div class="sp__stat"><b style="font-size:0.95rem;line-height:2">' + top.replace(/</g, "&lt;") + "</b><span>last played</span></div>";
+        }).catch(function () {});
       }
 
       function renderRecent() {
@@ -363,6 +453,7 @@
         renderRows("all");
         renderRecent();
         renderPersona();
+        renderStats();
         if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "spotify" });
       });
 
