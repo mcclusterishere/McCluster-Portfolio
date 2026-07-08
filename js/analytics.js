@@ -95,3 +95,107 @@ window.MCC_TRACK = (function () {
     }
   };
 })();
+
+/* ============================================================
+   MCC_MODEL — the algorithm that follows the user.
+   Every signal on the site already flows through MCC_TRACK, so
+   the model wraps it once and learns from everything: plays,
+   quiz answers, VR drags, CTA taps, deals, packets. It lives
+   entirely in THIS browser (localStorage, same rule as the
+   persona engine) — the site adapts on-device, nothing about
+   the person leaves their phone.
+
+   The model keeps a decaying interest score across six domains
+   and answers two questions for any surface that asks:
+     MCC_MODEL.profile() → { top, ranked, stage, visits }
+     MCC_MODEL.suggest() → { label, sub, href, why } next-best-action
+   ============================================================ */
+window.MCC_MODEL = (function () {
+  "use strict";
+  var KEY = "mcc_model_v1";
+  var HALF_LIFE_DAYS = 14; // interests cool off; the model stays current
+
+  /* what an event means: first match wins, weight = how loud the signal is */
+  var MAP = [
+    [/offer|claim|tier|quote|lead|wantsite|book.?call|billing/i, "client", 3],
+    [/collab|deal|packet|talent|onboard|provider|listing/i, "artist", 3],
+    [/member|donat|tithe|residual|uprise|fellowship/i, "org", 3],
+    [/docket|psmf|civic|marker|duality|persona|quiz/i, "civic", 2],
+    [/vr|gyro|360|motion|beacon|land|slow|install/i, "experience", 2],
+    [/song|play|np|audio|catalogue|sound|lyric|subscribe|app_/i, "music", 1],
+  ];
+  var PAGES = { // where a domain's next step lives
+    music: ["app.html", "Back to the music", "Your rotation is waiting in the app"],
+    experience: ["vr-vaunt.html", "Step back inside the jet", "The 360 cabin, pins and all"],
+    client: ["offer.html", "The offer is still open", "2 of 3 spots left · the weekly system"],
+    artist: ["collab.html", "Open the Collab Room", "Propositions, splits, signatures"],
+    civic: ["docket-516.html", "Back to the record", "The public record, explained"],
+    org: ["members.html", "Join the organization", "Boards · programs · the donor circle"],
+  };
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; }
+  }
+  var S = load() || { doms: {}, events: 0, visits: 0, last: 0, day: "" };
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  /* time decay: every new day shrinks old interest toward the half-life */
+  (function tick() {
+    var today = new Date().toISOString().slice(0, 10);
+    if (S.day !== today) {
+      var days = S.last ? Math.min(60, (Date.now() - S.last) / 864e5) : 0;
+      var k = Math.pow(0.5, days / HALF_LIFE_DAYS);
+      Object.keys(S.doms).forEach(function (d) { S.doms[d] = +(S.doms[d] * k).toFixed(3); });
+      S.day = today; S.visits++;
+      save();
+    }
+  })();
+
+  function observe(name, params) {
+    var line = name + " " + JSON.stringify(params || {});
+    for (var i = 0; i < MAP.length; i++) {
+      if (MAP[i][0].test(line)) {
+        var d = MAP[i][1];
+        S.doms[d] = +((S.doms[d] || 0) + MAP[i][2]).toFixed(3);
+        break;
+      }
+    }
+    S.events++; S.last = Date.now();
+    save();
+  }
+
+  function profile() {
+    var ranked = Object.keys(S.doms).map(function (d) { return [d, S.doms[d]]; })
+      .sort(function (a, b) { return b[1] - a[1]; });
+    return {
+      top: ranked.length ? ranked[0][0] : null,
+      ranked: ranked,
+      stage: S.events < 6 ? "new" : S.events < 25 ? "warming" : "locked",
+      visits: S.visits, events: S.events,
+    };
+  }
+
+  function suggest() {
+    var p = profile();
+    if (!p.top || p.stage === "new") {
+      return { label: "Start with the sound", sub: "The catalogue · every record on the page", href: "app.html", why: "new" };
+    }
+    var here = location.pathname.split("/").pop() || "index.html";
+    var pick = p.top, i = 0;
+    while (PAGES[pick] && PAGES[pick][0] === here && i < p.ranked.length - 1) {
+      i++; pick = p.ranked[i][0]; // never point at the room they're standing in
+    }
+    var g = PAGES[pick] || PAGES.music;
+    return { label: g[1], sub: g[2], href: g[0], why: pick + ":" + p.stage };
+  }
+
+  /* the wrap: everything MCC_TRACK hears, the model learns */
+  var orig = window.MCC_TRACK;
+  window.MCC_TRACK = function (name, params) {
+    try { observe(name, params); } catch (e) {}
+    return orig(name, params);
+  };
+
+  return { profile: profile, suggest: suggest, observe: observe,
+    reset: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
+})();

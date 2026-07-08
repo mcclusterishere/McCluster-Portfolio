@@ -38,6 +38,18 @@
       color: var(--cream); background: rgba(244,239,230,0.09); border-radius: 100px; padding: 0.45em 1.05em; transition: background 0.2s, color 0.2s; }
     .sp__pill.is-on { background: var(--ruby-hot); color: #fff; font-weight: 700; }
 
+    /* ---- for you: the on-device model's next-best-action ---- */
+    .sp__foryou { display: flex; align-items: center; gap: 0.7rem; margin: 0.7rem clamp(1rem, 4vw, 2rem) 0;
+      padding: 0.8rem 1rem; border-radius: 12px; text-decoration: none; color: var(--cream);
+      border: 1px solid rgba(229, 56, 59, 0.4);
+      background: linear-gradient(120deg, rgba(60, 14, 14, 0.55), rgba(20, 16, 14, 0.7)); }
+    .sp__foryou-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--ruby-hot);
+      box-shadow: 0 0 10px rgba(229, 56, 59, 0.9); animation: offerPulse 1.6s ease-in-out infinite; }
+    .sp__foryou-txt { flex: 1; min-width: 0; }
+    .sp__foryou-txt b { display: block; font-size: 0.92rem; }
+    .sp__foryou-txt small { display: block; color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.15rem; }
+    .sp__foryou-go { color: var(--ruby-hot); font-size: 1.2rem; }
+
     /* ---- focus mode: pick a pill and everything else steps out of the room ---- */
     .is-catoff { display: none !important; }
     .sp-focus { animation: spFocus 0.45s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
@@ -194,6 +206,13 @@
         <button class="sp__pill" data-f="record" type="button">The Record</button>
       </div>
     </header>
+
+    <!-- the model's pick: next-best-action, computed on this device -->
+    <a class="sp__foryou" id="foryou" href="app.html" style="display:none">
+      <span class="sp__foryou-dot" aria-hidden="true"></span>
+      <span class="sp__foryou-txt"><b id="fyLabel"></b><small id="fySub"></small></span>
+      <span class="sp__foryou-go" aria-hidden="true">&#8594;</span>
+    </a>
 
     <div class="sp__recent" id="recent" data-cat="song"></div>
 
@@ -460,6 +479,7 @@
         renderRecent();
         renderPersona();
         renderStats();
+        renderForYou();
         if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "spotify" });
       });
 
@@ -482,6 +502,21 @@
         rows.classList.remove("sp-focus"); void rows.offsetWidth; rows.classList.add("sp-focus");
         if (window.MCC_TRACK) window.MCC_TRACK("app_filter", { pick: f });
       });
+
+      /* ---------- for you: the model picks the next move ---------- */
+      function renderForYou() {
+        if (!window.MCC_MODEL) return;
+        var s = window.MCC_MODEL.suggest();
+        if (!s || !s.href) return;
+        var card = $("foryou");
+        card.href = s.href;
+        $("fyLabel").textContent = s.label;
+        $("fySub").textContent = s.sub || "";
+        card.style.display = "flex";
+        card.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("foryou_tap", { why: s.why });
+        });
+      }
 
       /* ---------- the persona card ---------- */
       function renderPersona() {
