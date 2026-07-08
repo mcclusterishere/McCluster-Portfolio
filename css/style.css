@@ -4074,3 +4074,19 @@ html.vr-locked .wayback { bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-i
 }
 :root { --sig: "McCluster M", "Anton", sans-serif; }
 .brand__rest, .site-foot__brand { font-family: var(--sig); letter-spacing: 0.03em; }
+
+/* ============ THE MICRO PRINT — McCluster Shard Monoline ============
+   The smallest type on the platform wears the dot-matrix cut from the
+   first family: machine-stamped micro-labels. Kickers, tab labels,
+   status chips, form labels — the fine print reads like a printout.
+   (Sizes bump a touch: the modular grid needs the extra pixels.) */
+@font-face {
+  font-family: "McCluster Micro";
+  src: url("../assets/fonts/mccluster/McClusterShard-Monoline.woff") format("woff");
+  font-display: swap;
+}
+:root { --micro: "McCluster Micro", var(--body, sans-serif); }
+.kicker { font-family: var(--micro); font-size: 0.78rem; letter-spacing: 0.3em; }
+.appbar__tab span { font-family: var(--micro); font-size: 0.6rem; letter-spacing: 0.08em; }
+.ta__status, .cr__tag { font-family: var(--micro); }
+.mk__k { font-family: var(--micro); font-size: 0.68rem; letter-spacing: 0.2em; }
