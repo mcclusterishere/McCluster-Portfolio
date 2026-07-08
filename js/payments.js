@@ -50,6 +50,13 @@ window.PAYMENTS = {
     title: "Identifier Walkthrough",
     link: "",
   },
+  // The mission fund — live Square link (nonprofit). Hero, footer, and
+  // the Equity Uprise pages all point here. Support / contribution
+  // language only — no tax wording on the site or in the Square copy.
+  "donate": {
+    title: "Support the Mission",
+    link: "https://square.link/u/MBVeuzoo?src=sheet",
+  },
   // The 10% tithe on completed network bookings (Square payment link,
   // variable amount). The Talent App shows "Give the tithe" once set.
   "tithe": {

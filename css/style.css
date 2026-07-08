@@ -3913,3 +3913,17 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
   padding: 0.8em 2.4em; background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
   color: #fff; font: inherit; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.8rem;
 }
+
+/* ---- support the mission: the donation link rides the hero, unmissable ---- */
+.support-pill {
+  margin-top: 0.6rem; display: inline-flex; align-items: center; gap: 0.55em;
+  padding: 0.7em 1.4em; border-radius: 100px; text-decoration: none;
+  background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  box-shadow: 0 10px 34px rgba(229, 56, 59, 0.45);
+  animation: wantBtnPulse 2.4s ease-in-out infinite;
+  transition: transform 0.2s;
+}
+.support-pill:hover { transform: translateY(-2px) scale(1.02); }
+.support-pill svg { width: 1.05rem; height: 1.05rem; fill: #fff; }
+@media (prefers-reduced-motion: reduce) { .support-pill { animation: none; } }
