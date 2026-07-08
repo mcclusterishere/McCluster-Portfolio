@@ -32,7 +32,10 @@
     } catch (e) { return; }
     var email = "";
     try { email = JSON.parse(atob(q.access_token.split(".")[1])).email || ""; } catch (e) {}
-    location.replace(email === "matthew@mccluster.org" ? "mission.html" : "app.html");
+    // a link that lands on the profile page stays there — the signer asked
+    // for their room, so the room is where they arrive (admin included)
+    location.replace(here === "profile.html" ? "profile.html"
+      : email === "matthew@mccluster.org" ? "mission.html" : "app.html");
   })();
 
   /* ---------- one-tap install: skip the app store ----------
