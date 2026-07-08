@@ -555,6 +555,14 @@
             '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkPromoSave" type="button" style="flex:1">Set it live</button></div>' +
             '<p class="mp__msg" id="dkPromoMsg"></p>' +
             '<p class="mp__note">Your card jumps to the front of Spaces with a ★ tag carrying your line. Clear the box to turn it off.</p></div>';
+          html += '<div class="mp__card"><span class="mp__lblx">The pitch kit — close in the room</span>' +
+            '<div class="mp__kinds" id="dkPitchChips"><p class="mp__note">Loading templates…</p></div>' +
+            '<input class="mp__in" id="dkPClient" type="text" placeholder="Client name — e.g. Marcus">' +
+            '<input class="mp__in" id="dkPLink" type="url" placeholder="Demo link (optional — the live site you built them)">' +
+            '<textarea class="mp__in" id="dkPText" rows="7" placeholder="Pick a template above — it fills in here, ready to send."></textarea>' +
+            '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkPCopy" type="button" style="flex:1">Copy the pitch</button>' +
+            '<button class="btn btn--ghost" id="dkPShare" type="button">Share</button></div>' +
+            '<p class="mp__note">Five pitches, pre-loaded from the playbook — rebuild, bookstore, space, the Limited Offer, the Artist Offer. Edit anything before it goes.</p></div>';
           html += '<div class="mp__card"><span class="mp__lblx">The inbox — requests on your room</span><div id="dkInbox"><p class="mp__note">Checking…</p></div></div>';
           html += '<div class="mp__card"><span class="mp__lblx">Deals &amp; messages — talk inside the record</span><div id="dkDeals"><p class="mp__note">Checking…</p></div></div>';
         }
@@ -648,6 +656,43 @@
             track("desk_promo_saved", { on: !!line });
           }).catch(function (e) { $("dkPromoMsg").textContent = "Couldn't save: " + String(e.message || e); });
         });
+
+        /* the pitch kit: registry in, filled pitch out */
+        fetch("data/pitch-templates.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (pk) {
+          var chips = $("dkPitchChips");
+          chips.innerHTML = pk.templates.map(function (t, i) {
+            return '<button class="mp__kind" type="button" data-pt="' + i + '" title="' + esc(t.tagline) + '">' + esc(t.name) + "</button>";
+          }).join("");
+          function fill() {
+            var on = chips.querySelector(".is-on"); if (!on) return;
+            var t = pk.templates[+on.getAttribute("data-pt")];
+            var client = $("dkPClient").value.trim() || "Hey";
+            var link = $("dkPLink").value.trim() || (location.origin + location.pathname.replace(/[^/]*$/, ""));
+            $("dkPText").value = t.body
+              .replace(/\{CLIENT\}/g, client)
+              .replace(/\{PRICE\}/g, "$" + t.price.toLocaleString())
+              .replace(/\{MONTHLY\}/g, "$" + t.monthly.toLocaleString())
+              .replace(/\{LINK\}/g, link);
+          }
+          chips.querySelectorAll(".mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () {
+              chips.querySelectorAll(".mp__kind").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+              fill(); track("pitch_template_pick", { template: pk.templates[+b.getAttribute("data-pt")].id });
+            });
+          });
+          $("dkPClient").addEventListener("input", fill);
+          $("dkPLink").addEventListener("input", fill);
+          $("dkPCopy").addEventListener("click", function () {
+            if (!$("dkPText").value.trim()) return;
+            copyText($("dkPText").value, $("dkPCopy")); track("pitch_copied", {});
+          });
+          $("dkPShare").addEventListener("click", function () {
+            var txt = $("dkPText").value.trim(); if (!txt) return;
+            if (navigator.share) navigator.share({ text: txt }).catch(function () {});
+            else copyText(txt, $("dkPShare"));
+            track("pitch_shared", {});
+          });
+        }).catch(function () { $("dkPitchChips").innerHTML = '<p class="mp__note">Templates didn’t load — refresh.</p>'; });
 
         function loadInbox() {
           window.MCC_NET.myRequests().then(function (rows) {

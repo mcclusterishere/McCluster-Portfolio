@@ -1,0 +1,45 @@
+{
+  "note": "The pitch kit — templates the desk fills and fires. Tokens: {CLIENT} {PRICE} {MONTHLY} {LINK}. Rendered in M Pay's You tab; every template is a door the network already has open.",
+  "templates": [
+    {
+      "id": "rebuild",
+      "name": "The Rebuild",
+      "tagline": "Small business website — same spend, whole new machine",
+      "price": 400,
+      "monthly": 300,
+      "body": "{CLIENT} — here's the whole plan in four sentences.\n\nRight now part of your monthly spend buys hosting for a site that doesn't sell. I rebuild it modern and fast, move it to hosting that costs $0/month, and wire in the tools your business actually needs — so the same money you're already spending starts buying marketing instead of servers.\n\nThe numbers: {PRICE} once to build and cut over. {MONTHLY}/month after that — and that's a service retainer (content, edits, the marketing calendar), not a software bill.\n\nThe demo is already live — open it and see your business in it: {LINK}"
+    },
+    {
+      "id": "bookstore",
+      "name": "The Bookstore Special",
+      "tagline": "Sell every book ever printed without stocking one more shelf",
+      "price": 400,
+      "monthly": 300,
+      "body": "{CLIENT} — you told me you wanted the search bar without the other website. Done — it's on YOUR site now.\n\nThe new build searches millions of titles right on your page — in print, out of print, rare — and every order routes through your store. Ingram fulfills in 1-3 days; the customer picks it up with a coffee. You just sold a book you never had to shelve.\n\nAnd the plan you were considering at $50/month? It was retired in 2024 — the replacement runs ~$175/month plus dues. Mine runs $0 in software.\n\n{PRICE} once to switch it on. {MONTHLY}/month for the content, the marketing calendar, and me. Demo's live: {LINK}"
+    },
+    {
+      "id": "space",
+      "name": "The Space",
+      "tagline": "Your booking system, invoices, promotion, and messages — one app",
+      "price": 400,
+      "monthly": 300,
+      "body": "{CLIENT} — one link replaces four tools.\n\nYour space gets a booking page (calendar, time windows, your availability rules — like a Calendly you own), payment-request links you can text to anybody (like a cash app, but the record is a signed deal), self-serve promotion on the network floor, and a message thread inside every booking so nothing lives in DMs.\n\nGoogle bookings still find you — but now they land in YOUR system, not a third party's.\n\n{PRICE} to onboard the room, {MONTHLY}/month to run it. Your page would be live this week: {LINK}"
+    },
+    {
+      "id": "limited",
+      "name": "The Limited Offer",
+      "tagline": "The weekly content system — three seats, ever",
+      "price": 14400,
+      "monthly": 0,
+      "body": "{CLIENT} — this is the one I only sell three of.\n\nA full year of the machine: a weekly content day (shoot, edit, deliver), the platform build, and the strategy that makes each week compound instead of evaporate. You're not buying videos; you're buying a system that shows up every seven days.\n\n{PRICE} for the year. Two of three seats remain. The work speaks first — the portfolio is the pitch: {LINK}"
+    },
+    {
+      "id": "artist",
+      "name": "The Artist Offer",
+      "tagline": "$1,000 for a feature — and the thousand comes with a partner",
+      "price": 1000,
+      "monthly": 0,
+      "body": "{CLIENT} — my artist offer, plainly.\n\n{PRICE} for the feature — and it comes with 50% of the songwriting, 50% of the publishing, 50% of everything. You're not buying a verse; you're taking a partner who needs the song to win as much as you do.\n\nSplits get signed in the Market before the song drops, so every percentage is on the record. Deal starts here: {LINK}"
+    }
+  ]
+}
