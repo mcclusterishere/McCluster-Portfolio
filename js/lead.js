@@ -30,6 +30,9 @@
       '<p class="leadov__kicker">Tell me what you need</p>' +
       '<h3 class="leadov__h">Let’s lock it in</h3>' +
       '<form class="leadov__form" novalidate>' +
+        // the honeypot: humans never see it, bots can't resist filling it
+        '<input name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" ' +
+          'style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">' +
         '<input class="leadov__in" name="name" type="text" placeholder="Your name" autocomplete="name" required>' +
         '<input class="leadov__in" name="email" type="email" placeholder="Email" autocomplete="email" required>' +
         '<textarea class="leadov__in leadov__ta" name="message" rows="4" placeholder="What are we building? Shoot, site, campaign, dates…" required></textarea>' +
@@ -79,6 +82,8 @@
       page: location.pathname + " · " + source,
     };
     if (!row.name || !row.email || !row.message) return;
+    // a filled honeypot means a bot: pretend success, send nothing
+    if (String(f.get("company") || "").trim()) { form.hidden = true; done.hidden = false; return; }
     var body = JSON.stringify(row);
     // no-cors: Apps Script accepts the POST but the response is opaque; that's fine
     fetch(endpoint, { method: "POST", mode: "no-cors", body: body, keepalive: true }).catch(function () {

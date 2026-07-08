@@ -89,6 +89,8 @@
       b.addEventListener("click", function () {
         answers[q.id] = +b.getAttribute("data-v");
         store(KEY, answers);
+        // every answer also feeds the ONE shared persona (local only)
+        if (window.MCC_PERSONA) window.MCC_PERSONA.record("duality", q.id, answers[q.id]);
         track("quiz_question", { quiz: "duality", q: idx + 1 }); // index only, never the value
         b.classList.add("is-on");
         setTimeout(next, 190);
@@ -134,6 +136,16 @@
         "</div>" +
         '<p class="dq__meterkey"><span>' + aCount + " on the blue side</span><span>" + bCount + " on the green side</span></p>" +
       "</div>";
+
+    // the ONE persona: this quiz plus the markers, the poll, and the intake,
+    // read together — the shared score every layer of the site writes into
+    if (window.MCC_PERSONA) {
+      var pb = window.MCC_PERSONA.balance();
+      var sideText = pb.side === "present" ? "present in the room"
+        : pb.side === "scroll" ? "locked in the scroll" : "right between the two";
+      head += '<p class="dq__ressub" style="margin-top:0.9rem">Across everything you’ve touched on this site (' +
+        pb.signals + " signals so far), the persona reads: <b style='color:var(--cream)'>" + sideText + "</b>.</p>";
+    }
 
     var grid = '<div class="dq__resgrid">' + DATA.questions.map(function (q) {
       var b = sideOf(q) === "b";

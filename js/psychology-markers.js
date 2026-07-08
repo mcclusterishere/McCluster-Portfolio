@@ -56,6 +56,8 @@
     card.querySelector(".psycard__deep").addEventListener("click", function (ev) {
       ev.stopPropagation();
       flipped = !flipped;
+      // flipping a saying is a persona signal: willingness to see the other side
+      if (window.MCC_PERSONA) window.MCC_PERSONA.record("marker-flip", openId, 1);
       track("marker_flip", { marker_id: openId, to: flipped ? "inverse" : "pole", page: page() });
       render();
     });

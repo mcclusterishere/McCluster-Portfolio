@@ -76,6 +76,8 @@
     };
     q.push(row);
     store("mcc_psmf_queue", q);
+    // civic participation feeds the ONE shared persona (participation only, never the answer)
+    if (window.MCC_PERSONA) window.MCC_PERSONA.record("civic", unit.lyric_id || "psmf", 1);
     if (INTAKE_ENDPOINT) {
       fetch(INTAKE_ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(row) }).catch(function () {});
     }

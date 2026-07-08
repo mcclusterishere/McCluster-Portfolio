@@ -86,20 +86,42 @@
     var tabs = [
       ["index.html#top", "home", "Home", '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/>'],
       ["index.html#work", "collabs", "Collabs", '<path d="M12 3l2.2 6.2L20.5 9l-5 4 1.7 6.4L12 16l-5.2 3.4L8.5 13l-5-4 6.3.2z"/>'],
-      ["index.html#pillars", "antisocial", "Antisocial", '<circle cx="12" cy="12" r="8.2"/><path d="M10.3 8.5l5.2 3.5-5.2 3.5z" fill="currentColor" stroke="none"/>'],
-      ["ecosystem.html", "ecosystem", "Ecosystem", '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>'],
-      ["hire.html", "hire", "Hire", '<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>'],
+      ["#np", "nowplaying", "Now Playing", '<path class="np-bar" d="M5 10v4"/><path class="np-bar" d="M9.5 7v10"/><path class="np-bar" d="M14 9v6"/><path class="np-bar" d="M18.5 11v2"/>'],
+      ["app.html", "theapp", "The App", '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>'],
+      ["providers.html", "hire", "Hire", '<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>'],
     ];
     var bar = document.createElement("nav");
     bar.className = "appbar";
     bar.setAttribute("aria-label", "Sections");
     bar.innerHTML = tabs.map(function (t) {
       var active = t[0].split("#")[0] === here ? " is-active" : "";
-      return '<a class="appbar__tab' + active + '" href="' + t[0] + '" data-appnav="' + t[1] + '">' +
-        '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[3] + "</svg>" +
-        "<span>" + t[2] + "</span></a>";
+      var np = t[1] === "nowplaying" ? ' id="appbarNP"' : "";
+      var span = t[1] === "nowplaying" ? '<span id="appbarNPLabel">' + t[2] + "</span>" : "<span>" + t[2] + "</span>";
+      return '<a class="appbar__tab' + active + '" href="' + t[0] + '"' + np + ' data-appnav="' + t[1] + '">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[3] + "</svg>" + span + "</a>";
     }).join("");
     document.body.appendChild(bar);
     document.body.classList.add("has-appbar");
   }
+
+  /* ---------- the Now Playing tab ----------
+     Mirrors whatever the current section is playing. Pages announce with a
+     `mcc:nowplaying` CustomEvent ({title, href, playing}); a tap starts the
+     sound while it's off (window.MCC_NP_PLAY), then leads to the song. */
+  (function () {
+    var tab = document.getElementById("appbarNP");
+    if (!tab) return;
+    var label = document.getElementById("appbarNPLabel");
+    var state = { playing: false, href: null };
+    window.addEventListener("mcc:nowplaying", function (e) {
+      state = e.detail || {};
+      if (label && state.title) label.textContent = state.title;
+      tab.classList.toggle("is-playing", !!state.playing);
+      tab.setAttribute("href", state.href || "#np");
+    });
+    tab.addEventListener("click", function (ev) {
+      if (!state.playing && window.MCC_NP_PLAY) { ev.preventDefault(); window.MCC_NP_PLAY(); }
+      else if (!state.href || state.href === "#np") ev.preventDefault();
+    });
+  })();
 })();

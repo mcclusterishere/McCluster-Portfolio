@@ -258,7 +258,9 @@
         function loadNear(sel, specs) {
           specs.forEach(function (spec) { loadPoster(spec[0], spec[1]); });
           ScrollTrigger.create({
-            trigger: sel, start: "top 500%", once: true,
+            // the diet: films load when the section is under two screens away,
+            // not five — posters cover the gap
+            trigger: sel, start: "top 175%", once: true,
             onEnter: function () { loadGroup(specs); },
           });
         }
@@ -511,9 +513,20 @@
          the real inside-the-jet film takes over. Drag in any direction to
          look around; scroll is trapped here so the film can't be skimmed
          past by accident — Skip is the one deliberate way out. ---- */
+  var lockedY = 0;
+  function holdScroll() { if (window.scrollY !== lockedY) window.scrollTo(0, lockedY); }
   function lockPageScroll(lock) {
     document.documentElement.classList.toggle("vr-locked", lock);
-    if (lock) lenis.stop(); else lenis.start();
+    if (lock) {
+      // a hard flick outruns overflow:hidden — pin the position itself and
+      // snap back on every native scroll event until Land releases it
+      lockedY = window.scrollY;
+      lenis.stop();
+      window.addEventListener("scroll", holdScroll, { passive: true });
+    } else {
+      window.removeEventListener("scroll", holdScroll);
+      lenis.start();
+    }
   }
   var workVR = {
     el: document.getElementById("workVR"),
@@ -521,7 +534,10 @@
   };
   function workVRSet(p) {
     if (!workVR.el || !window.VR360) return;
-    var on = !workVR.landing && p >= workVR.band[0] && p <= workVR.band[1];
+    // once the band is live, a flung scroll can't unlock it by momentarily
+    // escaping the band — the snap-back brings it home, and Land is the exit
+    var inBand = p >= workVR.band[0] && p <= workVR.band[1];
+    var on = !workVR.landing && (inBand || workVR.live);
     // mount well before the band so the poster is up and the film is
     // buffered by the time the look-around takes the screen
     if (!workVR.viewer && p >= 0.12) {
@@ -586,7 +602,9 @@
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);
-        lockPageScroll(false); // safety net: never leave scroll trapped if the section itself deactivates
+        // safety net — but not while the band holds the lock: a flung scroll
+        // deactivates the trigger for one frame before the snap-back lands
+        if (!workVR.live) lockPageScroll(false);
       }
     },
   });
@@ -743,6 +761,7 @@
         if (avail[name]) track("song_start", { song: name, page: "home" });
       }
       currentTrack = name;
+      announceNP();
       if (!soundOn) return;
       Object.keys(tracks).forEach(function (k) {
         var a = tracks[k];
@@ -773,6 +792,20 @@
 
     commandAudioHook = fadeTo;
 
+    // the Now Playing tab mirrors the section's track; a tap starts the sound
+    function announceNP() {
+      var pay = window.PAYMENTS && window.PAYMENTS[currentTrack] || {};
+      window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
+        detail: {
+          title: pay.title || "The soundtrack",
+          href: pay.page || "#np",
+          playing: soundOn,
+        },
+      }));
+    }
+    window.MCC_NP_PLAY = function () { setSound(true); };
+    announceNP(); // the tab knows the opener before the first note
+
     zones.forEach(function (z) {
       if (!document.querySelector(z.sel)) return;
       ScrollTrigger.create({
@@ -789,6 +822,7 @@
     function setSound(on) {
       if (on === soundOn) return;
       soundOn = on;
+      announceNP();
       toggle.classList.toggle("is-on", soundOn);
       toggle.setAttribute("aria-pressed", String(soundOn));
       // the floating pause only shows while music is actually playing

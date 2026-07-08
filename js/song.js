@@ -201,7 +201,8 @@
             if (!s.ready) { s.poster = pimg; s.drawImg(pimg); }
           };
           ScrollTrigger.create({
-            trigger: block, start: "top 400%", once: true,
+            // the diet: films load under two screens out, posters cover the gap
+            trigger: block, start: "top 175%", once: true,
             onEnter: function () { if (!s.count) loadSeq(s, m[name].count); },
           });
         }
@@ -338,6 +339,16 @@
       gsap.ticker.add(function () { if (playing && !audio.paused) karaoke(audio.currentTime); });
       window.__MCC_KARAOKE = karaoke; // verification hook
     }
+    // the Now Playing tab mirrors this page's song; a tap presses play
+    function announceNP() {
+      var title = (document.querySelector(".songhero__title") || {}).textContent || window.SONG.key;
+      window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
+        detail: { title: title.trim(), href: "#np", playing: playing },
+      }));
+    }
+    window.MCC_NP_PLAY = function () { if (!playing) playBtn.click(); };
+    announceNP();
+
     playBtn.addEventListener("click", function () {
       playing = !playing;
       if (playing) {
@@ -349,6 +360,7 @@
       }
       playBtn.classList.toggle("is-on", playing);
       playBtn.querySelector("span").textContent = playing ? "Pause" : "Play the track";
+      announceNP();
     });
     // a listener who leaves mid-play still logs where the song stopped
     window.addEventListener("pagehide", function () {
