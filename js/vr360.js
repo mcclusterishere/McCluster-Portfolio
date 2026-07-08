@@ -93,6 +93,13 @@
         state.ready = true;
         if (opts.autoplay !== false) media.play().catch(function(){});
       });
+      // only mark a new frame when the browser actually presents one — the
+      // render loop re-uploads to the GPU on new frames only, not every rAF.
+      // (Re-uploading a whole equirect frame 60×/s was the source of the chop.)
+      if (media.requestVideoFrameCallback) {
+        var onVF = function () { state.newFrame = true; media.requestVideoFrameCallback(onVF); };
+        media.requestVideoFrameCallback(onVF);
+      }
       media.load();
     } else {
       media = new Image();
@@ -105,13 +112,19 @@
       media.src = opts.src;
     }
 
+    // reading clientWidth forces a layout — so we only do it when something
+    // actually changed (resize / orientation), not on every animation frame.
+    state.needResize = true;
     function size() {
+      state.needResize = false;
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = canvas.clientWidth * dpr, h = canvas.clientHeight * dpr;
-      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+      if (w && h && (canvas.width !== w || canvas.height !== h)) { canvas.width = w; canvas.height = h; }
       gl.viewport(0, 0, canvas.width, canvas.height);
     }
-    window.addEventListener("resize", size);
+    function markResize() { state.needResize = true; }
+    window.addEventListener("resize", markResize);
+    window.addEventListener("orientationchange", markResize);
 
     /* ---- drag with inertia ---- */
     var px = 0, py = 0, pinch0 = 0, fov0 = 0;
@@ -270,10 +283,20 @@
 
     /* ---- render loop ---- */
     function frame() {
-      size();
-      if (state.ready && state.isVideo && media.readyState >= 2) {
+      if (state.needResize) size();
+      // upload a video frame to the GPU only when a fresh one exists. First
+      // upload allocates (texImage2D); the rest update in place (texSubImage2D),
+      // which is far cheaper than reallocating a full equirect every frame.
+      var wantFrame = media.requestVideoFrameCallback ? state.newFrame : true;
+      if (state.ready && state.isVideo && media.readyState >= 2 && wantFrame) {
+        state.newFrame = false;
         gl.bindTexture(gl.TEXTURE_2D, tex);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, media);
+        if (state.texW === media.videoWidth && state.texH === media.videoHeight) {
+          gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, media);
+        } else {
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, media);
+          state.texW = media.videoWidth; state.texH = media.videoHeight;
+        }
       }
       if (!state.dragging) {
         state.yaw += state.vyaw; state.pitch += state.vpitch; clampPitch();
