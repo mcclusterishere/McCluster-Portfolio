@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mission Control · McCluster</title>
+  <meta name="description" content="The owner's dashboard.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .mc { min-height: 100dvh; padding: clamp(5.2rem, 9vh, 6.4rem) clamp(1rem, 4vw, 2.4rem) 7rem; max-width: 54rem; margin: 0 auto; }
+    .mc h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 8vw, 3.6rem); }
+    .mc__sub { color: var(--cream-dim); margin-top: 0.5rem; font-size: 0.9rem; }
+    .mc__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.7rem; margin-top: 1.4rem; }
+    .mc__stat { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 12px; padding: 0.9rem; text-align: center;
+      background: rgba(20, 16, 14, 0.55); }
+    .mc__stat b { display: block; font-family: var(--display); font-size: 1.7rem; color: var(--ruby-hot); }
+    .mc__stat span { font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); }
+    .mc__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
+      padding: 1.3rem 1.2rem 1.4rem; margin-top: 1.4rem; }
+    .mc__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.2rem; margin-bottom: 0.8rem; }
+    .mc__row { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.85rem 1rem; margin-top: 0.6rem; }
+    .mc__row.is-hot { border-color: var(--ruby-hot); }
+    .mc__row h3 { font-size: 0.95rem; }
+    .mc__row p { font-size: 0.8rem; color: var(--cream-dim); margin-top: 0.25rem; line-height: 1.5; }
+    .mc__tag { display: inline-block; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase;
+      border: 1px solid rgba(244, 239, 230, 0.3); border-radius: 100px; padding: 0.35em 0.9em; color: var(--cream-dim); margin-left: 0.4em; }
+    .mc__acts { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.7rem; }
+    .mc__acts .btn { font-size: 0.62rem; padding: 0.6em 1.2em; }
+    .mc__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.7rem; }
+    .mc__msg { color: var(--ruby-hot); font-size: 0.85rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .mc__links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+    .mc__hidden { display: none !important; }
+    .mc__empty { color: var(--cream-dim); font-size: 0.82rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="talent.html">Talent</a><a href="members.html">Members</a><a href="providers.html">Directory</a></nav>
+  </header>
+  <main class="mc">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The owner's room</p>
+    <h1>Mission<br>Control.</h1>
+    <p class="mc__sub">Everything the platform knows, one screen. Only the admin's sign-in opens it — for anyone else, the database answers with silence.</p>
+
+    <section class="mc__card" id="mcAuth">
+      <h2>Step in</h2>
+      <input class="mc__in" id="mcEmail" type="email" placeholder="matthew@mccluster.org" autocomplete="email">
+      <button class="btn btn--ruby" id="mcSignIn" type="button">Email me the key</button>
+      <p class="mc__msg" id="mcAuthMsg"></p>
+    </section>
+
+    <div id="mcIn" class="mc__hidden">
+      <div class="mc__stats" id="mcStats"></div>
+
+      <section class="mc__card">
+        <h2>Listings to review</h2>
+        <div id="mcListings"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card">
+        <h2>Booking requests</h2>
+        <div id="mcRequests"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card">
+        <h2>Member applications</h2>
+        <div id="mcMembers"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card">
+        <h2>The text list</h2>
+        <div id="mcSms"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card">
+        <h2>The rest of the cockpit</h2>
+        <p class="mc__empty">Until the Worker lands, these open in their own tabs:</p>
+        <div class="mc__links">
+          <a class="btn btn--ghost" href="https://analytics.google.com" target="_blank" rel="noopener">Google Analytics</a>
+          <a class="btn btn--ghost" href="https://squareup.com/dashboard" target="_blank" rel="noopener">Square</a>
+          <a class="btn btn--ghost" href="https://supabase.com/dashboard/project/fxbkvcrfbbcmrrupdcjt" target="_blank" rel="noopener">Supabase</a>
+          <a class="btn btn--ghost" href="https://github.com/mcclusterishere/McCluster-Portfolio" target="_blank" rel="noopener">The repo</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var A = window.MCC_NET.admin;
+
+      $("mcSignIn").addEventListener("click", function () {
+        var em = $("mcEmail").value.trim();
+        if (!em) { $("mcAuthMsg").textContent = "Email first."; return; }
+        $("mcAuthMsg").textContent = "Sending the key…";
+        window.MCC_AUTH.signIn(em).then(function () {
+          $("mcAuthMsg").textContent = "Check the inbox — the link lands you back here.";
+        }).catch(function (e) { $("mcAuthMsg").textContent = String(e.message || e); });
+      });
+
+      function stat(label, n) {
+        return '<div class="mc__stat"><b>' + n + "</b><span>" + label + "</span></div>";
+      }
+      function rowActs(kind, id, pairs) {
+        return '<div class="mc__acts">' + pairs.map(function (p) {
+          return '<button class="btn ' + (p[2] || "btn--ghost") + '" data-kind="' + kind + '" data-id="' + id + '" data-to="' + p[0] + '">' + p[1] + "</button>";
+        }).join("") + "</div>";
+      }
+      function wireActs(container, apply) {
+        container.querySelectorAll("[data-kind]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            apply(b.getAttribute("data-id"), b.getAttribute("data-to")).then(loadAll);
+          });
+        });
+      }
+
+      function loadAll() {
+        Promise.all([
+          A.listings().catch(function () { return null; }),
+          A.requests().catch(function () { return null; }),
+          A.members().catch(function () { return null; }),
+          A.sms().catch(function () { return null; }),
+        ]).then(function (r) {
+          var listings = r[0], reqs = r[1], members = r[2], sms = r[3];
+          if (listings === null && reqs === null && members === null) {
+            $("mcStats").innerHTML = "";
+            $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
+            $("mcRequests").innerHTML = $("mcMembers").innerHTML = $("mcSms").innerHTML = "";
+            return;
+          }
+          listings = listings || []; reqs = reqs || []; members = members || []; sms = sms || [];
+          var pend = listings.filter(function (l) { return l.status === "pending"; });
+          var fresh = reqs.filter(function (q) { return q.status === "new"; });
+          var applied = members.filter(function (m) { return m.status === "applied"; });
+          $("mcStats").innerHTML =
+            stat("pending listings", pend.length) + stat("new requests", fresh.length) +
+            stat("applications", applied.length) + stat("live listings", listings.filter(function (l) { return l.status === "live"; }).length) +
+            stat("texts opted in", sms.length);
+
+          $("mcListings").innerHTML = listings.length ? listings.map(function (l) {
+            return '<div class="mc__row' + (l.status === "pending" ? " is-hot" : "") + '"><h3>' + esc(l.name) +
+              '<span class="mc__tag">' + esc(l.status) + "</span></h3>" +
+              "<p>" + esc((l.roles || []).join(" · ")) + (l.area ? " — " + esc(l.area) : "") + "</p>" +
+              (l.blurb ? "<p>" + esc(l.blurb) + "</p>" : "") +
+              rowActs("listing", l.id, l.status === "live"
+                ? [["paused", "Pause"]]
+                : [["live", "Approve → live", "btn--ruby"], ["paused", "Pause"]]) +
+            "</div>";
+          }).join("") : "<p class='mc__empty'>No listings yet.</p>";
+          wireActs($("mcListings"), A.setListing);
+
+          $("mcRequests").innerHTML = reqs.length ? reqs.map(function (q) {
+            return '<div class="mc__row' + (q.status === "new" ? " is-hot" : "") + '"><h3>' + esc(q.name) +
+              '<span class="mc__tag">' + esc(q.status) + '</span><span class="mc__tag">' + esc(q.provider_slug || "—") + "</span></h3>" +
+              "<p><b>Reach:</b> " + esc(q.contact) + (q.date_wanted ? " · <b>Date:</b> " + esc(q.date_wanted) : "") + "</p>" +
+              (q.details ? "<p>" + esc(q.details) + "</p>" : "") +
+              rowActs("req", q.id, q.status === "new"
+                ? [["accepted", "Accept", "btn--ruby"], ["declined", "Decline"]]
+                : q.status === "accepted" ? [["done", "Mark done", "btn--ruby"]] : []) +
+            "</div>";
+          }).join("") : "<p class='mc__empty'>No requests yet.</p>";
+          wireActs($("mcRequests"), A.setRequest);
+
+          $("mcMembers").innerHTML = members.length ? members.map(function (m) {
+            return '<div class="mc__row' + (m.status === "applied" ? " is-hot" : "") + '"><h3>' + esc(m.name || "(no name)") +
+              '<span class="mc__tag">' + esc(m.status) + "</span></h3>" +
+              "<p>" + esc((m.interests || []).join(" · ") || "no interests picked") + "</p>" +
+              (m.note ? "<p>" + esc(m.note) + "</p>" : "") +
+              rowActs("member", m.id, m.status === "applied"
+                ? [["active", "Activate", "btn--ruby"], ["board", "Board track"], ["paused", "Pass"]]
+                : m.status === "active" ? [["board", "Board track", "btn--ruby"], ["paused", "Pause"]] : [["active", "Reactivate"]]) +
+            "</div>";
+          }).join("") : "<p class='mc__empty'>No applications yet.</p>";
+          wireActs($("mcMembers"), A.setMember);
+
+          $("mcSms").innerHTML = sms.length ? sms.map(function (t) {
+            return '<div class="mc__row"><h3>' + esc(t.phone) + '<span class="mc__tag">' + esc(t.source || "site") + "</span></h3>" +
+              "<p>" + esc(new Date(t.created_at).toLocaleString()) + "</p></div>";
+          }).join("") : "<p class='mc__empty'>Nobody on the list yet — the booking sheet feeds it.</p>";
+        });
+      }
+
+      if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        $("mcAuth").classList.add("mc__hidden");
+        $("mcIn").classList.remove("mc__hidden");
+        loadAll();
+      }
+    })();
+  </script>
+</body>
+</html>

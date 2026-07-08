@@ -132,5 +132,24 @@
     setRequestStatus: function (id, status) {
       return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
     },
+
+    /* Mission Control: the admin surface. RLS (docs/admin-schema.sql) only
+       answers these for the admin's own signed-in JWT — for anyone else
+       every one of these comes back empty or refused. */
+    admin: {
+      listings: function () { return authed("providers?order=created_at.desc&select=*"); },
+      setListing: function (id, status) {
+        return authed("providers?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      },
+      requests: function () { return authed("booking_requests?order=created_at.desc&select=*"); },
+      setRequest: function (id, status) {
+        return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      },
+      members: function () { return authed("members?order=created_at.desc&select=*"); },
+      setMember: function (id, status) {
+        return authed("members?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      },
+      sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
+    },
   };
 })();

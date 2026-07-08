@@ -1,18 +1,28 @@
 {
   "note": "The provider directory behind the Hire tab. Every listing is M-Verified before it appears; intake runs through interview.html (talent) and list-your-space.html (venues).",
-  "categories": ["Photo", "Video", "Web", "Studios", "Stages"],
+  "categories": [
+    "Photo",
+    "Video",
+    "Web",
+    "Studios",
+    "Stages"
+  ],
   "providers": [
     {
       "id": "mccluster",
       "name": "Matthew McCluster",
-      "roles": ["Photo", "Video", "Web"],
-      "headline": "Creative director · the builder of this site",
-      "area": "Connecticut · Georgia · travels",
+      "roles": [
+        "Photo",
+        "Video",
+        "Web"
+      ],
+      "headline": "Creative director \u00b7 the builder of this site",
+      "area": "Connecticut \u00b7 Georgia \u00b7 travels",
       "verified": "performer",
       "badgeColor": "#8b5cf6",
       "href": "hire.html",
       "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $8k."
+      "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k."
     }
   ]
 }

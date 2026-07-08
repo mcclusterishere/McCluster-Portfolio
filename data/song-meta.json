@@ -59,7 +59,12 @@
       "credit": "The Vaunt Private Flights jingle \u00b7 guitar by Zakir \u00b7 from the Vaunt EP (with \"Jet Pass\")",
       "album": "Vaunt \u2014 EP",
       "page": "song-vaunt.html",
-      "order": 8
+      "order": 8,
+      "pub": {
+        "writer": "Zaki \"Zakir\" Elhajoui \u2014 BMI, IPI 01209963535",
+        "publisher": "Zakirxyz Publishing \u2014 IPI 01210406031",
+        "contact": "Prodbyzakir@gmail.com"
+      }
     },
     "dealer-plates": {
       "title": "Dealer Plates (A-Side)",
