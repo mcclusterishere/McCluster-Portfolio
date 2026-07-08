@@ -96,6 +96,15 @@
       </div>
     </section>
 
+    <!-- THE M STOCK -->
+    <section class="ap-sec">
+      <p class="ap-k">The M Stock</p>
+      <h2 class="ap-h2">MCC · the public index</h2>
+      <div class="ap-offer" style="border-color:rgba(244,239,230,0.18);background:rgba(20,16,14,0.6)">
+        <div id="apStock"><p class="offer__note" style="margin:0">Reading the tape…</p></div>
+      </div>
+    </section>
+
     <!-- ON THE BOOKS -->
     <section class="ap-sec">
       <p class="ap-k">On the books</p>
@@ -120,8 +129,21 @@
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
   <script>
     (function () {
+      // the public index: verified standing + the market's pace, dollars private
+      (window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]))
+        .then(function (live) {
+          var data = window.MCC_STOCK.build({
+            uid: "mccluster",
+            listing: { status: "live", created_at: new Date(Date.now() - 20 * 864e5).toISOString(), updated_at: new Date().toISOString() },
+            marketN: Math.max((live || []).length, 4),
+          });
+          window.MCC_STOCK.mount(document.getElementById("apStock"), data, { public: true });
+        });
       document.querySelectorAll("a[data-cta]").forEach(function (a) {
         a.addEventListener("click", function () {
           if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: a.getAttribute("data-cta"), page: "profile-mccluster" });

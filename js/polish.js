@@ -190,6 +190,25 @@
     document.body.classList.add("has-appbar");
   }
 
+  /* ---------- the way back: every room has a door out ----------
+     A floating back button on every page but home — real history when
+     there is one, the front door when there isn't. ---------- */
+  (function () {
+    var here = location.pathname.split("/").pop() || "index.html";
+    if (here === "index.html") return;
+    var b = document.createElement("a");
+    b.className = "wayback";
+    b.href = "index.html";
+    b.setAttribute("aria-label", "Go back");
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+    b.addEventListener("click", function (ev) {
+      var sameSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
+      if (history.length > 1 && sameSite) { ev.preventDefault(); history.back(); }
+      // otherwise the default carries them to the front door
+    });
+    document.body.appendChild(b);
+  })();
+
   /* ---------- the app trail: pages opened FROM the app keep the thread ----------
      Any link carrying ?from=app gets a floating "‹ The App" chip so deep
      pages (song worlds, the 360) never strand the visitor. ---------- */

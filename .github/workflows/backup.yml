@@ -1,0 +1,30 @@
+name: Vault backup
+
+# Weekly export of every Supabase table. The service key lives as the
+# repo secret SUPABASE_SERVICE_KEY (Settings → Secrets → Actions); the
+# export is stored as a workflow artifact for 90 days and is NEVER
+# committed — booking contacts and the SMS list are consent-bound PII.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # every Monday, 9:00 UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Export every table
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/backup.mjs backup-out
+      - name: Store the vault (90-day retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-backup-${{ github.run_id }}
+          path: backup-out/
+          retention-days: 90

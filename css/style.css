@@ -4013,3 +4013,19 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 }
 .site-foot__links a { font-size: 0.68rem !important; letter-spacing: 0.06em; line-height: 1.5;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- the way back: every room has a door out ---- */
+.wayback {
+  position: fixed; left: clamp(0.8rem, 3vw, 1.4rem);
+  bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom) + 1rem);
+  z-index: 190; width: 2.9rem; height: 2.9rem; border-radius: 50%;
+  display: grid; place-items: center; text-decoration: none;
+  background: rgba(10, 8, 7, 0.72); backdrop-filter: blur(10px);
+  border: 1px solid rgba(244, 239, 230, 0.25);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.25s, transform 0.2s;
+}
+.wayback:hover { border-color: var(--ruby-hot); transform: translateX(-2px); }
+.wayback svg { width: 1.3rem; height: 1.3rem; stroke: var(--cream); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+/* the VR lock owns the left rail — the back button steps up out of the pause button's spot */
+html.vr-locked .wayback { bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom) + 4.6rem); }

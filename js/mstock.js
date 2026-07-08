@@ -19,7 +19,7 @@
   "use strict";
 
   var DAYS = 30;
-  var W = { done: 6, accepted: 2.5, signed: 8, locked: 3, performance: 4, live: 5 };
+  var W = { done: 6, accepted: 2.5, signed: 8, locked: 3, performance: 4, live: 5, standing: 0.55 };
 
   /* deterministic per-user, per-day drift: hash(uid+date) → -1..1 */
   function drift(uid, dayKey) {
@@ -51,20 +51,32 @@
     });
     (inp.performances || []).forEach(function (p) { add(p.created_at, W.performance); });
     if (inp.listing && inp.listing.status === "live") add(inp.listing.updated_at || inp.listing.created_at, W.live);
+    // verified standing is CONTINUOUS: a live listing credits every day it
+    // holds, so standing keeps you at par and labor moves you above it
+    var standing = inp.listing && inp.listing.status === "live";
 
     /* walk the last 30 days: labor compounds, quiet days cool toward par,
        and the market's size sets how hard the floor pushes back */
     var series = [];
     var v = 100;
     var now = Date.now();
+    // drift is wiggle, not destiny: zero-mean over the window per member,
+    // so no account is blessed or cursed by its own hash
+    var keys = [], drifts = [], dsum = 0;
     for (var i = DAYS - 1; i >= 0; i--) {
-      var k = dayKey(now - i * 864e5);
-      var earned = pts[k] || 0;
+      var kk = dayKey(now - i * 864e5);
+      keys.push(kk);
+      var dd = drift(uid, kk);
+      drifts.push(dd); dsum += dd;
+    }
+    var dmean = dsum / DAYS;
+    keys.forEach(function (k, idx) {
+      var earned = (pts[k] || 0) + (standing ? W.standing : 0);
       var pressure = 0.35 * Math.log(marketN + 1);      // more live players, faster the floor moves
-      v = v + earned - (earned ? 0 : pressure * 0.4) + drift(uid, k) * 1.4;
+      v = v + earned - (pts[k] ? 0 : pressure * 0.4) + (drifts[idx] - dmean) * 0.9;
       v = Math.max(38, v);
       series.push({ d: k, v: +v.toFixed(2) });
-    }
+    });
 
     var last = series[series.length - 1].v;
     var prev = series[series.length - 2] ? series[series.length - 2].v : last;
@@ -80,8 +92,9 @@
     };
   }
 
-  function mount(el, data) {
+  function mount(el, data, opts) {
     if (!el || !data) return;
+    opts = opts || {};
     var up = data.changePct >= 0;
     var col = up ? "#2fbf71" : "#e5383b";
     var hidKey = "mcc_stock_show";
@@ -93,13 +106,16 @@
       '<b style="font-family:var(--display);font-size:1.9rem;font-weight:400">' + data.value.toFixed(2) + "</b>" +
       '<span style="color:' + col + ';font-weight:700;font-size:0.9rem">' + (up ? "▲" : "▼") + " " +
       Math.abs(data.changePct).toFixed(2) + "%</span>" +
+      (opts.public ? "</div>" :
       '<button type="button" id="mstockDollar" style="margin-left:auto;border:1px solid rgba(244,239,230,0.3);' +
       'border-radius:100px;background:none;color:var(--cream-dim);font:inherit;font-size:0.66rem;' +
-      'letter-spacing:0.14em;text-transform:uppercase;padding:0.4em 1em;cursor:pointer">$</button></div>' +
+      'letter-spacing:0.14em;text-transform:uppercase;padding:0.4em 1em;cursor:pointer">$</button></div>') +
       '<canvas id="mstockCv" width="600" height="120" style="width:100%;height:60px;margin-top:0.5rem"></canvas>' +
-      '<p id="mstockMoney" style="min-height:1.3em;font-size:0.8rem;color:var(--cream-dim);margin-top:0.3rem"></p>' +
+      (opts.public ? "" : '<p id="mstockMoney" style="min-height:1.3em;font-size:0.8rem;color:var(--cream-dim);margin-top:0.3rem"></p>') +
       '<p style="font-size:0.68rem;color:var(--cream-dim);letter-spacing:0.08em;margin-top:0.2rem">' +
-      "Your labor vs the market's pace — bookings done, deals signed, shows logged move it up; the floor never sleeps.</p>";
+      (opts.public
+        ? "The public index \u2014 moves with the record: verified standing, the market's pace, the daily floor. Dollars stay private unless the holder shows them.</p>"
+        : "Your labor vs the market's pace \u2014 bookings done, deals signed, shows logged move it up; the floor never sleeps.</p>");
 
     var cv = el.querySelector("#mstockCv");
     var cx = cv.getContext("2d");
@@ -126,6 +142,7 @@
 
     var money = el.querySelector("#mstockMoney");
     var btn = el.querySelector("#mstockDollar");
+    if (opts.public || !btn) return; // the public view holds no ledger
     function paintMoney() {
       money.textContent = show
         ? "On the books: $" + data.dollars.toLocaleString() + " in signed deals"

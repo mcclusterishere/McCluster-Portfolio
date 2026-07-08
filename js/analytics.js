@@ -158,6 +158,9 @@ window.MCC_MODEL = (function () {
       Object.keys(S.doms).forEach(function (d) { S.doms[d] = +(S.doms[d] * k).toFixed(3); });
       S.heat = +(S.heat * k).toFixed(3);
       Object.keys(S.shows).forEach(function (d) { S.shows[d] = +(S.shows[d] * Math.pow(0.5, days / 7)).toFixed(2); });
+      // the streak: consecutive days are habit, and habit is a signal
+      var y = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+      S.streak = S.day === y ? (S.streak || 0) + 1 : 1;
       S.day = today; S.visits++;
       save();
     }
@@ -201,6 +204,7 @@ window.MCC_MODEL = (function () {
       // doesn't make a cold October visitor "locked"
       stage: S.heat < 6 ? "new" : S.heat < 25 ? "warming" : "locked",
       visits: S.visits, events: S.events, heat: S.heat,
+      streak: S.streak || 1,
       goals: S.goals,
     };
   }

@@ -53,6 +53,7 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -100,6 +101,7 @@
           (bits.length || t.notes ? '<div class="pv__card pv__offer"><h2>Their offer</h2>' +
             (bits.length ? "<p>" + bits.join(" · ") + "</p>" : "") +
             (t.notes ? '<p class="pv__note">' + esc(t.notes) + "</p>" : "") + "</div>" : "") +
+          '<div class="pv__card"><h2>The M Stock <span style="font-size:0.58rem;letter-spacing:0.2em;color:var(--cream-dim);font-family:var(--body)">PUBLIC INDEX</span></h2><div id="pvStock"></div></div>' +
           '<div class="pv__card"><h2>The deal</h2>' +
           '<p class="pv__note" style="margin:0 0 1rem">One engine: propose, counter, lock, sign — every percentage on the record. Signed out, it\u2019s a quick request straight to their inbox.</p>' +
           '<div class="finale__actions"><a class="btn btn--ruby" href="' + dealHref + '" data-cta="pv-deal">Make a deal with ' + esc(p.name.split(" ")[0]) + " →</a>" +
@@ -122,6 +124,15 @@
             if (au.paused) au.play().catch(function () {}); else au.pause();
             track("provider_music", { who: slug, playing: !au.paused });
           });
+        }
+        // standard issue: every profile carries its public index from day one
+        if (window.MCC_STOCK) {
+          var stock = window.MCC_STOCK.build({
+            uid: slug,
+            listing: { status: "live", created_at: new Date(Date.now() - 14 * 864e5).toISOString(), updated_at: new Date().toISOString() },
+            marketN: Math.max(all.length, 3),
+          });
+          window.MCC_STOCK.mount(document.getElementById("pvStock"), stock, { public: true });
         }
         track("provider_profile_view", { who: slug });
       });
