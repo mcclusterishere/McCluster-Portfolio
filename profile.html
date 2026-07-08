@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Profile · M Network · McCluster</title>
+  <meta name="description" content="Your room on the platform: your listing, your M Stock, your deals, your persona — one email signs you in, no password, no app store.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .pf { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 46rem; margin: 0 auto; }
+    .pf h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 9vw, 4rem); }
+    .pf__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 52ch; }
+    .pf__sub b { color: var(--cream); }
+    .pf__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
+      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.4rem; }
+    .pf__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.9rem; }
+    .pf__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.7rem; }
+    .pf__in:focus { outline: none; border-color: var(--ruby-hot); }
+    .pf__msg { color: var(--ruby-hot); font-size: 0.85rem; margin-top: 0.6rem; min-height: 1.2em; }
+    .pf__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
+    .pf__hidden { display: none !important; }
+    .pf__gets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem; margin: 1rem 0 0; }
+    .pf__get { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.9rem; background: rgba(10, 8, 7, 0.45); }
+    .pf__get b { display: block; color: var(--cream); font-size: 0.9rem; }
+    .pf__get small { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.45; display: block; margin-top: 0.2rem; }
+    .pf__who { display: flex; align-items: center; gap: 0.8rem; }
+    .pf__who img { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(229, 56, 59, 0.6); padding: 8px; background: var(--ink-2); }
+    .pf__who b { display: block; font-size: 1rem; }
+    .pf__who small { color: var(--cream-dim); font-size: 0.76rem; }
+    .pf__rooms { display: grid; gap: 0.6rem; margin-top: 0.4rem; }
+    .pf__room { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; text-decoration: none;
+      color: var(--cream); border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.9rem 1rem;
+      transition: border-color 0.25s; }
+    .pf__room:hover { border-color: var(--ruby-hot); }
+    .pf__room b { font-size: 0.92rem; }
+    .pf__room small { display: block; color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.15rem; }
+    .pf__room span:last-child { color: var(--ruby-hot); }
+    .ta__status { display: inline-flex; align-items: center; gap: 0.5em; font-size: 0.62rem; letter-spacing: 0.2em;
+      text-transform: uppercase; border-radius: 100px; padding: 0.5em 1.1em; border: 1px solid rgba(244, 239, 230, 0.25); color: var(--cream-dim); }
+    .ta__status.is-live { border-color: #2fbf71; color: #2fbf71; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="market.html">The Market</a>
+      <a href="app.html">Music</a>
+    </nav>
+  </header>
+  <main class="pf">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Your room on the platform</p>
+    <h1 id="pfTitle">Your<br>Profile.</h1>
+
+    <!-- signed out: the sign-up -->
+    <div id="pfOut">
+      <p class="pf__sub">One email and the platform knows you — <b>no password, no app store, no forms.</b>
+        The link signs you in on this device and your room is waiting.</p>
+      <section class="pf__card">
+        <h2>Step inside</h2>
+        <input class="pf__in" id="pfEmail" type="email" placeholder="you@yourwork.com" autocomplete="email">
+        <button class="btn btn--ruby" id="pfSignIn" type="button">Sign up / sign in — email me the key</button>
+        <p class="pf__msg" id="pfMsg"></p>
+        <div class="pf__gets">
+          <div class="pf__get"><b>Your M Stock</b><small>Your labor as a living ticker — bookings, deals, shows move it.</small></div>
+          <div class="pf__get"><b>Your deals</b><small>Propositions, splits, signatures — the full trail in the Market.</small></div>
+          <div class="pf__get"><b>Your listing</b><small>Get found and booked — you keep 100% of your rate.</small></div>
+          <div class="pf__get"><b>Follows you</b><small>Your music, model, and persona ride between your devices.</small></div>
+        </div>
+        <p class="pf__note">Signing up is free. The network runs under the Equity Uprise nonprofit —
+          part of every dollar spent here builds the next artist.</p>
+      </section>
+    </div>
+
+    <!-- signed in: the room -->
+    <div id="pfIn" class="pf__hidden">
+      <section class="pf__card">
+        <div class="pf__who">
+          <img src="assets/img/m-mark.png" alt="">
+          <span><b id="pfWho">—</b><small id="pfListing">Checking your listing…</small></span>
+        </div>
+      </section>
+
+      <section class="pf__card" id="pfStockCard" style="display:none">
+        <h2>Your M Stock <span class="ta__status">live on your labor</span></h2>
+        <div id="pfStock"></div>
+      </section>
+
+      <section class="pf__card">
+        <h2>Your rooms</h2>
+        <div class="pf__rooms">
+          <a class="pf__room" href="market.html#yours"><span><b>Your deals</b><small id="pfDeals">The Market · the full trail</small></span><span>→</span></a>
+          <a class="pf__room" href="talent.html"><span><b>Your listing &amp; inbox</b><small>The Talent App — rate, roles, requests</small></span><span>→</span></a>
+          <a class="pf__room" href="packet.html"><span><b>Your performances</b><small>PRO packets — get paid for the stage</small></span><span>→</span></a>
+          <a class="pf__room" href="members.html"><span><b>The organization</b><small>Boards · programs · the donor circle</small></span><span>→</span></a>
+          <a class="pf__room" href="app.html"><span><b>Your music</b><small>The player that remembers you</small></span><span>→</span></a>
+        </div>
+        <p class="pf__note"><button class="btn btn--ghost" id="pfSignOut" type="button" style="margin-top:0.4rem">Sign out</button></p>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/sync.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function $(id) { return document.getElementById(id); }
+
+      $("pfSignIn").addEventListener("click", function () {
+        var em = $("pfEmail").value.trim();
+        if (!em) { $("pfMsg").textContent = "Drop your email first."; return; }
+        $("pfMsg").textContent = "Sending the key…";
+        window.MCC_AUTH.signIn(em).then(function () {
+          $("pfMsg").textContent = "Check your email — the link signs you in right here.";
+          track("profile_signup_sent", {});
+        }).catch(function (e) { $("pfMsg").textContent = String(e.message || e); });
+      });
+      $("pfSignOut").addEventListener("click", function () {
+        window.MCC_AUTH.signOut().then(function () { location.reload(); });
+      });
+
+      if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        $("pfOut").classList.add("pf__hidden");
+        $("pfIn").classList.remove("pf__hidden");
+        $("pfWho").textContent = window.MCC_SUPA.email() || "Signed in";
+        window.MCC_NET.myListing().then(function (mine) {
+          $("pfListing").textContent = mine
+            ? "Listing: " + mine.name + " · " + mine.status
+            : "No listing yet — set one up in the Talent App";
+        }).catch(function () { $("pfListing").textContent = "Your room, your rules."; });
+        window.MCC_NET.myDeals().then(function (res) {
+          var n = (res.rows || []).length;
+          if (n) $("pfDeals").textContent = n + (n === 1 ? " deal" : " deals") + " on the record · the Market";
+          // the stock rides here too
+          Promise.all([
+            window.MCC_NET.myRequests().catch(function () { return []; }),
+            window.MCC_NET.myPerformances().catch(function () { return []; }),
+            window.MCC_NET.listProviders().catch(function () { return []; }),
+          ]).then(function (r) {
+            var data = window.MCC_STOCK.build({
+              uid: window.MCC_SUPA.uid() || "guest",
+              listing: res.mine, requests: r[0], deals: res.rows, performances: r[1],
+              marketN: (r[2] || []).length,
+            });
+            $("pfStockCard").style.display = "";
+            window.MCC_STOCK.mount($("pfStock"), data);
+          });
+        }).catch(function () {});
+      }
+      track("profile_view", { authed: !!(window.MCC_AUTH.user && window.MCC_AUTH.user()) });
+    })();
+  </script>
+</body>
+</html>

@@ -413,6 +413,10 @@
           $("pWho").innerHTML = '<option value="">Pick from the floor…</option>' +
             DIR.map(function (p) { return '<option value="' + esc(p.slug || p.id) + '">' + esc(p.name) + " — " + esc(p.headline || "") + "</option>"; }).join("");
           renderChips(); render();
+          if (Q.get("with")) {
+            var opt = Array.prototype.find.call($("pWho").options, function (o) { return o.value === Q.get("with"); });
+            if (opt) { $("pWho").value = Q.get("with"); $("pWho").dispatchEvent(new Event("change")); }
+          }
         });
       }
       $("pWho").addEventListener("change", function () {
@@ -656,6 +660,9 @@
       }
 
       /* ---------- boot ---------- */
+      // arriving with intent: ?with=slug&kind=... preloads the builder
+      var Q = new URLSearchParams(location.search);
+      if (Q.get("kind")) { var ko = $("pKind").querySelector('[value="' + Q.get("kind") + '"]'); if (ko) $("pKind").value = Q.get("kind"); }
       shapeForm();
       loadDirectory();
       if (AUTHED) {
