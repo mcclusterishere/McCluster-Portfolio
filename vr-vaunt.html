@@ -165,6 +165,42 @@
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });
 
+      /* ---- the watchdog: a black cabin is never the answer. If the film
+             hasn't produced a frame in 8 seconds (or errors), the poster
+             steps in with a retry — a clear state instead of a void. ---- */
+      (function () {
+        var shown = false;
+        function fallback(msg) {
+          if (shown) return;
+          shown = true;
+          var ov = document.createElement("div");
+          ov.id = "vrFallback";
+          ov.style.cssText = "position:absolute;inset:0;z-index:4;display:grid;place-items:center;text-align:center;" +
+            "background:url(assets/img/vaunt-360-poster.jpg) center/cover no-repeat;";
+          ov.innerHTML =
+            '<div style="background:rgba(10,8,7,0.78);backdrop-filter:blur(6px);border-radius:18px;padding:1.6rem 1.5rem;max-width:22rem">' +
+            '<p style="font-family:var(--display);text-transform:uppercase;font-size:1.3rem">' + msg + "</p>" +
+            '<p style="color:var(--cream-dim);font-size:0.85rem;line-height:1.5;margin:0.5rem 0 1rem">The 360 film is a heavy lift on slow connections — the cabin is still real.</p>' +
+            '<button class="vr__btn" id="vrRetry" type="button">Try again</button> ' +
+            '<a class="vr__btn" href="vaunt.html" style="text-decoration:none">The Vaunt universe</a></div>';
+          document.querySelector(".vr").appendChild(ov);
+          document.getElementById("vrRetry").addEventListener("click", function () {
+            shown = false; ov.remove();
+            try { viewer.media.load(); viewer.media.play().catch(function () {}); } catch (e) {}
+            setTimeout(check, 8000);
+          });
+          if (window.MCC_TRACK) window.MCC_TRACK("vr_fallback", { why: msg.slice(0, 40) });
+        }
+        function check() {
+          var m = viewer && viewer.media;
+          if (!m || m.readyState < 2) fallback("Loading the cabin… it's a big one");
+        }
+        if (viewer && viewer.media) {
+          viewer.media.addEventListener("error", function () { fallback("The film hit turbulence"); });
+        }
+        setTimeout(check, 8000);
+      })();
+
       var coach = document.getElementById("vrCoach");
       var seen = false;
       document.getElementById("vrCanvas").addEventListener("pointerdown", function () {

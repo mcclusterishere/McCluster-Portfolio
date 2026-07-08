@@ -190,6 +190,18 @@
     document.body.classList.add("has-appbar");
   }
 
+  /* ---------- the app trail: pages opened FROM the app keep the thread ----------
+     Any link carrying ?from=app gets a floating "‹ The App" chip so deep
+     pages (song worlds, the 360) never strand the visitor. ---------- */
+  (function () {
+    if (new URLSearchParams(location.search).get("from") !== "app") return;
+    var crumb = document.createElement("a");
+    crumb.className = "app-crumb";
+    crumb.href = "app.html";
+    crumb.innerHTML = "&#8249; The App";
+    document.body.appendChild(crumb);
+  })();
+
   /* ---------- the autopilot: the model works the door ----------
      Exit intent (desktop, mouse breaks for the top of the window):
      ONE goal-aware, fatigue-aware parting card, in the voice this

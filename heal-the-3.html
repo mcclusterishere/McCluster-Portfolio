@@ -115,6 +115,9 @@
       text-transform: uppercase; line-height: 1.02; letter-spacing: 0.005em;
       font-size: clamp(1.35rem, 5.4vw, 2.9rem); color: rgba(244,239,230,0.24);
       transition: color 0.4s ease, opacity 0.4s ease, transform 0.4s ease; transform: scale(0.94); }
+    .h3lyr__line--kingdom { color: #d4a017; text-shadow: 0 0 18px rgba(212, 160, 23, 0.45); }
+    .h3lyr__line--kingdom.is-on { color: #ffd75e; text-shadow: 0 0 26px rgba(255, 215, 94, 0.75); }
+    .h3lyr__crown { font-size: 0.8em; opacity: 0.85; }
     .h3lyr__line.is-past { color: rgba(244,239,230,0.16); }
     .h3lyr__line.is-active { color: var(--cream); transform: scale(1);
       text-shadow: 0 0 34px rgba(229,56,59,0.55), 0 0 10px rgba(255,255,255,0.25); }
@@ -212,7 +215,7 @@
 
   <footer class="site-foot">
     <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
-    <p class="site-foot__note">© 2026 McCluster × VVS Madè · Heal the 3 · released under Equity Uprise · in production.</p>
+    <p class="site-foot__note">© 2026 McCluster × VVS Madè · Heal the 3 · released under Equity Uprise · in production. For the kingdom.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
@@ -270,7 +273,12 @@
         lines = data.lines || [];
         dur = data.duration || 165;
         scroll.innerHTML = lines.map(function (l, i) {
-          return '<div class="h3lyr__line" data-i="' + i + '">' + escapeHtml(l.text) + "</div>";
+          // the kingdom's lines carry its light — chieftain and tribal
+          // bars glow gold, marked but never explained in full
+          var holy = /chieftain|tribal/i.test(l.text);
+          return '<div class="h3lyr__line' + (holy ? " h3lyr__line--kingdom" : "") + '" data-i="' + i + '"' +
+            (holy ? ' title="For the kingdom."' : "") + '>' + escapeHtml(l.text) +
+            (holy ? ' <span class="h3lyr__crown" aria-label="For the kingdom">&#9818;</span>' : "") + "</div>";
         }).join("");
         nodes = Array.prototype.slice.call(scroll.querySelectorAll(".h3lyr__line"));
         built = true;

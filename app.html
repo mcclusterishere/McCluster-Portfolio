@@ -11,7 +11,21 @@
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
     body { background: #0a0807; }
-    .sp { max-width: 60rem; margin: 0 auto; padding: 0 0 9.5rem; position: relative; }
+    /* the floor clears the appbar AND the mini player — no CTA ever sits under the bar */
+    .sp { max-width: 60rem; margin: 0 auto; padding: 0 0 calc(12.5rem + env(safe-area-inset-bottom)); position: relative; }
+    .sp__stats-empty { grid-column: 1 / -1; color: var(--cream-dim); font-size: 0.82rem; line-height: 1.55;
+      border: 1px dashed rgba(244, 239, 230, 0.18); border-radius: 12px; padding: 0.9rem 1rem; }
+    /* the door: tap in, arrive with sound */
+    .sp__door { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center;
+      background: rgba(10, 8, 7, 0.92); backdrop-filter: blur(10px); transition: opacity 0.45s; }
+    .sp__door.is-gone { opacity: 0; pointer-events: none; }
+    .sp__door-in { text-align: center; max-width: 24rem; padding: 1.5rem; }
+    .sp__door-in img { width: 64px; margin-bottom: 0.8rem; }
+    .sp__door-in b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 2rem; }
+    .sp__door-in p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin: 0.5rem 0 1.2rem; }
+    .sp__door-in .btn { margin: 0.25rem; }
+    /* now-sheet actions: from the player into the worlds */
+    .now__acts { display: flex; gap: 0.6rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
     /* the vibe: a time-of-day gradient wash behind the shelf, Spotify-style */
     .sp__glow { position: absolute; top: 0; left: 0; right: 0; height: 44vh; z-index: -1; pointer-events: none;
       background:
@@ -220,17 +234,17 @@
     <a class="sp__persona" id="personaCard" href="psychology-markers.html#quiz" style="display:none" data-cat="experience">
       <span class="sp__persona-meter" aria-hidden="true"><i id="personaNeedle"></i></span>
       <span class="sp__persona-txt">
-        <b id="personaHead">Meet your persona</b>
-        <small id="personaSub">Nine sayings, two sides each — see which side you're on.</small>
+        <h3 id="personaHead" style="font-size:0.85rem;font-family:var(--body);font-weight:700">Meet your persona</h3>
+        <small id="personaSub">Take the 9-saying scan — see which side you're on, unlock your For You.</small>
       </span>
       <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
     </a>
     <div id="bill" data-cat="song record"></div>
 
     <!-- your listening: the analytics strip -->
-    <section class="sprow" id="statsRow" style="display:none" data-cat="song">
-      <div class="sprow__t"><div><p class="sprow__k">Your data &middot; lives on this device</p><h2>Your listening</h2></div></div>
-      <div class="sp__stats" id="stats"></div>
+    <section class="sprow" id="statsRow" data-cat="song">
+      <div class="sprow__t"><div><p class="sprow__k">Your data &middot; lives on this device &middot; never on a server</p><h2>Your listening</h2></div></div>
+      <div class="sp__stats" id="stats"><p class="sp__stats-empty">Play anything and your stats appear here — rotation, likes, last played. All of it stays in this browser. Yours.</p></div>
     </section>
 
     <!-- the people: artist circles -->
@@ -312,6 +326,10 @@
           <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
         </button>
       </div>
+      <div class="now__acts">
+        <a class="btn btn--ghost" id="nowWorld" href="#" hidden>Open the song world →</a>
+        <a class="btn btn--ruby" id="nowOwn" href="#" target="_blank" rel="noopener" hidden>Own it · give what's fair</a>
+      </div>
     </div>
   </section>
 
@@ -345,6 +363,7 @@
   <audio id="au" preload="none"></audio>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
@@ -400,10 +419,11 @@
       function card(it, wide) {
         var playable = !!it.audio;
         var kind = KIND_LABEL[it.kind] || (it.kind || "").replace(/^./, function (c) { return c.toUpperCase(); });
+        var page = it.page ? it.page + (it.page.indexOf("?") === -1 ? "?from=app" : "&from=app") : "#";
         return '<div class="spc' + (wide ? " spc--wide" : "") + '">' +
-          '<a href="' + esc(it.page || "#") + '" aria-label="' + esc(it.title) + '">' +
+          '<a href="' + esc(page) + '" aria-label="' + esc(it.title) + '">' +
             '<span class="spc__art">' + (kind ? '<span class="spc__kind">' + esc(kind) + "</span>" : "") +
-            '<img loading="lazy" src="' + esc(it.poster) + '" alt=""></span></a>' +
+            '<img loading="lazy" src="' + esc(it.poster) + '" alt="' + esc(it.title) + ' — cover art"></span></a>' +
           (playable ? '<button class="spc__play" type="button" data-play="' + esc(it.id) + '" aria-label="Play ' + esc(it.title) + '"><svg viewBox="0 0 24 24"><path d="' + PLAY + '"/></svg></button>' : "") +
           '<p class="spc__t">' + esc(it.title) + '</p><p class="spc__s">' + esc(it.subtitle || "") + "</p></div>";
       }
@@ -435,7 +455,6 @@
           var likes = (r[1] || []).filter(function (id) { return CAT[id]; });
           if (!recents.length && !likes.length) return;
           var top = recents[0] ? CAT[recents[0].item_id].title : "—";
-          $("statsRow").style.display = "";
           $("stats").innerHTML =
             '<div class="sp__stat"><b>' + recents.length + "</b><span>in rotation</span></div>" +
             '<div class="sp__stat"><b>' + likes.length + "</b><span>liked</span></div>" +
@@ -556,6 +575,14 @@
         ["miT", "nowT"].forEach(function (x) { $(x).textContent = it.title; });
         ["miS", "nowS"].forEach(function (x) { $(x).textContent = it.subtitle || "McCluster"; });
         $("miArt").src = it.poster; $("nowArt").src = it.poster;
+        // the sheet's doors follow the track: into its world, or own it
+        var w = $("nowWorld"), o = $("nowOwn");
+        if (it.page) { w.href = it.page + "?from=app"; w.hidden = false; } else w.hidden = true;
+        var payKey = window.PAYMENTS && Object.keys(window.PAYMENTS).filter(function (k) {
+          return window.PAYMENTS[k].page === it.page;
+        })[0];
+        if (payKey && window.PAYMENTS[payKey].link) { o.href = window.PAYMENTS[payKey].link; o.hidden = false; }
+        else o.hidden = true;
         $("mini").classList.add("is-on");
         DB.progress(it.id).then(function (p) {
           if (p && p.position_s > 4 && p.position_s < (au.duration || 9e9) - 8) au.currentTime = p.position_s;
@@ -614,6 +641,45 @@
       /* sheet open/close */
       $("mini").addEventListener("click", function () { $("now").classList.add("is-open"); });
       $("nowDown").addEventListener("click", function () { $("now").classList.remove("is-open"); });
+
+      // the appbar's Now Playing tab opens the REAL now-playing screen here
+      (function () {
+        var tab = document.getElementById("appbarNP");
+        if (!tab) return;
+        tab.addEventListener("click", function (ev) {
+          if (!nowId) return; // nothing loaded: the global handler starts playback
+          ev.preventDefault(); ev.stopImmediatePropagation();
+          $("now").classList.add("is-open");
+        }, true);
+      })();
+
+      /* ---------- the door: first arrival gets a tap-to-enter moment ----------
+         Browsers rightly demand a gesture before sound; this makes the gesture
+         the welcome. One tap starts the music and the app arrives alive. */
+      (function () {
+        var entered = false;
+        try { entered = localStorage.getItem("mcc_app_entered") === "1"; } catch (e) {}
+        if (entered) return;
+        var ov = document.createElement("div");
+        ov.className = "sp__door";
+        ov.innerHTML =
+          '<div class="sp__door-in">' +
+          '<img src="assets/img/m-mark.png" alt="McCluster">' +
+          "<b>The App</b>" +
+          "<p>The music, the films, the record — a player that remembers you, on your device only.</p>" +
+          '<button class="btn btn--ruby" type="button" data-door="sound">&#9654;&#xFE0E; Tap in — enter with sound</button>' +
+          '<button class="btn btn--ghost" type="button" data-door="quiet">Enter quiet</button></div>';
+        ov.addEventListener("click", function (ev) {
+          var b = ev.target.closest("[data-door]");
+          if (!b) return;
+          try { localStorage.setItem("mcc_app_entered", "1"); } catch (e) {}
+          if (b.getAttribute("data-door") === "sound") window.MCC_NP_PLAY();
+          ov.classList.add("is-gone");
+          setTimeout(function () { ov.remove(); }, 500);
+          if (window.MCC_TRACK) window.MCC_TRACK("app_enter", { sound: b.getAttribute("data-door") === "sound" });
+        });
+        document.body.appendChild(ov);
+      })();
 
       /* seek + clocks */
       var scrubbing = false;

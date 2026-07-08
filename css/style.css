@@ -3978,3 +3978,14 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
   50% { box-shadow: 0 0 0 6px rgba(229, 56, 59, 0.35), 0 0 26px rgba(229, 56, 59, 0.8); }
 }
 @media (prefers-reduced-motion: reduce) { .getapp-coach__shot i { animation: none; } }
+
+/* ---- the app trail: pages opened from The App keep the thread ---- */
+.app-crumb {
+  position: fixed; top: calc(0.8rem + env(safe-area-inset-top)); left: 50%;
+  transform: translateX(-50%); z-index: 210;
+  padding: 0.45em 1.1em; border-radius: 100px; text-decoration: none;
+  background: rgba(10, 8, 7, 0.75); backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 56, 59, 0.5); color: var(--cream);
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.app-crumb:hover { background: rgba(193, 18, 31, 0.4); }

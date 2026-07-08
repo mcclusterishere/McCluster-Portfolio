@@ -398,6 +398,33 @@
       // the amount is a suggestion and the giver sets their own
       if (entry.label) el.textContent = entry.label;
       else if (entry.suggest) el.textContent = (el.textContent || "").trim() + " \u00b7 suggested " + entry.suggest;
+      // one clear beat before Square: what you get, where it goes
+      if (/square\.link\/u\/MBVeuzoo/.test(entry.link)) {
+        el.addEventListener("click", function (e) {
+          if (el.dataset.confirmed) { delete el.dataset.confirmed; return; }
+          e.preventDefault();
+          var ov = document.createElement("div");
+          ov.className = "getapp-coach is-on";
+          ov.setAttribute("role", "dialog");
+          ov.innerHTML =
+            '<div class="getapp-coach__card">' +
+            '<b>Heading to the register</b>' +
+            '<p>You\u2019re going to the nonprofit\u2019s Square page' + (entry.suggest ? " \u2014 suggested " + entry.suggest + ", give what\u2019s fair" : " \u2014 give what\u2019s fair") + ".</p>" +
+            '<p class="getapp-coach__note">The track is yours as a thank-you, and every dollar funds Equity Uprise programming. Square handles the payment; we never see your card.</p>' +
+            '<button type="button" data-go="1">Continue to Square \u2197</button> ' +
+            '<button type="button" style="background:none;border:1px solid rgba(244,239,230,0.3);color:var(--cream-dim)">Stay here</button></div>';
+          ov.addEventListener("click", function (ev) {
+            var go = ev.target.closest("[data-go]");
+            if (go) {
+              el.dataset.confirmed = "1";
+              window.open(entry.link, "_blank", "noopener");
+              track("cta_click", { label: "donate_confirmed", song: window.SONG.key, page: "song" });
+            }
+            ov.remove();
+          });
+          document.body.appendChild(ov);
+        });
+      }
     } else {
       el.classList.add("is-pending");
       el.addEventListener("click", function (e) {

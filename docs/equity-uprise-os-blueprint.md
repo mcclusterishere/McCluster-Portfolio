@@ -198,6 +198,15 @@ same spine to AI assistants: list providers, file bookings, work statuses — th
 
 ---
 
+## 10.5 The Kingdom (private)
+
+Behind every entity in this document stands the tribe — **referenced publicly
+only as "the kingdom," in a holy register, never by name**. Its registration,
+EIN, and documents stay off this repo and off the site permanently. Public
+touchpoints are limited to reverent one-liners (footers, closing lines) and
+the gold-lit lyric bars (chieftain / tribal) on the Heal the 3 experience.
+The citation and registration papers live with Matthew only.
+
 ## 11. Standing constraints (do not violate)
 
 - No AI attribution anywhere public.
