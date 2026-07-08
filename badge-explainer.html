@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Badge Explainer — M-Verified · McCluster</title>
-  <meta name="description" content="What every McCluster verification badge means, what it takes to earn it, and how it's proven.">
+  <meta name="description" content="The six M-Verified badges — who you are on the network. What each one means, what it takes to earn it, and how it's proven. Not to be confused with amenities, which are what a space offers.">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -71,50 +71,30 @@
         return;
       }
 
-      fetch("data/service-badges.json", { cache: "no-cache" })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          var badge = data.badges.find(function (b) { return b.id === want; });
+      // legacy: the amenity-style seals moved to their own page. Send old
+      // ?badge= links there so nothing 404s, preserving the id.
+      if (want) { location.replace("amenities.html?a=" + encodeURIComponent(want)); return; }
 
-          if (badge) {
-            var sec = data.sections[badge.section] || { label: badge.section, color: "#e5383b" };
-            var levels = { self: "Self-attested", document: "Document-verified", site: "Site-verified by McCluster" };
-            document.title = badge.name + " — Badge Explainer · McCluster";
-            body.innerHTML =
-              '<div class="bexp__hero">' +
-              '<span class="mbadge" style="--badge-c:' + sec.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
-              "<div><p class='bexp__section'>" + esc(sec.label) + " · McCluster Approved</p><h1>" + esc(badge.name) + "</h1></div></div>" +
-              '<div class="bexp__panel"><h3>What this badge means</h3><p>' + esc(badge.meaning) + "</p></div>" +
-              '<div class="bexp__panel"><h3>What it takes to earn it</h3><ul>' +
-              badge.requirements.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") +
-              "</ul></div>" +
-              '<div class="bexp__panel"><h3>How it\'s proven</h3><p>' + esc(badge.proof) + "</p>" +
-              '<p style="margin-top:0.8rem"><span class="bexp__attest">' + esc(levels[badge.attestation] || badge.attestation) + "</span></p>" +
-              "<p style='margin-top:0.8rem'>" + esc(data.attestation_levels[badge.attestation] || "") + "</p></div>";
-            track("badge_explainer_view", { badge_id: badge.id, section: badge.section, page: "badge-explainer" });
-          } else {
-            // no badge picked (or a stale link): show the full legend, grouped by section
-            body.innerHTML =
-              '<div class="bexp__hero"><div><p class="bexp__section">The Badge System</p><h1>Every Seal,<br>Explained</h1></div></div>' +
-              '<div class="bexp__panel"><p>Every badge on the McCluster network is earned through the verification process — never bought. ' +
-              "Tap any seal to see what it means, what it takes, and how it's proven.</p></div>" +
-              Object.keys(data.sections).map(function (key) {
-                var sec = data.sections[key];
-                return "<h2 class='bexp__section' style='margin:1.8rem 0 0.4rem'>" + esc(sec.label) + "</h2>" +
-                  '<div class="bexp__legend">' +
-                  data.badges.filter(function (b) { return b.section === key; }).map(function (b) {
-                    return '<a class="bexp__card" href="badge-explainer.html?badge=' + encodeURIComponent(b.id) + '">' +
-                      '<span class="mbadge" style="--badge-c:' + sec.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
-                      "<span><b>" + esc(b.name) + "</b><small>" + esc(b.short) + "</small></span></a>";
-                  }).join("") +
-                  "</div>";
-              }).join("");
-            track("badge_explainer_view", { badge_id: "legend", page: "badge-explainer" });
-          }
-        })
-        .catch(function () {
-          body.innerHTML = '<div class="bexp__hero"><h1>The registry is offline</h1></div><div class="bexp__panel"><p>Try again in a moment, or head back to the network.</p></div>';
-        });
+      // the legend: the six M-Verified badges — who you are on the network.
+      // All wear the M seal because they all mean the same thing: verified.
+      var ents = window.MCC_ENTITIES || {};
+      var order = ["venue", "performer", "creator", "rights-owner", "nonprofit", "federal"];
+      document.title = "The M-Verified Badges · McCluster";
+      body.innerHTML =
+        '<div class="bexp__hero"><span class="mbadge" style="--badge-c:#e5383b"><img src="assets/img/m-mark.png" alt=""></span>' +
+        '<div><p class="bexp__section">The Badge System</p><h1>Six Seals,<br>One Standard.</h1></div></div>' +
+        '<div class="bexp__panel"><p>A <strong style="color:var(--cream)">badge is who you are</strong> on the network — verified identity, checked against the issuer, never bought. ' +
+        "There are six, one per kind of member. Tap any seal for what it means, what it takes, and how it's proven.</p>" +
+        '<p class="am__note">Looking for lighting, a vocal booth, a green room? Those aren’t badges — they’re ' +
+        '<a href="amenities.html">amenities</a>, what a space offers, each with its own emblem.</p></div>' +
+        '<div class="bexp__legend">' +
+        order.filter(function (k) { return ents[k]; }).map(function (k) {
+          var e = ents[k];
+          return '<a class="bexp__card" href="badge-explainer.html?entity=' + encodeURIComponent(k) + '">' +
+            '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+            "<span><b>" + esc(e.badge) + "</b><small>" + esc(e.label) + "</small></span></a>";
+        }).join("") + "</div>";
+      track("badge_explainer_view", { badge_id: "legend", page: "badge-explainer" });
     })();
   </script>
 </body>

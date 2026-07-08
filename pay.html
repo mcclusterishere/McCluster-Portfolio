@@ -92,6 +92,29 @@
     .mp__sechead b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.35rem; }
     .mp__sechead small { display: block; color: var(--cream-dim); font-size: 0.75rem; margin-top: 0.15rem; }
 
+    /* ---- the You room ---- */
+    .mp__you h1 { position: absolute; left: -9999px; }
+    .mp__idcard { display: flex; align-items: center; gap: 0.85rem; border: 1px solid rgba(244, 239, 230, 0.14);
+      border-radius: 16px; background: rgba(20, 16, 14, 0.6); padding: 1rem 1.1rem; margin: 0.9rem 0 0.3rem; }
+    .mp__idtick { flex: none; width: 60px; height: 40px; display: grid; place-items: center; border-radius: 10px;
+      font-size: 0.8rem; font-weight: 800; letter-spacing: 0.04em; background: rgba(10, 8, 7, 0.75);
+      border: 1.5px solid var(--badge-c, var(--ruby-hot)); color: var(--badge-c, var(--ruby-hot)); }
+    .mp__idcard b { display: block; font-size: 1rem; line-height: 1.2; }
+    .mp__idcard small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.15rem; }
+    .mp__idcard .mp__role { display: inline-block; margin-top: 0.35rem; font-size: 0.56rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .mp__toolhead { margin: 1.3rem 0 0.2rem; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; }
+    .mp__tools { display: grid; gap: 0.55rem; margin-top: 0.5rem; }
+    .mp__tool { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--cream);
+      border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 13px; padding: 0.85rem 1rem;
+      background: rgba(20, 16, 14, 0.5); transition: border-color 0.2s, transform 0.2s; }
+    .mp__tool:active, .mp__tool:hover { border-color: var(--ruby-hot); transform: translateY(-2px); }
+    .mp__tool b { font-size: 0.9rem; }
+    .mp__tool small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.12rem; line-height: 1.35; }
+    .mp__tool .mp__arw { margin-left: auto; color: var(--ruby-hot); flex: none; }
+    .mp__signin { text-align: center; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px;
+      background: rgba(20, 16, 14, 0.6); padding: 1.6rem 1.2rem; margin-top: 1rem; }
+
     /* ---- the app's own bar ---- */
     .mp__bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; max-width: 30rem; margin: 0 auto;
       background: rgba(12, 9, 8, 0.92); backdrop-filter: blur(14px); border-top: 1px solid rgba(244, 239, 230, 0.12);
@@ -144,6 +167,12 @@
       <div id="mpFloor"><p class="mp__note">Loading the floor…</p></div>
       <p class="mp__note">The public index runs on public facts — standing and the market's pace. Dollars stay private unless the holder shows them. Claim your own ticker on the <a href="profile.html" style="color:var(--cream)">profile page</a>.</p>
     </section>
+
+    <!-- YOU — the role-shaped room. Different for an artist, a venue, a provider. -->
+    <section class="mp__you mp__hidden" id="scrYou">
+      <h1>Your room</h1>
+      <div id="mpYou"><p class="mp__note">Loading your room…</p></div>
+    </section>
   </main>
 
   <!-- the sheet: pick who → confirm → done -->
@@ -184,6 +213,9 @@
     <button class="mp__tab" id="tabStocks" type="button">
       <svg viewBox="0 0 24 24"><path d="M3 20h18"/><path d="M4 16l4.5-5 3.5 3 4-6 4 4.5"/></svg>
       Stocks</button>
+    <button class="mp__tab" id="tabYou" type="button">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+      You</button>
   </nav>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
@@ -389,21 +421,120 @@
         });
       }
 
+      /* ---------- the You room: mPay wears a different face per member ----------
+         The same app is an artist's app, a venue operator's app, a service
+         provider's app — the tools are shaped by what you do on the network,
+         read from your listing's roles. Everybody keeps Pay + Stocks; this
+         tab is the part that's yours. */
+      var VENUE = ["Studios", "Stages"], MUSIC = ["Music"], SERVICE = ["Photo", "Video", "Web"];
+      var AMEN_BY_ROLE = {
+        Studios: ["engineer", "iso-booth", "mic-locker", "console", "tuned-room", "mix-master", "session-ready"],
+        Stages: ["broadcast-ready", "stream-uplink", "lighting-grid", "green-room", "house-audio", "multicam", "capacity-rated"],
+      };
+      function roleFace(roles) {
+        roles = roles || [];
+        if (roles.some(function (r) { return MUSIC.indexOf(r) !== -1; })) return "artist";
+        if (roles.some(function (r) { return VENUE.indexOf(r) !== -1; })) return "venue";
+        if (roles.some(function (r) { return SERVICE.indexOf(r) !== -1; })) return "provider";
+        return "member";
+      }
+      var FACE_LABEL = { artist: "Artist", venue: "Venue operator", provider: "Service provider", member: "Member" };
+      var youPainted = false;
+      function tool(href, b, s) {
+        return '<a class="mp__tool" href="' + href + '"><span><b>' + esc(b) + "</b><small>" + esc(s) + "</small></span><span class=\"mp__arw\">→</span></a>";
+      }
+      function paintYou() {
+        if (youPainted) return; youPainted = true;
+        var box = $("mpYou");
+        if (!AUTHED) {
+          box.innerHTML =
+            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 1rem">M Pay is yours the moment you sign in — your ticker, your room, and tools shaped for what you do: artist, venue, or service provider.</p>' +
+            '<a class="btn btn--ruby" href="profile.html" style="justify-content:center">Claim your room</a></div>' +
+            '<h2 class="mp__toolhead">Open to everyone</h2><div class="mp__tools">' +
+            tool("market.html#yours", "Your deals", "Every proposition, split, and signature — the Market") +
+            tool("pay.html#stocks", "The Floor", "See how the whole network is trading") +
+            "</div>";
+          return;
+        }
+        var face = roleFace(ME && ME.roles);
+        var tick = ME ? window.MCC_STOCK.ticker(ME.ticker, ME.name) : "MMBR";
+        var color = (ME && ME.badgeColor) || "#e5383b";
+        box.innerHTML =
+          '<div class="mp__idcard" style="--badge-c:' + esc(color) + '">' +
+          '<span class="mp__idtick">$' + esc(tick) + "</span>" +
+          "<span><b>" + esc((ME && ME.name) || (window.MCC_SUPA.email() || "Your room")) + "</b>" +
+          "<small>" + (ME ? esc(ME.status === "live" ? "● Live on the floor" : ME.status) : "No listing yet") + "</small>" +
+          '<span class="mp__role">' + esc(FACE_LABEL[face]) + "</span></span></div>" +
+          '<div id="youBody"></div>';
+        var body = $("youBody"), html = "";
+
+        if (!ME) {
+          html += '<div class="mp__signin" style="margin-top:0.9rem"><p class="mp__note" style="margin:0 0 1rem">Set up your listing and the whole network can find and book you — you keep 100% of your rate.</p>' +
+            '<a class="btn btn--ruby" href="talent.html" style="justify-content:center">Set up your room</a></div>';
+        } else if (face === "artist") {
+          html += '<h2 class="mp__toolhead">Your artist tools</h2><div class="mp__tools">' +
+            tool("market.html?with=" + esc(ME.slug || "") + "&kind=music_collab#build", "Sell a feature / split", "Set the price, split the song — signed before it drops") +
+            tool("packet.html", "Log a show, get the packet", "ASCAP / BMI live packets — get paid for the stage") +
+            tool("talent.html", "Your listing & rate", "What you charge, your roles, your inbox") + "</div>";
+        } else if (face === "venue") {
+          var amKeys = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
+          html += '<h2 class="mp__toolhead">Your space</h2><div class="mp__tools">' +
+            tool("talent.html", "Your room & rates", "Hours, day rate, house rules — your listing") +
+            tool("packet.html", "Log an event", "Put a booking on the record") + "</div>";
+          if (amKeys.length) html += '<h2 class="mp__toolhead">Your amenities</h2>' +
+            '<p class="mp__note" style="margin:0.2rem 0 0.5rem">What the room offers — not badges, amenities. <a href="amenities.html" style="color:var(--cream)">Manage on your listing →</a></p>' +
+            '<div class="amenity-set" data-amenities="' + esc(amKeys.slice(0, 6).join(",")) + '" data-am-color="' + esc(color) + '"></div>';
+        } else if (face === "provider") {
+          html += '<h2 class="mp__toolhead">Your provider tools</h2><div class="mp__tools">' +
+            tool("talent.html", "Your listing & inbox", "Get found, get booked — requests land here") +
+            tool("market.html?with=" + esc(ME.slug || "") + "&kind=service_booking#build", "Send a booking deal", "Name the job, the date, the rate") +
+            tool("packet.html", "Log your work", "Build your record on the platform") + "</div>";
+        } else {
+          html += '<h2 class="mp__toolhead">Your tools</h2><div class="mp__tools">' +
+            tool("talent.html", "Your listing", "Tell the network what you do") + "</div>";
+        }
+
+        html += '<h2 class="mp__toolhead">Open to everyone</h2><div class="mp__tools">' +
+          tool("market.html#yours", "Your deals", "Every proposition, split, and signature") +
+          tool("profile.html", "Your profile & M Stock", "Your ticker, your labor, your persona") +
+          tool("members.html", "The organization", "Boards, programs, the donor circle") + "</div>";
+        body.innerHTML = html;
+        // amenity chips inside the freshly-written body
+        if (window.MCC_AMENITIES) {
+          var data = null;
+          window.MCC_AMENITIES.get().then(function (d) {
+            var byId = {}; d.amenities.forEach(function (a) { byId[a.id] = a; });
+            body.querySelectorAll(".amenity-set[data-amenities]").forEach(function (slot) {
+              slot.getAttribute("data-amenities").split(",").forEach(function (id) {
+                var a = byId[id.trim()]; if (!a) return;
+                slot.appendChild(window.MCC_AMENITIES.chip(a, slot.getAttribute("data-am-color"), { href: "amenities.html?a=" + encodeURIComponent(id.trim()) }));
+              });
+            });
+          }).catch(function () {});
+        }
+        track("mpay_you", { face: face, authed: true });
+      }
+
       /* ---------- tabs ---------- */
       function showTab(t) {
         $("scrPay").classList.toggle("mp__hidden", t !== "pay");
         $("scrStocks").classList.toggle("mp__hidden", t !== "stocks");
+        $("scrYou").classList.toggle("mp__hidden", t !== "you");
         $("tabPay").classList.toggle("is-on", t === "pay");
         $("tabStocks").classList.toggle("is-on", t === "stocks");
+        $("tabYou").classList.toggle("is-on", t === "you");
         if (t === "stocks") paintFloor();
+        if (t === "you") paintYou();
         track("mpay_tab", { tab: t });
       }
       $("tabPay").addEventListener("click", function () { showTab("pay"); });
       $("tabStocks").addEventListener("click", function () { showTab("stocks"); });
+      $("tabYou").addEventListener("click", function () { showTab("you"); });
 
       /* ---------- boot ---------- */
       loadFloor().then(function () {
         if (location.hash === "#stocks") showTab("stocks");
+        if (location.hash === "#you") showTab("you");
       });
       if (AUTHED && window.MCC_NET) {
         window.MCC_NET.myListing().then(function (mine) {

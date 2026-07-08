@@ -2155,6 +2155,39 @@ a { color: inherit; text-decoration: none; }
 .bexp__card b { display: block; font-size: 0.88rem; }
 .bexp__card small { color: var(--cream-dim); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; }
 
+/* ============ AMENITIES — not badges. Own line-emblem, own language.
+   A badge (.mbadge) wears the M seal and glows with a verification color.
+   An amenity wears a stroked glyph in a squared tile — a spec, not a seal. ============ */
+.amenity-set, .amenity-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+.amenity-legend { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); }
+.amenity-set:empty, .amenity-legend:empty { display: none; }
+.amenity {
+  --am-c: #c9c2b6;
+  display: inline-flex; align-items: center; gap: 0.55rem; text-decoration: none;
+  border: 1px solid rgba(244, 239, 230, 0.16); border-radius: 9px;
+  background: rgba(244, 239, 230, 0.03); color: var(--cream);
+  padding: 0.45rem 0.7rem 0.45rem 0.5rem; font: inherit;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+a.amenity:hover { border-color: color-mix(in srgb, var(--am-c) 70%, transparent); background: rgba(244, 239, 230, 0.06); transform: translateY(-2px); }
+.amenity__ico {
+  flex: none; width: 1.85em; height: 1.85em; border-radius: 6px; display: grid; place-items: center;
+  border: 1px solid color-mix(in srgb, var(--am-c) 45%, rgba(244, 239, 230, 0.18));
+  background: color-mix(in srgb, var(--am-c) 12%, transparent);
+}
+.amenity__ico svg { width: 66%; height: 66%; fill: none; stroke: var(--am-c); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.amenity__txt b { font-size: 0.76rem; font-weight: 600; letter-spacing: 0.01em; display: block; line-height: 1.1; }
+.amenity__txt small { display: block; color: var(--cream-dim); font-size: 0.66rem; margin-top: 0.15rem; letter-spacing: 0.02em; }
+.amenity--lg { padding: 0.75rem 0.9rem; border-radius: 11px; align-items: flex-start; }
+.amenity--lg .amenity__ico { width: 2.5em; height: 2.5em; }
+.amenity--lg .amenity__txt b { font-size: 0.88rem; }
+.amenity__ico--hero { width: 4.4rem; height: 4.4rem; border-radius: 14px; }
+.am__hero { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; margin: 1.4rem 0 2rem; }
+.am__hero h1 { font-family: var(--display); font-size: clamp(2.2rem, 6vw, 4rem); text-transform: uppercase; line-height: 1; }
+.am__note { margin-top: 0.8rem; font-size: 0.82rem; color: var(--cream-dim); line-height: 1.6; }
+.am__note a { color: var(--ruby-hot); }
+.mnet__amlbl { margin: 1.1rem 0 0; font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--cream-dim); }
+
 /* ============ psychology markers: icons on the bars + the deeper overlay ============ */
 .psy__ic {
   display: inline-block; width: 1.05em; height: 1.05em;
