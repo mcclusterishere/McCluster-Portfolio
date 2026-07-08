@@ -29,7 +29,7 @@
       "logo": "assets/img/m-mark.png",
       "video": "assets/video/keynote.mp4",
       "poster": "assets/frames/keynote_0001.jpg",
-      "summary": "McCluster Corp is the creative and civic company behind everything on this site — the Equity Uprise fellowship, the McCluster Service Network, the PRIM3 education program, and the Here / PRIM3 music catalogue. A registered Connecticut public charity, it turns media, policy, and technology into a single operating system.",
+      "summary": "McCluster Corp is the creative and civic company behind everything on this site — the Equity Uprise fellowship, M Network, the PRIM3 education program, and the Here / PRIM3 music catalogue. A registered Connecticut public charity, it turns media, policy, and technology into a single operating system.",
       "facts": [
         { "label": "Founded", "value": "2025" },
         { "label": "Status", "value": "CT Public Charity · CHR.0069693" },
@@ -122,12 +122,12 @@
     {
       "slug": "service-network",
       "segment": "owned",
-      "name": "McCluster Service Network",
+      "name": "M Network",
       "tagline": "Who did the shoot? Photography, recording, and broadcast — one network.",
       "logo": "assets/img/m-mark.png",
       "video": "assets/video/studio360.mp4",
       "poster": "assets/frames/studio360_0001.jpg",
-      "summary": "The McCluster Service Network is the creative-services arm — photography, recording, and broadcast production booked through one loadout. It's the crew behind the campaigns, the sound behind the movements, and the answer to the question every credit asks: who did the shoot?",
+      "summary": "M Network is the creative-services arm — photography, recording, and broadcast production booked through one loadout. It's the crew behind the campaigns, the sound behind the movements, and the answer to the question every credit asks: who did the shoot?",
       "facts": [
         { "label": "Disciplines", "value": "Photo · Recording · Broadcast" },
         { "label": "Rig", "value": "A7R V · 2× RS 4 Pro · A7R IV" },

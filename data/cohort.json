@@ -1,0 +1,14 @@
+{
+  "note": "The Equity Uprise verified cohort. Verification is EARNED — you graduate the program, then you carry the badge. This list is the whole roster; nobody else may claim it.",
+  "rule": "Equity Uprise Verified = graduated the Equity Uprise program.",
+  "artists": [
+    { "id": "mccluster", "name": "Matthew McCluster", "craft": "Artist · Creative director · founder", "origin": "Bridgeport, CT / Acworth, GA", "onPlatform": true },
+    { "id": "xavier-washington", "name": "Xavier Washington", "craft": "Artist", "onPlatform": false },
+    { "id": "old-jay", "name": "Old Jay", "craft": "Artist", "onPlatform": false },
+    { "id": "ocho-gr8", "name": "Ocho Gr8", "craft": "Rapper", "note": "Who Did The Shoot — split on the books via the Collab Room", "onPlatform": false },
+    { "id": "angel-castellano", "name": "Angel Castellano", "craft": "Rapper · Singer", "onPlatform": false },
+    { "id": "los-fidel", "name": "Los Fidel", "craft": "Rapper", "note": "The rapper on Please Set Me Free", "onPlatform": false },
+    { "id": "paxton-cobb", "name": "Paxton Cobb", "craft": "Rapper · Producer", "onPlatform": false },
+    { "id": "eugene-izauzu", "name": "Eugene Izauzu", "craft": "Saxophonist", "origin": "Nigeria", "onPlatform": false }
+  ]
+}

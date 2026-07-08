@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Talent App · The M Network · McCluster</title>
-  <meta name="description" content="The vendor app for the M Network: manage your listing, work your booking inbox, keep 100% of your rate. The nonprofit asks a 10% tithe on completed work — never a commission wall.">
+  <title>The Talent App · M Network · McCluster</title>
+  <meta name="description" content="The vendor app for M Network: manage your listing, work your booking inbox, keep 100% of your rate. The nonprofit asks a 10% tithe on completed work — never a commission wall.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -55,7 +55,7 @@
     <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
     <nav class="site-head__nav">
       <a href="providers.html">The directory</a>
-      <a href="m-network.html">The M Network</a>
+      <a href="m-network.html">M Network</a>
     </nav>
   </header>
   <main class="ta">
@@ -76,6 +76,11 @@
 
     <!-- signed in -->
     <div id="taIn" class="ta__hidden">
+      <section class="ta__card" id="taStockCard" style="display:none">
+        <h2>Your M Stock <span class="ta__status">live on your labor</span></h2>
+        <div id="taStock"></div>
+      </section>
+
       <div class="ta__stats">
         <div class="ta__stat"><b id="stNew">0</b><span>New requests</span></div>
         <div class="ta__stat"><b id="stAccepted">0</b><span>Accepted</span></div>
@@ -115,13 +120,32 @@
         </div>
       </section>
 
-      <p class="ta__tithe" id="taTithe">
-        <b>How money works here:</b> the requester books you, you collect your full rate your way —
-        card, cash, invoice, whatever you run. When the job is done, the network asks a
-        <b>10% tithe</b> to the nonprofit that keeps this directory free and verified.
-        No commission walls, no payout delays, no platform tax.
-        <span id="taTitheLink"></span>
-      </p>
+      <section class="ta__card" id="taMoney">
+        <h2>The Equity Part</h2>
+        <p class="ta__note" style="margin:0 0 0.9rem" id="taMoneyLede">
+          Everybody on this platform keeps <strong style="color:var(--cream)">100% of their rate</strong> —
+          that's the rule. What makes it a movement instead of a marketplace is that every booking
+          feeds the next artist coming up. You pick how:
+        </p>
+        <div class="ta__req" id="taPathTithe" style="margin-top:0">
+          <h3>The Tithe</h3>
+          <p>You collect your full rate your way — card, cash, invoice. When the job is done, you give
+            a <b style="color:var(--cream)">10% tithe</b>, on your honor, to the nonprofit that keeps this
+            network free and verified. No commission wall, no payout delay, no platform tax.
+            <span id="taTitheLink"></span></p>
+        </div>
+        <div class="ta__req" id="taPathEquity">
+          <h3>The Equity</h3>
+          <p>Or the network bets on you: your rate stays exactly yours, the network lists you at the
+            network price, and the difference is <b style="color:var(--cream)">your equity in the machine</b> —
+            it funds your page, your advertising, your development, and the artist behind you.
+            You book through your portal, the platform does the collecting, you never chase a payment.
+            Enrollment is a conversation — <a href="mailto:matthew@mccluster.org?subject=The%20Equity%20Path%20%E2%80%94%20enroll%20me" style="color:var(--ruby-hot)">raise your hand</a>.</p>
+        </div>
+        <p class="ta__note">Either door, the customer hears the same true sentence:
+          <em style="color:var(--cream)">"Part of every dollar you spend here builds the next artist."</em>
+          That's the equity part.</p>
+      </section>
 
       <p class="ta__note"><button class="btn btn--ghost" id="taSignOut" type="button" style="margin-top:0.6rem">Sign out</button></p>
     </div>
@@ -132,6 +156,7 @@
   <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -160,10 +185,17 @@
         });
       }
 
-      // tithe link arms itself from PAYMENTS once the Square link exists
+      // tithe link arms itself from PAYMENTS once the payment link exists
       var tithe = window.PAYMENTS && window.PAYMENTS.tithe;
       if (tithe && tithe.link) {
         $("taTitheLink").innerHTML = ' <a href="' + tithe.link + '" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Give the tithe &#8594;</a>';
+      }
+
+      // the model decides which money door leads for THIS person
+      if (window.MCC_MODEL && window.MCC_MODEL.pitch() === "equity") {
+        var money = $("taMoney");
+        var eq = $("taPathEquity"), ti = $("taPathTithe");
+        if (money && eq && ti) money.insertBefore(eq, ti);
       }
 
       function showSignedIn(on) {
@@ -267,9 +299,29 @@
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
       });
 
+      /* the M Stock: real actions in, a living ticker out */
+      function loadStock() {
+        if (!window.MCC_STOCK) return;
+        Promise.all([
+          window.MCC_NET.myListing().catch(function () { return null; }),
+          window.MCC_NET.myRequests().catch(function () { return []; }),
+          window.MCC_NET.myDeals().then(function (r) { return r.rows; }).catch(function () { return []; }),
+          window.MCC_NET.myPerformances().catch(function () { return []; }),
+          window.MCC_NET.listProviders().catch(function () { return []; }),
+        ]).then(function (r) {
+          var data = window.MCC_STOCK.build({
+            uid: window.MCC_SUPA.uid() || "guest",
+            listing: r[0], requests: r[1], deals: r[2], performances: r[3],
+            marketN: (r[4] || []).length,
+          });
+          $("taStockCard").style.display = "";
+          window.MCC_STOCK.mount($("taStock"), data);
+        }).catch(function () {});
+      }
+
       // boot: the magic link lands right back here already signed in
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
-        showSignedIn(true); loadListing(); loadInbox();
+        showSignedIn(true); loadListing(); loadInbox(); loadStock();
       } else showSignedIn(false);
       track("talent_view", {});
     })();

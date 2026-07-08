@@ -196,6 +196,14 @@ window.MCC_MODEL = (function () {
     return orig(name, params);
   };
 
-  return { profile: profile, suggest: suggest, observe: observe,
+  /* the money framing: same deal, two doors. Mission-leaning people
+     (org/civic) hear the tithe first; builders (artist/client/music)
+     hear the equity first. The model decides which door leads. */
+  function pitch() {
+    var p = profile();
+    return p.top === "org" || p.top === "civic" ? "tithe" : "equity";
+  }
+
+  return { profile: profile, suggest: suggest, pitch: pitch, observe: observe,
     reset: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
 })();

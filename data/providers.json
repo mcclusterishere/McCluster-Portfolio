@@ -39,6 +39,21 @@
       "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP."
     },
     {
+      "id": "laire",
+      "name": "Laire",
+      "roles": [
+        "Video",
+        "Photo"
+      ],
+      "headline": "Cameraman · M Network",
+      "area": "Onboarding — claiming this profile now",
+      "verified": "pending",
+      "badgeColor": "#8b5cf6",
+      "href": "onboard.html?role=provider",
+      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
+      "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile."
+    },
+    {
       "id": "mccluster-pullup",
       "name": "The Pull-Up · McCluster mobile",
       "roles": [
