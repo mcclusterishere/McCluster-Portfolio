@@ -217,9 +217,20 @@
             if (isSpace(p)) ALL.push(p);
           });
           (r[2].amenities || []).forEach(function (a) { AMEN[a.id] = a; });
+          // promoted rooms lead the floor — self-serve advertising from the operator hub
+          ALL.sort(function (a, b) { return (promoOf(b) ? 1 : 0) - (promoOf(a) ? 1 : 0); });
           renderChips(); renderGrid();
+          // the booking link: spaces.html?who=slug drops the visitor straight
+          // into that room's scheduler — the operator's Calendly
+          var who = new URLSearchParams(location.search).get("who");
+          if (who) {
+            var mine = ALL.filter(function (p) { return (p.slug || p.id) === who; })[0];
+            if (mine) { openSheet(mine); track("spaces_link_open", { space: who }); }
+          }
         });
       }
+      function promoOf(p) { return (p.terms && p.terms.promo) || ""; }
+      function availOf(p) { return (p.terms && p.terms.avail) || null; }
 
       function renderChips() {
         var cats = ["All", "Studios", "Stages"];
@@ -246,7 +257,8 @@
         var cards = rows.map(function (p, i) {
           return '<button class="sp__card" type="button" data-i="' + ALL.indexOf(p) + '">' +
             '<span class="sp__card-img"><img src="' + esc(photoOf(p)) + '" alt="' + esc(p.name) + '" loading="lazy">' +
-            '<span class="sp__card-seal"><img src="assets/img/m-mark.png" alt="M-Verified"><b>$' + esc(tickOf(p)) + "</b></span></span>" +
+            '<span class="sp__card-seal"><img src="assets/img/m-mark.png" alt="M-Verified"><b>$' + esc(tickOf(p)) + "</b></span>" +
+            (promoOf(p) ? '<span class="sp__card-seal" style="left:auto;right:0.6rem;border:1px solid #c99d45"><b style="color:#c99d45">★ ' + esc(promoOf(p)) + "</b></span>" : "") + "</span>" +
             '<span class="sp__card-body"><h3>' + esc(p.name) + "</h3>" +
             '<p class="sp__where">' + esc(p.area || (p.roles || []).join(" · ")) + "</p>" +
             '<span class="sp__card-am">' + amChips(amenOf(p), p.badgeColor) + "</span>" +
@@ -292,9 +304,12 @@
           "<b>" + months[m] + " " + y + '</b><button class="cal__nav" id="calNext" type="button">›</button></div><div class="cal__grid">' +
           ["S","M","T","W","T","F","S"].map(function (d) { return '<span class="cal__dow">' + d + "</span>"; }).join("");
         for (var i = 0; i < start; i++) html += '<span class="cal__day is-empty"></span>';
+        var av = availOf(sel.space);
         for (var d = 1; d <= days; d++) {
           var date = new Date(y, m, d), past = date < today, on = sameDay(date, sel.date);
-          html += '<button class="cal__day' + (on ? " is-sel" : "") + '" type="button" data-d="' + d + '"' + (past ? " disabled" : "") + ">" + d + "</button>";
+          // the operator's availability is law: closed days can't be tapped
+          var closed = av && av.days && av.days.length && av.days.indexOf(date.getDay()) === -1;
+          html += '<button class="cal__day' + (on ? " is-sel" : "") + '" type="button" data-d="' + d + '"' + (past || closed ? " disabled" : "") + ">" + d + "</button>";
         }
         html += "</div>";
         $("spCal").innerHTML = html;
@@ -309,10 +324,14 @@
         });
       }
       function renderSlots() {
+        var av = availOf(sel.space);
         $("spSlots").innerHTML = SLOTS.map(function (s, i) {
-          return '<button class="sp__slot' + (sel.slot === i ? " is-on" : "") + '" type="button" data-s="' + i + '">' + esc(s) + "</button>";
+          var off = av && av.slots && av.slots.length && av.slots.indexOf(i) === -1;
+          return '<button class="sp__slot' + (sel.slot === i ? " is-on" : "") + '" type="button" data-s="' + i + '"' +
+            (off ? " disabled style=\"opacity:0.25;cursor:default\"" : "") + '>' + esc(s) + "</button>";
         }).join("");
         $("spSlots").querySelectorAll(".sp__slot").forEach(function (b) {
+          if (b.disabled) return;
           b.addEventListener("click", function () { sel.slot = +b.getAttribute("data-s"); renderSlots(); total(); });
         });
       }

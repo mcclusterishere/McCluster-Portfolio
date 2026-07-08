@@ -115,6 +115,28 @@
     .mp__signin { text-align: center; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px;
       background: rgba(20, 16, 14, 0.6); padding: 1.6rem 1.2rem; margin-top: 1rem; }
 
+    /* ---- the desk: the operator's whole business in one tab ---- */
+    .mp__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 14px; background: rgba(20, 16, 14, 0.55);
+      padding: 1rem 1rem 1.1rem; margin-top: 0.8rem; }
+    .mp__lblx { display: block; font-family: var(--micro); font-size: 0.64rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--cream-dim); margin-bottom: 0.6rem; }
+    .mp__linkrow { display: flex; gap: 0.45rem; }
+    .mp__linkrow input { flex: 1; min-width: 0; margin: 0; }
+    .mp__linkrow .btn { padding: 0.8em 1.1em; font-size: 0.6rem; flex: none; }
+    .mp__msgs { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; margin: 0.6rem 0; }
+    .mp__bub { align-self: flex-start; background: rgba(244, 239, 230, 0.08); border-radius: 12px 12px 12px 4px;
+      padding: 0.5rem 0.8rem; font-size: 0.84rem; max-width: 86%; line-height: 1.45; }
+    .mp__bub.is-me { align-self: flex-end; background: rgba(193, 18, 31, 0.35); border-radius: 12px 12px 4px 12px; }
+    .mp__bub small { display: block; font-size: 0.58rem; color: var(--cream-dim); margin-top: 0.25rem; }
+    .mp__deal { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.75rem 0.9rem; margin-top: 0.55rem; }
+    .mp__deal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; cursor: pointer; }
+    .mp__deal-head b { font-size: 0.88rem; }
+    .mp__deal-head small { color: var(--cream-dim); font-size: 0.68rem; flex: none; }
+    .mp__req { border-bottom: 1px dashed rgba(244, 239, 230, 0.12); padding: 0.7rem 0.1rem; }
+    .mp__req b { font-size: 0.88rem; } .mp__req p { font-size: 0.76rem; color: var(--cream-dim); margin-top: 0.2rem; line-height: 1.5; }
+    .mp__req-acts { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+    .mp__req-acts .mp__kind { font-size: 0.62rem; }
+
     /* ---- the app's own bar ---- */
     .mp__bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; max-width: 30rem; margin: 0 auto;
       background: rgba(12, 9, 8, 0.92); backdrop-filter: blur(14px); border-top: 1px solid rgba(244, 239, 230, 0.12);
@@ -495,12 +517,55 @@
             tool("talent.html", "Your listing", "Tell the network what you do") + "</div>";
         }
 
+        /* ---- THE DESK: the whole business under one tab.
+           Booking link (the Calendly), payment-request links (the Cash App /
+           Square invoice), availability, promotion (the advertising), the
+           inbox, and deal threads (visitor communication, both ways). ---- */
+        if (ME) {
+          var slug = ME.slug || "";
+          var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+          html += '<h2 class="mp__toolhead">The desk</h2>';
+          if (face === "venue" || face === "provider") {
+            html += '<div class="mp__card"><span class="mp__lblx">Your booking link — send it, post it, put it in the bio</span>' +
+              '<div class="mp__linkrow"><input class="mp__in" id="dkBook" readonly value="' + esc(base + "spaces.html?who=" + slug) + '">' +
+              '<button class="btn btn--ghost" id="dkBookCopy" type="button">Copy</button></div>' +
+              '<p class="mp__note">Opens your room’s scheduler directly — dates, windows, request. Your calendar rules apply.</p></div>';
+          }
+          html += '<div class="mp__card"><span class="mp__lblx">Get paid — payment request link</span>' +
+            '<input class="mp__in" id="dkAmt" type="number" min="1" placeholder="Amount — like 250">' +
+            '<input class="mp__in" id="dkFor" type="text" placeholder="What it’s for — deposit, session, balance due">' +
+            '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkPayCopy" type="button" style="flex:1">Copy the link</button>' +
+            '<button class="btn btn--ghost" id="dkPayShare" type="button">Share</button></div>' +
+            '<p class="mp__msg" id="dkPayMsg"></p>' +
+            '<p class="mp__note">Text it, DM it, tape it to the door — it opens M Pay with the amount and your name already loaded.</p></div>';
+          if (face === "venue") {
+            var av = (ME.terms && ME.terms.avail) || { days: [0, 1, 2, 3, 4, 5, 6], slots: [0, 1, 2, 3] };
+            html += '<div class="mp__card"><span class="mp__lblx">Availability — what your calendar allows</span>' +
+              '<div class="mp__kinds" id="dkDays">' + ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (d, i) {
+                return '<button class="mp__kind' + ((av.days || []).indexOf(i) !== -1 ? " is-on" : "") + '" type="button" data-day="' + i + '">' + d + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__kinds" id="dkSlots">' + ["Morning", "Midday", "Evening", "Late"].map(function (s, i) {
+                return '<button class="mp__kind' + ((av.slots || []).indexOf(i) !== -1 ? " is-on" : "") + '" type="button" data-slot="' + i + '">' + s + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkAvSave" type="button" style="flex:1">Save availability</button></div>' +
+              '<p class="mp__msg" id="dkAvMsg"></p></div>';
+          }
+          html += '<div class="mp__card"><span class="mp__lblx">Promote — lead the floor</span>' +
+            '<input class="mp__in" id="dkPromo" type="text" maxlength="40" placeholder="The line — e.g. 10% off weekdays" value="' + esc((ME.terms && ME.terms.promo) || "") + '">' +
+            '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkPromoSave" type="button" style="flex:1">Set it live</button></div>' +
+            '<p class="mp__msg" id="dkPromoMsg"></p>' +
+            '<p class="mp__note">Your card jumps to the front of Spaces with a ★ tag carrying your line. Clear the box to turn it off.</p></div>';
+          html += '<div class="mp__card"><span class="mp__lblx">The inbox — requests on your room</span><div id="dkInbox"><p class="mp__note">Checking…</p></div></div>';
+          html += '<div class="mp__card"><span class="mp__lblx">Deals &amp; messages — talk inside the record</span><div id="dkDeals"><p class="mp__note">Checking…</p></div></div>';
+        }
+
         html += '<h2 class="mp__toolhead">Open to everyone</h2><div class="mp__tools">' +
           tool("spaces.html", "Book a space", "Rooms, studios & stages — dead simple booking") +
           tool("market.html#yours", "Your deals", "Every proposition, split, and signature") +
           tool("profile.html", "Your profile & M Stock", "Your ticker, your labor, your persona") +
           tool("members.html", "The organization", "Boards, programs, the donor circle") + "</div>";
         body.innerHTML = html;
+        if (ME) wireDesk(body, face);
         // amenity chips inside the freshly-written body
         if (window.MCC_AMENITIES) {
           var data = null;
@@ -515,6 +580,143 @@
           }).catch(function () {});
         }
         track("mpay_you", { face: face, authed: true });
+      }
+
+      /* ---------- the desk wiring: copy, share, save, talk ---------- */
+      function copyText(txt, btn) {
+        var done = function () {
+          var old = btn.textContent; btn.textContent = "✓ Copied";
+          setTimeout(function () { btn.textContent = old; }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(done);
+        else { var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select();
+          try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(t); done(); }
+      }
+      function wireDesk(body, face) {
+        var slug = ME.slug || "";
+        var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+        var myName = ME.name || (window.MCC_SUPA.email() || "Me");
+
+        var bk = $("dkBookCopy");
+        if (bk) bk.addEventListener("click", function () {
+          copyText($("dkBook").value, bk); track("desk_booklink_copy", {});
+        });
+
+        function payLink() {
+          var a = (+$("dkAmt").value || 0);
+          if (a <= 0) { $("dkPayMsg").textContent = "Put a number on it first."; return null; }
+          $("dkPayMsg").textContent = "";
+          return base + "pay.html?to=" + encodeURIComponent(slug) + "&amt=" + a +
+            ($("dkFor").value.trim() ? "&for=" + encodeURIComponent($("dkFor").value.trim()) : "");
+        }
+        $("dkPayCopy").addEventListener("click", function () {
+          var l = payLink(); if (!l) return;
+          copyText(l, $("dkPayCopy")); track("desk_paylink_copy", { amount: +$("dkAmt").value });
+        });
+        $("dkPayShare").addEventListener("click", function () {
+          var l = payLink(); if (!l) return;
+          if (navigator.share) navigator.share({ title: "Pay " + myName, text: ($("dkFor").value.trim() || "Payment request"), url: l }).catch(function () {});
+          else copyText(l, $("dkPayShare"));
+          track("desk_paylink_share", { amount: +$("dkAmt").value });
+        });
+
+        var avSave = $("dkAvSave");
+        if (avSave) {
+          body.querySelectorAll("#dkDays .mp__kind, #dkSlots .mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () { b.classList.toggle("is-on"); });
+          });
+          avSave.addEventListener("click", function () {
+            var days = Array.prototype.map.call(body.querySelectorAll("#dkDays .is-on"), function (b) { return +b.getAttribute("data-day"); });
+            var slots = Array.prototype.map.call(body.querySelectorAll("#dkSlots .is-on"), function (b) { return +b.getAttribute("data-slot"); });
+            var terms = Object.assign({}, ME.terms || {}, { avail: { days: days, slots: slots } });
+            $("dkAvMsg").textContent = "Saving…";
+            window.MCC_NET.saveListing({ terms: terms }).then(function () {
+              ME.terms = terms; $("dkAvMsg").textContent = "Saved — the calendar obeys it now.";
+              track("desk_avail_saved", { days: days.length, slots: slots.length });
+            }).catch(function (e) { $("dkAvMsg").textContent = "Couldn't save: " + String(e.message || e); });
+          });
+        }
+
+        $("dkPromoSave").addEventListener("click", function () {
+          var line = $("dkPromo").value.trim();
+          var terms = Object.assign({}, ME.terms || {});
+          if (line) terms.promo = line; else delete terms.promo;
+          $("dkPromoMsg").textContent = "Saving…";
+          window.MCC_NET.saveListing({ terms: terms }).then(function () {
+            ME.terms = terms;
+            $("dkPromoMsg").textContent = line ? "Live — your card leads the floor." : "Promotion off.";
+            track("desk_promo_saved", { on: !!line });
+          }).catch(function (e) { $("dkPromoMsg").textContent = "Couldn't save: " + String(e.message || e); });
+        });
+
+        function loadInbox() {
+          window.MCC_NET.myRequests().then(function (rows) {
+            rows = (rows || []).filter(function (r) { return r.status !== "declined"; }).slice(0, 8);
+            if (!rows.length) { $("dkInbox").innerHTML = '<p class="mp__note">Nothing waiting — your booking link puts requests here.</p>'; return; }
+            $("dkInbox").innerHTML = rows.map(function (r) {
+              var acts = r.status === "new"
+                ? '<button class="mp__kind" data-act="accepted" data-id="' + r.id + '">Accept</button>' +
+                  '<button class="mp__kind" data-act="declined" data-id="' + r.id + '">Decline</button>'
+                : r.status === "accepted"
+                  ? '<button class="mp__kind" data-act="done" data-id="' + r.id + '">Mark done</button>' : "";
+              return '<div class="mp__req"><b>' + esc(r.name) + '</b> <small style="color:var(--cream-dim)">· ' + esc(r.status) + "</small>" +
+                "<p>" + esc(r.contact) + (r.date_wanted ? " · " + esc(r.date_wanted) : "") + (r.details ? "<br>" + esc(r.details) : "") + "</p>" +
+                '<div class="mp__req-acts">' + acts + "</div></div>";
+            }).join("");
+            $("dkInbox").querySelectorAll("[data-act]").forEach(function (b) {
+              b.addEventListener("click", function () {
+                window.MCC_NET.setRequestStatus(b.getAttribute("data-id"), b.getAttribute("data-act"))
+                  .then(function () { track("desk_request_" + b.getAttribute("data-act"), {}); loadInbox(); });
+              });
+            });
+          }).catch(function () { $("dkInbox").innerHTML = '<p class="mp__note">Couldn’t reach the inbox.</p>'; });
+        }
+        loadInbox();
+
+        function loadDeskDeals() {
+          window.MCC_NET.myDeals().then(function (res) {
+            var rows = (res.rows || []).slice(0, 8);
+            if (!rows.length) { $("dkDeals").innerHTML = '<p class="mp__note">No deals yet — every one you make grows a thread here.</p>'; return; }
+            $("dkDeals").innerHTML = rows.map(function (d, i) {
+              var other = d.to_slug === slug ? (d.from_name || "them") : (d.to_name || d.to_slug);
+              return '<div class="mp__deal" data-deal="' + esc(d.id) + '">' +
+                '<div class="mp__deal-head"><b>' + esc(d.title || d.kind) + "</b><small>" + esc(other) + " · " + esc(d.status) + "</small></div>" +
+                '<div class="mp__thread mp__hidden"><div class="mp__msgs"></div>' +
+                '<div class="mp__linkrow"><input class="mp__in" type="text" placeholder="Say it — they see it in their M Pay" maxlength="2000">' +
+                '<button class="btn btn--ruby" type="button">Send</button></div><p class="mp__msg"></p></div></div>';
+            }).join("");
+            $("dkDeals").querySelectorAll(".mp__deal").forEach(function (card) {
+              var id = card.getAttribute("data-deal");
+              var thread = card.querySelector(".mp__thread");
+              var msgs = card.querySelector(".mp__msgs");
+              var msgEl = card.querySelector(".mp__msg");
+              function paint() {
+                window.MCC_NET.messages(id).then(function (rows) {
+                  msgs.innerHTML = (rows || []).map(function (m) {
+                    var me = m.from_owner === window.MCC_SUPA.uid();
+                    return '<div class="mp__bub' + (me ? " is-me" : "") + '">' + esc(m.body) +
+                      "<small>" + esc(me ? "You" : m.from_name || "Them") + " · " + new Date(m.created_at).toLocaleString() + "</small></div>";
+                  }).join("") || '<p class="mp__note">No messages yet — start the thread.</p>';
+                  msgs.scrollTop = msgs.scrollHeight;
+                }).catch(function () {
+                  msgEl.textContent = "The thread needs one paste: docs/messages-schema.sql in Supabase.";
+                });
+              }
+              card.querySelector(".mp__deal-head").addEventListener("click", function () {
+                thread.classList.toggle("mp__hidden");
+                if (!thread.classList.contains("mp__hidden")) { paint(); track("desk_thread_open", {}); }
+              });
+              card.querySelector("button").addEventListener("click", function () {
+                var input = card.querySelector("input");
+                var txt = input.value.trim(); if (!txt) return;
+                window.MCC_NET.sendMessage(id, txt, myName).then(function () {
+                  input.value = ""; paint(); track("desk_message_sent", {});
+                }).catch(function () { msgEl.textContent = "Couldn't send — run docs/messages-schema.sql, then it's on."; });
+              });
+            });
+          }).catch(function () { $("dkDeals").innerHTML = '<p class="mp__note">Couldn’t reach the deals.</p>'; });
+        }
+        loadDeskDeals();
       }
 
       /* ---------- tabs ---------- */
@@ -537,8 +739,31 @@
       loadFloor().then(function () {
         if (location.hash === "#stocks") showTab("stocks");
         if (location.hash === "#you") showTab("you");
+        // a payment-request link: ?to=slug&amt=250&for=Deposit opens the app
+        // with the amount and the payee already loaded — one tap to send
+        var Q = new URLSearchParams(location.search);
+        if (Q.get("to")) {
+          var target = ALL.filter(function (p) { return (p.slug || p.id) === Q.get("to"); })[0];
+          var a = (Q.get("amt") || "").replace(/[^0-9.]/g, "");
+          if (target && +a > 0) {
+            amt = a; paintAmt();
+            pick = target;
+            openSheet("pay");
+            stepFor();
+            if (Q.get("for")) $("shTitle").value = Q.get("for");
+            track("mpay_paylink_open", { to: Q.get("to"), amount: +a });
+          }
+        }
       });
-      if (AUTHED && window.MCC_NET) {
+      // local rehearsal only: a staged listing so the desk can be walked
+      // without a cloud account (never fires on the real domain)
+      try {
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+          var dbg = JSON.parse(localStorage.getItem("mcc_debug_listing") || "null");
+          if (dbg) { ME = dbg; AUTHED = true; }
+        }
+      } catch (e) {}
+      if (AUTHED && window.MCC_NET && !ME) {
         window.MCC_NET.myListing().then(function (mine) {
           ME = mine;
           if (mine) {
@@ -546,6 +771,9 @@
             $("mpMe").classList.toggle("is-live", mine.status === "live");
           } else $("mpMe").textContent = "Your room";
         }).catch(function () { $("mpMe").textContent = "Your room"; });
+      } else if (ME) {
+        $("mpMe").textContent = "$" + window.MCC_STOCK.ticker(ME.ticker, ME.name);
+        $("mpMe").classList.toggle("is-live", ME.status === "live");
       }
       track("mpay_view", { authed: AUTHED });
     })();

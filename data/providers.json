@@ -52,6 +52,7 @@
       "profile": "profile-zakir.html",
       "photo": "assets/frames/vperf1_0001.jpg",
       "space": { "rate": 45, "unit": "hour", "amenities": ["engineer", "iso-booth", "mic-locker", "console", "tuned-room", "mix-master"] },
+      "terms": { "avail": { "days": [1, 2, 3, 4, 5, 6], "slots": [0, 1, 2] } },
       "music": {
         "src": "assets/audio/vaunt.mp3",
         "title": "Vaunt (Acoustic) — Zakir on the six-string"

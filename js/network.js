@@ -184,6 +184,17 @@
       });
     },
 
+    /* the thread: visitor communication, both ways, inside the deal */
+    messages: function (dealId) {
+      return authed("messages?deal_id=eq." + encodeURIComponent(dealId) + "&order=created_at.asc&select=*");
+    },
+    sendMessage: function (dealId, body, fromName) {
+      return authed("messages", {
+        method: "POST", prefer: "return=minimal",
+        body: { deal_id: dealId, from_owner: S.uid(), from_name: fromName || "", body: body },
+      });
+    },
+
     /* the performance log: one row per show, PRO-packet ready */
     myPerformances: function () {
       return authed("performances?owner=eq." + S.uid() + "&order=created_at.desc&select=*");
