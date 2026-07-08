@@ -35,6 +35,19 @@
     .sp__rtile b { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; padding-right: 0.5rem;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+    /* ---- the persona card: the shared score, worn like a profile ---- */
+    .sp__persona { display: flex; align-items: center; gap: 0.8rem; margin: 0.9rem clamp(1rem, 4vw, 2rem) 0;
+      border: 1px solid rgba(244,239,230,0.12); border-radius: 12px; padding: 0.8rem 1rem;
+      background: linear-gradient(120deg, rgba(164,22,26,0.18), rgba(29,78,216,0.18)); text-decoration: none; color: inherit; }
+    .sp__persona-meter { flex: none; position: relative; width: 5.2rem; height: 6px; border-radius: 6px;
+      background: linear-gradient(90deg, #e5383b, #3b82f6); }
+    .sp__persona-meter i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; border: 2px solid #0a0807; transform: translate(-50%, -50%); left: 50%; transition: left 0.6s ease; }
+    .sp__persona-txt { flex: 1; min-width: 0; }
+    .sp__persona-txt b { display: block; font-size: 0.85rem; }
+    .sp__persona-txt small { color: var(--cream-dim); font-size: 0.7rem; line-height: 1.4; display: block; }
+    .sp__persona-go { color: var(--ruby-hot); font-size: 1.1rem; }
+
     /* ---- billboard (the Netflix injection) ---- */
     .sp__bill { position: relative; margin: 1.3rem clamp(1rem, 4vw, 2rem) 0; border-radius: 16px; overflow: hidden;
       border: 1px solid rgba(244,239,230,0.12); }
@@ -141,6 +154,16 @@
     </header>
 
     <div class="sp__recent" id="recent"></div>
+
+    <!-- the one persona: every layer of the site, read together -->
+    <a class="sp__persona" id="personaCard" href="psychology-markers.html#quiz" style="display:none">
+      <span class="sp__persona-meter" aria-hidden="true"><i id="personaNeedle"></i></span>
+      <span class="sp__persona-txt">
+        <b id="personaHead">Meet your persona</b>
+        <small id="personaSub">Nine sayings, two sides each — see which side you're on.</small>
+      </span>
+      <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
+    </a>
     <div id="bill"></div>
     <div id="rows"></div>
   </main>
@@ -233,6 +256,7 @@
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/persona.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -338,6 +362,7 @@
         }
         renderRows("all");
         renderRecent();
+        renderPersona();
         if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "spotify" });
       });
 
@@ -348,6 +373,23 @@
         p.classList.add("is-on");
         renderRows(p.getAttribute("data-f"));
       });
+
+      /* ---------- the persona card ---------- */
+      function renderPersona() {
+        var card = $("personaCard");
+        if (!card || !window.MCC_PERSONA) return;
+        card.style.display = "flex";
+        var pb = window.MCC_PERSONA.balance();
+        if (pb.signals > 0) {
+          $("personaNeedle").style.left = ((pb.score + 1) / 2 * 100).toFixed(0) + "%";
+          $("personaHead").textContent = pb.side === "present" ? "Present in the room"
+            : pb.side === "scroll" ? "Locked in the scroll" : "Right between the two";
+          $("personaSub").textContent = pb.signals + " signals across the site · tap to go deeper";
+        }
+        card.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("persona_card_tap", { page: "app" });
+        });
+      }
 
       /* ---------- the player core ---------- */
       var nowId = null;
@@ -382,6 +424,20 @@
       }
       function next() { playIndex(shuffle ? (Math.random() * QUEUE.length) | 0 : qi + 1); }
       function prev() { au.currentTime > 4 ? (au.currentTime = 0) : playIndex(qi - 1); }
+
+      // the bottom bar's Now Playing tab mirrors this player everywhere
+      function announceNP() {
+        var it = nowId && CAT[nowId];
+        window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
+          detail: { title: it ? it.title : "The App", href: "#np", playing: !!nowId && !au.paused },
+        }));
+      }
+      window.MCC_NP_PLAY = function () {
+        if (nowId) au.play().catch(function () {});
+        else if (QUEUE.length) playIndex(0);
+      };
+      au.addEventListener("play", announceNP);
+      au.addEventListener("pause", announceNP);
 
       document.body.addEventListener("click", function (e) {
         var b = e.target.closest("[data-play]");

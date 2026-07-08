@@ -35,6 +35,18 @@
     .mc__links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
     .mc__hidden { display: none !important; }
     .mc__empty { color: var(--cream-dim); font-size: 0.82rem; }
+    .mc__bar { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; margin-top: 1.2rem; flex-wrap: wrap; }
+    .mc__who { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim); }
+    .mc__barbtns { display: flex; gap: 0.45rem; }
+    .mc__barbtns .btn { font-size: 0.6rem; padding: 0.55em 1.1em; }
+    .mc__tabs { display: flex; gap: 0.4rem; margin-top: 1.3rem; overflow-x: auto; scrollbar-width: none; }
+    .mc__tabs::-webkit-scrollbar { display: none; }
+    .mc__tab { flex: none; border: 1px solid rgba(244, 239, 230, 0.25); border-radius: 100px; cursor: pointer;
+      background: none; color: var(--cream-dim); font: inherit; font-size: 0.66rem; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 0.55em 1.15em; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .mc__tab.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
+    .mc__tab b { color: var(--ruby-hot); font-weight: 800; }
+    .mc__tab.is-on b { color: #fff; }
   </style>
 </head>
 <body class="songpage">
@@ -56,29 +68,44 @@
     </section>
 
     <div id="mcIn" class="mc__hidden">
+      <div class="mc__bar">
+        <span class="mc__who" id="mcWho"></span>
+        <span class="mc__barbtns">
+          <button class="btn btn--ghost" id="mcRefresh" type="button">&#8635; Refresh</button>
+          <button class="btn btn--ghost" id="mcOut" type="button">Sign out</button>
+        </span>
+      </div>
       <div class="mc__stats" id="mcStats"></div>
 
-      <section class="mc__card">
+      <nav class="mc__tabs" id="mcTabs" aria-label="Mission Control sections">
+        <button class="mc__tab is-on" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
+        <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
+        <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
+        <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
+        <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
+      </nav>
+
+      <section class="mc__card" id="pane-mcListings">
         <h2>Listings to review</h2>
         <div id="mcListings"><p class="mc__empty">Loading…</p></div>
       </section>
 
-      <section class="mc__card">
+      <section class="mc__card mc__hidden" id="pane-mcRequests">
         <h2>Booking requests</h2>
         <div id="mcRequests"><p class="mc__empty">Loading…</p></div>
       </section>
 
-      <section class="mc__card">
+      <section class="mc__card mc__hidden" id="pane-mcMembers">
         <h2>Member applications</h2>
         <div id="mcMembers"><p class="mc__empty">Loading…</p></div>
       </section>
 
-      <section class="mc__card">
+      <section class="mc__card mc__hidden" id="pane-mcSms">
         <h2>The text list</h2>
         <div id="mcSms"><p class="mc__empty">Loading…</p></div>
       </section>
 
-      <section class="mc__card">
+      <section class="mc__card mc__hidden" id="pane-mcCockpit">
         <h2>The rest of the cockpit</h2>
         <p class="mc__empty">Until the Worker lands, these open in their own tabs:</p>
         <div class="mc__links">
@@ -148,6 +175,9 @@
             stat("pending listings", pend.length) + stat("new requests", fresh.length) +
             stat("applications", applied.length) + stat("live listings", listings.filter(function (l) { return l.status === "live"; }).length) +
             stat("texts opted in", sms.length);
+          $("tabNListings").textContent = pend.length || "";
+          $("tabNRequests").textContent = fresh.length || "";
+          $("tabNMembers").textContent = applied.length || "";
 
           $("mcListings").innerHTML = listings.length ? listings.map(function (l) {
             return '<div class="mc__row' + (l.status === "pending" ? " is-hot" : "") + '"><h3>' + esc(l.name) +
@@ -192,9 +222,29 @@
         });
       }
 
+      // tabs: one pane at a time, counts live in the chips
+      document.getElementById("mcTabs").addEventListener("click", function (e) {
+        var t = e.target.closest(".mc__tab");
+        if (!t) return;
+        this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
+        t.classList.add("is-on");
+        ["mcListings", "mcRequests", "mcMembers", "mcSms", "mcCockpit"].forEach(function (id) {
+          document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
+        });
+      });
+      $("mcRefresh").addEventListener("click", loadAll);
+      $("mcOut").addEventListener("click", function () {
+        window.MCC_AUTH.signOut().then(function () { location.reload(); });
+      });
+
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
         $("mcAuth").classList.add("mc__hidden");
         $("mcIn").classList.remove("mc__hidden");
+        var u = window.MCC_AUTH.user();
+        $("mcWho").textContent = "Signed in · " + (u.email || "");
+        if (u.email && u.email !== "matthew@mccluster.org") {
+          $("mcWho").textContent += " — not the admin; the database will answer with silence";
+        }
         loadAll();
       }
     })();
