@@ -10,12 +10,10 @@
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    @font-face { font-family: "MCC Display"; src: url("assets/fonts/mccluster/McClusterShard-Display.woff") format("woff"); font-display: swap; }
-    @font-face { font-family: "MCC Black"; src: url("assets/fonts/mccluster/McClusterShard-Black.woff") format("woff"); font-display: swap; }
-    @font-face { font-family: "MCC Condensed"; src: url("assets/fonts/mccluster/McClusterShard-Condensed.woff") format("woff"); font-display: swap; }
-    @font-face { font-family: "MCC Wide"; src: url("assets/fonts/mccluster/McClusterShard-Wide.woff") format("woff"); font-display: swap; }
-    @font-face { font-family: "MCC Slant"; src: url("assets/fonts/mccluster/McClusterShard-Slant.woff") format("woff"); font-display: swap; }
-    @font-face { font-family: "MCC Monoline"; src: url("assets/fonts/mccluster/McClusterShard-Monoline.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Solid"; src: url("assets/fonts/mccluster/McClusterM-Solid.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Heavy"; src: url("assets/fonts/mccluster/McClusterM-Heavy.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Split"; src: url("assets/fonts/mccluster/McClusterM-Split.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Slant"; src: url("assets/fonts/mccluster/McClusterM-Slant.woff") format("woff"); font-display: swap; }
 
     .ft { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 64rem; margin: 0 auto; }
     .ft h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.6rem, 10vw, 4.6rem); }
@@ -37,12 +35,10 @@
       white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
     .ft__pick { margin-top: 1rem; }
     .ft__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 1.6rem; }
-    .f-display { font-family: "MCC Display", var(--display), sans-serif; }
-    .f-black { font-family: "MCC Black", var(--display), sans-serif; }
-    .f-condensed { font-family: "MCC Condensed", var(--display), sans-serif; }
-    .f-wide { font-family: "MCC Wide", var(--display), sans-serif; }
+    .f-solid { font-family: "MCC Solid", var(--display), sans-serif; }
+    .f-heavy { font-family: "MCC Heavy", var(--display), sans-serif; }
+    .f-split { font-family: "MCC Split", var(--display), sans-serif; }
     .f-slant { font-family: "MCC Slant", var(--display), sans-serif; }
-    .f-monoline { font-family: "MCC Monoline", var(--display), sans-serif; }
   </style>
 </head>
 <body class="songpage">
@@ -53,12 +49,13 @@
   </header>
   <main class="ft">
     <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The signature font — the chooser</p>
-    <h1>Six Cuts,<br>One DNA.</h1>
-    <p class="ft__sub">Every glyph is built from the favicon's two red shards — the diagonal cut, the hard negative space,
-      the same 5×7 skeleton. <b>Pick the cut that goes first</b>; the rest stay in the drawer as the family.</p>
+    <h1>The Favicon,<br>Spelled Out.</h1>
+    <p class="ft__sub">Round two — no pixel grid. Every letter is solid slab geometry lifted straight off the mark:
+      heavy stems, the shard's 45° cut on every open end, and an M built exactly like the favicon.
+      <b>Pick the cut that goes first</b>; the rest stay in the drawer as the family.</p>
     <div id="ftCards"></div>
     <p class="ft__note">Tap “This one goes first” on your pick — it logs the choice and I wire it into the site as the signature.
-      All six ride together at 32&nbsp;KB total, so keeping the family costs nothing.</p>
+      All four cuts together weigh 12&nbsp;KB, so the family rides along whole.</p>
   </main>
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
@@ -66,12 +63,10 @@
     (function () {
       "use strict";
       var CUTS = [
-        ["display", "Display", "The flagship — headlines, hero lines, the wordmark"],
-        ["black", "Black", "Heaviest cut — posters, one-word slams, the LOCK IN energy"],
-        ["condensed", "Condensed", "Tight columns — nav, tickers, data rows, mobile headers"],
-        ["wide", "Wide", "Stretched authority — section titles, footers, the marquee"],
-        ["slant", "Slant", "Forward lean — motion lines, CTAs, anything mid-sprint"],
-        ["monoline", "Monoline", "The lightest voice — captions, labels, quiet UI"],
+        ["solid", "Solid", "The signature — the favicon's slabs and shard cut, word for word"],
+        ["heavy", "Heavy", "Wider stems, tighter air — posters and one-word slams"],
+        ["split", "Split", "Every letter sliced once at the shard angle — the two-shard echo"],
+        ["slant", "Slant", "The solid cut leaning forward — motion lines and CTAs"],
       ];
       document.getElementById("ftCards").innerHTML = CUTS.map(function (c) {
         return '<section class="ft__card">' +
