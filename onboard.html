@@ -96,6 +96,37 @@
       </p>
     </section>
 
+    <section class="ob-sec">
+      <p class="ob-kick">The intake — two minutes</p>
+      <h2 class="ob-h2">Answer these and your profile builds itself</h2>
+      <p class="ob-lede">Five questions. When you sign in on the next page, the form is already
+        filled — you check it, you save it, it goes to review.</p>
+      <div class="ob-steps" style="margin-top:1.2rem">
+        <div class="ob-step" style="display:block;padding:1.1rem 1.2rem">
+          <label class="ob-kick" for="qName" style="display:block;margin-bottom:0.4rem">Your name or business</label>
+          <input class="cr__in" id="qName" type="text" placeholder="Stage name / studio / company"
+            style="width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.2);border-radius:10px;color:var(--cream);font:inherit;padding:0.8em 1em">
+          <label class="ob-kick" for="qWhat" style="display:block;margin:0.8rem 0 0.4rem">What do you do, in one line?</label>
+          <input class="cr__in" id="qWhat" type="text" placeholder="e.g. Recording artist & engineer"
+            style="width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.2);border-radius:10px;color:var(--cream);font:inherit;padding:0.8em 1em">
+          <label class="ob-kick" style="display:block;margin:0.8rem 0 0.4rem">Your lanes</label>
+          <div class="ob-roles" id="qRoles" style="margin:0">
+            <button class="ob-role" type="button" data-q="Photo">Photo</button>
+            <button class="ob-role" type="button" data-q="Video">Video</button>
+            <button class="ob-role" type="button" data-q="Web">Web</button>
+            <button class="ob-role" type="button" data-q="Studios">Studios</button>
+            <button class="ob-role" type="button" data-q="Stages">Stages</button>
+          </div>
+          <label class="ob-kick" for="qArea" style="display:block;margin:0.8rem 0 0.4rem">Where you work</label>
+          <input class="cr__in" id="qArea" type="text" placeholder="e.g. Atlanta metro · travels"
+            style="width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.2);border-radius:10px;color:var(--cream);font:inherit;padding:0.8em 1em">
+          <label class="ob-kick" for="qPitch" style="display:block;margin:0.8rem 0 0.4rem">The pitch — why you?</label>
+          <textarea id="qPitch" placeholder="Gear, style, what booking you feels like" rows="3"
+            style="width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.2);border-radius:10px;color:var(--cream);font:inherit;padding:0.8em 1em;resize:vertical"></textarea>
+        </div>
+      </div>
+    </section>
+
     <section class="ob-sec" style="text-align:center">
       <p class="ob-kick">Ready?</p>
       <h2 class="ob-h2" id="obCtaH">Start your onboarding</h2>
@@ -211,6 +242,32 @@
         roles.forEach(function (x) { x.classList.toggle("is-on", x.getAttribute("data-role") === want); });
         render(want);
       } else render("artist");
+
+      /* the intake: answers ride to the Talent App and build the profile there */
+      var qroles = [];
+      document.querySelectorAll("#qRoles .ob-role").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var r = b.getAttribute("data-q");
+          var i = qroles.indexOf(r);
+          if (i === -1) qroles.push(r); else qroles.splice(i, 1);
+          b.classList.toggle("is-on", i === -1);
+        });
+      });
+      function stashQuiz() {
+        var data = {
+          name: $("qName").value.trim(),
+          headline: $("qWhat").value.trim(),
+          area: $("qArea").value.trim(),
+          blurb: $("qPitch").value.trim(),
+          roles: qroles,
+        };
+        if (data.name || data.headline || qroles.length) {
+          try { localStorage.setItem("mcc_onboard", JSON.stringify(data)); } catch (e) {}
+          if (window.MCC_TRACK) window.MCC_TRACK("onboard_quiz", { filled: !!data.name });
+        }
+      }
+      $("obGo").addEventListener("click", stashQuiz);
+      $("obHeadCta").addEventListener("click", stashQuiz);
       if (window.MCC_TRACK) window.MCC_TRACK("onboard_view", { role: want || "artist" });
     })();
   </script>

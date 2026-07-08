@@ -37,6 +37,21 @@
       "href": "profile-zakir.html",
       "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
       "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP."
+    },
+    {
+      "id": "mccluster-pullup",
+      "name": "The Pull-Up · McCluster mobile",
+      "roles": [
+        "Video",
+        "Photo"
+      ],
+      "headline": "The engineer comes to you — recording, shoot, edit, on site",
+      "area": "Books by zone · exact locations never published",
+      "verified": "performer",
+      "badgeColor": "#2fbf71",
+      "href": "hire.html",
+      "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
+      "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published."
     }
   ]
 }

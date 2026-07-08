@@ -52,12 +52,20 @@ only do what policies allow.
 reviews in Mission Control → `live` or stays paused. Owners physically cannot flip
 their own row to `live` (RLS `with check`).
 
-**Entity separation (legal, from counsel-to-be):** the **nonprofit** (Equity Uprise)
-runs membership, tithes, donations, programming, and the residual-giving circle. The
-**LLC** (McCluster Corp) runs commercial work: web builds, the Limited Offer, day
-rates, the 33% marketplace margin. Money and books never mix; the site already keeps
-donation language on nonprofit surfaces and commercial language on McCluster Corp
-surfaces. Get the accountant's sign-off on the tithe (UBIT exposure) before scaling it.
+**Entity decision (July 2026): the network runs on the nonprofit side.** Equity
+Uprise operates the whole platform — directory, Collab Room, deals, performance
+packets, memberships, tithe — as a **workforce-development and creative-business
+education program**: artists and providers learn rights, contracts, pricing, and PRO
+reporting by using the system, which is the story that targets government grant and
+WIOA-adjacent funding. McCluster Corp (LLC) keeps only the plainly commercial personal
+work: web builds, the Limited Offer, day rates. Standing cautions: (1) earned
+marketplace revenue at scale is a UBIT question — accountant review before the 33%
+engine turns on; (2) money and books never mix between the two entities.
+
+**Payments decision (July 2026): the rail is Stripe.** Stripe Payment Links now
+(subscribe, tithe, membership residual, walkthrough — paste into `js/payments.js`);
+**Stripe Connect** later for provider payouts, the 33% margin, fee absorption, and
+automated 1099s. Existing Square song links stay live until replaced.
 
 ---
 

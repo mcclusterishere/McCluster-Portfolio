@@ -82,6 +82,7 @@
         <button class="mc__tab is-on" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
+        <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
       </nav>
@@ -101,6 +102,11 @@
         <div id="mcMembers"><p class="mc__empty">Loading…</p></div>
       </section>
 
+      <section class="mc__card mc__hidden" id="pane-mcDeals">
+        <h2>The deal ledger</h2>
+        <div id="mcDeals"><p class="mc__empty">Loading…</p></div>
+      </section>
+
       <section class="mc__card mc__hidden" id="pane-mcSms">
         <h2>The text list</h2>
         <div id="mcSms"><p class="mc__empty">Loading…</p></div>
@@ -111,7 +117,8 @@
         <p class="mc__empty">Until the Worker lands, these open in their own tabs:</p>
         <div class="mc__links">
           <a class="btn btn--ghost" href="https://analytics.google.com" target="_blank" rel="noopener">Google Analytics</a>
-          <a class="btn btn--ghost" href="https://squareup.com/dashboard" target="_blank" rel="noopener">Square</a>
+          <a class="btn btn--ghost" href="https://dashboard.stripe.com" target="_blank" rel="noopener">Stripe</a>
+          <a class="btn btn--ghost" href="https://squareup.com/dashboard" target="_blank" rel="noopener">Square (legacy)</a>
           <a class="btn btn--ghost" href="https://supabase.com/dashboard/project/fxbkvcrfbbcmrrupdcjt" target="_blank" rel="noopener">Supabase</a>
           <a class="btn btn--ghost" href="https://github.com/mcclusterishere/McCluster-Portfolio" target="_blank" rel="noopener">The repo</a>
         </div>
@@ -160,8 +167,9 @@
           A.requests().catch(function () { return null; }),
           A.members().catch(function () { return null; }),
           A.sms().catch(function () { return null; }),
+          A.deals().catch(function () { return null; }),
         ]).then(function (r) {
-          var listings = r[0], reqs = r[1], members = r[2], sms = r[3];
+          var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -185,12 +193,21 @@
               '<span class="mc__tag">' + esc(l.status) + "</span></h3>" +
               "<p>" + esc((l.roles || []).join(" · ")) + (l.area ? " — " + esc(l.area) : "") + "</p>" +
               (l.blurb ? "<p>" + esc(l.blurb) + "</p>" : "") +
+              (l.review_note ? '<p style="color:var(--ruby-hot)">Note on file: ' + esc(l.review_note) + "</p>" : "") +
               rowActs("listing", l.id, l.status === "live"
                 ? [["paused", "Pause"]]
-                : [["live", "Approve → live", "btn--ruby"], ["paused", "Pause"]]) +
+                : [["live", "Approve → live", "btn--ruby"], ["denied", "Deny with reason"], ["paused", "Pause"]]) +
             "</div>";
           }).join("") : "<p class='mc__empty'>No listings yet.</p>";
-          wireActs($("mcListings"), A.setListing);
+          wireActs($("mcListings"), function (id, to) {
+            if (to === "denied") {
+              // the reason travels with the pause — the applicant sees why, not silence
+              var why = prompt("Why is this a no (for now)? The applicant sees this:");
+              if (why === null) return Promise.resolve();
+              return A.setListing(id, "paused", why.trim());
+            }
+            return A.setListing(id, to);
+          });
 
           $("mcRequests").innerHTML = reqs.length ? reqs.map(function (q) {
             return '<div class="mc__row' + (q.status === "new" ? " is-hot" : "") + '"><h3>' + esc(q.name) +
@@ -216,6 +233,21 @@
           }).join("") : "<p class='mc__empty'>No applications yet.</p>";
           wireActs($("mcMembers"), A.setMember);
 
+          deals = deals || [];
+          var moving = deals.filter(function (d) { return d.status === "proposed" || d.status === "countered" || d.status === "locked"; });
+          $("tabNDeals").textContent = moving.length || "";
+          $("mcDeals").innerHTML = deals.length ? deals.map(function (d) {
+            var t = d.terms || {};
+            return '<div class="mc__row' + (d.status === "locked" ? " is-hot" : "") + '"><h3>' + esc(d.title) +
+              '<span class="mc__tag">' + esc(d.status) + '</span><span class="mc__tag">' + esc(d.kind) + "</span></h3>" +
+              "<p>" + esc(d.from_name || "?") + " → " + esc(d.to_name || d.to_slug) +
+              (t.fee ? " · fee $" + t.fee : "") + "</p>" +
+              "<p>" + (t.splits || []).map(function (s) { return esc(s.party) + " " + s.pct + "%"; }).join(" · ") + "</p>" +
+              ((d.signatures || []).length ? '<p style="color:#2fbf71">Signed: ' +
+                d.signatures.map(function (s) { return esc(s.name); }).join(" · ") + "</p>" : "") +
+            "</div>";
+          }).join("") : "<p class='mc__empty'>No deals yet — the Collab Room feeds this ledger. (If it never fills, run docs/collab-schema.sql.)</p>";
+
           $("mcSms").innerHTML = sms.length ? sms.map(function (t) {
             return '<div class="mc__row"><h3>' + esc(t.phone) + '<span class="mc__tag">' + esc(t.source || "site") + "</span></h3>" +
               "<p>" + esc(new Date(t.created_at).toLocaleString()) + "</p></div>";
@@ -229,7 +261,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcListings", "mcRequests", "mcMembers", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcListings", "mcRequests", "mcMembers", "mcDeals", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });

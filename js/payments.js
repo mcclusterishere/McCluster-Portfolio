@@ -1,9 +1,12 @@
 /* ============================================================
-   Payment links — Square (nonprofit account).
-   Create links in Square Dashboard → Online Checkout → Payment
-   Links (one per song; a recurring link for the subscription),
-   then paste each URL into `link` below. Buttons stay in a
-   "coming soon" state while a link is empty.
+   Payment links. The rail is STRIPE going forward (nonprofit
+   account): create links at dashboard.stripe.com → Payment Links
+   (one-time for songs/tithe with "customer chooses price",
+   recurring for subscribe/membership) and paste each URL into
+   `link` below. Buttons stay "coming soon" while a link is empty.
+   The song links below are legacy Square links that already work —
+   replace them with Stripe links whenever, no code change needed.
+   Later phase: Stripe Connect for provider payouts + 1099s.
    ============================================================ */
 
 window.PAYMENTS = {

@@ -133,14 +133,75 @@
       return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
     },
 
+    /* the Collab Room: propositions between the network's artists.
+       Terms travel as one JSON document; every counter is kept in
+       terms.history; signatures collect until both sides have signed. */
+    myTerms: function () {
+      return window.MCC_NET.myListing().then(function (mine) {
+        return (mine && mine.terms) || {};
+      });
+    },
+    saveTerms: function (terms) {
+      return window.MCC_NET.saveListing({ terms: terms });
+    },
+    myDeals: function () {
+      return window.MCC_NET.myListing().then(function (mine) {
+        var slug = mine ? mine.slug : "___none___";
+        return authed("deals?or=(from_owner.eq." + S.uid() + ",to_slug.eq." + encodeURIComponent(slug) + ")&order=updated_at.desc&select=*")
+          .then(function (rows) { return { mine: mine, rows: rows || [] }; });
+      });
+    },
+    propose: function (deal) {
+      deal.from_owner = S.uid();
+      mirror(Object.assign({ _form: "deal-proposed", email: S.email() }, {
+        kind: deal.kind, title: deal.title, to_slug: deal.to_slug,
+      }));
+      return authed("deals", { method: "POST", body: deal, prefer: "return=representation" })
+        .then(function (rows) { return rows && rows[0]; });
+    },
+    counterDeal: function (id, terms) {
+      return authed("deals?id=eq." + id, {
+        method: "PATCH", prefer: "return=minimal",
+        body: { terms: terms, status: "countered", signatures: [] },
+      });
+    },
+    setDealStatus: function (id, status) {
+      return authed("deals?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+    },
+    signDeal: function (deal, side, legalName) {
+      var sigs = (deal.signatures || []).filter(function (s) { return s.by !== side; });
+      sigs.push({ by: side, name: legalName, email: S.email(), at: new Date().toISOString() });
+      var both = ["from", "to"].every(function (k) {
+        return sigs.some(function (s) { return s.by === k; });
+      });
+      mirror({ _form: "deal-signed", deal: deal.id, by: side, name: legalName, email: S.email() });
+      return authed("deals?id=eq." + deal.id, {
+        method: "PATCH", prefer: "return=minimal",
+        body: { signatures: sigs, status: both ? "signed" : deal.status },
+      });
+    },
+
+    /* the performance log: one row per show, PRO-packet ready */
+    myPerformances: function () {
+      return authed("performances?owner=eq." + S.uid() + "&order=created_at.desc&select=*");
+    },
+    logPerformance: function (row) {
+      row.owner = S.uid();
+      mirror(Object.assign({ _form: "performance", email: S.email() }, row));
+      return authed("performances", { method: "POST", body: row, prefer: "return=minimal" });
+    },
+
     /* Mission Control: the admin surface. RLS (docs/admin-schema.sql) only
        answers these for the admin's own signed-in JWT — for anyone else
        every one of these comes back empty or refused. */
     admin: {
       listings: function () { return authed("providers?order=created_at.desc&select=*"); },
-      setListing: function (id, status) {
-        return authed("providers?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      setListing: function (id, status, note) {
+        var body = { status: status };
+        if (note !== undefined) body.review_note = note;
+        return authed("providers?id=eq." + id, { method: "PATCH", body: body, prefer: "return=minimal" });
       },
+      deals: function () { return authed("deals?order=updated_at.desc&select=*"); },
       requests: function () { return authed("booking_requests?order=created_at.desc&select=*"); },
       setRequest: function (id, status) {
         return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });

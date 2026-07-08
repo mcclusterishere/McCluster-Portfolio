@@ -100,6 +100,21 @@
         <div id="taReqs"><p class="ta__note">No requests yet — when someone books you from the directory, it lands here.</p></div>
       </section>
 
+      <section class="ta__card">
+        <h2>Your rooms</h2>
+        <p class="ta__note" style="margin:0 0 0.9rem">The rest of the platform, one tap away:</p>
+        <div class="ta__req" style="margin-top:0">
+          <h3>The Collab Room</h3>
+          <p>Send and receive propositions — splits, features, engineering — with sliders, counters, and signatures. Set your hard limits so people come correct.</p>
+          <div class="ta__acts"><a class="btn btn--ruby" href="collab.html">Open the Collab Room</a></div>
+        </div>
+        <div class="ta__req">
+          <h3>Performance packets</h3>
+          <p>Played a show? Build the ASCAP OnStage / BMI Live packet in a minute and get paid for the stage. Signed in, every show joins your permanent record.</p>
+          <div class="ta__acts"><a class="btn btn--ghost" href="packet.html">Build a packet</a></div>
+        </div>
+      </section>
+
       <p class="ta__tithe" id="taTithe">
         <b>How money works here:</b> the requester books you, you collect your full rate your way —
         card, cash, invoice, whatever you run. When the job is done, the network asks a
@@ -169,9 +184,27 @@
       function loadListing() {
         window.MCC_NET.myListing().then(function (mine) {
           var st = $("taStatus");
-          if (!mine) { st.textContent = "no listing yet"; return; }
+          if (!mine) {
+            st.textContent = "no listing yet";
+            // the onboarding quiz already asked — its answers build the form
+            try {
+              var pre = JSON.parse(localStorage.getItem("mcc_onboard") || "null");
+              if (pre) {
+                if (pre.name && !$("fName").value) $("fName").value = pre.name;
+                if (pre.headline && !$("fHeadline").value) $("fHeadline").value = pre.headline;
+                if (pre.area && !$("fArea").value) $("fArea").value = pre.area;
+                if (pre.blurb && !$("fBlurb").value) $("fBlurb").value = pre.blurb;
+                if (pre.roles) setRoles(pre.roles);
+                $("taSaveMsg").textContent = "Your onboarding answers built this — check it and save.";
+              }
+            } catch (e) {}
+            return;
+          }
           st.textContent = mine.status === "live" ? "● live" : mine.status;
           st.classList.toggle("is-live", mine.status === "live");
+          if (mine.review_note && mine.status !== "live") {
+            $("taSaveMsg").textContent = "From the review: " + mine.review_note + " — fix it up and save again.";
+          }
           $("fName").value = mine.name || "";
           $("fHeadline").value = mine.headline || "";
           $("fArea").value = mine.area || "";

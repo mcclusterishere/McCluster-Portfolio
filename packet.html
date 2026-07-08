@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Performance Packets · ASCAP / BMI reporting made easy · Equity Uprise</title>
+  <meta name="description" content="Log a live performance and get a copy-ready packet for ASCAP OnStage and BMI Live — song, writers, IPI numbers, venue, date, setlist. Get paid for every stage you touch.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .pk { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 7rem; max-width: 46rem; margin: 0 auto; }
+    .pk h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 9vw, 4rem); }
+    .pk__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 52ch; }
+    .pk__sub b { color: var(--cream); }
+    .pk__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
+      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.6rem; }
+    .pk__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.9rem; }
+    .pk__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.7rem; }
+    .pk__in:focus { outline: none; border-color: var(--ruby-hot); }
+    textarea.pk__in { resize: vertical; min-height: 4.5em; }
+    select.pk__in { appearance: none; }
+    .pk__lbl { display: block; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); margin: 0.6rem 0 0.35rem; }
+    .pk__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
+    .pk__out { white-space: pre-wrap; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem;
+      background: rgba(10, 8, 7, 0.8); border: 1px solid rgba(47, 191, 113, 0.4); border-radius: 12px;
+      padding: 1.1rem; line-height: 1.6; margin-top: 0.9rem; }
+    .pk__msg { color: var(--ruby-hot); font-size: 0.85rem; margin-top: 0.6rem; min-height: 1.2em; }
+    .pk__links { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.9rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="collab.html">The Collab Room</a>
+      <a href="talent.html">The Talent App</a>
+    </nav>
+  </header>
+  <main class="pk">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Equity Uprise &middot; get paid for the stage</p>
+    <h1>Performance<br>Packets.</h1>
+    <p class="pk__sub">Play a song live and the PROs owe you money — <b>if you report it</b>. Most artists
+      never do, because the process is a maze. This builds the whole packet in one minute:
+      song, writers, IPI numbers, venue, date, setlist — copy it straight into
+      <b>ASCAP OnStage</b> or <b>BMI Live</b> and collect what's yours. Venues: the same packet is
+      your record that the music in your room is being reported right.</p>
+
+    <section class="pk__card">
+      <h2>The show</h2>
+      <label class="pk__lbl" for="kSong">The song</label>
+      <select class="pk__in" id="kSong">
+        <option value="">Pick a song, or type your own below…</option>
+      </select>
+      <input class="pk__in" id="kSongCustom" type="text" placeholder="Or type the song title">
+      <label class="pk__lbl" for="kWriters">Writers &amp; IPI/CAE numbers</label>
+      <textarea class="pk__in" id="kWriters" placeholder="e.g. Matthew McCluster (BMI) · Zaki Elhajoui, IPI 01209963535 (BMI)"></textarea>
+      <label class="pk__lbl" for="kVenue">Venue</label>
+      <input class="pk__in" id="kVenue" type="text" placeholder="Venue name">
+      <label class="pk__lbl" for="kCity">City / state</label>
+      <input class="pk__in" id="kCity" type="text" placeholder="e.g. Atlanta, GA">
+      <label class="pk__lbl" for="kDate">Date of performance</label>
+      <input class="pk__in" id="kDate" type="date">
+      <label class="pk__lbl" for="kSetlist">Full setlist (one song per line — every song counts)</label>
+      <textarea class="pk__in" id="kSetlist" placeholder="Vaunt&#10;Jet Pass&#10;Antisocial"></textarea>
+      <label class="pk__lbl" for="kAudience">Estimated audience / ticketing</label>
+      <input class="pk__in" id="kAudience" type="text" placeholder="e.g. ~150 · free entry">
+      <label class="pk__lbl" for="kOrganizer">Organizer / promoter (optional)</label>
+      <input class="pk__in" id="kOrganizer" type="text" placeholder="Who ran the show">
+      <button class="btn btn--ruby" id="kBuild" type="button">Build the packet</button>
+      <p class="pk__msg" id="kMsg"></p>
+      <div class="pk__out" id="kOut" hidden></div>
+      <div class="pk__links" id="kActs" hidden>
+        <button class="btn btn--ruby" id="kCopy" type="button">Copy the packet</button>
+        <a class="btn btn--ghost" href="https://www.ascap.com/onstage" target="_blank" rel="noopener">ASCAP OnStage ↗</a>
+        <a class="btn btn--ghost" href="https://www.bmi.com/special/bmi_live" target="_blank" rel="noopener">BMI Live ↗</a>
+      </div>
+      <p class="pk__note" id="kSaveNote"></p>
+    </section>
+
+    <section class="pk__card">
+      <h2>Why this matters</h2>
+      <p class="pk__note" style="margin:0">
+        ASCAP OnStage and BMI Live pay writers for live performances of their own songs — bar sets,
+        showcases, festivals, church programs. The claim windows are short and the forms want exactly
+        what this packet holds. Log every show the night you play it, and the platform keeps your
+        performance history on the record — the same history that feeds grant reports and booking
+        credibility. This is part of the Equity Uprise workforce program: artists who know the
+        business side keep the money they earn.
+      </p>
+    </section>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function $(id) { return document.getElementById(id); }
+
+      /* known songs prefill writers from the catalogue's own records */
+      var SONGS = {
+        "Vaunt": "Matthew McCluster (McCluster Corp) · Zaki \"Zakir\" Elhajoui, IPI 01209963535 · Zakirxyz Publishing, IPI 01210406031 (BMI)",
+        "Jet Pass": "Matthew McCluster (McCluster Corp) · Zaki \"Zakir\" Elhajoui, IPI 01209963535 (BMI)",
+        "Heal the 3": "Matthew McCluster (50%) · VVS Madè (50%) — released under Equity Uprise",
+        "Deep End": "Matthew McCluster (50%) · VVS Madè (50%) — released under Equity Uprise",
+        "Antisocial": "Matthew McCluster (McCluster Corp)",
+        "Who Did The Shoot": "Matthew McCluster (McCluster Corp)",
+        "Got WiFi": "Matthew McCluster (McCluster Corp)",
+        "Environmental Injustice": "Matthew McCluster (McCluster Corp)",
+        "Dealer Plates": "Matthew McCluster (McCluster Corp)",
+      };
+      $("kSong").innerHTML += Object.keys(SONGS).map(function (s) {
+        return '<option value="' + s + '">' + s + "</option>";
+      }).join("");
+      $("kSong").addEventListener("change", function () {
+        if (this.value) { $("kSongCustom").value = ""; $("kWriters").value = SONGS[this.value] || ""; }
+      });
+
+      var packet = "";
+      $("kBuild").addEventListener("click", function () {
+        var song = $("kSongCustom").value.trim() || $("kSong").value;
+        if (!song) { $("kMsg").textContent = "Pick or type the song."; return; }
+        if (!$("kVenue").value.trim() || !$("kDate").value) { $("kMsg").textContent = "The packet needs at least the venue and the date."; return; }
+        $("kMsg").textContent = "";
+        packet =
+          "LIVE PERFORMANCE REPORT — for ASCAP OnStage / BMI Live\n" +
+          "======================================================\n" +
+          "Featured song:   " + song + "\n" +
+          "Writers / IPI:   " + ($("kWriters").value.trim() || "—") + "\n" +
+          "Venue:           " + $("kVenue").value.trim() + "\n" +
+          "City/State:      " + ($("kCity").value.trim() || "—") + "\n" +
+          "Date:            " + $("kDate").value + "\n" +
+          "Audience:        " + ($("kAudience").value.trim() || "—") + "\n" +
+          "Organizer:       " + ($("kOrganizer").value.trim() || "—") + "\n" +
+          "Setlist:\n" +
+          ($("kSetlist").value.trim() ? $("kSetlist").value.trim().split("\n").map(function (l) { return "  · " + l.trim(); }).join("\n") : "  · " + song) + "\n" +
+          "------------------------------------------------------\n" +
+          "Prepared via Equity Uprise · mcclusterishere.github.io/McCluster-Portfolio/packet.html\n" +
+          "Generated " + new Date().toLocaleString();
+        $("kOut").textContent = packet;
+        $("kOut").hidden = false;
+        $("kActs").hidden = false;
+        track("packet_built", { song: song });
+
+        // signed in? the show goes on your permanent performance record too
+        if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          window.MCC_NET.logPerformance({
+            song_title: song, writers: $("kWriters").value.trim(),
+            venue: $("kVenue").value.trim(), city: $("kCity").value.trim(),
+            perf_date: $("kDate").value, setlist: $("kSetlist").value.trim(),
+            audience: $("kAudience").value.trim(), organizer: $("kOrganizer").value.trim(),
+          }).then(function () {
+            $("kSaveNote").textContent = "Saved to your performance record — it counts toward your Performance Ready badge.";
+          }).catch(function () {
+            $("kSaveNote").textContent = "Packet built. (The performance log table isn't live yet — run docs/collab-schema.sql to keep history.)";
+          });
+        } else {
+          $("kSaveNote").innerHTML = 'Packet built. <a href="talent.html" style="color:var(--ruby-hot)">Sign in</a> and the platform keeps your performance history on the record automatically.';
+        }
+      });
+      $("kCopy").addEventListener("click", function () {
+        navigator.clipboard.writeText(packet).then(function () {
+          $("kCopy").textContent = "Copied ✓";
+          setTimeout(function () { $("kCopy").textContent = "Copy the packet"; }, 1800);
+        });
+        track("packet_copied", {});
+      });
+      track("packet_view", {});
+    })();
+  </script>
+</body>
+</html>
