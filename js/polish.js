@@ -8,6 +8,33 @@
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- magic-link catcher, site-wide ----------
+     Supabase falls back to the Site URL when a redirect isn't
+     allow-listed, so a sign-in link can land on ANY page. This
+     runs everywhere polish.js does: it banks the session in the
+     same store backend.js uses, then routes the signer to their
+     room — the admin to Mission Control, everyone else to the
+     app. Pages that run their own auth (mission/talent/members/
+     app) are left to handle it themselves. */
+  (function catchMagicAnywhere() {
+    if (location.hash.indexOf("access_token=") === -1) return;
+    var here = location.pathname.split("/").pop() || "index.html";
+    if (["mission.html", "talent.html", "members.html", "app.html"].indexOf(here) !== -1) return;
+    var q = {};
+    location.hash.slice(1).split("&").forEach(function (kv) {
+      var p = kv.split("="); q[p[0]] = decodeURIComponent(p[1] || "");
+    });
+    if (!q.access_token) return;
+    try {
+      localStorage.setItem("mccdb_session", JSON.stringify({
+        access_token: q.access_token, refresh_token: q.refresh_token || "",
+      }));
+    } catch (e) { return; }
+    var email = "";
+    try { email = JSON.parse(atob(q.access_token.split(".")[1])).email || ""; } catch (e) {}
+    location.replace(email === "matthew@mccluster.org" ? "mission.html" : "app.html");
+  })();
+
   /* ---------- custom cursor: a lagging ring + a precise dot ---------- */
   if (fine && !reduce) {
     var ring = document.createElement("div");
