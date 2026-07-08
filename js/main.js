@@ -551,12 +551,15 @@
           // standing in the aisle — both measured off the equirect frame
           { yaw: -77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
           { yaw: 111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
+          { yaw: -140, pitch: -40, label: "McCluster · the profile", href: "hire.html" },
+          { yaw: 71, pitch: -56, label: "Zakir · the six-string", href: "profile-zakir.html" },
         ],
       });
       window.__MCC_VR = workVR; // debug/verification handle
       var compass = document.getElementById("workVRCompass");
       document.getElementById("workVRCanvas").addEventListener("pointerdown", function () {
         compass.classList.add("is-gone");
+        showNPBeacon(); // dragging in silence: the beacon points at the sound
       });
       document.getElementById("workVRGyro").addEventListener("click", function () {
         workVR.viewer.enableGyro();
@@ -609,6 +612,29 @@
     },
   });
 
+  // one true exit that always works — the brand mark (and the Back-to-top
+  // button inside the band) releases any lock and flies home
+  function releaseAndGoTop() {
+    workVR.landing = true;
+    workVR.live = false;
+    if (workVR.el) workVR.el.classList.remove("is-live");
+    if (workVR.viewer) workVR.viewer.pause();
+    lockPageScroll(false);
+    lenis.scrollTo(0, { duration: 1.2 });
+    setTimeout(function () { workVR.landing = false; }, 1600);
+  }
+  var brandHome = document.querySelector(".site-head .brand");
+  if (brandHome) brandHome.addEventListener("click", function (e) {
+    e.preventDefault();
+    releaseAndGoTop();
+    if (window.MCC_TRACK) window.MCC_TRACK("brand_home", { page: "home" });
+  });
+  var workTop = document.getElementById("workVRTop");
+  if (workTop) workTop.addEventListener("click", function () {
+    releaseAndGoTop();
+    if (window.MCC_TRACK) window.MCC_TRACK("vr_back_to_top", { page: "home" });
+  });
+
   // Land: the only way out while scroll is locked. Touches down right at the
   // start of the fly-through film — the jet in open air — then hands the
   // scroll back to the user; no auto-ride to the end of the section.
@@ -627,6 +653,40 @@
     // if the glide is interrupted before onComplete, re-arm the band anyway
     setTimeout(function () { workVR.landing = false; }, 1400);
     if (window.MCC_TRACK) window.MCC_TRACK("vr_skip", { page: "home" });
+  });
+
+  /* ---- the sound beacon: someone is dragging the 360 with the sound off.
+         An orange beacon rises from the Now Playing tab — rings, an arrow,
+         and TURN ON SOUND! — one tap lights the music. Shows once. ---- */
+  var npBeacon = null, npBeaconShown = false;
+  function killNPBeacon() {
+    if (npBeacon && npBeacon.parentNode) npBeacon.parentNode.removeChild(npBeacon);
+    npBeacon = null;
+  }
+  function showNPBeacon() {
+    var tgl = document.getElementById("soundToggle");
+    if (npBeaconShown || !tgl || tgl.classList.contains("is-on")) return;
+    npBeaconShown = true;
+    npBeacon = document.createElement("div");
+    npBeacon.className = "npbeak";
+    npBeacon.setAttribute("role", "button");
+    npBeacon.setAttribute("aria-label", "Turn on sound");
+    npBeacon.innerHTML =
+      '<span class="npbeak__ring"></span><span class="npbeak__ring"></span><span class="npbeak__ring"></span>' +
+      '<span class="npbeak__words">Turn on sound!</span>' +
+      '<svg class="npbeak__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v13"/><path d="M6 12l6 6 6-6"/></svg>';
+    npBeacon.addEventListener("click", function () {
+      if (window.MCC_NP_PLAY) window.MCC_NP_PLAY();
+      killNPBeacon();
+      if (window.MCC_TRACK) window.MCC_TRACK("sound_beacon_tap", { page: "home" });
+    });
+    document.body.appendChild(npBeacon);
+    if (window.MCC_TRACK) window.MCC_TRACK("sound_beacon", { page: "home" });
+    setTimeout(killNPBeacon, 12000);
+  }
+  // the moment sound comes on from anywhere, the beacon's job is done
+  window.addEventListener("mcc:nowplaying", function (e) {
+    if (e.detail && e.detail.playing) killNPBeacon();
   });
 
   /* ---- the sound ask: Motion tapped while the site is silent. One huge

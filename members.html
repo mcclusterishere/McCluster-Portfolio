@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Members App · McCluster Corp &amp; Equity Uprise</title>
+  <meta name="description" content="Join the organization: board service, Equity Uprise programming, volunteering, and the donor circle whose residual giving keeps the lights on.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .mb { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 7rem; max-width: 46rem; margin: 0 auto; }
+    .mb__glow { position: fixed; inset: -20% -30% auto; height: 55vh; z-index: -1; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(47, 191, 113, 0.16), transparent 70%); animation: mbGlow 8s ease-in-out infinite; }
+    @keyframes mbGlow { 0%, 100% { transform: translateX(-5%); } 50% { transform: translateX(5%); } }
+    .mb h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 9vw, 4rem); }
+    .mb__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 54ch; }
+    .mb__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
+      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.6rem; }
+    .mb__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.9rem; }
+    .mb__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.7rem; }
+    .mb__in:focus { outline: none; border-color: var(--ruby-hot); }
+    textarea.mb__in { resize: vertical; min-height: 5em; }
+    .mb__ways { display: grid; gap: 0.6rem; margin: 0.3rem 0 1rem; }
+    .mb__way { display: flex; gap: 0.8em; align-items: flex-start; border: 1px solid rgba(244, 239, 230, 0.16);
+      border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .mb__way.is-on { border-color: var(--ruby-hot); background: rgba(193, 18, 31, 0.16); }
+    .mb__way input { margin-top: 0.25em; }
+    .mb__way b { color: var(--cream); display: block; font-size: 0.92rem; }
+    .mb__way small { color: var(--cream-dim); font-size: 0.78rem; line-height: 1.5; }
+    .mb__status { display: inline-flex; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      border-radius: 100px; padding: 0.5em 1.1em; border: 1px solid rgba(244, 239, 230, 0.25); color: var(--cream-dim); }
+    .mb__status.is-active { border-color: #2fbf71; color: #2fbf71; }
+    .mb__msg { color: var(--ruby-hot); font-size: 0.85rem; margin-top: 0.6rem; min-height: 1.2em; }
+    .mb__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
+    .mb__give { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; }
+    .mb__hidden { display: none !important; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="mb__glow" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="equity-uprise.html">Equity Uprise</a>
+      <a href="fellowship.html">The Fellowship</a>
+    </nav>
+  </header>
+  <main class="mb">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The organization &middot; for members</p>
+    <h1>The Members<br>App.</h1>
+    <p class="mb__sub">This is the inside of the organization — the nonprofit behind everything on this site.
+      <strong style="color:var(--cream)">Sit on the boards. Join the Equity Uprise programming. Volunteer.
+      Or carry the donor circle</strong> whose residual giving keeps the lights on and the programs running.</p>
+
+    <!-- signed out -->
+    <section class="mb__card" id="mbAuth">
+      <h2>Step inside</h2>
+      <p class="mb__note" style="margin:0 0 0.9rem">One email, no password. The link signs you in right here.</p>
+      <input class="mb__in" id="mbEmail" type="email" placeholder="you@you.com" autocomplete="email">
+      <button class="btn btn--ruby" id="mbSignIn" type="button">Email me the key</button>
+      <p class="mb__msg" id="mbAuthMsg"></p>
+    </section>
+
+    <!-- signed in -->
+    <div id="mbIn" class="mb__hidden">
+      <section class="mb__card">
+        <h2>Your membership <span class="mb__status" id="mbStatus">not on file yet</span></h2>
+        <input class="mb__in" id="mName" type="text" placeholder="Your name" autocomplete="name">
+        <div class="mb__ways" id="mWays"></div>
+        <textarea class="mb__in" id="mNote" placeholder="Anything the organization should know — skills, availability, why you're here"></textarea>
+        <button class="btn btn--ruby" id="mbSave" type="button">Save my membership</button>
+        <p class="mb__msg" id="mbSaveMsg"></p>
+        <p class="mb__note">Applications go to the organization for review. Board seats follow the bylaws — this is how you raise your hand.</p>
+      </section>
+
+      <section class="mb__card">
+        <h2>Keep the lights on</h2>
+        <p class="mb__note" style="margin-top:0">The residual: a monthly gift that funds the fellowship, the programming, and this platform.
+          Every dollar goes to the nonprofit's work.</p>
+        <div class="mb__give" id="mbGive">
+          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Residual%20Giving&body=I%20want%20to%20set%20up%20a%20monthly%20gift%20of%3A%20" data-cta="member-give-mail">Start your residual</a>
+        </div>
+      </section>
+
+      <p class="mb__note"><button class="btn btn--ghost" id="mbSignOut" type="button" style="margin-top:0.6rem">Sign out</button></p>
+    </div>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">&copy; 2026 Matthew McCluster &middot; the organization behind the work.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/payments.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function $(id) { return document.getElementById(id); }
+      var WAYS = [
+        ["Board service", "Governance: sit on the boards, steer the mission, carry fiduciary weight."],
+        ["Programming", "Equity Uprise: the fellowship, the civic work, the cohort — in the room, doing it."],
+        ["Volunteer", "Hands on shoots, events, and programs whenever the work calls."],
+        ["Donor circle", "The residual: monthly giving that keeps the lights on and the programs running."],
+      ];
+      var picked = [];
+      $("mWays").innerHTML = WAYS.map(function (w) {
+        return '<label class="mb__way"><input type="checkbox" data-w="' + w[0] + '"><span><b>' + w[0] + "</b><small>" + w[1] + "</small></span></label>";
+      }).join("");
+      $("mWays").querySelectorAll("input").forEach(function (c) {
+        c.addEventListener("change", function () {
+          var w = c.getAttribute("data-w");
+          var i = picked.indexOf(w);
+          if (c.checked && i === -1) picked.push(w);
+          if (!c.checked && i !== -1) picked.splice(i, 1);
+          c.closest(".mb__way").classList.toggle("is-on", c.checked);
+        });
+      });
+      function setWays(list) {
+        picked = (list || []).slice();
+        $("mWays").querySelectorAll("input").forEach(function (c) {
+          var on = picked.indexOf(c.getAttribute("data-w")) !== -1;
+          c.checked = on;
+          c.closest(".mb__way").classList.toggle("is-on", on);
+        });
+      }
+
+      // residual giving arms itself from PAYMENTS the moment the link exists
+      var give = window.PAYMENTS && window.PAYMENTS.membership;
+      if (give && give.link) {
+        $("mbGive").innerHTML = '<a class="btn btn--ruby" href="' + give.link + '" target="_blank" rel="noopener" data-cta="member-give">Start your residual &#8594;</a>';
+      }
+
+      function show(on) {
+        $("mbAuth").classList.toggle("mb__hidden", on);
+        $("mbIn").classList.toggle("mb__hidden", !on);
+      }
+      $("mbSignIn").addEventListener("click", function () {
+        var em = $("mbEmail").value.trim();
+        if (!em) { $("mbAuthMsg").textContent = "Drop your email first."; return; }
+        $("mbAuthMsg").textContent = "Sending the key…";
+        window.MCC_AUTH.signIn(em).then(function () {
+          $("mbAuthMsg").textContent = "Check your email — the link signs you in right here.";
+          track("member_signin_sent", {});
+        }).catch(function (e) { $("mbAuthMsg").textContent = String(e.message || e); });
+      });
+      function loadMember() {
+        window.MCC_NET.myMember().then(function (m) {
+          var st = $("mbStatus");
+          if (!m) { st.textContent = "not on file yet"; return; }
+          st.textContent = m.status;
+          st.classList.toggle("is-active", m.status === "active" || m.status === "board");
+          $("mName").value = m.name || "";
+          $("mNote").value = m.note || "";
+          setWays(m.interests);
+        }).catch(function () {});
+      }
+      $("mbSave").addEventListener("click", function () {
+        var fields = { name: $("mName").value.trim(), note: $("mNote").value.trim(), interests: picked };
+        if (!fields.name) { $("mbSaveMsg").textContent = "The membership needs a name."; return; }
+        $("mbSaveMsg").textContent = "Saving…";
+        window.MCC_NET.saveMember(fields).then(function () {
+          $("mbSaveMsg").textContent = "Saved — the organization has it.";
+          track("member_saved", {});
+          loadMember();
+        }).catch(function (e) { $("mbSaveMsg").textContent = "Couldn't save: " + String(e.message || e); });
+      });
+      $("mbSignOut").addEventListener("click", function () {
+        window.MCC_AUTH.signOut().then(function () { location.reload(); });
+      });
+      if (window.MCC_AUTH.user && window.MCC_AUTH.user()) { show(true); loadMember(); }
+      else show(false);
+      track("members_view", {});
+    })();
+  </script>
+</body>
+</html>

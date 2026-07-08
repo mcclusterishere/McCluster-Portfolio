@@ -92,3 +92,30 @@ $$ language plpgsql;
 drop trigger if exists providers_touch on providers;
 create trigger providers_touch before update on providers
   for each row execute function touch_updated_at();
+
+-- ---------- members: the people inside the organization ----------
+-- Board interest, Equity Uprise programming, volunteers, and the donor
+-- circle that keeps the lights on with residual giving.
+create table if not exists members (
+  id         uuid primary key default gen_random_uuid(),
+  owner      uuid references auth.users on delete cascade unique,
+  name       text,
+  interests  text[] default '{}',   -- Board service / Programming / Volunteer / Donor circle
+  note       text,
+  status     text not null default 'applied'
+             check (status in ('applied','active','board','paused')),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+alter table members enable row level security;
+
+create policy "members read their own record"
+  on members for select using (owner = auth.uid());
+create policy "members create their own record"
+  on members for insert with check (owner = auth.uid());
+create policy "members update their own record"
+  on members for update using (owner = auth.uid()) with check (owner = auth.uid());
+
+drop trigger if exists members_touch on members;
+create trigger members_touch before update on members
+  for each row execute function touch_updated_at();

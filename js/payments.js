@@ -53,6 +53,12 @@ window.PAYMENTS = {
     title: "The Network Tithe",
     link: "",
   },
+  // Residual membership giving (Square recurring payment link). The
+  // Members App shows "Start your residual" the moment this exists.
+  "membership": {
+    title: "Member Residual Giving",
+    link: "",
+  },
   // Square Appointments booking page for the paid inquiry call:
   // Dashboard → Appointments → create a paid "Inquiry Call" service with
   // prepayment required, then paste the online booking URL here.

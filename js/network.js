@@ -103,6 +103,25 @@
       });
     },
 
+    /* the members app: one record per signed-in member of the organization */
+    myMember: function () {
+      return authed("members?owner=eq." + S.uid() + "&select=*").then(function (rows) {
+        return rows && rows[0] ? rows[0] : null;
+      });
+    },
+    saveMember: function (fields) {
+      return window.MCC_NET.myMember().then(function (mine) {
+        if (mine) {
+          return authed("members?id=eq." + mine.id, { method: "PATCH", body: fields, prefer: "return=representation" })
+            .then(function (rows) { return rows && rows[0]; });
+        }
+        fields.owner = S.uid();
+        mirror(Object.assign({ _form: "member-application", email: S.email() }, fields));
+        return authed("members", { method: "POST", body: fields, prefer: "return=representation" })
+          .then(function (rows) { return rows && rows[0]; });
+      });
+    },
+
     /* the inbox: requests against the signed-in provider's listing */
     myRequests: function () {
       return window.MCC_NET.myListing().then(function (mine) {
