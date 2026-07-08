@@ -871,6 +871,7 @@
       }));
     }
     window.MCC_NP_PLAY = function () { setSound(true); };
+    window.MCC_NP_PAUSE = function () { setSound(false); };
     announceNP(); // the tab knows the opener before the first note
 
     zones.forEach(function (z) {

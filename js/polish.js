@@ -170,21 +170,20 @@
   if (!document.querySelector(".appbar")) {
     var here = location.pathname.split("/").pop() || "index.html";
     var tabs = [
-      ["index.html#top", "home", "Home", '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/>'],
-      ["collab.html", "deals", "Deals", '<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>'],
-      ["#np", "nowplaying", "Now Playing", '<path class="np-bar" d="M5 10v4"/><path class="np-bar" d="M9.5 7v10"/><path class="np-bar" d="M14 9v6"/><path class="np-bar" d="M18.5 11v2"/>'],
-      ["app.html", "theapp", "The App", '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>'],
-      ["providers.html", "hire", "Hire", '<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>'],
+      ["index.html#top", "home", "M", '<img class="appbar__m" src="assets/img/m-mark.png" alt="">'],
+      ["app.html", "music", "Music", '<path class="np-bar" d="M5 10v4"/><path class="np-bar" d="M9.5 7v10"/><path class="np-bar" d="M14 9v6"/><path class="np-bar" d="M18.5 11v2"/>'],
+      ["market.html", "market", "Market", '<path d="m3 7 3-4h12l3 4"/><path d="M3 7h18v3a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v7h14v-7"/><path d="M10 20v-4h4v4"/>'],
     ];
     var bar = document.createElement("nav");
     bar.className = "appbar";
     bar.setAttribute("aria-label", "Sections");
     bar.innerHTML = tabs.map(function (t) {
       var active = t[0].split("#")[0] === here ? " is-active" : "";
-      var np = t[1] === "nowplaying" ? ' id="appbarNP"' : "";
-      var span = t[1] === "nowplaying" ? '<span id="appbarNPLabel">' + t[2] + "</span>" : "<span>" + t[2] + "</span>";
+      var np = t[1] === "music" ? ' id="appbarNP"' : "";
+      var span = t[1] === "music" ? '<span id="appbarNPLabel">' + t[2] + "</span>" : "<span>" + t[2] + "</span>";
+      var icon = t[3].indexOf("<img") === 0 ? t[3] : '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[3] + "</svg>";
       return '<a class="appbar__tab' + active + '" href="' + t[0] + '"' + np + ' data-appnav="' + t[1] + '">' +
-        '<svg viewBox="0 0 24 24" aria-hidden="true">' + t[3] + "</svg>" + span + "</a>";
+        icon + span + "</a>";
     }).join("");
     document.body.appendChild(bar);
     document.body.classList.add("has-appbar");
@@ -217,7 +216,7 @@
        quiet pulse — a pointer, not a shout */
     try {
       var s0 = window.MCC_MODEL.suggest();
-      var TAB = { "app.html": "theapp", "providers.html": "hire", "talent.html": "hire", "collab.html": "deals", "onboard.html": "hire" };
+      var TAB = { "app.html": "music", "market.html": "market", "providers.html": "market", "talent.html": "market", "collab.html": "market", "onboard.html": "market" };
       var wing = TAB[s0.href];
       if (wing) {
         var tab = document.querySelector('.appbar__tab[data-appnav="' + wing + '"]');
@@ -275,24 +274,92 @@
     });
   })();
 
-  /* ---------- the Now Playing tab ----------
-     Mirrors whatever the current section is playing. Pages announce with a
-     `mcc:nowplaying` CustomEvent ({title, href, playing}); a tap starts the
-     sound while it's off (window.MCC_NP_PLAY), then leads to the song. */
+  /* ---------- the Music tab: the sound follows you ----------
+     The center tab IS the transport. Its equalizer dances with whatever
+     is playing; a tap pauses it, a tap resumes it, and with nothing
+     loaded it opens the Music app. MCC_RADIO carries app-started audio
+     across every page — position saved, resumed on arrival (one tap if
+     the browser demands a fresh gesture). ---------- */
   (function () {
     var tab = document.getElementById("appbarNP");
     if (!tab) return;
+    var here = location.pathname.split("/").pop() || "index.html";
     var label = document.getElementById("appbarNPLabel");
-    var state = { playing: false, href: null };
+    var state = { playing: false, href: null, title: null };
     window.addEventListener("mcc:nowplaying", function (e) {
       state = e.detail || {};
-      if (label && state.title) label.textContent = state.title;
+      if (label) label.textContent = state.title || "Music";
       tab.classList.toggle("is-playing", !!state.playing);
-      tab.setAttribute("href", state.href || "#np");
     });
+
+    /* the radio: app-started audio rides along on every page but the app
+       itself (the app's own player is the source of truth there) */
+    var RKEY = "mcc_radio_v1";
+    var radio = null;
+    function rsave(extra) {
+      if (!radio) return;
+      try {
+        var st = JSON.parse(localStorage.getItem(RKEY)) || {};
+        st.pos = radio.currentTime; st.playing = !radio.paused; st.at = Date.now();
+        if (extra) Object.keys(extra).forEach(function (k) { st[k] = extra[k]; });
+        localStorage.setItem(RKEY, JSON.stringify(st));
+      } catch (e) {}
+    }
+    function announceRadio(st, playing) {
+      window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
+        detail: { title: st.title, href: "app.html", playing: playing, radio: true },
+      }));
+    }
+    if (here !== "app.html") {
+      var st = null;
+      try { st = JSON.parse(localStorage.getItem(RKEY)); } catch (e) {}
+      if (st && st.src && st.playing && Date.now() - (st.at || 0) < 6 * 3600 * 1000) {
+        radio = new Audio(st.src);
+        radio.preload = "auto";
+        try { radio.currentTime = st.pos || 0; } catch (e) {}
+        radio.addEventListener("loadedmetadata", function () {
+          try { if (Math.abs(radio.currentTime - (st.pos || 0)) > 2) radio.currentTime = st.pos || 0; } catch (e) {}
+        });
+        var tick = 0;
+        radio.addEventListener("timeupdate", function () {
+          if (++tick % 8 === 0) rsave();
+        });
+        window.addEventListener("pagehide", function () { rsave(); });
+        radio.addEventListener("ended", function () {
+          try { localStorage.removeItem(RKEY); } catch (e) {}
+          announceRadio(st, false);
+        });
+        radio.play().then(function () {
+          announceRadio(st, true);
+        }).catch(function () {
+          // the browser wants a fresh gesture — the tab offers it
+          announceRadio(st, false);
+          if (label) label.textContent = "\u25B8 " + (st.title || "Resume");
+        });
+        window.MCC_RADIO = {
+          playing: function () { return !radio.paused; },
+          toggle: function () {
+            if (radio.paused) radio.play().then(function () { announceRadio(st, true); rsave(); }).catch(function () {});
+            else { radio.pause(); announceRadio(st, false); rsave(); }
+          },
+        };
+        // a page starting its OWN sound takes the aux cord — the radio yields
+        window.addEventListener("mcc:nowplaying", function (e) {
+          if (e.detail && e.detail.playing && !e.detail.radio && !radio.paused) {
+            radio.pause(); rsave();
+          }
+        });
+      }
+    }
+
     tab.addEventListener("click", function (ev) {
-      if (!state.playing && window.MCC_NP_PLAY) { ev.preventDefault(); window.MCC_NP_PLAY(); }
-      else if (!state.href || state.href === "#np") ev.preventDefault();
+      if (here === "app.html") return; // the app opens its own player sheet
+      // radio riding: one tap pauses it; tapped again, the door opens and
+      // the app picks the track up right where it paused
+      if (window.MCC_RADIO && window.MCC_RADIO.playing()) { ev.preventDefault(); window.MCC_RADIO.toggle(); return; }
+      // page sound off: the first tap turns it on; playing, the tap is the door
+      if (!state.playing && window.MCC_NP_PLAY) { ev.preventDefault(); window.MCC_NP_PLAY(); return; }
+      // playing → default nav: the Music app, sound in hand
     });
   })();
 })();

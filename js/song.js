@@ -347,6 +347,7 @@
       }));
     }
     window.MCC_NP_PLAY = function () { if (!playing) playBtn.click(); };
+    window.MCC_NP_PAUSE = function () { if (playing) playBtn.click(); };
     announceNP();
 
     playBtn.addEventListener("click", function () {

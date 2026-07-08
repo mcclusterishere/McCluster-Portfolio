@@ -135,7 +135,7 @@ window.MCC_MODEL = (function () {
     music: ["app.html", "Back to the music", "Your rotation is waiting in the app"],
     experience: ["vr-vaunt.html", "Step back inside the jet", "The 360 cabin, pins and all"],
     client: ["offer.html", "The offer is still open", "2 of 3 spots left \u00b7 the weekly system"],
-    artist: ["collab.html", "Open the Collab Room", "Propositions, splits, signatures"],
+    artist: ["market.html", "Open the Market", "Deals, splits, bookings \u2014 one engine"],
     civic: ["docket-516.html", "Back to the record", "The public record, explained"],
     org: ["members.html", "Join the organization", "Boards \u00b7 programs \u00b7 the donor circle"],
   };

@@ -262,12 +262,11 @@
     <section class="sprow" data-cat="experience">
       <div class="sprow__t"><div><p class="sprow__k">One platform &middot; every wing</p><h2>The Systems</h2></div></div>
       <div class="sprow__rail">
-        <a class="spc spc--wide" href="providers.html"><span class="spc__art"><span class="spc__kind">Network</span><img loading="lazy" src="assets/frames/keynote_0080.jpg" alt=""></span><p class="spc__t">Hire a Provider</p><p class="spc__s">M-Verified talent, booked direct</p></a>
+        <a class="spc spc--wide" href="market.html"><span class="spc__art"><span class="spc__kind">The Market</span><img loading="lazy" src="assets/frames/keynote_0080.jpg" alt="The Market — providers, deals, bookings"></span><p class="spc__t">The Market</p><p class="spc__s">Providers &middot; deals &middot; bookings &middot; one engine</p></a>
         <a class="spc spc--wide" href="vr-vaunt.html"><span class="spc__art"><span class="spc__kind">VR</span><img loading="lazy" src="assets/img/vaunt-arrival.jpg" alt=""></span><p class="spc__t">Inside the Jet</p><p class="spc__s">The 360 session &middot; stand in it</p></a>
         <a class="spc spc--wide" href="members.html"><span class="spc__art"><span class="spc__kind">The Org</span><img loading="lazy" src="assets/frames/uprise_0080.jpg" alt=""></span><p class="spc__t">Join the Organization</p><p class="spc__s">Boards &middot; programs &middot; the donor circle</p></a>
         <a class="spc spc--wide" href="docket-516.html"><span class="spc__art"><span class="spc__kind">Civic</span><img loading="lazy" src="assets/frames/docket_0050.jpg" alt=""></span><p class="spc__t">Docket 516</p><p class="spc__s">The public record, explained</p></a>
         <a class="spc spc--wide" href="talent.html"><span class="spc__art"><span class="spc__kind">For talent</span><img loading="lazy" src="assets/frames/studio360_0050.jpg" alt=""></span><p class="spc__t">The Talent App</p><p class="spc__s">Your listing &middot; your inbox &middot; your rate</p></a>
-        <a class="spc spc--wide" href="collab.html"><span class="spc__art"><span class="spc__kind">For artists</span><img loading="lazy" src="assets/frames/vperf3_0001.jpg" alt=""></span><p class="spc__t">The Collab Room</p><p class="spc__s">Splits &middot; signatures &middot; nobody gets screwed</p></a>
         <a class="spc spc--wide" href="onboard.html"><span class="spc__art"><span class="spc__kind">Join</span><img loading="lazy" src="assets/frames/vperf5_0001.jpg" alt=""></span><p class="spc__t">Get On the Platform</p><p class="spc__s">Artists &middot; providers &middot; spaces</p></a>
       </div>
     </section>
@@ -502,6 +501,20 @@
         renderPersona();
         renderStats();
         renderForYou();
+
+        // the radio hand-off: whatever was riding along resumes in the real player
+        try {
+          var rst = JSON.parse(localStorage.getItem("mcc_radio_v1"));
+          if (rst && rst.id && CAT[rst.id] && Date.now() - (rst.at || 0) < 6 * 3600 * 1000) {
+            playId(rst.id);
+            var seekOnce = function () {
+              try { if (rst.pos > 2) au.currentTime = rst.pos; } catch (e) {}
+              au.removeEventListener("loadedmetadata", seekOnce);
+            };
+            au.addEventListener("loadedmetadata", seekOnce);
+            if (!rst.playing) au.pause();
+          }
+        } catch (e) {}
         if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "spotify" });
       });
 
@@ -613,6 +626,26 @@
       };
       au.addEventListener("play", announceNP);
       au.addEventListener("pause", announceNP);
+
+      /* ---- the radio: what plays here follows you out the door ----
+         Every page reads this state (polish.js) and keeps the sound
+         rolling; coming back, the app picks up right where it left. */
+      var RKEY = "mcc_radio_v1";
+      function radioSave() {
+        if (!nowId) return;
+        var it = CAT[nowId];
+        try {
+          localStorage.setItem(RKEY, JSON.stringify({
+            id: nowId, title: it ? it.title : "", src: au.currentSrc || au.src,
+            pos: au.currentTime || 0, playing: !au.paused, at: Date.now(),
+          }));
+        } catch (e) {}
+      }
+      var rtick = 0;
+      au.addEventListener("timeupdate", function () { if (++rtick % 8 === 0) radioSave(); });
+      au.addEventListener("play", radioSave);
+      au.addEventListener("pause", radioSave);
+      window.addEventListener("pagehide", radioSave);
 
       document.body.addEventListener("click", function (e) {
         var b = e.target.closest("[data-play]");
