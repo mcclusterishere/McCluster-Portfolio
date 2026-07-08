@@ -164,11 +164,20 @@ window.MCC_MODEL = (function () {
   })();
 
   function observe(name, params) {
-    var line = name + " " + JSON.stringify(params || {});
+    // the page name rides along, so "dwell on song-vaunt.html" reads as music
+    var line = name + " " + JSON.stringify(params || {}) + " " + location.pathname;
+    // attention is a signal, not just action: long dwell and deep scroll
+    // carry their own weight, scaled so a parked tab can't farm points
+    var w = 0;
     for (var i = 0; i < MAP.length; i++) {
       if (MAP[i][0].test(line)) {
         var d = MAP[i][1];
-        S.doms[d] = +((S.doms[d] || 0) + MAP[i][2]).toFixed(3);
+        w = MAP[i][2];
+        if (name === "dwell") {
+          w = Math.min(3, (params && params.s || 0) / 45);
+          if (params && params.depth >= 75) w += 1; // they read to the floor
+        }
+        S.doms[d] = +((S.doms[d] || 0) + w).toFixed(3);
         break;
       }
     }
@@ -248,6 +257,38 @@ window.MCC_MODEL = (function () {
     return door;
   }
 
+  /* the voice: WHICH psychology closes this person. Clients answer to
+     scarcity, mission people to belonging-in-the-cause, artists to proof,
+     listeners to belonging. Surfaces ask persuade() before writing copy. */
+  function persuade() {
+    var p = profile();
+    if (p.top === "client") return "scarcity";
+    if (p.top === "org" || p.top === "civic") return "mission";
+    if (p.top === "artist") return "proof";
+    return "belonging";
+  }
+
+  /* the attention sense: when the tab closes or hides, the time spent and
+     the depth reached are reported once — sendBeacon survives the exit */
+  (function attention() {
+    var t0 = Date.now(), depth = 0, sent = false;
+    window.addEventListener("scroll", function () {
+      var h = document.documentElement.scrollHeight - innerHeight;
+      if (h > 0) depth = Math.max(depth, Math.round(scrollY / h * 100));
+    }, { passive: true });
+    function flush() {
+      if (sent) return;
+      var secs = Math.round((Date.now() - t0) / 1000);
+      if (secs < 5) return; // a bounce teaches nothing
+      sent = true;
+      window.MCC_TRACK("dwell", { page: location.pathname.split("/").pop() || "index.html", s: secs, depth: depth });
+    }
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") flush();
+    });
+  })();
+
   /* the wrap: everything MCC_TRACK hears, the model learns */
   var orig = window.MCC_TRACK;
   window.MCC_TRACK = function (name, params) {
@@ -255,6 +296,6 @@ window.MCC_MODEL = (function () {
     return orig(name, params);
   };
 
-  return { profile: profile, suggest: suggest, shown: shown, pitch: pitch, observe: observe,
+  return { profile: profile, suggest: suggest, shown: shown, pitch: pitch, persuade: persuade, observe: observe,
     reset: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
 })();

@@ -75,6 +75,7 @@
         <button class="ob-role" type="button" data-role="provider">Service provider</button>
         <button class="ob-role" type="button" data-role="space">Studio / Space</button>
       </div>
+      <p style="margin-top:1.3rem"><a class="btn btn--ruby" id="obGoTop" href="talent.html" data-cta="onboard-go-top">Start onboarding now →</a></p>
     </section>
 
     <section class="ob-sec">
@@ -228,6 +229,7 @@
         $("obGo").setAttribute("href", c.go[0]);
         $("obGo").innerHTML = c.go[1];
         $("obHeadCta").setAttribute("href", c.go[0]);
+        $("obGoTop").setAttribute("href", c.go[0]);
         if (window.MCC_TRACK) window.MCC_TRACK("onboard_role", { role: role });
       }
       var want = new URLSearchParams(location.search).get("role");
@@ -268,6 +270,7 @@
       }
       $("obGo").addEventListener("click", stashQuiz);
       $("obHeadCta").addEventListener("click", stashQuiz);
+      $("obGoTop").addEventListener("click", stashQuiz);
       if (window.MCC_TRACK) window.MCC_TRACK("onboard_view", { role: want || "artist" });
     })();
   </script>

@@ -1,0 +1,21 @@
+name: Site audit
+
+# The site audits itself on every push: titles, descriptions, internal
+# links, banned language, JSON, and the sitemap. A regression fails the
+# build before it ever reaches a phone.
+
+on:
+  push:
+    branches: ["production", "claude/**"]
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run the static audit
+        run: node tools/audit-static.mjs

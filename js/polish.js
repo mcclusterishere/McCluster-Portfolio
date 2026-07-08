@@ -189,6 +189,79 @@
     document.body.classList.add("has-appbar");
   }
 
+  /* ---------- the autopilot: the model works the door ----------
+     Exit intent (desktop, mouse breaks for the top of the window):
+     ONE goal-aware, fatigue-aware parting card, in the voice this
+     visitor answers to. Hard rules: warm visitors only, once per
+     72 hours, never on the app/console pages, never pointing at the
+     room they're already in, one tap anywhere dismisses. ---------- */
+  (function autopilot() {
+    if (!window.MCC_MODEL) return;
+    var here = location.pathname.split("/").pop() || "index.html";
+    var APPS = ["mission.html", "talent.html", "members.html", "app.html", "collab.html", "packet.html", "offline.html"];
+
+    /* the signal dot: the appbar tab nearest the model's pick carries a
+       quiet pulse — a pointer, not a shout */
+    try {
+      var s0 = window.MCC_MODEL.suggest();
+      var TAB = { "app.html": "theapp", "providers.html": "hire", "talent.html": "hire", "collab.html": "hire", "onboard.html": "hire" };
+      var wing = TAB[s0.href];
+      if (wing) {
+        var tab = document.querySelector('.appbar__tab[data-appnav="' + wing + '"]');
+        if (tab && !tab.classList.contains("is-active")) tab.classList.add("has-signal");
+      }
+    } catch (e) {}
+
+    if (APPS.indexOf(here) !== -1) return;
+    var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!fine) return; // phones leave through the appbar, not the top edge
+    var last = 0;
+    try { last = +localStorage.getItem("mcc_exit_at") || 0; } catch (e) {}
+    if (Date.now() - last < 72 * 3600 * 1000) return;
+
+    var armed = false, fired = false;
+    setTimeout(function () { armed = true; }, 12000); // they get 12s of peace first
+
+    var VOICE = {
+      scarcity: "Before you go — 2 of 3 spots are still open.",
+      mission: "Before you go — the movement runs on people like you.",
+      proof: "Before you go — this is where the deals get signed.",
+      belonging: "Before you go — take the sound with you.",
+    };
+
+    document.addEventListener("mouseout", function (e) {
+      if (fired || !armed || e.relatedTarget || e.clientY > 24) return;
+      var m = window.MCC_MODEL;
+      var p = m.profile();
+      if (p.stage === "new") return; // strangers get a clean exit
+      var s = m.suggest();
+      if (!s || s.href === here) return;
+      fired = true;
+      try { localStorage.setItem("mcc_exit_at", String(Date.now())); } catch (err) {}
+      m.shown(s.dom);
+
+      var ov = document.createElement("div");
+      ov.className = "exitov";
+      ov.setAttribute("role", "dialog");
+      ov.innerHTML =
+        '<div class="exitov__card">' +
+        '<p class="exitov__voice">' + VOICE[m.persuade()] + "</p>" +
+        "<h3>" + s.label + "</h3>" +
+        "<p class=\"exitov__sub\">" + (s.sub || "") + "</p>" +
+        '<div class="exitov__acts">' +
+        '<a class="btn btn--ruby" href="' + s.href + '">Take me there</a>' +
+        '<button class="btn btn--ghost" type="button">Keep browsing</button>' +
+        "</div></div>";
+      ov.addEventListener("click", function (ev) {
+        var a = ev.target.closest("a");
+        if (a && window.MCC_TRACK) window.MCC_TRACK("foryou_tap", { dom: s.dom, why: "exit:" + s.why });
+        else if (!ev.target.closest(".exitov__card") || ev.target.closest("button")) ov.remove();
+      });
+      document.body.appendChild(ov);
+      if (window.MCC_TRACK) window.MCC_TRACK("exit_intent", { dom: s.dom, voice: m.persuade() });
+    });
+  })();
+
   /* ---------- the Now Playing tab ----------
      Mirrors whatever the current section is playing. Pages announce with a
      `mcc:nowplaying` CustomEvent ({title, href, playing}); a tap starts the

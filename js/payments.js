@@ -56,7 +56,7 @@ window.PAYMENTS = {
   "idguide": {
     title: "Identifier Resource Pack",
     link: MCC_DONATE,
-    suggest: "$20",
+    label: "Give what's fair \u00b7 get the pack",
   },
   // The mission fund — live Square link (nonprofit). Hero, footer, and
   // the Equity Uprise pages all point here. Support / contribution

@@ -3927,3 +3927,39 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .support-pill:hover { transform: translateY(-2px) scale(1.02); }
 .support-pill svg { width: 1.05rem; height: 1.05rem; fill: #fff; }
 @media (prefers-reduced-motion: reduce) { .support-pill { animation: none; } }
+
+/* ---- the autopilot: exit card + the appbar signal dot ---- */
+.exitov {
+  position: fixed; inset: 0; z-index: 420; display: grid; place-items: center;
+  background: rgba(10, 8, 7, 0.78); backdrop-filter: blur(6px);
+  animation: exitovIn 0.25s ease-out both;
+}
+@keyframes exitovIn { from { opacity: 0; } to { opacity: 1; } }
+.exitov__card {
+  width: min(26rem, calc(100% - 2rem)); text-align: center;
+  border: 1px solid rgba(229, 56, 59, 0.5); border-radius: 20px;
+  background: linear-gradient(160deg, rgba(30, 14, 14, 0.95), var(--ink-2));
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); padding: 2rem 1.6rem 1.8rem;
+}
+.exitov__voice { font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
+.exitov__card h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(1.5rem, 6vw, 2.1rem); line-height: 1; margin: 0.6rem 0 0.4rem; }
+.exitov__sub { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.55; }
+.exitov__acts { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.2rem; }
+@media (prefers-reduced-motion: reduce) { .exitov { animation: none; } }
+
+.appbar__tab.has-signal { position: relative; }
+.appbar__tab.has-signal::after {
+  content: ""; position: absolute; top: 6px; right: 22%;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ruby-hot);
+  box-shadow: 0 0 8px rgba(229, 56, 59, 0.9);
+  animation: offerPulse 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { .appbar__tab.has-signal::after { animation: none; } }
+
+/* ---- the Fly with Vaunt pill: between the Brand Collabs head and the slow-hand ask ---- */
+.work__flypill {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: clamp(7.5rem, 17vh, 10rem); z-index: 8;
+  opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+}
+.work__flypill.is-shown { opacity: 1; pointer-events: auto; }

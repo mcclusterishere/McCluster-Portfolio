@@ -79,7 +79,8 @@
       <div class="mc__stats" id="mcStats"></div>
 
       <nav class="mc__tabs" id="mcTabs" aria-label="Mission Control sections">
-        <button class="mc__tab is-on" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
+        <button class="mc__tab is-on" data-tab="mcPulse" type="button">Pulse <b id="tabNPulse"></b></button>
+        <button class="mc__tab" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
@@ -87,7 +88,12 @@
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
       </nav>
 
-      <section class="mc__card" id="pane-mcListings">
+      <section class="mc__card" id="pane-mcPulse">
+        <h2>The pulse — what needs you, computed</h2>
+        <div id="mcPulse"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcListings">
         <h2>Listings to review</h2>
         <div id="mcListings"><p class="mc__empty">Loading…</p></div>
       </section>
@@ -248,6 +254,42 @@
             "</div>";
           }).join("") : "<p class='mc__empty'>No deals yet — the Collab Room feeds this ledger. (If it never fills, run docs/collab-schema.sql.)</p>";
 
+          /* ---- the pulse: the console reads itself so the admin doesn't hunt ---- */
+          var now = Date.now(), DAY = 864e5;
+          function within(t, d) { return t && now - new Date(t).getTime() < d * DAY; }
+          var urgent = [];
+          pend.forEach(function (l) { urgent.push(["Listings", "Review “" + esc(l.name) + "” — pending " + (within(l.created_at, 2) ? "" : "and waiting") , "mcListings"]); });
+          reqs.filter(function (q) { return q.status === "new" && !within(q.created_at, 2); })
+            .forEach(function (q) { urgent.push(["Requests", "“" + esc(q.name) + "” has waited 48h+ — going stale", "mcRequests"]); });
+          deals.filter(function (d) { return d.status === "locked"; })
+            .forEach(function (d) { urgent.push(["Deals", "“" + esc(d.title) + "” is locked — signatures outstanding", "mcDeals"]); });
+          applied.forEach(function (m) { urgent.push(["Members", (m.name ? "“" + esc(m.name) + "”" : "An application") + " awaits a decision", "mcMembers"]); });
+          var week = {
+            listings: listings.filter(function (x) { return within(x.created_at, 7); }).length,
+            requests: reqs.filter(function (x) { return within(x.created_at, 7); }).length,
+            members: members.filter(function (x) { return within(x.created_at, 7); }).length,
+            deals: deals.filter(function (x) { return within(x.created_at, 7); }).length,
+            signed: deals.filter(function (x) { return x.status === "signed" && within(x.updated_at, 7); }).length,
+          };
+          $("tabNPulse").textContent = urgent.length || "";
+          $("mcPulse").innerHTML =
+            (urgent.length
+              ? urgent.map(function (u) {
+                  return '<div class="mc__row is-hot"><h3>' + u[1] + '<span class="mc__tag">' + u[0] + "</span></h3>" +
+                    '<div class="mc__acts"><button class="btn btn--ruby" data-pulse="' + u[2] + '">Open ' + u[0].toLowerCase() + "</button></div></div>";
+                }).join("")
+              : "<p class='mc__empty'>Nothing is waiting on you. The machine is current.</p>") +
+            '<div class="mc__row"><h3>This week<span class="mc__tag">7 days</span></h3><p>' +
+            week.requests + " new requests · " + week.listings + " new listings · " +
+            week.members + " member applications · " + week.deals + " deals opened · " +
+            week.signed + " signed</p></div>";
+          $("mcPulse").querySelectorAll("[data-pulse]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var t = document.querySelector('.mc__tab[data-tab="' + b.getAttribute("data-pulse") + '"]');
+              if (t) t.click();
+            });
+          });
+
           $("mcSms").innerHTML = sms.length ? sms.map(function (t) {
             return '<div class="mc__row"><h3>' + esc(t.phone) + '<span class="mc__tag">' + esc(t.source || "site") + "</span></h3>" +
               "<p>" + esc(new Date(t.created_at).toLocaleString()) + "</p></div>";
@@ -261,7 +303,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcListings", "mcRequests", "mcMembers", "mcDeals", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });

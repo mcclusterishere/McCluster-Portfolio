@@ -587,6 +587,7 @@
   }
 
   var workSlow = document.getElementById("workSlowHint");
+  var workFly = document.getElementById("workFlyPill");
   var workST = ScrollTrigger.create({
     trigger: "#work",
     start: "top top",
@@ -597,6 +598,7 @@
       workVRSet(st.progress);
       // the last card opens on the ask for a slow hand (right where Land sets you down)
       if (workSlow) workSlow.classList.toggle("is-shown", st.progress > 0.503 && st.progress < 0.86);
+      if (workFly) workFly.classList.toggle("is-shown", st.progress > 0.503 && st.progress < 0.86);
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);
