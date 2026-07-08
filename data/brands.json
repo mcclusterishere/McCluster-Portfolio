@@ -210,6 +210,7 @@
       ],
       "links": [
         { "label": "Fly with Vaunt", "href": "https://vauntapi.flyvaunt.com/referral/nuao1K", "cta": "brand-vaunt-referral", "external": true },
+        { "label": "Enter the universe", "href": "vaunt.html", "cta": "brand-vaunt-universe" },
         { "label": "Hear the jingle", "href": "song-vaunt.html", "cta": "brand-vaunt-song" }
       ],
       "song": { "label": "Scored to \"Vaunt (Acoustic)\"", "href": "song-vaunt.html" }

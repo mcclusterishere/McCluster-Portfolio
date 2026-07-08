@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vaunt · The Universe · Fly Private</title>
+  <meta name="description" content="The Vaunt universe: step inside the jet in 360, hear The Vaunt EP performed live in the cabin, read the newsroom, and fly private through the referral. A brand world built end to end.">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/vaunt.html">
+  <link rel="icon" type="image/jpeg" href="assets/img/vaunt-logo.jpeg">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vaunt · The Universe">
+  <meta property="og:description" content="Step inside the jet in 360, hear the EP recorded at altitude, read the newsroom, fly private.">
+  <meta property="og:image" content="https://mcclusterishere.github.io/McCluster-Portfolio/assets/img/vaunt-arrival-full.jpg">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    :root { --vo: #f84c0a; --vo-deep: #b23305; }
+    .vu-hero {
+      position: relative; min-height: 100dvh; display: flex; flex-direction: column;
+      justify-content: flex-end; overflow: hidden;
+      padding: clamp(6rem, 12vh, 8rem) clamp(1.2rem, 5vw, 3.5rem) clamp(3rem, 8vh, 5rem);
+    }
+    .vu-hero__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+    .vu-hero__scrim { position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(200deg, rgba(10,8,7,0.2) 0%, rgba(10,8,7,0.78) 58%, rgba(10,8,7,0.97) 100%); }
+    .vu-hero__brand { display: inline-flex; align-items: center; gap: 0.7rem; margin-bottom: 0.9rem; }
+    .vu-hero__brand img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover;
+      box-shadow: 0 0 0 1px rgba(248,76,10,0.5), 0 0 22px rgba(248,76,10,0.45); }
+    .vu-hero__brand span { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--vo); font-weight: 700; }
+    .vu-hero__h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.9;
+      font-size: clamp(3.2rem, 14vw, 7.5rem); }
+    .vu-hero__h1 em { font-style: normal; color: var(--vo); text-shadow: 0 0 34px rgba(248,76,10,0.45); }
+    .vu-hero__sub { max-width: 52ch; color: var(--cream-dim); font-size: clamp(0.98rem, 2.8vw, 1.15rem);
+      line-height: 1.6; margin: 0.9rem 0 1.5rem; }
+    .vu-hero__sub b { color: var(--cream); }
+    .btn--vaunt { background: linear-gradient(120deg, var(--vo-deep), var(--vo)); border-color: transparent; color: #fff;
+      box-shadow: 0 12px 38px rgba(248,76,10,0.4); }
+    .btn--vaunt:hover { background: var(--vo); }
+
+    .vu-sec { padding: clamp(3rem, 8vh, 5.5rem) clamp(1.2rem, 5vw, 3.5rem); max-width: 72rem; margin: 0 auto; }
+    .vu-kick { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--vo); font-weight: 700; }
+    .vu-h2 { font-family: var(--display); text-transform: uppercase; line-height: 0.95;
+      font-size: clamp(1.9rem, 7vw, 3.4rem); margin: 0.4rem 0 0.7rem; }
+    .vu-lede { color: var(--cream-dim); max-width: 58ch; line-height: 1.6; }
+
+    /* the universe: four doors */
+    .vu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.8rem; margin-top: 1.6rem; }
+    .vu-door { position: relative; display: block; border-radius: 16px; overflow: hidden; text-decoration: none;
+      color: var(--cream); border: 1px solid rgba(248,76,10,0.25); aspect-ratio: 4 / 3;
+      transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1), border-color 0.35s, box-shadow 0.35s; }
+    .vu-door:hover { transform: translateY(-5px); border-color: var(--vo); box-shadow: 0 18px 50px rgba(248,76,10,0.25); }
+    .vu-door img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .vu-door::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(190deg, rgba(10,8,7,0.05) 30%, rgba(10,8,7,0.92) 100%); }
+    .vu-door div { position: absolute; left: 1rem; right: 1rem; bottom: 0.95rem; z-index: 1; }
+    .vu-door small { display: block; font-size: 0.56rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--vo); font-weight: 700; }
+    .vu-door b { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em;
+      font-size: 1.25rem; line-height: 1.05; }
+    .vu-door p { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.45; margin-top: 0.2rem; }
+
+    /* the newsroom */
+    .vu-news { display: grid; gap: 0.8rem; margin-top: 1.6rem; }
+    .vu-story { display: block; text-decoration: none; color: var(--cream); border-radius: 14px;
+      border: 1px solid rgba(244,239,230,0.12); background: linear-gradient(160deg, rgba(30,16,8,0.7), var(--ink-2));
+      padding: 1.2rem 1.2rem 1.1rem; transition: border-color 0.3s, transform 0.3s; }
+    .vu-story:hover { border-color: rgba(248,76,10,0.6); transform: translateY(-3px); }
+    .vu-story__meta { display: flex; gap: 0.7rem; align-items: center; font-size: 0.6rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); }
+    .vu-story__meta b { color: var(--vo); font-weight: 700; }
+    .vu-story h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: clamp(1.15rem, 4vw, 1.6rem); line-height: 1.05; margin: 0.45rem 0 0.4rem; }
+    .vu-story p { color: var(--cream-dim); font-size: 0.88rem; line-height: 1.55; max-width: 64ch; }
+    .vu-story span { display: inline-block; margin-top: 0.6rem; font-size: 0.66rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--vo); font-weight: 700; }
+
+    /* the quiet case-study loop back to the offer */
+    .vu-loop { margin: clamp(3rem, 8vh, 5rem) auto 0; max-width: 72rem;
+      padding: clamp(1.6rem, 5vw, 2.6rem) clamp(1.2rem, 5vw, 3.5rem);
+      border-top: 1px solid rgba(248,76,10,0.3); }
+    .vu-loop__row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; justify-content: space-between; }
+    .vu-loop__seat { display: inline-flex; align-items: center; gap: 0.7rem; }
+    .vu-loop__dot { width: 26px; height: 26px; border-radius: 50%; flex: none; position: relative;
+      border: 2px solid rgba(248,76,10,0.6); background: rgba(248,76,10,0.16); }
+    .vu-loop__dot::after { content: "\2713"; position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 0.72rem; color: var(--vo); font-weight: 700; }
+    .vu-loop__seat small { font-size: 0.58rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--cream-dim); }
+    .vu-loop__seat b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: 1.05rem; letter-spacing: 0.05em; color: var(--cream); }
+    .vu-loop__note { color: var(--cream-dim); font-size: 0.84rem; line-height: 1.55; max-width: 46ch; }
+    .vu-loop__note a { color: var(--vo); }
+  </style>
+</head>
+<body class="songpage vauntpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="index.html">← Home</a>
+      <a href="song-vaunt.html">The EP</a>
+      <a class="head-cta" href="https://vauntapi.flyvaunt.com/referral/nuao1K" target="_blank" rel="noopener" data-cta="vaunt-hero-referral-head">Fly with Vaunt</a>
+    </nav>
+  </header>
+  <main>
+    <!-- THE HERO: their landing page, their orange -->
+    <section class="vu-hero">
+      <img class="vu-hero__bg" src="assets/img/vaunt-arrival-full.jpg" alt="The Vaunt jet on the runway at golden hour">
+      <div class="vu-hero__scrim" aria-hidden="true"></div>
+      <p class="vu-hero__brand"><img src="assets/img/vaunt-logo.webp" alt="Vaunt logo"><span>Vaunt · Private Aviation</span></p>
+      <h1 class="vu-hero__h1">Fly <em>Vaunt.</em></h1>
+      <p class="vu-hero__sub">
+        Empty-leg private flights, opened up. This is the Vaunt universe — <b>step inside the
+        cabin in full 360</b>, hear the EP that was performed live at altitude, read the
+        newsroom, and get in through the referral that started it all.
+      </p>
+      <div class="finale__actions">
+        <a class="btn btn--vaunt" href="https://vauntapi.flyvaunt.com/referral/nuao1K" target="_blank" rel="noopener" data-cta="vaunt-hero-referral">Fly with Vaunt ↗</a>
+        <a class="btn btn--ghost" href="vr-vaunt.html" data-cta="vaunt-hero-vr">Step inside the jet · 360</a>
+      </div>
+    </section>
+
+    <!-- THE UNIVERSE: four doors -->
+    <section class="vu-sec">
+      <p class="vu-kick">The universe</p>
+      <h2 class="vu-h2">One brand, four doors</h2>
+      <p class="vu-lede">Everything Vaunt lives here — the cabin, the record, the program, the booking. Pick a door.</p>
+      <div class="vu-grid">
+        <a class="vu-door" href="vr-vaunt.html" data-cta="vaunt-door-vr">
+          <img src="assets/img/vaunt-360-poster.jpg" alt="Inside the Vaunt cabin in 360" loading="lazy">
+          <div><small>The experience</small><b>Inside the jet · 360</b><p>Drag, move your phone, tap the pins — the cockpit, the crew, the bag.</p></div>
+        </a>
+        <a class="vu-door" href="song-vaunt.html" data-cta="vaunt-door-ep">
+          <img src="assets/frames/vperf1_0001.jpg" alt="Performing Vaunt live in the cabin" loading="lazy">
+          <div><small>The record</small><b>The Vaunt EP</b><p>"Vaunt" + "Jet Pass" — performed live in the cabin, Zakir on the six-string.</p></div>
+        </a>
+        <a class="vu-door" href="badge-explainer.html" data-cta="vaunt-door-beta">
+          <img src="assets/frames/vperf4_0001.jpg" alt="McCluster in the Vaunt cabin" loading="lazy">
+          <div><small>The program</small><b>First in the beta</b><p>McCluster was the first influencer in Vaunt's beta program — the seal explains itself.</p></div>
+        </a>
+        <a class="vu-door" href="https://vauntapi.flyvaunt.com/referral/nuao1K" target="_blank" rel="noopener" data-cta="vaunt-door-referral">
+          <img src="assets/img/vaunt-arrival.jpg" alt="The Vaunt jet waiting on the tarmac" loading="lazy">
+          <div><small>The booking</small><b>Fly with Vaunt ↗</b><p>Get in through the referral — the same link that started this whole universe.</p></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- THE NEWSROOM -->
+    <section class="vu-sec" id="newsroom">
+      <p class="vu-kick">The newsroom</p>
+      <h2 class="vu-h2">Vaunt dispatches</h2>
+      <p class="vu-lede">What's moving inside the universe — releases, launches, and the program.</p>
+      <div class="vu-news" id="vuNews"><p class="vu-lede">Loading the wire…</p></div>
+    </section>
+
+    <!-- THE QUIET LOOP: this page is the proof -->
+    <div class="vu-loop">
+      <div class="vu-loop__row">
+        <div class="vu-loop__seat">
+          <span class="vu-loop__dot" aria-hidden="true"></span>
+          <span><small>The limited offer</small><b>Seat №1 · claimed</b></span>
+        </div>
+        <p class="vu-loop__note">
+          This page — the 360 cabin, the EP rollout, the newsroom, all of it — is what seat №1
+          of the limited offer got. Two seats remain.
+          <a href="offer.html" data-cta="vaunt-loop-offer">See the offer →</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 Matthew McCluster · McCluster Corp. The Vaunt universe, built end to end.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var wrap = document.getElementById("vuNews");
+      fetch("data/vaunt-news.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var items = (data.items || []).slice().sort(function (a, b) { return (b.date || "").localeCompare(a.date || ""); });
+          wrap.innerHTML = items.map(function (s) {
+            var when = "";
+            try {
+              when = new Date(s.date + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+            } catch (e) { when = s.date || ""; }
+            return '<a class="vu-story" href="' + esc(s.href || "#") + '" data-cta="vaunt-news">' +
+              '<p class="vu-story__meta"><b>' + esc(s.tag || "Dispatch") + "</b> · " + esc(when) + "</p>" +
+              "<h3>" + esc(s.title) + "</h3>" +
+              "<p>" + esc(s.body) + "</p>" +
+              "<span>" + esc(s.label || "Read on") + " →</span></a>";
+          }).join("");
+        })
+        .catch(function () { wrap.innerHTML = '<p class="vu-lede">The wire is quiet right now.</p>'; });
+      document.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest("a[data-cta]");
+        if (a) track("cta_click", { label: a.getAttribute("data-cta"), href: a.getAttribute("href") || "", page: "vaunt" });
+      });
+      track("vaunt_universe_view", {});
+    })();
+  </script>
+</body>
+</html>

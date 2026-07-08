@@ -1,0 +1,37 @@
+{
+  "title": "Vaunt dispatches",
+  "items": [
+    {
+      "date": "2026-07-06",
+      "tag": "The record",
+      "title": "The Vaunt EP is out — two songs, one jet",
+      "body": "\"Vaunt\" and \"Jet Pass\" land as a two-song EP, with the title track performed live in the cabin — Zakir on the six-string, the whole take at altitude. The song page runs on the real performance footage, start to finish.",
+      "href": "song-vaunt.html",
+      "label": "Hear the EP"
+    },
+    {
+      "date": "2026-07-04",
+      "tag": "The experience",
+      "title": "Step inside the cabin — the 360 experience is live",
+      "body": "The full interior of the jet, in every direction. Drag to look around or move your phone, and tap the pins: the cockpit books a flight, the crew opens their profiles, the camera books photography, and the bag gets you back to the offer that built all of this.",
+      "href": "vr-vaunt.html",
+      "label": "Step inside"
+    },
+    {
+      "date": "2026-06-20",
+      "tag": "The program",
+      "title": "The first creator in the beta",
+      "body": "McCluster joined as the first influencer in Vaunt's beta program — launch coverage and an original jingle performed on the runway that drove online sign-ups before the app even launched. The seal on the site marks it.",
+      "href": "badge-explainer.html",
+      "label": "The credentials"
+    },
+    {
+      "date": "2026-06-12",
+      "tag": "The build",
+      "title": "A jet brand takes seat №1",
+      "body": "This landing page, the 360 cabin, the EP rollout, and the newsroom you're reading were built as the first delivery of the limited offer — a whole universe around one brand. Three seats total. Two remain.",
+      "href": "offer.html",
+      "label": "See the offer"
+    }
+  ]
+}
