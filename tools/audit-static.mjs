@@ -57,6 +57,18 @@ for (const f of readdirSync(join(ROOT, "data")).filter((f) => f.endsWith(".json"
 try { JSON.parse(readFileSync(join(ROOT, "manifest.webmanifest"), "utf8")); }
 catch (e) { fails.push(`manifest.webmanifest: invalid JSON`); }
 
+/* 6. event names hold the taxonomy: MCC_TRACK("name") must be snake_case
+      (docs/event-taxonomy.md) — one name, one meaning, everywhere */
+const NAME_RE = /^[a-z][a-z0-9_]*$/;
+for (const dir of ["js", "."]) {
+  for (const f of readdirSync(join(ROOT, dir)).filter((f) => f.endsWith(dir === "js" ? ".js" : ".html"))) {
+    const src = readFileSync(join(ROOT, dir, f), "utf8");
+    for (const m of src.matchAll(/\btrack\("([^"]+)"/gi)) {
+      if (!NAME_RE.test(m[1])) fails.push(`${dir === "js" ? "js/" : ""}${f}: event name "${m[1]}" breaks the taxonomy (snake_case only)`);
+    }
+  }
+}
+
 const sitemap = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
 for (const m of sitemap.matchAll(/McCluster-Portfolio\/([^<?]+?)<\/loc>/g)) {
   const f = m[1].split("?")[0];

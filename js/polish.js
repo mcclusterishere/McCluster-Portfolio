@@ -63,7 +63,8 @@
           "<b>Two taps and it's yours</b>" +
           (iOS
             ? '<p><span>1</span> Tap the <b>Share</b> button <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><rect x="5" y="10" width="14" height="11" rx="2"/></svg> at the bottom of Safari</p>' +
-              '<p><span>2</span> Tap <b>Add to Home Screen</b></p>'
+              '<p><span>2</span> Tap <b>Add to Home Screen</b> — right here:</p>' +
+              '<span class="getapp-coach__shot"><img src="assets/img/ios-add-home.png" alt="The Safari menu with Add to Home Screen highlighted"><i aria-hidden="true"></i></span>'
             : '<p><span>1</span> Open your browser menu (&#8942;)</p>' +
               '<p><span>2</span> Tap <b>Install app</b> or <b>Add to Home Screen</b></p>') +
           '<p class="getapp-coach__note">No app store. No wait. It lands on your phone like any app — and it works offline.</p>' +
@@ -170,7 +171,7 @@
     var here = location.pathname.split("/").pop() || "index.html";
     var tabs = [
       ["index.html#top", "home", "Home", '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/>'],
-      ["index.html#work", "collabs", "Collabs", '<path d="M12 3l2.2 6.2L20.5 9l-5 4 1.7 6.4L12 16l-5.2 3.4L8.5 13l-5-4 6.3.2z"/>'],
+      ["collab.html", "deals", "Deals", '<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>'],
       ["#np", "nowplaying", "Now Playing", '<path class="np-bar" d="M5 10v4"/><path class="np-bar" d="M9.5 7v10"/><path class="np-bar" d="M14 9v6"/><path class="np-bar" d="M18.5 11v2"/>'],
       ["app.html", "theapp", "The App", '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>'],
       ["providers.html", "hire", "Hire", '<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>'],
@@ -204,7 +205,7 @@
        quiet pulse — a pointer, not a shout */
     try {
       var s0 = window.MCC_MODEL.suggest();
-      var TAB = { "app.html": "theapp", "providers.html": "hire", "talent.html": "hire", "collab.html": "hire", "onboard.html": "hire" };
+      var TAB = { "app.html": "theapp", "providers.html": "hire", "talent.html": "hire", "collab.html": "deals", "onboard.html": "hire" };
       var wing = TAB[s0.href];
       if (wing) {
         var tab = document.querySelector('.appbar__tab[data-appnav="' + wing + '"]');

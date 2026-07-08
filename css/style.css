@@ -3963,3 +3963,18 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
   opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
 }
 .work__flypill.is-shown { opacity: 1; pointer-events: auto; }
+
+/* the coach shows the REAL share sheet — the ring marks the row to tap */
+.getapp-coach__shot { display: block; position: relative; margin-top: 0.7rem; border-radius: 12px; overflow: hidden; }
+.getapp-coach__shot img { display: block; width: 100%; height: auto; }
+.getapp-coach__shot i {
+  position: absolute; left: 2%; right: 2%; top: 47%; bottom: 5%;
+  border: 3px solid var(--ruby-hot); border-radius: 12px;
+  box-shadow: 0 0 0 4px rgba(229, 56, 59, 0.25), 0 0 18px rgba(229, 56, 59, 0.55);
+  animation: coachRing 1.4s ease-in-out infinite;
+}
+@keyframes coachRing {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(229, 56, 59, 0.2), 0 0 12px rgba(229, 56, 59, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(229, 56, 59, 0.35), 0 0 26px rgba(229, 56, 59, 0.8); }
+}
+@media (prefers-reduced-motion: reduce) { .getapp-coach__shot i { animation: none; } }
