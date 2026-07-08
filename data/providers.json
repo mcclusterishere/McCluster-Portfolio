@@ -10,6 +10,7 @@
   "providers": [
     {
       "id": "mccluster",
+      "ticker": "MCC",
       "name": "Matthew McCluster",
       "roles": [
         "Photo",
@@ -36,6 +37,7 @@
     },
     {
       "id": "decibel-studios",
+      "ticker": "DCB",
       "name": "Decibel Studios",
       "roles": [
         "Studios"
@@ -55,6 +57,7 @@
     },
     {
       "id": "laire",
+      "ticker": "LRE",
       "name": "Laire",
       "roles": [
         "Video",
@@ -70,6 +73,7 @@
     },
     {
       "id": "mccluster-pullup",
+      "ticker": "PLUP",
       "name": "The Pull-Up · McCluster mobile",
       "roles": [
         "Video",

@@ -20,6 +20,8 @@ A static site that behaves like a platform. There is no application server: GitH
 
 Surfaces that act on the models: the For You card, the exit-intent card, the appbar signal dot, the pitch door (tithe/equity), the Music tab transport, and the public index on every profile.
 
+**M Pay (`pay.html`)** is the ticker's own storefront: a Cash-App-style app — punch in a price, pick a provider, send the deal — plus the floor, every member trading under a claimed ticker (2–5 letters, `$MCC` is the founder's). It writes to the same Deal engine and the same `MCC_STOCK` index; it adds no new data. Entry runs through the Market and the 360 cabin's bag pin only. Because the public index runs on public facts, members with identical public records price identically today — real signed deals and listing tenure are what spread the board (see §3.5).
+
 ## 2. The algorithms, plainly
 
 **Interest decay.** Every domain score halves every 14 days of absence: `score ×= 0.5^(days/14)`. The model's opinion of you is always mostly about the recent you.

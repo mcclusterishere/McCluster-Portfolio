@@ -148,6 +148,7 @@
 
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#build">&#9889; Deal builder</a>
+      <a class="mk__jump" href="pay.html">$ M Pay</a>
       <a class="mk__jump" href="#featured">Featured</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
       <a class="mk__jump" href="#yours">Your deals</a>
@@ -174,6 +175,10 @@
         <a class="mk__featcard" href="deluxe-516r.html" data-cta="mk-feat-deluxe">
           <img src="assets/frames/docket_0050.jpg" alt="The 516R Deluxe buy-back — cohort round" loading="lazy">
           <div><small>Cohort round · open</small><b>516R Deluxe Buy-Back</b></div>
+        </a>
+        <a class="mk__featcard" href="pay.html" data-cta="mk-feat-mpay">
+          <img src="assets/frames/hero_0001.jpg" alt="M Pay — name a price, pick a provider" loading="lazy">
+          <div><small>Dead simple · new</small><b>M Pay — Name a Price</b></div>
         </a>
       </div>
     </section>
@@ -307,6 +312,7 @@
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -381,7 +387,8 @@
           return '<a class="mk__prov" href="' + esc(href) + '" style="--badge-c:' + esc(p.badgeColor || "#e5383b") + '" data-cta="mk-prov-' + esc(slug) + '">' +
             '<span class="mk__prov-seal"><img src="assets/img/m-mark.png" alt="M-Verified"></span>' +
             "<b>" + esc(p.name) + "</b>" +
-            "<small>" + esc((p.roles || [])[0] || "Verified") + "</small></a>";
+            "<small>" + (window.MCC_STOCK ? "$" + esc(window.MCC_STOCK.ticker(p.ticker, p.name)) + " · " : "") +
+            esc((p.roles || [])[0] || "Verified") + "</small></a>";
         }).join("") +
         '<a class="mk__prov" href="onboard.html" data-cta="mk-join-card" style="--badge-c:#2fbf71">' +
           '<span class="mk__prov-seal"><img src="assets/img/m-mark.png" alt=""></span>' +
@@ -414,7 +421,7 @@
             DATA.providers.push({
               id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline,
               blurb: c.blurb, area: c.area, roles: c.roles || [], badgeColor: c.badge_color,
-              href: c.href, book: c.book, terms: c.terms,
+              href: c.href, book: c.book, terms: c.terms, ticker: c.ticker,
             });
           });
           DIR = DATA.providers.filter(function (p) { return !ME || (p.slug || p.id) !== ME.slug; });

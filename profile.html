@@ -64,10 +64,11 @@
       <section class="pf__card">
         <h2>Step inside</h2>
         <input class="pf__in" id="pfEmail" type="email" placeholder="you@yourwork.com" autocomplete="email">
+        <input class="pf__in" id="pfTicker" type="text" placeholder="Claim your ticker — 2–5 letters, like MCC" maxlength="5" autocapitalize="characters" style="text-transform:uppercase">
         <button class="btn btn--ruby" id="pfSignIn" type="button">Sign up / sign in — email me the key</button>
         <p class="pf__msg" id="pfMsg"></p>
         <div class="pf__gets">
-          <div class="pf__get"><b>Your M Stock</b><small>Your labor as a living ticker — bookings, deals, shows move it.</small></div>
+          <div class="pf__get"><b>Your ticker</b><small>Your own symbol — you trade on the floor like a stock, moved by real work.</small></div>
           <div class="pf__get"><b>Your deals</b><small>Propositions, splits, signatures — the full trail in the Market.</small></div>
           <div class="pf__get"><b>Your listing</b><small>Get found and booked — you keep 100% of your rate.</small></div>
           <div class="pf__get"><b>Follows you</b><small>Your music, model, and persona ride between your devices.</small></div>
@@ -120,6 +121,9 @@
       $("pfSignIn").addEventListener("click", function () {
         var em = $("pfEmail").value.trim();
         if (!em) { $("pfMsg").textContent = "Drop your email first."; return; }
+        // the ticker claim waits on this device and rides into the listing
+        var tc = window.MCC_STOCK ? window.MCC_STOCK.ticker($("pfTicker").value, "") : $("pfTicker").value.toUpperCase();
+        if ($("pfTicker").value.trim()) { try { localStorage.setItem("mcc_ticker_claim", tc); } catch (e) {} }
         $("pfMsg").textContent = "Sending the key…";
         window.MCC_AUTH.signIn(em).then(function () {
           $("pfMsg").textContent = "Check your email — the link signs you in right here.";
@@ -135,8 +139,10 @@
         $("pfIn").classList.remove("pf__hidden");
         $("pfWho").textContent = window.MCC_SUPA.email() || "Signed in";
         window.MCC_NET.myListing().then(function (mine) {
+          var tick = "";
+          if (mine && window.MCC_STOCK) tick = "$" + window.MCC_STOCK.ticker(mine.ticker, mine.name) + " · ";
           $("pfListing").textContent = mine
-            ? "Listing: " + mine.name + " · " + mine.status
+            ? tick + "Listing: " + mine.name + " · " + mine.status
             : "No listing yet — set one up in the Talent App";
         }).catch(function () { $("pfListing").textContent = "Your room, your rules."; });
         window.MCC_NET.myDeals().then(function (res) {

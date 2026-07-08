@@ -29,6 +29,20 @@
   }
   function dayKey(t) { return new Date(t).toISOString().slice(0, 10); }
 
+  /* the ticker: everybody trades under a symbol. An explicit claim
+     (2–5 letters) always wins; otherwise one is carved from the name —
+     initials for long names, consonants for short ones. */
+  function ticker(explicit, name) {
+    var t = String(explicit || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 5);
+    if (t.length >= 2) return t;
+    var words = String(name || "").toUpperCase().replace(/[^A-Z ]/g, " ").split(/\s+/).filter(Boolean);
+    if (!words.length) return "MMBR";
+    if (words.length >= 3) return words.map(function (w) { return w[0]; }).join("").slice(0, 5);
+    var w = words.join("");
+    var cons = w.replace(/[AEIOU]/g, "");
+    return ((cons.length >= 3 ? cons : w).slice(0, 4)) || "MMBR";
+  }
+
   function build(inp) {
     inp = inp || {};
     var uid = inp.uid || "guest";
@@ -159,5 +173,5 @@
     paintMoney();
   }
 
-  window.MCC_STOCK = { build: build, mount: mount };
+  window.MCC_STOCK = { build: build, mount: mount, ticker: ticker };
 })();

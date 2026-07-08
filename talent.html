@@ -90,6 +90,7 @@
       <section class="ta__card">
         <h2>Your listing <span class="ta__status" id="taStatus">no listing yet</span></h2>
         <input class="ta__in" id="fName" type="text" placeholder="Your name or business">
+        <input class="ta__in" id="fTicker" type="text" placeholder="Your ticker — 2–5 letters, like MCC" maxlength="5" autocapitalize="characters" style="text-transform:uppercase">
         <input class="ta__in" id="fHeadline" type="text" placeholder="Headline — e.g. Wedding & event photographer">
         <div class="ta__roles" id="fRoles" aria-label="What do you do?"></div>
         <input class="ta__in" id="fArea" type="text" placeholder="Where you work — e.g. Atlanta metro · travels">
@@ -224,6 +225,8 @@
               var pre = JSON.parse(localStorage.getItem("mcc_onboard") || "null");
               if (pre) {
                 if (pre.name && !$("fName").value) $("fName").value = pre.name;
+                // a ticker claimed at sign-up rides in from the profile page
+                try { var tc = localStorage.getItem("mcc_ticker_claim"); if (tc && !$("fTicker").value) $("fTicker").value = tc; } catch (e2) {}
                 if (pre.headline && !$("fHeadline").value) $("fHeadline").value = pre.headline;
                 if (pre.area && !$("fArea").value) $("fArea").value = pre.area;
                 if (pre.blurb && !$("fBlurb").value) $("fBlurb").value = pre.blurb;
@@ -239,6 +242,7 @@
             $("taSaveMsg").textContent = "From the review: " + mine.review_note + " — fix it up and save again.";
           }
           $("fName").value = mine.name || "";
+          $("fTicker").value = mine.ticker || "";
           $("fHeadline").value = mine.headline || "";
           $("fArea").value = mine.area || "";
           $("fBlurb").value = mine.blurb || "";
@@ -279,8 +283,10 @@
       }
 
       $("taSave").addEventListener("click", function () {
+        var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker($("fTicker").value, $("fName").value) : $("fTicker").value.toUpperCase();
         var fields = {
           name: $("fName").value.trim(),
+          ticker: tick,
           headline: $("fHeadline").value.trim(),
           area: $("fArea").value.trim(),
           blurb: $("fBlurb").value.trim(),
@@ -288,12 +294,20 @@
           roles: picked,
         };
         if (!fields.name) { $("taSaveMsg").textContent = "The listing needs a name."; return; }
+        $("fTicker").value = tick;
         $("taSaveMsg").textContent = "Saving…";
-        window.MCC_NET.saveListing(fields).then(function () {
+        var saved = function () {
           $("taSaveMsg").textContent = "Saved — it's in review.";
           track("talent_listing_saved", {});
           loadListing();
-        }).catch(function (e) { $("taSaveMsg").textContent = "Couldn't save: " + String(e.message || e); });
+        };
+        window.MCC_NET.saveListing(fields).then(saved).catch(function (e) {
+          // an older schema has no ticker column yet — the listing still saves
+          delete fields.ticker;
+          window.MCC_NET.saveListing(fields).then(saved).catch(function (e2) {
+            $("taSaveMsg").textContent = "Couldn't save: " + String((e2 || e).message || e2 || e);
+          });
+        });
       });
 
       $("taSignOut").addEventListener("click", function () {

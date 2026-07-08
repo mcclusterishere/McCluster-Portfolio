@@ -54,7 +54,10 @@
   window.MCC_NET = {
     /* the public directory: live listings only (RLS enforces it too) */
     listProviders: function () {
-      return anon("providers?status=eq.live&order=created_at.asc&select=id,slug,name,headline,blurb,area,roles,badge_color,href,book");
+      // ticker + terms ride along when the columns exist; older schema answers the legacy select
+      var base = "providers?status=eq.live&order=created_at.asc&select=";
+      return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book,terms,ticker")
+        .catch(function () { return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book"); });
     },
 
     /* the front desk: anyone can file a booking request */

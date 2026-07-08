@@ -34,3 +34,12 @@ create policy "participants work their deals"
     and (from_owner = auth.uid()
          or exists (select 1 from providers p where p.slug = deals.to_slug and p.owner = auth.uid()))
   );
+
+-- ============================================================
+-- THE TICKER (added for M Pay): every member trades under a
+-- symbol they claim at sign-up — 2 to 5 letters, like $MCC.
+-- Uniqueness is enforced so no two people trade the same lane.
+-- ============================================================
+alter table providers add column if not exists ticker text;
+create unique index if not exists providers_ticker_key
+  on providers (upper(ticker)) where ticker is not null and ticker <> '';
