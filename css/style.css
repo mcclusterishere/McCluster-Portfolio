@@ -4062,3 +4062,15 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .wayback svg { width: 1.3rem; height: 1.3rem; stroke: var(--cream); fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 /* the VR lock owns the left rail — the back button steps up out of the pause button's spot */
 html.vr-locked .wayback { bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom) + 4.6rem); }
+
+/* ============ THE SIGNATURE CUT — McCluster M Split ============
+   The chosen face: the favicon spelled out, every letter sliced once
+   at the shard angle. --sig is the signature voice; platform pages
+   opt their headlines and money numerals into it. */
+@font-face {
+  font-family: "McCluster M";
+  src: url("../assets/fonts/mccluster/McClusterM-Split.woff") format("woff");
+  font-display: swap;
+}
+:root { --sig: "McCluster M", "Anton", sans-serif; }
+.brand__rest, .site-foot__brand { font-family: var(--sig); letter-spacing: 0.03em; }

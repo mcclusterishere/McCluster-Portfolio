@@ -63,9 +63,9 @@
     (function () {
       "use strict";
       var CUTS = [
-        ["solid", "Solid", "The signature — the favicon's slabs and shard cut, word for word"],
+        ["split", "Split", "THE SIGNATURE — every letter sliced once at the shard angle, the two-shard echo"],
+        ["solid", "Solid", "The favicon's slabs and shard cut, word for word"],
         ["heavy", "Heavy", "Wider stems, tighter air — posters and one-word slams"],
-        ["split", "Split", "Every letter sliced once at the shard angle — the two-shard echo"],
         ["slant", "Slant", "The solid cut leaning forward — motion lines and CTAs"],
       ];
       document.getElementById("ftCards").innerHTML = CUTS.map(function (c) {
@@ -77,6 +77,10 @@
           '<p class="ft__pick"><button class="btn btn--ghost" type="button" data-cut="' + c[0] + '" style="background:none;cursor:pointer">This one goes first</button></p>' +
           "</section>";
       }).join("");
+      // Split is the chosen one — it arrives pre-locked
+      var chosen = document.querySelector('[data-cut="split"]');
+      chosen.textContent = "✓ The signature — locked in";
+      chosen.style.borderColor = "#2fbf71"; chosen.style.color = "#2fbf71";
       document.querySelectorAll("[data-cut]").forEach(function (b) {
         b.addEventListener("click", function () {
           if (window.MCC_TRACK) window.MCC_TRACK("font_pick", { cut: b.getAttribute("data-cut") });
