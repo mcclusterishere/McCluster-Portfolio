@@ -149,6 +149,7 @@
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#build">&#9889; Deal builder</a>
       <a class="mk__jump" href="pay.html">$ M Pay</a>
+      <a class="mk__jump" href="spaces.html">&#127968; Spaces</a>
       <a class="mk__jump" href="#featured">Featured</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
       <a class="mk__jump" href="#yours">Your deals</a>
@@ -180,6 +181,10 @@
           <img src="assets/frames/hero_0001.jpg" alt="M Pay — name a price, pick a provider" loading="lazy">
           <div><small>Dead simple · new</small><b>M Pay — Name a Price</b></div>
         </a>
+        <a class="mk__featcard" href="spaces.html" data-cta="mk-feat-spaces">
+          <img src="assets/frames/vperf1_0001.jpg" alt="Spaces — book a room, studio, or stage" loading="lazy">
+          <div><small>Book space · new</small><b>Spaces — Book The Room</b></div>
+        </a>
       </div>
     </section>
 
@@ -194,9 +199,9 @@
         <button class="mk__lane" type="button" data-lane="music_collab" data-cats="">
           <b>Make music</b><small>Features, engineering, splits — every percentage on the record.</small>
         </button>
-        <button class="mk__lane" type="button" data-lane="space_booking" data-cats="Studios,Stages">
-          <b>Book space</b><small>Studios, stages, rooms — access windows and house rules on paper.</small>
-        </button>
+        <a class="mk__lane" href="spaces.html" data-cta="mk-lane-spaces">
+          <b>Book space</b><small>Browse rooms, studios &amp; stages, pick your date and window — the Spaces app.</small>
+        </a>
         <button class="mk__lane" type="button" data-lane="project_funding" data-cats="">
           <b>Fund / sponsor</b><small>Back an anthem, a video, a campaign — the movement runs on it.</small>
         </button>
@@ -357,6 +362,7 @@
 
       /* ---------- lanes preset the whole floor ---------- */
       document.querySelectorAll(".mk__lane").forEach(function (b) {
+        if (!b.getAttribute("data-lane")) return; // the Spaces lane is a real link out
         b.addEventListener("click", function () {
           $("pKind").value = b.getAttribute("data-lane");
           shapeForm();

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Spaces — book a room, studio, or stage · McCluster</title>
+  <meta name="description" content="Book M-Verified spaces the easy way: browse rooms, studios, and stages, pick your date and window, and request it. The operator keeps 100% of their rate — the network absorbs the fee a storefront would pass to you.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .sp { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 64rem; margin: 0 auto; }
+    .sp h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.6rem, 10vw, 4.6rem); }
+    .sp__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 56ch; }
+    .sp__sub b { color: var(--cream); }
+    .sp__promise { display: flex; align-items: center; gap: 0.7rem; margin: 1.2rem 0 0; border: 1px solid rgba(47,191,113,0.4);
+      border-radius: 13px; background: rgba(47,191,113,0.07); padding: 0.85rem 1rem; }
+    .sp__promise svg { flex: none; width: 26px; height: 26px; fill: none; stroke: #2fbf71; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .sp__promise p { font-size: 0.82rem; line-height: 1.55; color: var(--cream-dim); }
+    .sp__promise b { color: #2fbf71; }
+
+    .sp__chips { display: flex; gap: 0.45rem; overflow-x: auto; scrollbar-width: none; margin: 1.6rem 0 0; padding-bottom: 0.3rem; }
+    .sp__chips::-webkit-scrollbar { display: none; }
+    .sp__chip { flex: none; border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; cursor: pointer; background: none;
+      color: var(--cream-dim); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.55em 1.15em; }
+    .sp__chip.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193,18,31,0.35); }
+
+    .sp__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr)); gap: 1rem; margin-top: 1.4rem; }
+    .sp__card { border: 1px solid rgba(244,239,230,0.13); border-radius: 18px; overflow: hidden; background: rgba(20,16,14,0.6);
+      cursor: pointer; text-align: left; color: var(--cream); font: inherit; transition: border-color 0.25s, transform 0.25s; }
+    .sp__card:hover { border-color: var(--ruby-hot); transform: translateY(-4px); }
+    .sp__card-img { position: relative; aspect-ratio: 16/10; background: #1a1512; overflow: hidden; }
+    .sp__card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .sp__card-seal { position: absolute; top: 0.6rem; left: 0.6rem; display: flex; align-items: center; gap: 0.35rem;
+      background: rgba(10,8,7,0.72); backdrop-filter: blur(6px); border-radius: 100px; padding: 0.28rem 0.6rem 0.28rem 0.32rem; }
+    .sp__card-seal img { width: 18px; height: 18px; }
+    .sp__card-seal b { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em; color: var(--cream); }
+    .sp__card-body { padding: 0.9rem 1rem 1.1rem; }
+    .sp__card-body h3 { font-size: 1.02rem; line-height: 1.15; }
+    .sp__card-body .sp__where { color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.15rem; }
+    .sp__card-am { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.7rem; }
+    .sp__card-foot { display: flex; align-items: baseline; justify-content: space-between; margin-top: 0.9rem; }
+    .sp__rate b { font-family: var(--display); font-size: 1.5rem; font-weight: 400; }
+    .sp__rate small { color: var(--cream-dim); font-size: 0.72rem; }
+    .sp__go { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ruby-hot); }
+
+    .sp__list { border: 1px dashed rgba(244,239,230,0.28); border-radius: 18px; display: grid; place-items: center; text-align: center;
+      padding: 2rem 1rem; color: var(--cream); text-decoration: none; }
+    .sp__list b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.2rem; display: block; }
+    .sp__list small { color: var(--cream-dim); font-size: 0.78rem; display: block; margin-top: 0.3rem; max-width: 24ch; }
+
+    /* the scheduler sheet */
+    .sp__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.72); backdrop-filter: blur(3px); opacity: 0; pointer-events: none;
+      transition: opacity 0.25s; z-index: 110; }
+    .sp__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 34rem; margin: 0 auto;
+      background: var(--ink-2, #14100e); border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0;
+      padding: 1.1rem 1.2rem calc(1.4rem + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 88dvh; overflow-y: auto; }
+    body.sp-open .sp__veil { opacity: 1; pointer-events: auto; }
+    body.sp-open .sp__sheet { transform: translateY(0); }
+    .sp__x { position: absolute; top: 0.7rem; right: 0.9rem; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; z-index: 2; }
+    .sp__sheet h2 { font-family: var(--display); text-transform: uppercase; font-weight: 400; font-size: 1.3rem; margin: 0.2rem 0 0.2rem; padding-right: 2.4rem; }
+    .sp__sheet .sp__where2 { color: var(--cream-dim); font-size: 0.78rem; margin-bottom: 0.8rem; }
+    .sp__lbl { display: block; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); margin: 1rem 0 0.5rem; }
+
+    .cal { border: 1px solid rgba(244,239,230,0.12); border-radius: 14px; padding: 0.8rem; }
+    .cal__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .cal__head b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1rem; }
+    .cal__nav { background: none; border: 1px solid rgba(244,239,230,0.25); border-radius: 8px; color: var(--cream); font: inherit;
+      width: 30px; height: 30px; cursor: pointer; }
+    .cal__nav:disabled { opacity: 0.3; cursor: default; }
+    .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+    .cal__dow { text-align: center; font-size: 0.58rem; letter-spacing: 0.1em; color: var(--cream-dim); padding: 0.2rem 0; }
+    .cal__day { aspect-ratio: 1; border: 1px solid transparent; border-radius: 9px; background: rgba(244,239,230,0.04); color: var(--cream);
+      font: inherit; font-size: 0.82rem; cursor: pointer; }
+    .cal__day:hover:not(:disabled) { border-color: var(--ruby-hot); }
+    .cal__day.is-sel { background: var(--ruby-hot); color: #fff; font-weight: 700; }
+    .cal__day:disabled { opacity: 0.22; cursor: default; }
+    .cal__day.is-empty { background: none; border: 0; cursor: default; }
+
+    .sp__slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); gap: 0.45rem; }
+    .sp__slot { border: 1px solid rgba(244,239,230,0.22); border-radius: 10px; background: none; color: var(--cream); font: inherit;
+      font-size: 0.82rem; padding: 0.65em 0.4em; cursor: pointer; text-align: center; }
+    .sp__slot.is-on { border-color: var(--ruby-hot); background: rgba(193,18,31,0.35); color: #fff; }
+    .sp__hours { display: flex; align-items: center; gap: 0.8rem; }
+    .sp__step { width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(244,239,230,0.25); background: none;
+      color: var(--cream); font: inherit; font-size: 1.3rem; cursor: pointer; }
+    .sp__hrsn { font-family: var(--display); font-size: 1.6rem; min-width: 3.4rem; text-align: center; }
+    .sp__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.6rem; }
+    .sp__in:focus { outline: none; border-color: var(--ruby-hot); }
+    textarea.sp__in { resize: vertical; min-height: 3.2em; }
+
+    .sp__total { display: flex; align-items: baseline; justify-content: space-between; border-top: 1px solid rgba(244,239,230,0.12);
+      margin-top: 1rem; padding-top: 0.9rem; }
+    .sp__total .sp__tnum { font-family: var(--display); font-size: 2rem; }
+    .sp__total small { color: var(--cream-dim); font-size: 0.72rem; }
+    .sp__fee { font-size: 0.72rem; color: #2fbf71; margin-top: 0.3rem; line-height: 1.5; }
+    .sp__msg { color: var(--ruby-hot); font-size: 0.84rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .sp__note { font-size: 0.74rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.6rem; }
+    .sp__done { text-align: center; padding: 1rem 0 0.4rem; }
+    .sp__check { width: 72px; height: 72px; margin: 0 auto 0.9rem; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(47,191,113,0.14); border: 2px solid #2fbf71; color: #2fbf71; font-size: 1.9rem; }
+    .sp__hidden { display: none !important; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="market.html">The Market</a>
+      <a class="head-cta" href="list-your-space.html">List your space</a>
+    </nav>
+  </header>
+  <main class="sp">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Spaces — book the room</p>
+    <h1>Book The<br>Space.</h1>
+    <p class="sp__sub">Rooms, studios, and stages — every one <b>M-Verified</b>. Browse, pick your date and window, request it. The operator confirms and you're locked.</p>
+    <div class="sp__promise">
+      <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+      <p><b>The operator keeps 100%.</b> A regular storefront passes a 7–14% card fee to you. Here the network absorbs it — the price you see is the price, and the whole rate reaches the room.</p>
+    </div>
+
+    <div class="sp__chips" id="spChips"></div>
+    <div class="sp__grid" id="spGrid"><p class="sp__note">Loading the spaces…</p></div>
+  </main>
+
+  <!-- the scheduler -->
+  <div class="sp__veil" id="spVeil"></div>
+  <div class="sp__sheet" id="spSheet" role="dialog" aria-modal="true" aria-label="Book this space">
+    <button class="sp__x" id="spX" type="button" aria-label="Close">✕</button>
+    <div id="spBook">
+      <h2 id="spName">Space</h2>
+      <p class="sp__where2" id="spWhere"></p>
+      <div class="sp__card-am" id="spAm"></div>
+
+      <span class="sp__lbl">Pick a date</span>
+      <div class="cal" id="spCal"></div>
+
+      <span class="sp__lbl">Pick a window</span>
+      <div class="sp__slots" id="spSlots"></div>
+
+      <span class="sp__lbl">How many hours</span>
+      <div class="sp__hours">
+        <button class="sp__step" id="spHrMinus" type="button" aria-label="Fewer hours">−</button>
+        <span class="sp__hrsn" id="spHrs">2</span>
+        <button class="sp__step" id="spHrPlus" type="button" aria-label="More hours">+</button>
+      </div>
+
+      <span class="sp__lbl">Anything the operator should know</span>
+      <textarea class="sp__in" id="spNote" placeholder="What you're working on, headcount, load-in needs…"></textarea>
+      <input class="sp__in sp__hidden" id="spContact" type="text" placeholder="Your name · email or phone">
+
+      <div class="sp__total">
+        <span><span class="sp__tnum" id="spTotal">$0</span><small id="spTotalSub"> — pick a date &amp; window</small></span>
+        <a class="btn btn--ruby" id="spSend" href="#" style="align-self:center">Request to book</a>
+      </div>
+      <p class="sp__fee" id="spFee"></p>
+      <p class="sp__msg" id="spMsg"></p>
+      <p class="sp__note">This sends a booking request into the operator's inbox — they confirm the slot, then the deposit runs. Payment rail lands next; the network is built to absorb the processing fee so the operator keeps their full rate.</p>
+    </div>
+    <div id="spDone" class="sp__hidden sp__done">
+      <div class="sp__check">✓</div>
+      <h2 id="spDoneMsg">Requested.</h2>
+      <p class="sp__note" id="spDoneSub"></p>
+      <div class="finale__actions" style="justify-content:center">
+        <a class="btn btn--ghost" href="market.html#yours">Your bookings</a>
+        <button class="btn btn--ruby" id="spClose" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/amenities.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+
+      var AUTHED = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+      var SPACE_ROLES = ["Studios", "Stages"];
+      var FALLBACK_PHOTO = { Studios: "assets/frames/vperf1_0001.jpg", Stages: "assets/frames/uprise_0080.jpg" };
+      var SLOTS = ["Morning · 8–12", "Midday · 12–4", "Evening · 4–8", "Late · 8–12"];
+      var ALL = [], AMEN = {}, active = "All";
+      var sel = { space: null, date: null, slot: null, hours: 2 };
+      var calMonth = new Date(); calMonth.setDate(1);
+
+      function tickOf(p) { return window.MCC_STOCK ? window.MCC_STOCK.ticker(p.ticker, p.name) : ""; }
+      function rateOf(p) { return (p.space && p.space.rate) || (p.terms && p.terms.floor) || 40; }
+      function amenOf(p) { return (p.space && p.space.amenities) || (p.roles && p.roles.indexOf("Stages") !== -1
+        ? ["broadcast-ready", "lighting-grid", "green-room"] : ["engineer", "iso-booth", "mic-locker"]); }
+      function photoOf(p) { return p.photo || FALLBACK_PHOTO[(p.roles || [])[0]] || "assets/frames/vperf1_0001.jpg"; }
+      function isSpace(p) { return (p.roles || []).some(function (r) { return SPACE_ROLES.indexOf(r) !== -1; }); }
+
+      function load() {
+        Promise.all([
+          fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
+          window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
+          window.MCC_AMENITIES ? window.MCC_AMENITIES.get().catch(function () { return { amenities: [] }; }) : Promise.resolve({ amenities: [] }),
+        ]).then(function (r) {
+          var seen = {};
+          (r[0].providers || []).forEach(function (p) { if (isSpace(p)) { ALL.push(p); seen[p.id] = 1; } });
+          (r[1] || []).forEach(function (c) {
+            if (seen[c.slug]) return;
+            var p = { id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline, area: c.area,
+              roles: c.roles || [], badgeColor: c.badge_color, ticker: c.ticker, terms: c.terms, space: c.space, photo: c.photo };
+            if (isSpace(p)) ALL.push(p);
+          });
+          (r[2].amenities || []).forEach(function (a) { AMEN[a.id] = a; });
+          renderChips(); renderGrid();
+        });
+      }
+
+      function renderChips() {
+        var cats = ["All", "Studios", "Stages"];
+        $("spChips").innerHTML = cats.map(function (c) {
+          return '<button class="sp__chip' + (c === active ? " is-on" : "") + '" type="button" data-c="' + c + '">' +
+            (c === "All" ? "All spaces" : c) + "</button>";
+        }).join("");
+        $("spChips").querySelectorAll(".sp__chip").forEach(function (b) {
+          b.addEventListener("click", function () { active = b.getAttribute("data-c"); renderChips(); renderGrid(); track("spaces_filter", { cat: active }); });
+        });
+      }
+
+      function amChips(ids, color) {
+        return ids.slice(0, 3).map(function (id) {
+          var a = AMEN[id]; if (!a) return "";
+          return '<span class="amenity" style="--am-c:' + (color || "#e5383b") + '" title="' + esc(a.name) + '">' +
+            '<span class="amenity__ico"><svg viewBox="0 0 24 24"><path d="' + a.icon + '"/></svg></span>' +
+            '<span class="amenity__txt"><b>' + esc(a.name) + "</b></span></span>";
+        }).join("");
+      }
+
+      function renderGrid() {
+        var rows = ALL.filter(function (p) { return active === "All" || (p.roles || []).indexOf(active) !== -1; });
+        var cards = rows.map(function (p, i) {
+          return '<button class="sp__card" type="button" data-i="' + ALL.indexOf(p) + '">' +
+            '<span class="sp__card-img"><img src="' + esc(photoOf(p)) + '" alt="' + esc(p.name) + '" loading="lazy">' +
+            '<span class="sp__card-seal"><img src="assets/img/m-mark.png" alt="M-Verified"><b>$' + esc(tickOf(p)) + "</b></span></span>" +
+            '<span class="sp__card-body"><h3>' + esc(p.name) + "</h3>" +
+            '<p class="sp__where">' + esc(p.area || (p.roles || []).join(" · ")) + "</p>" +
+            '<span class="sp__card-am">' + amChips(amenOf(p), p.badgeColor) + "</span>" +
+            '<span class="sp__card-foot"><span class="sp__rate"><b>$' + rateOf(p) + '</b><small>/hr</small></span>' +
+            '<span class="sp__go">Book →</span></span></span></button>';
+        }).join("");
+        $("spGrid").innerHTML = cards +
+          '<a class="sp__list" href="list-your-space.html" data-cta="spaces-list"><span><b>List your space</b>' +
+          "<small>Own a studio, room, or stage? Get M-Verified and take bookings — you keep 100%.</small></span></a>";
+        $("spGrid").querySelectorAll(".sp__card").forEach(function (b) {
+          b.addEventListener("click", function () { openSheet(ALL[+b.getAttribute("data-i")]); });
+        });
+      }
+
+      /* ---------- the scheduler ---------- */
+      function openSheet(p) {
+        sel = { space: p, date: null, slot: null, hours: 2 };
+        $("spName").textContent = p.name;
+        $("spWhere").textContent = (p.area ? p.area + " · " : "") + "$" + rateOf(p) + "/hr · M-Verified";
+        $("spAm").innerHTML = amChips(amenOf(p), p.badgeColor);
+        $("spHrs").textContent = "2";
+        $("spContact").classList.toggle("sp__hidden", AUTHED);
+        $("spBook").classList.remove("sp__hidden"); $("spDone").classList.add("sp__hidden");
+        $("spMsg").textContent = ""; $("spNote").value = "";
+        calMonth = new Date(); calMonth.setDate(1);
+        renderCal(); renderSlots(); total();
+        document.body.classList.add("sp-open");
+        track("spaces_open", { space: p.slug || p.id });
+      }
+      function closeSheet() { document.body.classList.remove("sp-open"); }
+      $("spVeil").addEventListener("click", closeSheet);
+      $("spX").addEventListener("click", closeSheet);
+      $("spClose").addEventListener("click", function () { closeSheet(); });
+
+      function sameDay(a, b) { return a && b && a.toDateString() === b.toDateString(); }
+      function renderCal() {
+        var y = calMonth.getFullYear(), m = calMonth.getMonth();
+        var first = new Date(y, m, 1), start = first.getDay(), days = new Date(y, m + 1, 0).getDate();
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        var atStart = (y === today.getFullYear() && m === today.getMonth());
+        var html = '<div class="cal__head"><button class="cal__nav" id="calPrev" type="button"' + (atStart ? " disabled" : "") + '>‹</button>' +
+          "<b>" + months[m] + " " + y + '</b><button class="cal__nav" id="calNext" type="button">›</button></div><div class="cal__grid">' +
+          ["S","M","T","W","T","F","S"].map(function (d) { return '<span class="cal__dow">' + d + "</span>"; }).join("");
+        for (var i = 0; i < start; i++) html += '<span class="cal__day is-empty"></span>';
+        for (var d = 1; d <= days; d++) {
+          var date = new Date(y, m, d), past = date < today, on = sameDay(date, sel.date);
+          html += '<button class="cal__day' + (on ? " is-sel" : "") + '" type="button" data-d="' + d + '"' + (past ? " disabled" : "") + ">" + d + "</button>";
+        }
+        html += "</div>";
+        $("spCal").innerHTML = html;
+        $("calPrev") && $("calPrev").addEventListener("click", function () { calMonth.setMonth(calMonth.getMonth() - 1); renderCal(); });
+        $("calNext").addEventListener("click", function () { calMonth.setMonth(calMonth.getMonth() + 1); renderCal(); });
+        $("spCal").querySelectorAll(".cal__day[data-d]").forEach(function (b) {
+          if (b.disabled) return;
+          b.addEventListener("click", function () {
+            sel.date = new Date(calMonth.getFullYear(), calMonth.getMonth(), +b.getAttribute("data-d"));
+            renderCal(); total();
+          });
+        });
+      }
+      function renderSlots() {
+        $("spSlots").innerHTML = SLOTS.map(function (s, i) {
+          return '<button class="sp__slot' + (sel.slot === i ? " is-on" : "") + '" type="button" data-s="' + i + '">' + esc(s) + "</button>";
+        }).join("");
+        $("spSlots").querySelectorAll(".sp__slot").forEach(function (b) {
+          b.addEventListener("click", function () { sel.slot = +b.getAttribute("data-s"); renderSlots(); total(); });
+        });
+      }
+      $("spHrPlus").addEventListener("click", function () { sel.hours = Math.min(12, sel.hours + 1); $("spHrs").textContent = sel.hours; total(); });
+      $("spHrMinus").addEventListener("click", function () { sel.hours = Math.max(1, sel.hours - 1); $("spHrs").textContent = sel.hours; total(); });
+
+      function total() {
+        var rate = rateOf(sel.space), amt = rate * sel.hours;
+        $("spTotal").textContent = "$" + amt.toLocaleString();
+        var ready = sel.date && sel.slot !== null;
+        $("spTotalSub").textContent = ready ? " — " + sel.hours + " hr @ $" + rate + "/hr" : " — pick a date & window";
+        $("spFee").textContent = ready ? "You'd pay 7–14% more at a storefront. Here $" + amt.toLocaleString() + " reaches the room — the network eats the fee." : "";
+        return amt;
+      }
+
+      $("spSend").addEventListener("click", function (ev) {
+        ev.preventDefault();
+        if (!sel.date) { $("spMsg").textContent = "Pick a date."; return; }
+        if (sel.slot === null) { $("spMsg").textContent = "Pick a window."; return; }
+        var p = sel.space, amt = total();
+        var when = sel.date.toLocaleDateString() + " · " + SLOTS[sel.slot] + " · " + sel.hours + "hr";
+        var title = p.name + " — " + when;
+        $("spMsg").textContent = "Sending…";
+        var done = function (mode) {
+          $("spBook").classList.add("sp__hidden"); $("spDone").classList.remove("sp__hidden");
+          $("spDoneMsg").textContent = "Requested — " + sel.date.toLocaleDateString() + ".";
+          $("spDoneSub").textContent = mode === "deal"
+            ? p.name + " sees the booking in their Market now. They confirm the slot, then the deposit runs."
+            : "It's in " + p.name + "'s inbox — they confirm from the Talent App. Sign in any time to track it.";
+          track("spaces_request", { space: p.slug || p.id, amount: amt, hours: sel.hours, mode: mode });
+        };
+        var fail = function (e) { $("spMsg").textContent = "Couldn't send: " + String(e && e.message || e); };
+
+        if (AUTHED && window.MCC_NET.propose) {
+          window.MCC_NET.propose({
+            kind: "space_booking", title: title,
+            from_name: window.MCC_SUPA.email() || "Me", to_slug: p.slug || p.id, to_name: p.name,
+            terms: { splits: [], fee: amt, date: when, notes: $("spNote").value.trim(), history: [] },
+          }).then(function () { done("deal"); }).catch(fail);
+        } else {
+          var contact = $("spContact").value.trim();
+          if (!contact) { $("spMsg").textContent = "Your name and a way to reach you — that's all it takes."; return; }
+          window.MCC_NET.requestBooking({
+            provider_id: p.cloud_id || null, provider_slug: p.slug || p.id,
+            name: contact.split("·")[0].trim(), contact: contact, date_wanted: when,
+            details: "[Space booking · $" + amt + "] " + title + ($("spNote").value.trim() ? " — " + $("spNote").value.trim() : ""),
+          }).then(function () { done("request"); }).catch(fail);
+        }
+      });
+
+      load();
+      track("spaces_view", { authed: AUTHED });
+    })();
+  </script>
+</body>
+</html>

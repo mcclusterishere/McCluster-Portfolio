@@ -50,6 +50,8 @@
       "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
       "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
       "profile": "profile-zakir.html",
+      "photo": "assets/frames/vperf1_0001.jpg",
+      "space": { "rate": 45, "unit": "hour", "amenities": ["engineer", "iso-booth", "mic-locker", "console", "tuned-room", "mix-master"] },
       "music": {
         "src": "assets/audio/vaunt.mp3",
         "title": "Vaunt (Acoustic) — Zakir on the six-string"

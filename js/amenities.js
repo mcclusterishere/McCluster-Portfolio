@@ -12,7 +12,6 @@
 
   var slots = document.querySelectorAll("[data-amenities]");
   var root = document.getElementById("amRoot");
-  if (!slots.length && !root) return;
 
   var CACHE = null;
   function get() {
