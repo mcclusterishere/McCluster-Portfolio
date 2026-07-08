@@ -26,14 +26,17 @@ create table if not exists providers (
 );
 alter table providers enable row level security;
 
+drop policy if exists "live listings are public" on providers;
 create policy "live listings are public"
   on providers for select
   using (status = 'live' or owner = auth.uid());
 
+drop policy if exists "signed-in talent creates their own listing" on providers;
 create policy "signed-in talent creates their own listing"
   on providers for insert
   with check (owner = auth.uid());
 
+drop policy if exists "owners edit their own listing" on providers;
 create policy "owners edit their own listing"
   on providers for update
   using (owner = auth.uid())
@@ -55,15 +58,18 @@ create table if not exists booking_requests (
 );
 alter table booking_requests enable row level security;
 
+drop policy if exists "anyone can file a request" on booking_requests;
 create policy "anyone can file a request"
   on booking_requests for insert
   with check (true);
 
+drop policy if exists "providers read their own inbox" on booking_requests;
 create policy "providers read their own inbox"
   on booking_requests for select
   using (exists (select 1 from providers p
                  where p.id = provider_id and p.owner = auth.uid()));
 
+drop policy if exists "providers work their own inbox" on booking_requests;
 create policy "providers work their own inbox"
   on booking_requests for update
   using (exists (select 1 from providers p
@@ -79,6 +85,7 @@ create table if not exists sms_optins (
 );
 alter table sms_optins enable row level security;
 
+drop policy if exists "anyone can opt in" on sms_optins;
 create policy "anyone can opt in"
   on sms_optins for insert
   with check (true);
@@ -109,10 +116,13 @@ create table if not exists members (
 );
 alter table members enable row level security;
 
+drop policy if exists "members read their own record" on members;
 create policy "members read their own record"
   on members for select using (owner = auth.uid());
+drop policy if exists "members create their own record" on members;
 create policy "members create their own record"
   on members for insert with check (owner = auth.uid());
+drop policy if exists "members update their own record" on members;
 create policy "members update their own record"
   on members for update using (owner = auth.uid()) with check (owner = auth.uid());
 
