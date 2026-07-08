@@ -1,54 +1,62 @@
 /* ============================================================
-   Payment links. The rail is STRIPE going forward (nonprofit
-   account): create links at dashboard.stripe.com → Payment Links
-   (one-time for songs/tithe with "customer chooses price",
-   recurring for subscribe/membership) and paste each URL into
-   `link` below. Buttons stay "coming soon" while a link is empty.
-   The song links below are legacy Square links that already work —
-   replace them with Stripe links whenever, no code change needed.
-   Later phase: Stripe Connect for provider payouts + 1099s.
+   Payment links — ONE register for the cause.
+   Everything outside the three main offerings (the Limited Offer,
+   web builds, and photo/video day bookings) is a SUGGESTED
+   contribution through the nonprofit's live mission-fund link.
+   One link, one ledger, every button live. `suggest` is the
+   suggested amount shown on the button; givers set their own.
    ============================================================ */
+
+var MCC_DONATE = "https://square.link/u/MBVeuzoo?src=sheet";
 
 window.PAYMENTS = {
   "whodidtheshoot": {
     title: "Who Did The Shoot",
     page: "song-who-did-the-shoot.html",
-    link: "https://square.link/u/oMwMSDM2",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "antisocial": {
     title: "Antisocial",
     page: "song-antisocial.html",
-    link: "https://square.link/u/Z2m6DaNA",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "environmental-injustice": {
     title: "Environmental Injustice",
     page: "song-environmental-injustice.html",
-    link: "https://square.link/u/pEAZJkJ4",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "gotwifi": {
     title: "Got WiFi",
     page: "song-got-wifi.html",
-    link: "https://square.link/u/ihcmtexP",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "vaunt": {
     title: "Vaunt (Acoustic)",
     page: "song-vaunt.html",
-    link: "https://square.link/u/NIsDAInw",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "dealerplates": {
     title: "Dealer Plates (A-Side)",
     page: "song-dealer-plates.html",
-    link: "https://square.link/u/pn1Tqzbv",
+    link: MCC_DONATE,
+    suggest: "$3",
   },
   "subscribe": {
-    title: "Subscribe",
-    link: "",
+    title: "Back the catalogue",
+    link: MCC_DONATE,
+    label: "Back the catalogue \u00b7 any amount",
   },
   // The $20 identifier walkthrough (Square payment link). After purchase,
   // send buyers the unlisted walkthrough page.
   "idguide": {
-    title: "Identifier Walkthrough",
-    link: "",
+    title: "Identifier Resource Pack",
+    link: MCC_DONATE,
+    suggest: "$20",
   },
   // The mission fund — live Square link (nonprofit). Hero, footer, and
   // the Equity Uprise pages all point here. Support / contribution
@@ -61,13 +69,13 @@ window.PAYMENTS = {
   // variable amount). The Talent App shows "Give the tithe" once set.
   "tithe": {
     title: "The Network Tithe",
-    link: "",
+    link: MCC_DONATE,
   },
   // Residual membership giving (Square recurring payment link). The
   // Members App shows "Start your residual" the moment this exists.
   "membership": {
     title: "Member Residual Giving",
-    link: "",
+    link: MCC_DONATE,
   },
   // Square Appointments booking page for the paid inquiry call:
   // Dashboard → Appointments → create a paid "Inquiry Call" service with

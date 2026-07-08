@@ -515,8 +515,9 @@
         $("fyLabel").textContent = s.label;
         $("fySub").textContent = s.sub || "";
         card.style.display = "flex";
+        window.MCC_MODEL.shown(s.dom); // the model counts its own impressions
         card.addEventListener("click", function () {
-          if (window.MCC_TRACK) window.MCC_TRACK("foryou_tap", { why: s.why });
+          if (window.MCC_TRACK) window.MCC_TRACK("foryou_tap", { dom: s.dom, why: s.why });
         });
       }
 

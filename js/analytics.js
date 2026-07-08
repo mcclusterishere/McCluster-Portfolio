@@ -118,34 +118,46 @@ window.MCC_MODEL = (function () {
   /* what an event means: first match wins, weight = how loud the signal is */
   var MAP = [
     [/offer|claim|tier|quote|lead|wantsite|book.?call|billing/i, "client", 3],
-    [/collab|deal|packet|talent|onboard|provider|listing/i, "artist", 3],
-    [/member|donat|tithe|residual|uprise|fellowship/i, "org", 3],
+    [/collab|deal|packet|talent|onboard|provider|listing|mstock/i, "artist", 3],
+    [/member|donat|tithe|residual|uprise|fellowship|support/i, "org", 3],
     [/docket|psmf|civic|marker|duality|persona|quiz/i, "civic", 2],
-    [/vr|gyro|360|motion|beacon|land|slow|install/i, "experience", 2],
-    [/song|play|np|audio|catalogue|sound|lyric|subscribe|app_/i, "music", 1],
+    [/vr|gyro|360|motion|beacon|land|slow|install|getapp/i, "experience", 2],
+    [/song|play|\bnp\b|nowplaying|audio|catalogue|sound|lyric|subscribe|app_/i, "music", 1],
+  ];
+  /* conversions: once someone walks through a door, stop selling them that door */
+  var GOALS = [
+    [/book_call|offer-claim|lead_submit/i, "client"],
+    [/collab_signed|talent_listing_saved/i, "artist"],
+    [/support-|member_saved|sound_beacon_tap/i, "org"],
+    [/install_done/i, "experience"],
   ];
   var PAGES = { // where a domain's next step lives
     music: ["app.html", "Back to the music", "Your rotation is waiting in the app"],
     experience: ["vr-vaunt.html", "Step back inside the jet", "The 360 cabin, pins and all"],
-    client: ["offer.html", "The offer is still open", "2 of 3 spots left · the weekly system"],
+    client: ["offer.html", "The offer is still open", "2 of 3 spots left \u00b7 the weekly system"],
     artist: ["collab.html", "Open the Collab Room", "Propositions, splits, signatures"],
     civic: ["docket-516.html", "Back to the record", "The public record, explained"],
-    org: ["members.html", "Join the organization", "Boards · programs · the donor circle"],
+    org: ["members.html", "Join the organization", "Boards \u00b7 programs \u00b7 the donor circle"],
   };
 
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; }
   }
-  var S = load() || { doms: {}, events: 0, visits: 0, last: 0, day: "" };
+  var S = load() || {};
+  S.doms = S.doms || {}; S.goals = S.goals || {}; S.shows = S.shows || {}; S.taps = S.taps || {};
+  S.events = S.events || 0; S.heat = S.heat || 0; S.visits = S.visits || 0;
+  S.last = S.last || 0; S.day = S.day || "";
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
-  /* time decay: every new day shrinks old interest toward the half-life */
+  /* time decay: every new day cools interest, heat, and banner fatigue */
   (function tick() {
     var today = new Date().toISOString().slice(0, 10);
     if (S.day !== today) {
       var days = S.last ? Math.min(60, (Date.now() - S.last) / 864e5) : 0;
       var k = Math.pow(0.5, days / HALF_LIFE_DAYS);
       Object.keys(S.doms).forEach(function (d) { S.doms[d] = +(S.doms[d] * k).toFixed(3); });
+      S.heat = +(S.heat * k).toFixed(3);
+      Object.keys(S.shows).forEach(function (d) { S.shows[d] = +(S.shows[d] * Math.pow(0.5, days / 7)).toFixed(2); });
       S.day = today; S.visits++;
       save();
     }
@@ -160,7 +172,13 @@ window.MCC_MODEL = (function () {
         break;
       }
     }
-    S.events++; S.last = Date.now();
+    for (var g = 0; g < GOALS.length; g++) {
+      if (GOALS[g][0].test(line)) S.goals[GOALS[g][1]] = Date.now();
+    }
+    if (name === "foryou_tap" && params && params.dom) {
+      S.taps[params.dom] = (S.taps[params.dom] || 0) + 1; // the card earned its spot
+    }
+    S.events++; S.heat = +(S.heat + 1).toFixed(3); S.last = Date.now();
     save();
   }
 
@@ -170,23 +188,64 @@ window.MCC_MODEL = (function () {
     return {
       top: ranked.length ? ranked[0][0] : null,
       ranked: ranked,
-      stage: S.events < 6 ? "new" : S.events < 25 ? "warming" : "locked",
-      visits: S.visits, events: S.events,
+      // the stage runs on RECENT heat, not lifetime totals — a hot June
+      // doesn't make a cold October visitor "locked"
+      stage: S.heat < 6 ? "new" : S.heat < 25 ? "warming" : "locked",
+      visits: S.visits, events: S.events, heat: S.heat,
+      goals: S.goals,
     };
+  }
+
+  function freshGoal(dom) {
+    return S.goals[dom] && Date.now() - S.goals[dom] < 14 * 864e5;
+  }
+  function fatigued(dom) {
+    // shown five times, never tapped: the card is wallpaper — rotate it out
+    return (S.shows[dom] || 0) >= 5 && !(S.taps[dom] || 0);
   }
 
   function suggest() {
     var p = profile();
-    if (!p.top || p.stage === "new") {
-      return { label: "Start with the sound", sub: "The catalogue · every record on the page", href: "app.html", why: "new" };
-    }
     var here = location.pathname.split("/").pop() || "index.html";
-    var pick = p.top, i = 0;
-    while (PAGES[pick] && PAGES[pick][0] === here && i < p.ranked.length - 1) {
-      i++; pick = p.ranked[i][0]; // never point at the room they're standing in
+    if (!p.top || p.stage === "new") {
+      // cold start: if the persona engine already knows a side, lean on it
+      var side = null;
+      try { side = window.MCC_PERSONA && window.MCC_PERSONA.balance().side; } catch (e) {}
+      var dom0 = side === "present" ? "civic" : "music";
+      var g0 = PAGES[dom0];
+      if (g0[0] === here) { dom0 = dom0 === "music" ? "experience" : "music"; g0 = PAGES[dom0]; }
+      return { label: g0[1], sub: g0[2], href: g0[0], dom: dom0, why: dom0 + ":new" };
     }
-    var g = PAGES[pick] || PAGES.music;
-    return { label: g[1], sub: g[2], href: g[0], why: pick + ":" + p.stage };
+    for (var i = 0; i < p.ranked.length; i++) {
+      var dom = p.ranked[i][0];
+      if (!PAGES[dom]) continue;
+      if (PAGES[dom][0] === here) continue;   // never the room they stand in
+      if (freshGoal(dom)) continue;           // never resell a fresh conversion
+      if (fatigued(dom)) continue;            // never repeat what gets ignored
+      var g = PAGES[dom];
+      return { label: g[1], sub: g[2], href: g[0], dom: dom, why: dom + ":" + p.stage };
+    }
+    return { label: "Start with the sound", sub: "The catalogue \u00b7 every record on the page", href: "app.html", dom: "music", why: "fallback" };
+  }
+
+  /* a surface that rendered the suggestion reports it: fatigue is learned,
+     not guessed — five silent impressions and that domain rotates out */
+  function shown(dom) {
+    if (!dom) return;
+    S.shows[dom] = +((S.shows[dom] || 0) + 1).toFixed(2);
+    save();
+  }
+
+  /* the money framing: same deal, two doors. Mission-leaning people
+     (org/civic) hear the tithe first; builders hear the equity first.
+     Once chosen, the door holds for a week — the story stays coherent. */
+  function pitch() {
+    if (S.pitch && Date.now() - S.pitch.at < 7 * 864e5) return S.pitch.door;
+    var p = profile();
+    var door = p.top === "org" || p.top === "civic" ? "tithe" : "equity";
+    S.pitch = { door: door, at: Date.now() };
+    save();
+    return door;
   }
 
   /* the wrap: everything MCC_TRACK hears, the model learns */
@@ -196,14 +255,6 @@ window.MCC_MODEL = (function () {
     return orig(name, params);
   };
 
-  /* the money framing: same deal, two doors. Mission-leaning people
-     (org/civic) hear the tithe first; builders (artist/client/music)
-     hear the equity first. The model decides which door leads. */
-  function pitch() {
-    var p = profile();
-    return p.top === "org" || p.top === "civic" ? "tithe" : "equity";
-  }
-
-  return { profile: profile, suggest: suggest, pitch: pitch, observe: observe,
+  return { profile: profile, suggest: suggest, shown: shown, pitch: pitch, observe: observe,
     reset: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
 })();

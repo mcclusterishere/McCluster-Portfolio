@@ -394,6 +394,10 @@
       el.href = entry.link;
       el.target = "_blank";
       el.rel = "noopener";
+      // suggested-contribution register: one link for the cause,
+      // the amount is a suggestion and the giver sets their own
+      if (entry.label) el.textContent = entry.label;
+      else if (entry.suggest) el.textContent = (el.textContent || "").trim() + " \u00b7 suggested " + entry.suggest;
     } else {
       el.classList.add("is-pending");
       el.addEventListener("click", function (e) {
