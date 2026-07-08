@@ -692,7 +692,9 @@
       (function () {
         var entered = false;
         try { entered = localStorage.getItem("mcc_app_entered") === "1"; } catch (e) {}
-        if (entered) return;
+        // crossing from the Market always gets the choice: sound on, or quiet
+        var fromMarket = /market\.html/.test(document.referrer || "");
+        if (entered && !fromMarket) return;
         var ov = document.createElement("div");
         ov.className = "sp__door";
         ov.innerHTML =

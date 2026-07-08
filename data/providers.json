@@ -16,8 +16,8 @@
         "Video",
         "Web"
       ],
-      "headline": "Creative director \u00b7 the builder of this site",
-      "area": "Connecticut \u00b7 Georgia \u00b7 travels",
+      "headline": "Creative director · the builder of this site",
+      "area": "Connecticut · Georgia · travels",
       "verified": "performer",
       "badgeColor": "#8b5cf6",
       "href": "profile-mccluster.html",
@@ -27,6 +27,11 @@
         "feature": 1000,
         "floor": 50,
         "notes": "The Artist Offer: $1,000 for a feature — and the thousand comes with 50% of the songwriting, 50% of the publishing, 50% of everything. Signed in the Market before the song drops."
+      },
+      "profile": "profile-mccluster.html",
+      "music": {
+        "src": "assets/audio/antisocial.mp3",
+        "title": "Antisocial"
       }
     },
     {
@@ -41,7 +46,12 @@
       "badgeColor": "#f8b40a",
       "href": "profile-zakir.html",
       "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
-      "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP."
+      "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
+      "profile": "profile-zakir.html",
+      "music": {
+        "src": "assets/audio/vaunt.mp3",
+        "title": "Vaunt (Acoustic) — Zakir on the six-string"
+      }
     },
     {
       "id": "laire",
@@ -71,7 +81,8 @@
       "badgeColor": "#2fbf71",
       "href": "hire.html",
       "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
-      "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published."
+      "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
+      "profile": "hire.html"
     }
   ]
 }

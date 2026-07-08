@@ -49,6 +49,20 @@
     .mk__lane b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.1rem; }
     .mk__lane small { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.45; display: block; margin-top: 0.25rem; }
 
+    /* the wall of seals: small tiles, evidence-room style */
+    .mk__provwall { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 0.6rem; margin-top: 1rem; }
+    .mk__prov { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; text-align: center;
+      text-decoration: none; color: var(--cream); border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 14px;
+      padding: 0.9rem 0.5rem 0.8rem; background: rgba(20, 16, 14, 0.55);
+      transition: border-color 0.25s, transform 0.25s; }
+    .mk__prov:hover { border-color: var(--badge-c, var(--ruby-hot)); transform: translateY(-3px); }
+    .mk__prov-seal { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(10, 8, 7, 0.7); border: 2px solid var(--badge-c, var(--ruby-hot));
+      box-shadow: 0 0 12px color-mix(in srgb, var(--badge-c, #e5383b) 55%, transparent); }
+    .mk__prov-seal img { width: 55%; }
+    .mk__prov b { font-size: 0.74rem; line-height: 1.15; }
+    .mk__prov small { color: var(--cream-dim); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
     /* shared card/form styles (the deal engine's clothes) */
     .mk__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
       padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.2rem; }
@@ -127,9 +141,9 @@
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump" href="#featured">Featured</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
-      <a class="mk__jump" href="#providers">Providers</a>
       <a class="mk__jump" href="#build">Deal builder</a>
       <a class="mk__jump" href="#yours">Your deals</a>
+      <a class="mk__jump" href="#providers">Providers</a>
     </nav>
 
     <!-- 1 · FEATURED MARKET -->
@@ -170,15 +184,6 @@
           <b>Fund / sponsor</b><small>Back an anthem, a video, a campaign — the movement runs on it.</small>
         </button>
       </div>
-    </section>
-
-    <!-- 3 · PROVIDER CARDS -->
-    <section id="providers">
-      <p class="mk__k">The people</p>
-      <h2 class="mk__h2">Verified providers</h2>
-      <p class="mk__note" style="margin-top:0.2rem">Every card is M-Verified before it appears. Book direct — providers keep 100% of their rate.</p>
-      <div class="prov__chips" id="provChips" style="margin-top:1rem"></div>
-      <div class="prov__grid" id="provGrid"><p class="mk__note">Loading the floor…</p></div>
     </section>
 
     <!-- 4 · DEAL BUILDER -->
@@ -267,6 +272,15 @@
         <p class="mk__note" id="mkOut" style="display:none"><button class="btn btn--ghost" id="crSignOut" type="button">Sign out</button></p>
       </div>
     </section>
+
+    <!-- 5 · THE PEOPLE — the wall of seals, evidence-room style -->
+    <section id="providers">
+      <p class="mk__k">The people</p>
+      <h2 class="mk__h2">Verified providers</h2>
+      <p class="mk__note" style="margin-top:0.2rem">Every seal is verified before it hangs. Tap one — their profile plays their music and opens their deal.</p>
+      <div class="prov__chips" id="provChips" style="margin-top:1rem"></div>
+      <div class="mk__provwall" id="provGrid"><p class="mk__note">Loading the wall…</p></div>
+    </section>
   </main>
 
   <div id="sheet"></div>
@@ -337,7 +351,7 @@
             location.hash = "#build";
             $("pTitle").focus();
           } else {
-            document.getElementById("providers").scrollIntoView({ behavior: "smooth" });
+            document.getElementById("build").scrollIntoView({ behavior: "smooth" });
           }
         });
       });
@@ -350,36 +364,18 @@
           return active === "All" || (p.roles || []).indexOf(active) !== -1;
         });
         grid.innerHTML = list.map(function (p) {
-          return '<article class="prov" style="--badge-c:' + esc(p.badgeColor || "#e5383b") + '">' +
-            '<div class="prov__head">' +
-              '<span class="prov__seal"><img src="assets/img/m-mark.png" alt="M-Verified"></span>' +
-              '<div><h3 class="prov__name">' + esc(p.name) + '</h3>' +
-              '<p class="prov__headline">' + esc(p.headline || "M-Verified provider") + "</p></div>" +
-            "</div>" +
-            '<div class="prov__roles">' + (p.roles || []).map(function (r) { return '<span class="prov__role">' + esc(r) + "</span>"; }).join("") + "</div>" +
-            '<p class="prov__blurb">' + esc(p.blurb || "") + "</p>" +
-            '<p class="prov__area">' + esc(p.area || "") + "</p>" +
-            '<div class="prov__ctas">' +
-              '<button class="btn btn--ruby" type="button" data-deal-slug="' + esc(p.slug || p.id) + '">Make a deal</button>' +
-              (p.href ? '<a class="btn btn--ghost" href="' + esc(p.href) + '" data-cta="mk-view-' + esc(p.slug || p.id) + '">The work</a>' : "") +
-            "</div>" +
-          "</article>";
+          var slug = p.slug || p.id;
+          var href = p.profile || "provider.html?who=" + encodeURIComponent(slug);
+          return '<a class="mk__prov" href="' + esc(href) + '" style="--badge-c:' + esc(p.badgeColor || "#e5383b") + '" data-cta="mk-prov-' + esc(slug) + '">' +
+            '<span class="mk__prov-seal"><img src="assets/img/m-mark.png" alt="M-Verified"></span>' +
+            "<b>" + esc(p.name) + "</b>" +
+            "<small>" + esc((p.roles || [])[0] || "Verified") + "</small></a>";
         }).join("") +
-        '<article class="prov prov--join">' +
-          '<h3 class="prov__name">Your name here</h3>' +
-          '<p>The network verifies new shooters, builders, artists, studios, and stages every cycle. Get vetted, get listed, get booked.</p>' +
-          '<div class="prov__ctas"><a class="btn btn--ghost" href="onboard.html" data-cta="mk-join-card">Get on the platform &#8594;</a></div>' +
-        "</article>";
-        grid.querySelectorAll("[data-deal-slug]").forEach(function (b) {
-          b.addEventListener("click", function () {
-            var slug = b.getAttribute("data-deal-slug");
-            var opt = Array.prototype.find.call($("pWho").options, function (o) { return o.value === slug; });
-            if (opt) { $("pWho").value = slug; $("pWho").dispatchEvent(new Event("change")); }
-            document.getElementById("build").scrollIntoView({ behavior: "smooth" });
-            track("market_pick_provider", { provider: slug });
-          });
-        });
+        '<a class="mk__prov" href="onboard.html" data-cta="mk-join-card" style="--badge-c:#2fbf71">' +
+          '<span class="mk__prov-seal"><img src="assets/img/m-mark.png" alt=""></span>' +
+          "<b>Your name here</b><small>Get verified</small></a>";
       }
+
       function renderChips() {
         var chips = $("provChips");
         var cats = ["All"].concat(DATA.categories || []);
@@ -679,7 +675,7 @@
       // rail highlights follow the scroll
       var jumps = document.querySelectorAll(".mk__jump");
       window.addEventListener("scroll", function () {
-        var ids = ["featured", "lanes", "providers", "build", "yours"];
+        var ids = ["featured", "lanes", "build", "yours", "providers"];
         var cur = ids[0];
         ids.forEach(function (id) {
           var el = document.getElementById(id);
