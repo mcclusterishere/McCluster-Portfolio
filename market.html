@@ -163,6 +163,10 @@
           <img src="assets/frames/uprise_0080.jpg" alt="Equity Uprise — fund the next anthem" loading="lazy">
           <div><small>Fund &amp; sponsor</small><b>The Next Anthem</b></div>
         </a>
+        <a class="mk__featcard" href="deluxe-516r.html" data-cta="mk-feat-deluxe">
+          <img src="assets/frames/docket_0050.jpg" alt="The 516R Deluxe buy-back — cohort round" loading="lazy">
+          <div><small>Cohort round · open</small><b>516R Deluxe Buy-Back</b></div>
+        </a>
       </div>
     </section>
 
@@ -659,6 +663,7 @@
       // arriving with intent: ?with=slug&kind=... preloads the builder
       var Q = new URLSearchParams(location.search);
       if (Q.get("kind")) { var ko = $("pKind").querySelector('[value="' + Q.get("kind") + '"]'); if (ko) $("pKind").value = Q.get("kind"); }
+      if (Q.get("title")) $("pTitle").value = Q.get("title");
       shapeForm();
       loadDirectory();
       if (AUTHED) {
