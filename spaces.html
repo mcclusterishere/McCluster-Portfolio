@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Spaces — book a room, studio, or stage · McCluster</title>
-  <meta name="description" content="Book M-Verified spaces the easy way: browse rooms, studios, and stages, pick your date and window, and request it. The operator keeps 100% of their rate — the network absorbs the fee a storefront would pass to you.">
+  <meta name="description" content="Book M-Verified spaces the easy way: browse rooms, studios, and stages, pick your date and window, and request it. Simple booking, clear rates.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -122,7 +122,7 @@
     <p class="sp__sub">Rooms, studios, and stages — every one <b>M-Verified</b>. Browse, pick your date and window, request it. The operator confirms and you're locked.</p>
     <div class="sp__promise">
       <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-      <p><b>The operator keeps 100%.</b> A regular storefront passes a 7–14% card fee to you. Here the network absorbs it — the price you see is the price, and the whole rate reaches the room.</p>
+      <p><b>Simple booking.</b> Pick a date, pick a window, request it. The operator confirms and you're locked. Booking fees apply — shown before you confirm, like every real app.</p>
     </div>
 
     <div class="sp__chips" id="spChips"></div>
@@ -161,7 +161,7 @@
       </div>
       <p class="sp__fee" id="spFee"></p>
       <p class="sp__msg" id="spMsg"></p>
-      <p class="sp__note">This sends a booking request into the operator's inbox — they confirm the slot, then the deposit runs. Payment rail lands next; the network is built to absorb the processing fee so the operator keeps their full rate.</p>
+      <p class="sp__note">This sends a booking request into the operator's inbox — they confirm the slot, then payment. Booking fees are shown before you pay.</p>
     </div>
     <div id="spDone" class="sp__hidden sp__done">
       <div class="sp__check">✓</div>
@@ -255,7 +255,7 @@
         }).join("");
         $("spGrid").innerHTML = cards +
           '<a class="sp__list" href="list-your-space.html" data-cta="spaces-list"><span><b>List your space</b>' +
-          "<small>Own a studio, room, or stage? Get M-Verified and take bookings — you keep 100%.</small></span></a>";
+          "<small>Own a studio, room, or stage? Get M-Verified and take bookings through the network.</small></span></a>";
         $("spGrid").querySelectorAll(".sp__card").forEach(function (b) {
           b.addEventListener("click", function () { openSheet(ALL[+b.getAttribute("data-i")]); });
         });
@@ -324,7 +324,7 @@
         $("spTotal").textContent = "$" + amt.toLocaleString();
         var ready = sel.date && sel.slot !== null;
         $("spTotalSub").textContent = ready ? " — " + sel.hours + " hr @ $" + rate + "/hr" : " — pick a date & window";
-        $("spFee").textContent = ready ? "You'd pay 7–14% more at a storefront. Here $" + amt.toLocaleString() + " reaches the room — the network eats the fee." : "";
+        $("spFee").textContent = ready ? "Plus a small booking fee — shown before you confirm." : "";
         return amt;
       }
 

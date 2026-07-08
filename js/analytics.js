@@ -194,15 +194,31 @@ window.MCC_MODEL = (function () {
     save();
   }
 
+  /* the archetype layer: the six domains wear names pulled from the
+     catalogue's own bars. Stages read as water — how deep you're standing. */
+  var ARCH = {
+    music: "Scroll Slow",      // the listener who actually slowed down
+    experience: "Wide Awake",  // came to see it with their own eyes
+    client: "All In",          // ready to put a number on the table
+    artist: "Own It",          // splits, masters, the offer
+    civic: "The Pillar",       // holds the block up
+    org: "The Pillar",         // holds the structure up
+  };
+  var DEPTH = { "new": "surface", warming: "wading", locked: "deep end" };
+
   function profile() {
     var ranked = Object.keys(S.doms).map(function (d) { return [d, S.doms[d]]; })
       .sort(function (a, b) { return b[1] - a[1]; });
+    var stage = S.heat < 6 ? "new" : S.heat < 25 ? "warming" : "locked";
+    var top = ranked.length ? ranked[0][0] : null;
     return {
-      top: ranked.length ? ranked[0][0] : null,
+      top: top,
       ranked: ranked,
       // the stage runs on RECENT heat, not lifetime totals — a hot June
       // doesn't make a cold October visitor "locked"
-      stage: S.heat < 6 ? "new" : S.heat < 25 ? "warming" : "locked",
+      stage: stage,
+      archetype: top ? ARCH[top] || null : null,
+      depth: DEPTH[stage],
       visits: S.visits, events: S.events, heat: S.heat,
       streak: S.streak || 1,
       goals: S.goals,

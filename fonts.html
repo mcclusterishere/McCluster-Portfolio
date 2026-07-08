@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Signature Font — pick the one that goes first · McCluster</title>
+  <meta name="description" content="The McCluster Shard typeface, built from the M favicon's two red shards — six cuts of the same DNA. The chooser: pick which one becomes the signature.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    @font-face { font-family: "MCC Display"; src: url("assets/fonts/mccluster/McClusterShard-Display.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Black"; src: url("assets/fonts/mccluster/McClusterShard-Black.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Condensed"; src: url("assets/fonts/mccluster/McClusterShard-Condensed.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Wide"; src: url("assets/fonts/mccluster/McClusterShard-Wide.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Slant"; src: url("assets/fonts/mccluster/McClusterShard-Slant.woff") format("woff"); font-display: swap; }
+    @font-face { font-family: "MCC Monoline"; src: url("assets/fonts/mccluster/McClusterShard-Monoline.woff") format("woff"); font-display: swap; }
+
+    .ft { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 64rem; margin: 0 auto; }
+    .ft h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.6rem, 10vw, 4.6rem); }
+    .ft__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 56ch; }
+    .ft__sub b { color: var(--cream); }
+    .ft__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 18px; background: rgba(20, 16, 14, 0.6);
+      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.3rem; overflow: hidden; }
+    .ft__meta { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+    .ft__name { font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .ft__use { font-size: 0.72rem; color: var(--cream-dim); }
+    .ft__hero { display: block; font-size: clamp(1.7rem, 7.2vw, 3.4rem); line-height: 1.12; margin-top: 0.9rem; color: var(--cream);
+      white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .ft__hero::-webkit-scrollbar { display: none; }
+    .ft__hero .red { color: #de3a39; }
+    .ft__line2 { display: block; font-size: clamp(0.9rem, 3.4vw, 1.4rem); margin-top: 0.7rem; color: var(--cream-dim);
+      white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .ft__line2::-webkit-scrollbar { display: none; }
+    .ft__nums { display: block; font-size: clamp(0.9rem, 3.4vw, 1.3rem); margin-top: 0.45rem; color: #c99d45;
+      white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .ft__pick { margin-top: 1rem; }
+    .ft__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 1.6rem; }
+    .f-display { font-family: "MCC Display", var(--display), sans-serif; }
+    .f-black { font-family: "MCC Black", var(--display), sans-serif; }
+    .f-condensed { font-family: "MCC Condensed", var(--display), sans-serif; }
+    .f-wide { font-family: "MCC Wide", var(--display), sans-serif; }
+    .f-slant { font-family: "MCC Slant", var(--display), sans-serif; }
+    .f-monoline { font-family: "MCC Monoline", var(--display), sans-serif; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="index.html">&#8592; Home</a></nav>
+  </header>
+  <main class="ft">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The signature font — the chooser</p>
+    <h1>Six Cuts,<br>One DNA.</h1>
+    <p class="ft__sub">Every glyph is built from the favicon's two red shards — the diagonal cut, the hard negative space,
+      the same 5×7 skeleton. <b>Pick the cut that goes first</b>; the rest stay in the drawer as the family.</p>
+    <div id="ftCards"></div>
+    <p class="ft__note">Tap “This one goes first” on your pick — it logs the choice and I wire it into the site as the signature.
+      All six ride together at 32&nbsp;KB total, so keeping the family costs nothing.</p>
+  </main>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var CUTS = [
+        ["display", "Display", "The flagship — headlines, hero lines, the wordmark"],
+        ["black", "Black", "Heaviest cut — posters, one-word slams, the LOCK IN energy"],
+        ["condensed", "Condensed", "Tight columns — nav, tickers, data rows, mobile headers"],
+        ["wide", "Wide", "Stretched authority — section titles, footers, the marquee"],
+        ["slant", "Slant", "Forward lean — motion lines, CTAs, anything mid-sprint"],
+        ["monoline", "Monoline", "The lightest voice — captions, labels, quiet UI"],
+      ];
+      document.getElementById("ftCards").innerHTML = CUTS.map(function (c) {
+        return '<section class="ft__card">' +
+          '<div class="ft__meta"><span class="ft__name">McCluster Shard · ' + c[1] + '</span><span class="ft__use">' + c[2] + "</span></div>" +
+          '<span class="ft__hero f-' + c[0] + '">MCCLUSTER <span class="red">OS</span></span>' +
+          '<span class="ft__line2 f-' + c[0] + '">THE MACHINE NEVER SLEEPS &middot; M NETWORK</span>' +
+          '<span class="ft__nums f-' + c[0] + '">$14,400 &middot; 516R &middot; 100% &middot; ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>' +
+          '<p class="ft__pick"><button class="btn btn--ghost" type="button" data-cut="' + c[0] + '" style="background:none;cursor:pointer">This one goes first</button></p>' +
+          "</section>";
+      }).join("");
+      document.querySelectorAll("[data-cut]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("font_pick", { cut: b.getAttribute("data-cut") });
+          document.querySelectorAll("[data-cut]").forEach(function (x) { x.textContent = "This one goes first"; x.style.borderColor = ""; x.style.color = ""; });
+          b.textContent = "✓ Picked — locked in";
+          b.style.borderColor = "#2fbf71"; b.style.color = "#2fbf71";
+        });
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("fonts_view", {});
+    })();
+  </script>
+</body>
+</html>

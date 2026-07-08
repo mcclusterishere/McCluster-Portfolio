@@ -83,7 +83,7 @@
       <section class="pf__card">
         <div class="pf__who">
           <img src="assets/img/m-mark.png" alt="">
-          <span><b id="pfWho">—</b><small id="pfListing">Checking your listing…</small></span>
+          <span><b id="pfWho">—</b><small id="pfListing">Checking your listing…</small><small id="pfRead"></small></span>
         </div>
       </section>
 
@@ -138,6 +138,11 @@
         $("pfOut").classList.add("pf__hidden");
         $("pfIn").classList.remove("pf__hidden");
         $("pfWho").textContent = window.MCC_SUPA.email() || "Signed in";
+        // the archetype: what the model reads in you, and how deep you're standing
+        if (window.MCC_MODEL) {
+          var pr = window.MCC_MODEL.profile();
+          if (pr.archetype) $("pfRead").textContent = "The read: " + pr.archetype + " · " + pr.depth;
+        }
         window.MCC_NET.myListing().then(function (mine) {
           var tick = "";
           if (mine && window.MCC_STOCK) tick = "$" + window.MCC_STOCK.ticker(mine.ticker, mine.name) + " · ";

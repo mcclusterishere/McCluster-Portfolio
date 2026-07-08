@@ -58,6 +58,23 @@
       }
     },
     {
+      "id": "k-cohiba",
+      "ticker": "KCHB",
+      "name": "K-Cohiba's Space",
+      "roles": [
+        "Stages"
+      ],
+      "headline": "Event space · Boston — bookings run through the team",
+      "area": "Boston, MA · onboarding — final rates being confirmed with the team",
+      "verified": "pending",
+      "badgeColor": "#4a7fb5",
+      "href": "onboard.html?role=provider",
+      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+      "blurb": "An operating Boston event space joining the network — the room already runs a full booking calendar. Request a window and the team answers; listed rate is the intro number while final rates are confirmed.",
+      "photo": "assets/frames/uprise_0080.jpg",
+      "space": { "rate": 95, "unit": "hour", "amenities": ["house-audio", "lighting-grid", "green-room", "capacity-rated"] }
+    },
+    {
       "id": "laire",
       "ticker": "LRE",
       "name": "Laire",
