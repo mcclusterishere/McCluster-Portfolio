@@ -175,4 +175,7 @@
 
   window.MCC_DB = session() ? sb : local;
   window.MCC_AUTH = { signIn: sb.signIn, signOut: sb.signOut, user: sb.user };
+  // the low-level surface for other modules (network layer, talent app):
+  // same public anon key, same RLS wall — never a secret
+  window.MCC_SUPA = { url: URL_, key: KEY, token: token, uid: uid, email: email };
 })();

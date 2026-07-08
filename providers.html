@@ -44,6 +44,22 @@
     .prov__ctas { display: flex; gap: 0.5rem; margin-top: 0.4rem; }
     .prov--join { border-style: dashed; align-items: flex-start; justify-content: center; }
     .prov--join p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; }
+    /* the booking sheet */
+    .bkov { position: fixed; inset: 0; z-index: 160; display: none; align-items: flex-end; justify-content: center;
+      background: rgba(8, 6, 5, 0.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+    .bkov.is-open { display: flex; }
+    .bkov__box { width: min(30rem, 100%); background: rgba(18, 14, 12, 0.98); border: 1px solid rgba(244, 239, 230, 0.16);
+      border-radius: 18px 18px 0 0; padding: 1.4rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom)); animation: bkUp 0.35s ease-out; }
+    @keyframes bkUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .bkov__h { font-family: var(--display); text-transform: uppercase; font-size: 1.4rem; margin-bottom: 0.8rem; }
+    .bkov__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.75em 1em; margin-bottom: 0.6rem; }
+    .bkov__in:focus { outline: none; border-color: var(--ruby-hot); }
+    textarea.bkov__in { resize: vertical; min-height: 4.5em; }
+    .bkov__sms { display: flex; gap: 0.6em; align-items: flex-start; font-size: 0.72rem; color: var(--cream-dim); line-height: 1.5; margin: 0.4rem 0 0.9rem; }
+    .bkov__sms input { margin-top: 0.2em; }
+    .bkov__msg { color: var(--ruby-hot); font-size: 0.84rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .bkov__x { position: absolute; margin-top: -0.4rem; right: 1.2rem; background: none; border: 0; color: var(--cream-dim); font-size: 1.4rem; cursor: pointer; }
   </style>
 </head>
 <body class="songpage hirepage">
@@ -82,17 +98,40 @@
       </div>
 
       <div class="finale__actions" style="margin-top:3rem">
-        <a class="btn btn--ruby" href="interview.html" data-cta="prov-join">Join as a provider</a>
+        <a class="btn btn--ruby" href="talent.html" data-cta="prov-talent-app">Open the Talent App</a>
+        <a class="btn btn--ghost" href="interview.html" data-cta="prov-join">Join as a provider</a>
         <a class="btn btn--ghost" href="list-your-space.html" data-cta="prov-space">List your space</a>
       </div>
     </section>
   </main>
+
+  <!-- the booking sheet: file a request, the provider works it in the Talent App -->
+  <div class="bkov" id="bkov" role="dialog" aria-modal="true" aria-label="Book this provider">
+    <div class="bkov__box">
+      <button class="bkov__x" id="bkX" type="button" aria-label="Close">&#10005;</button>
+      <h3 class="bkov__h" id="bkTitle">Book</h3>
+      <input class="bkov__in" id="bkName" type="text" placeholder="Your name" autocomplete="name">
+      <input class="bkov__in" id="bkContact" type="text" placeholder="Email or phone" autocomplete="email">
+      <input class="bkov__in" id="bkDate" type="text" placeholder="Date or timeframe">
+      <textarea class="bkov__in" id="bkDetails" placeholder="What are we shooting / building / booking?"></textarea>
+      <label class="bkov__sms">
+        <input type="checkbox" id="bkSms">
+        <span>Text me updates about this booking and occasional drops from the network.
+        Msg &amp; data rates may apply. Reply STOP anytime.</span>
+      </label>
+      <input class="bkov__in" id="bkPhone" type="tel" placeholder="Mobile number for texts" style="display:none">
+      <button class="btn btn--ruby" id="bkSend" type="button">Send the request</button>
+      <p class="bkov__msg" id="bkMsg"></p>
+    </div>
+  </div>
   <footer class="site-foot">
     <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
     <p class="site-foot__note">&copy; 2026 Matthew McCluster &middot; The M Network. Verified people, booked direct.</p>
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -102,6 +141,43 @@
       var chips = document.getElementById("provChips");
       var DATA = { categories: [], providers: [] };
       var active = "All";
+
+      /* ---- the booking sheet ---- */
+      var bkov = document.getElementById("bkov");
+      var bkFor = null; // { id?, slug, name }
+      function openSheet(p) {
+        bkFor = p;
+        document.getElementById("bkTitle").textContent = "Book " + p.name;
+        document.getElementById("bkMsg").textContent = "";
+        bkov.classList.add("is-open");
+        track("booking_sheet_open", { provider: p.slug || p.id, page: "providers" });
+      }
+      document.getElementById("bkX").addEventListener("click", function () { bkov.classList.remove("is-open"); });
+      bkov.addEventListener("click", function (e) { if (e.target === bkov) bkov.classList.remove("is-open"); });
+      document.getElementById("bkSms").addEventListener("change", function () {
+        document.getElementById("bkPhone").style.display = this.checked ? "" : "none";
+      });
+      document.getElementById("bkSend").addEventListener("click", function () {
+        var name = document.getElementById("bkName").value.trim();
+        var contact = document.getElementById("bkContact").value.trim();
+        var msg = document.getElementById("bkMsg");
+        if (!name || !contact) { msg.textContent = "Name and a way to reach you — that's all it takes."; return; }
+        msg.textContent = "Sending…";
+        var req = {
+          provider_id: bkFor && bkFor.cloud_id || null,
+          provider_slug: (bkFor && (bkFor.slug || bkFor.id)) || "",
+          name: name, contact: contact,
+          date_wanted: document.getElementById("bkDate").value.trim(),
+          details: document.getElementById("bkDetails").value.trim(),
+        };
+        var smsOn = document.getElementById("bkSms").checked;
+        var phone = document.getElementById("bkPhone").value.trim();
+        window.MCC_NET.requestBooking(req).catch(function () {}).then(function () {
+          if (smsOn && phone) window.MCC_NET.smsOptIn(phone, "booking-sheet").catch(function () {});
+          msg.textContent = "Request in. The provider answers from the Talent App — you'll hear back fast.";
+          track("booking_request_sent", { provider: req.provider_slug, page: "providers" });
+        });
+      });
 
       function render() {
         var list = DATA.providers.filter(function (p) {
@@ -118,8 +194,8 @@
             '<p class="prov__blurb">' + esc(p.blurb || "") + "</p>" +
             '<p class="prov__area">' + esc(p.area || "") + "</p>" +
             '<div class="prov__ctas">' +
-              '<a class="btn btn--ruby" href="' + esc(p.book || p.href || "#") + '" data-cta="prov-book-' + esc(p.id) + '">Book</a>' +
-              (p.href ? '<a class="btn btn--ghost" href="' + esc(p.href) + '" data-cta="prov-view-' + esc(p.id) + '">The work</a>' : "") +
+              '<button class="btn btn--ruby" type="button" data-book-slug="' + esc(p.slug || p.id) + '">Book</button>' +
+              (p.href ? '<a class="btn btn--ghost" href="' + esc(p.href) + '" data-cta="prov-view-' + esc(p.slug || p.id) + '">The work</a>' : "") +
             "</div>" +
           "</article>";
         }).join("") +
@@ -131,6 +207,13 @@
         "</article>";
         grid.querySelectorAll("a[data-cta]").forEach(function (a) {
           a.addEventListener("click", function () { track("cta_click", { label: a.getAttribute("data-cta"), page: "providers" }); });
+        });
+        grid.querySelectorAll("[data-book-slug]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var slug = b.getAttribute("data-book-slug");
+            var p = DATA.providers.find(function (x) { return (x.slug || x.id) === slug; });
+            if (p) openSheet(p);
+          });
         });
       }
 
@@ -148,12 +231,23 @@
         });
       }
 
-      fetch("data/providers.json", { cache: "no-cache" })
-        .then(function (r) { return r.json(); })
-        .then(function (d) { DATA = d; renderChips(); render(); })
-        .catch(function () {
-          grid.innerHTML = "<p style='color:var(--cream-dim)'>The directory is loading slow — <a href='hire.html' style='color:var(--ruby-hot)'>book McCluster direct &#8594;</a></p>";
+      // the directory: the seeded JSON plus every live cloud listing, merged
+      Promise.all([
+        fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); })
+          .catch(function () { return { categories: ["Photo", "Video", "Web", "Studios", "Stages"], providers: [] }; }),
+        window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
+      ]).then(function (both) {
+        DATA = both[0];
+        (both[1] || []).forEach(function (c) {
+          if (DATA.providers.some(function (p) { return (p.slug || p.id) === c.slug; })) return;
+          DATA.providers.push({
+            id: c.slug, slug: c.slug, cloud_id: c.id,
+            name: c.name, headline: c.headline, blurb: c.blurb, area: c.area,
+            roles: c.roles || [], badgeColor: c.badge_color, href: c.href, book: c.book,
+          });
         });
+        renderChips(); render();
+      });
       track("providers_view", {});
     })();
   </script>

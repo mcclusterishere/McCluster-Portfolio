@@ -47,6 +47,12 @@ window.PAYMENTS = {
     title: "Identifier Walkthrough",
     link: "",
   },
+  // The 10% tithe on completed network bookings (Square payment link,
+  // variable amount). The Talent App shows "Give the tithe" once set.
+  "tithe": {
+    title: "The Network Tithe",
+    link: "",
+  },
   // Square Appointments booking page for the paid inquiry call:
   // Dashboard → Appointments → create a paid "Inquiry Call" service with
   // prepayment required, then paste the online booking URL here.
