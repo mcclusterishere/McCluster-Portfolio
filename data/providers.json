@@ -23,6 +23,20 @@
       "href": "hire.html",
       "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
       "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k."
+    },
+    {
+      "id": "decibel-studios",
+      "name": "Decibel Studios",
+      "roles": [
+        "Studios"
+      ],
+      "headline": "Zakir's boutique recording room",
+      "area": "Green Industrial Way · Atlanta, GA",
+      "verified": "studio",
+      "badgeColor": "#f8b40a",
+      "href": "profile-zakir.html",
+      "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
+      "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP."
     }
   ]
 }

@@ -99,7 +99,7 @@
 
       <div class="finale__actions" style="margin-top:3rem">
         <a class="btn btn--ruby" href="talent.html" data-cta="prov-talent-app">Open the Talent App</a>
-        <a class="btn btn--ghost" href="interview.html" data-cta="prov-join">Join as a provider</a>
+        <a class="btn btn--ghost" href="onboard.html" data-cta="prov-join">Join as a provider</a>
         <a class="btn btn--ghost" href="list-your-space.html" data-cta="prov-space">List your space</a>
       </div>
     </section>
@@ -203,7 +203,7 @@
         '<article class="prov prov--join">' +
           '<h3 class="prov__name">Your name here</h3>' +
           '<p>The network verifies new photographers, videographers, builders, studios, and stages every cycle. Get vetted, get listed, get booked.</p>' +
-          '<div class="prov__ctas"><a class="btn btn--ghost" href="interview.html" data-cta="prov-join-card">Start the intake &#8594;</a></div>' +
+          '<div class="prov__ctas"><a class="btn btn--ghost" href="onboard.html" data-cta="prov-join-card">Get on the platform &#8594;</a></div>' +
         "</article>";
         grid.querySelectorAll("a[data-cta]").forEach(function (a) {
           a.addEventListener("click", function () { track("cta_click", { label: a.getAttribute("data-cta"), page: "providers" }); });

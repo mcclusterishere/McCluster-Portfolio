@@ -2,17 +2,30 @@
   "release_id": "heal-the-3",
   "title": "Heal the 3",
   "kind": "EP",
-  "label": "McCluster Corp / M Network",
+  "label": "Equity Uprise",
   "upc": "",
   "release_date": "2026-08-01",
   "genre": "Hip Hop",
-  "party": { "name": "Matthew McCluster", "role": "MainArtist" },
+  "party": { "name": "McCluster & VVS Madè", "role": "MainArtist" },
+  "partnership": "50/50 — McCluster × VVS Madè (artist, born in Indonesia). Released on DSPs under Equity Uprise; a blended version released under McCluster & VVS Madè.",
   "tracks": [
-    { "id": "heal-the-three", "title": "Heal the Three", "isrc": "", "duration_s": 0,
+    { "id": "heal-the-three", "title": "Heal the 3", "isrc": "", "duration_s": 0,
       "audio": "assets/audio/heal-the-three.mp3",
-      "splits": [ { "party": "Matthew McCluster", "role": "Composer", "pct": 100 } ] },
+      "theme": "The light side — healing the world.",
+      "splits": [
+        { "party": "Matthew McCluster", "role": "Composer", "pct": 50 },
+        { "party": "VVS Madè", "role": "Composer", "pct": 50 }
+      ] },
     { "id": "deep-end", "title": "Deep End", "isrc": "", "duration_s": 165,
       "audio": "assets/audio/deep-end.mp3",
-      "splits": [ { "party": "Matthew McCluster", "role": "Composer", "pct": 100 } ] }
+      "theme": "The dark side — the American war machine.",
+      "performers": [
+        { "party": "Matthew McCluster", "role": "First verse & hook" },
+        { "party": "VVS Madè", "role": "All remaining verses" }
+      ],
+      "splits": [
+        { "party": "Matthew McCluster", "role": "Composer", "pct": 50 },
+        { "party": "VVS Madè", "role": "Composer", "pct": 50 }
+      ] }
   ]
 }

@@ -38,6 +38,12 @@
       color: var(--cream); background: rgba(244,239,230,0.09); border-radius: 100px; padding: 0.45em 1.05em; transition: background 0.2s, color 0.2s; }
     .sp__pill.is-on { background: var(--ruby-hot); color: #fff; font-weight: 700; }
 
+    /* ---- focus mode: pick a pill and everything else steps out of the room ---- */
+    .is-catoff { display: none !important; }
+    .sp-focus { animation: spFocus 0.45s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+    @keyframes spFocus { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .sp-focus { animation: none; } }
+
     /* ---- recently played compact grid ---- */
     .sp__recent { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.6rem clamp(1rem, 4vw, 2rem) 0; }
     .sp__rtile { display: flex; align-items: center; gap: 0.6rem; border-radius: 8px; overflow: hidden;
@@ -189,10 +195,10 @@
       </div>
     </header>
 
-    <div class="sp__recent" id="recent"></div>
+    <div class="sp__recent" id="recent" data-cat="song"></div>
 
     <!-- the one persona: every layer of the site, read together -->
-    <a class="sp__persona" id="personaCard" href="psychology-markers.html#quiz" style="display:none">
+    <a class="sp__persona" id="personaCard" href="psychology-markers.html#quiz" style="display:none" data-cat="experience">
       <span class="sp__persona-meter" aria-hidden="true"><i id="personaNeedle"></i></span>
       <span class="sp__persona-txt">
         <b id="personaHead">Meet your persona</b>
@@ -200,16 +206,16 @@
       </span>
       <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
     </a>
-    <div id="bill"></div>
+    <div id="bill" data-cat="song record"></div>
 
     <!-- your listening: the analytics strip -->
-    <section class="sprow" id="statsRow" style="display:none">
+    <section class="sprow" id="statsRow" style="display:none" data-cat="song">
       <div class="sprow__t"><div><p class="sprow__k">Your data &middot; lives on this device</p><h2>Your listening</h2></div></div>
       <div class="sp__stats" id="stats"></div>
     </section>
 
     <!-- the people: artist circles -->
-    <section class="sprow">
+    <section class="sprow" data-cat="song record">
       <div class="sprow__t"><div><p class="sprow__k">The people behind it</p><h2>Artists</h2></div></div>
       <div class="sprow__rail" id="people">
         <a class="spa" href="hire.html"><span class="spa__ring"><img src="assets/img/vaunt-arrival.jpg" alt="Matthew McCluster"></span><b>McCluster</b><small>Artist &middot; Director</small></a>
@@ -220,7 +226,7 @@
     <div id="rows"></div>
 
     <!-- the systems: every wing of the platform, one shelf -->
-    <section class="sprow">
+    <section class="sprow" data-cat="experience">
       <div class="sprow__t"><div><p class="sprow__k">One platform &middot; every wing</p><h2>The Systems</h2></div></div>
       <div class="sprow__rail">
         <a class="spc spc--wide" href="providers.html"><span class="spc__art"><span class="spc__kind">Network</span><img loading="lazy" src="assets/frames/keynote_0080.jpg" alt=""></span><p class="spc__t">Hire a Provider</p><p class="spc__s">M-Verified talent, booked direct</p></a>
@@ -444,9 +450,9 @@
         if (b) {
           $("bill").innerHTML =
             '<div class="sp__bill"><img src="' + esc(b.poster) + '" alt="Heal the 3 cover">' +
-            '<div class="sp__bill-in"><p class="sp__bill-k">The next drop · two-song EP</p>' +
+            '<div class="sp__bill-in"><p class="sp__bill-k">The next drop · McCluster &times; VVS Mad&egrave; · under Equity Uprise</p>' +
             '<h2 class="sp__bill-t">Heal the 3</h2>' +
-            '<p class="sp__bill-s">A world split between war and peace. Two doves hold the line.</p>' +
+            '<p class="sp__bill-s">A world split between war and peace. Two doves hold the line. 50/50, two sides, two songs.</p>' +
             '<div class="sp__bill-a"><a class="sp__cta sp__cta--play" href="' + esc(b.page) + '">&#9654;&#xFE0E; Enter the world</a>' +
             '<a class="sp__cta sp__cta--ghost" href="mailto:matthew@mccluster.org?subject=Heal%20the%203%20%E2%80%94%20notify%20me">Notify me</a></div></div></div>';
         }
@@ -462,7 +468,19 @@
         if (!p) return;
         this.querySelectorAll(".sp__pill").forEach(function (x) { x.classList.remove("is-on"); });
         p.classList.add("is-on");
-        renderRows(p.getAttribute("data-f"));
+        var f = p.getAttribute("data-f");
+        renderRows(f);
+        // focus mode: everything outside the picked category leaves the room,
+        // what's left steps to the forefront
+        document.querySelectorAll("[data-cat]").forEach(function (el) {
+          var on = f === "all" || (el.getAttribute("data-cat") || "").split(" ").indexOf(f) !== -1;
+          el.classList.toggle("is-catoff", !on);
+          el.classList.remove("sp-focus");
+          if (on && f !== "all") { void el.offsetWidth; el.classList.add("sp-focus"); }
+        });
+        var rows = $("rows");
+        rows.classList.remove("sp-focus"); void rows.offsetWidth; rows.classList.add("sp-focus");
+        if (window.MCC_TRACK) window.MCC_TRACK("app_filter", { pick: f });
       });
 
       /* ---------- the persona card ---------- */

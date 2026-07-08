@@ -35,6 +35,64 @@
     location.replace(email === "matthew@mccluster.org" ? "mission.html" : "app.html");
   })();
 
+  /* ---------- one-tap install: skip the app store ----------
+     Chrome/Edge/Android fire beforeinstallprompt — we bank it and
+     any [data-getapp] tap opens the real install sheet. iOS never
+     fires it, so those taps get a two-step Add-to-Home-Screen coach.
+     Installed (standalone) visitors never see the ask. */
+  (function () {
+    var standalone = window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+    if (standalone) { document.documentElement.classList.add("is-installed"); return; }
+    var deferred = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferred = e;
+    });
+    var iOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    function coach() {
+      var ov = document.getElementById("getappCoach");
+      if (!ov) {
+        ov = document.createElement("div");
+        ov.className = "getapp-coach";
+        ov.id = "getappCoach";
+        ov.setAttribute("role", "dialog");
+        ov.innerHTML =
+          '<div class="getapp-coach__card">' +
+          '<img src="assets/img/icon-192.png" alt="McCluster app icon">' +
+          "<b>Two taps and it's yours</b>" +
+          (iOS
+            ? '<p><span>1</span> Tap the <b>Share</b> button <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><rect x="5" y="10" width="14" height="11" rx="2"/></svg> at the bottom of Safari</p>' +
+              '<p><span>2</span> Tap <b>Add to Home Screen</b></p>'
+            : '<p><span>1</span> Open your browser menu (&#8942;)</p>' +
+              '<p><span>2</span> Tap <b>Install app</b> or <b>Add to Home Screen</b></p>') +
+          '<p class="getapp-coach__note">No app store. No wait. It lands on your phone like any app — and it works offline.</p>' +
+          '<button type="button">Got it</button></div>';
+        ov.addEventListener("click", function () { ov.classList.remove("is-on"); });
+        document.body.appendChild(ov);
+      }
+      requestAnimationFrame(function () { ov.classList.add("is-on"); });
+    }
+    window.MCC_INSTALL = function () {
+      if (window.MCC_TRACK) window.MCC_TRACK("install_tap", { page: location.pathname.split("/").pop() || "index" });
+      if (deferred) {
+        deferred.prompt();
+        deferred.userChoice.then(function (c) {
+          if (c && c.outcome === "accepted") document.documentElement.classList.add("is-installed");
+          deferred = null;
+        });
+      } else coach();
+    };
+    window.addEventListener("appinstalled", function () {
+      document.documentElement.classList.add("is-installed");
+      if (window.MCC_TRACK) window.MCC_TRACK("install_done", {});
+    });
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-getapp]");
+      if (b) { e.preventDefault(); window.MCC_INSTALL(); }
+    });
+  })();
+
   /* ---------- custom cursor: a lagging ring + a precise dot ---------- */
   if (fine && !reduce) {
     var ring = document.createElement("div");

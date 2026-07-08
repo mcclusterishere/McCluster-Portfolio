@@ -32,6 +32,29 @@
     }
   ],
   "id": "./",
+  "screenshots": [
+    {
+      "src": "assets/img/shot-app-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "The Vaunt universe — cinematic pages with sound"
+    },
+    {
+      "src": "assets/img/shot-app-2.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "The Limited Offer — the weekly content system"
+    },
+    {
+      "src": "assets/img/og-card.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "McCluster — creative direction, photography, web, and music"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Antisocial \u2014 the music video",
