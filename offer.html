@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Founding Offer · Your Own Interactive Page · McCluster</title>
-  <meta name="description" content="The founding offer: $10,000 for your first year, paid upfront. A 24-hour content day every quarter, a monthly strategy hour, and a custom interactive site built and managed. Prefer monthly? $1,383/mo. Three spots, two remain.">
+  <title>The Limited Offer · Your Own Content System · McCluster</title>
+  <meta name="description" content="The limited offer: $14,400 for the year, paid upfront. A 2-hour shoot every week — video, photography, and a photo edit delivered on the spot — plus a 24-hour video turnaround, monthly strategy, and a custom interactive site. Monthly runs 66% higher. Three clients only.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="The Founding Offer · A Monthly Content System">
-  <meta property="og:description" content="$10,000 for year one, upfront. Quarterly content days, monthly strategy, a custom interactive site included. Or $1,383/mo. Three spots, two remain.">
+  <meta property="og:title" content="The Limited Offer · A Weekly Content System">
+  <meta property="og:description" content="$14,400 for the year, upfront — a weekly shoot system, 24-hour edits, monthly strategy, and a custom interactive site included. Monthly runs 66% higher. Three clients only.">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
 </head>
@@ -25,7 +25,7 @@
   </header>
   <main>
     <section class="bexp">
-      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The founding offer</p>
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The limited offer</p>
       <div class="bexp__hero">
         <div>
           <p class="bexp__section">Want a page like this one?</p>
@@ -33,24 +33,30 @@
         </div>
       </div>
       <p class="songhero__sub" style="text-align:left;max-width:58ch;margin-top:1rem">
-        A <strong style="color:var(--cream)">year-long system that keeps you visible</strong>. Quarterly
-        content days, monthly strategy, every frame edited, and a custom interactive site like this one —
-        built and managed. You show up on camera. I run everything else. Three clients only.
+        A <strong style="color:var(--cream)">weekly system that keeps you visible</strong>. I'm on site
+        every single week — video, photography, and a photo edit in your hands before I leave — then your
+        video cut lands within 24 hours. Monthly strategy, every frame edited, and a custom interactive
+        site like this one, built and managed. You show up on camera. I run everything else.
+        Limited means limited: three clients, total.
       </p>
 
       <!-- THE DEAL -->
       <div class="offer__deal" id="claim">
-        <p class="offer__price"><span>$10,000</span> / first year, upfront<small>Or try us monthly: $1,383/mo (+66%, split into payments)</small></p>
+        <div class="offer__toggle" role="tablist" aria-label="Billing">
+          <button class="offer__bill is-on" type="button" role="tab" aria-selected="true" data-bill="year">Annual <em>Save $9,504</em></button>
+          <button class="offer__bill" type="button" role="tab" aria-selected="false" data-bill="month">Monthly</button>
+        </div>
+        <p class="offer__price" id="offerPrice"><span>$14,400</span> / year, upfront<small>One payment locks the year — monthly runs 66% higher.</small></p>
         <ul class="offer__terms">
-          <li><b>A 24-hour content day, every quarter.</b> Four a year — roughly eight hours of active shooting each, photo and video, planned to feed your whole quarter.</li>
-          <li><b>Every frame edited and delivered.</b> The day's content cut for every channel you run.</li>
+          <li><b>The Shoot System, every week.</b> Two hours on site: 45 minutes of video, 45 minutes of photography, and a 30-minute photo edit sent to you on the spot.</li>
+          <li><b>Your video, cut within 24 hours.</b> One more hour on the edit at the studio — the week's video is in your hands the next day, every time.</li>
           <li><b>A one-hour strategy call, every month.</b> What to post, what to shoot next, what's landing.</li>
-          <li><b>Your custom interactive site — included.</b> Built with the cinematic features of this one. Hosted and managed.</li>
+          <li><b>Your custom interactive site — included.</b> Built with the cinematic features of this one. Hosted and managed all year.</li>
           <li><b>Your photography and a written bio.</b> Stills and words that make you look the part.</li>
         </ul>
 
         <!-- SCARCITY -->
-        <div class="offer__spots" aria-label="Founding spots remaining">
+        <div class="offer__spots" aria-label="Limited spots remaining">
           <div class="offer__dots" role="img" aria-label="One of three spots claimed">
             <span class="offer__dot offer__dot--taken" title="Claimed"></span>
             <span class="offer__dot offer__dot--open"></span>
@@ -58,12 +64,27 @@
           </div>
           <p class="offer__spotsnum"><span>2</span> of 3 spots remaining</p>
         </div>
-        <p class="offer__note">One spot is already claimed. When the three are gone, it's gone. <span style="color:var(--cream-dim)">Optional ad budget of $500 to $1,000 a month, separate, to boost reach.</span></p>
+        <p class="offer__note">One spot is already claimed. When the three are gone, it's gone.
+          <span style="color:var(--cream-dim)">One requirement: you also put $500 a month of your own budget into
+          social media enhancements and Meta verification — that spend is what makes the system compound.</span></p>
 
         <div class="finale__actions" style="margin-top:1.6rem">
           <a class="btn btn--ruby" data-book href="#" data-cta="offer-claim">Get your spot</a>
-          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Founding%20Offer%20Questions&body=I%20have%20a%20question%20about%20the%20founding%20offer%3A%0A%0A" data-lead data-cta="offer-questions">Ask a question first</a>
+          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Limited%20Offer%20Questions&body=I%20have%20a%20question%20about%20the%20limited%20offer%3A%0A%0A" data-lead data-cta="offer-questions">Ask a question first</a>
         </div>
+      </div>
+
+      <!-- THE SHOOT SYSTEM -->
+      <h2 class="bexp__section" style="margin:3rem 0 0.5rem">The Shoot System — your week, hour by hour</h2>
+      <p style="color:var(--cream-dim);max-width:60ch">
+        It's not a shoot. It's a system. Three production hours a week, every week —
+        156 hours of production a year, plus 12 strategy hours. Here is what one week looks like:
+      </p>
+      <div class="offer__week">
+        <div><b>45 min</b><small>Video, on site. The week's story, shot with cinema glass.</small></div>
+        <div><b>45 min</b><small>Photography, on site. Stills for the feed, the site, the press kit.</small></div>
+        <div><b>30 min</b><small>Photo edit &amp; send — your best frames are in your phone before I leave.</small></div>
+        <div><b>1 hour</b><small>Video edit at the studio. The cut lands within 24 hours, every time.</small></div>
       </div>
 
       <!-- WHO IT'S FOR -->
@@ -85,7 +106,7 @@
         you show up on a schedule, look the part, and own where people find you. Here is why this is the move.
       </p>
       <div class="bexp__legend" style="margin-top:1.4rem">
-        <div class="bexp__card"><span><b>Consistency beats virality</b><small>One viral post fades by Friday. Showing up every single week stacks reach month over month. The system is what compounds, not the lucky hit.</small></span></div>
+        <div class="bexp__card"><span><b>Weekly beats viral</b><small>One viral post fades by Friday. Fresh footage every single week stacks reach month over month. The system is what compounds, not the lucky hit.</small></span></div>
         <div class="bexp__card"><span><b>You are the talent, not the crew</b><small>Writing, shooting, editing, and posting is a full time job. You show up on camera and stay in your zone. I run everything behind it.</small></span></div>
         <div class="bexp__card"><span><b>Own your home base</b><small>Social platforms rent you an audience and can throttle or pull it any day. Your custom interactive page is an asset you keep and control.</small></span></div>
         <div class="bexp__card"><span><b>Look the part before you speak</b><small>People decide in seconds. Pro photography, a real bio, and a cinematic page tell them you are serious before they read a word.</small></span></div>
@@ -94,34 +115,37 @@
       <!-- WHAT YOU GET -->
       <h2 class="bexp__section" style="margin:3rem 0 0.6rem">What the year looks like</h2>
       <div class="bexp__legend">
-        <div class="bexp__card"><span><b>4 content days a year</b><small>A 24-hour content day every quarter — roughly eight hours of active shooting, photo and video, built to feed the whole quarter.</small></span></div>
-        <div class="bexp__card"><span><b>Everything edited</b><small>The day's material cut and delivered for every channel you run.</small></span></div>
+        <div class="bexp__card"><span><b>52 shoot weeks</b><small>Two hours on site every week — 45 minutes of video, 45 of photography, and a photo edit sent before I leave.</small></span></div>
+        <div class="bexp__card"><span><b>24-hour turnaround</b><small>The week's video is edited and delivered the next day. Every week, all year.</small></span></div>
         <div class="bexp__card"><span><b>12 strategy hours</b><small>A one-hour call every month: what to post, what to shoot next, what's landing.</small></span></div>
         <div class="bexp__card"><span><b>Photography &amp; a bio</b><small>Pro stills and a written bio that make you look the part.</small></span></div>
         <div class="bexp__card"><span><b>Your interactive site</b><small>A custom build like this one — designed, hosted, and managed all year.</small></span></div>
-        <div class="bexp__card"><span><b>Upfront or monthly</b><small>$10,000 for year one paid upfront — or $1,383/mo (+66%) to try us monthly first.</small></span></div>
+        <div class="bexp__card"><span><b>Upfront or monthly</b><small>$14,400 for the year paid upfront — or $1,992/mo (66% higher) to run it month to month.</small></span></div>
       </div>
 
       <!-- HOW IT WORKS -->
       <h2 class="bexp__section" style="margin:3rem 0 0.6rem">How it works</h2>
       <div class="offer__who">
         <span>1 · Claim your spot</span>
-        <span>2 · Scope call: your page, your month</span>
+        <span>2 · Scope call: your page, your week</span>
         <span>3 · I build your interactive page</span>
-        <span>4 · First content day on the calendar</span>
-        <span>5 · Monthly report, we adjust</span>
+        <span>4 · First weekly shoot on the calendar</span>
+        <span>5 · Monthly strategy call, we adjust</span>
       </div>
       <p class="offer__note" style="margin-top:1.4rem;max-width:60ch">
-        You are live and posting inside the first month. Optional ad budget of $500 to $1,000 a month,
-        separate, puts your content in front of the exact people and ZIP codes you want to reach.
+        You are live and posting inside the first month. Alongside the system, you commit $500 a month of
+        your own budget to social media enhancements and Meta verification — boosted reach and the blue
+        check are what turn weekly content into weekly growth.
       </p>
 
       <!-- FAQ -->
       <h2 class="bexp__section" style="margin:3rem 0 0.6rem">Before you claim</h2>
       <div class="hire__faq">
-        <details><summary>What's included for $10,000?</summary><p>Your first year: a 24-hour content day each quarter (about eight hours of active shooting), everything edited and delivered for every channel, a one-hour strategy call every month, your photography and a written bio, and a custom interactive site built, hosted, and managed. Pay the year upfront at $10,000 — or run it monthly at $1,383/mo (+66%) if you'd rather try us first.</p></details>
-        <details><summary>Why only three clients?</summary><p>This is hands on, hand built work every week. Three clients keeps the quality where it needs to be. One spot is claimed. Two remain.</p></details>
-        <details><summary>How do we start?</summary><p>Claim a spot and we set up a quick call to scope your page. Then I build.</p></details>
+        <details><summary>What's included for $14,400?</summary><p>Your full year: the weekly Shoot System (two hours on site — 45 minutes of video, 45 minutes of photography, and a 30-minute photo edit delivered on the spot), the week's video cut within 24 hours, a one-hour strategy call every month, your photography and a written bio, and a custom interactive site built, hosted, and managed. Pay the year upfront at $14,400 — or run it monthly at $1,992/mo, which works out 66% higher over the year.</p></details>
+        <details><summary>Annual or monthly — what's the real difference?</summary><p>The work is identical. Upfront is $14,400. Monthly is $1,992/mo — $23,904 over twelve months — because week-to-week commitments carry week-to-week risk. Paying the year upfront saves you $9,504.</p></details>
+        <details><summary>What's the $500/month requirement?</summary><p>Every client commits $500 a month of their own budget to social media enhancements — boosting, placements — and Meta verification. It's non-negotiable because it's the multiplier: the system makes the content, your $500 makes sure the right people see it and that the platforms treat you as verified and real.</p></details>
+        <details><summary>Why only three clients?</summary><p>Because I'm on site with every client every single week. Three clients is the ceiling where the quality holds. One spot is claimed. Two remain.</p></details>
+        <details><summary>How do we start?</summary><p>Claim a spot and we set up a quick call to scope your page and your weekly window. Then I build.</p></details>
       </div>
 
       <!-- CLOSER -->
@@ -135,7 +159,7 @@
 
   <!-- sticky mobile claim bar -->
   <div class="hire__sticky">
-    <span>2 founding spots left.</span>
+    <span>2 limited spots left.</span>
     <a class="btn btn--ruby" data-book href="#" data-cta="offer-claim-sticky">Get your spot</a>
   </div>
 
@@ -151,10 +175,32 @@
     (function () {
       "use strict";
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      /* ---- the billing toggle: one deal, two ways to pay ---- */
+      var price = document.getElementById("offerPrice");
+      var bills = document.querySelectorAll(".offer__bill");
+      var COPY = {
+        year: '<span>$14,400</span> / year, upfront<small>One payment locks the year — monthly runs 66% higher.</small>',
+        month: '<span>$1,992</span> / month<small>66% higher over the year ($23,904) — upfront saves you $9,504.</small>',
+      };
+      var billing = "year";
+      bills.forEach(function (b) {
+        b.addEventListener("click", function () {
+          billing = b.getAttribute("data-bill") || "year";
+          bills.forEach(function (x) {
+            var on = x === b;
+            x.classList.toggle("is-on", on);
+            x.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          if (price) price.innerHTML = COPY[billing] || COPY.year;
+          track("offer_billing", { pick: billing });
+        });
+      });
+
       var pay = window.PAYMENTS || {};
       var claimMail = "mailto:matthew@mccluster.org?subject=" +
-        encodeURIComponent("Founding Offer, Claim a Spot") +
-        "&body=" + encodeURIComponent("I want to claim a founding spot ($10,000 year one upfront — or $1,383/mo).\n\nMy brand / who I am:\nWhat I want the site to do:\nUpfront or monthly:\nTimeline:\n\n");
+        encodeURIComponent("Limited Offer, Claim a Spot") +
+        "&body=" + encodeURIComponent("I want to claim a limited spot ($14,400 for the year upfront — or $1,992/mo).\n\nMy brand / who I am:\nWhat I want the site to do:\nUpfront or monthly:\nTimeline:\n\n");
       var hasLink = pay.bookcall && pay.bookcall.link;
       var dest = hasLink ? pay.bookcall.link : claimMail;
       document.querySelectorAll("[data-book]").forEach(function (el) {

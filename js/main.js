@@ -550,7 +550,7 @@
           // pinned on the flight console between the pilots, and on the DSLR
           // standing in the aisle — both measured off the equirect frame
           { yaw: -77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-          { yaw: 111, pitch: -32, label: "The camera · the $5,000 system", href: "offer.html" },
+          { yaw: 111, pitch: -32, label: "The camera · the limited offer", href: "offer.html" },
           { yaw: -140, pitch: -40, label: "McCluster · the profile", href: "hire.html" },
           { yaw: 71, pitch: -56, label: "Zakir · the six-string", href: "profile-zakir.html" },
         ],
@@ -662,6 +662,8 @@
   function killNPBeacon() {
     if (npBeacon && npBeacon.parentNode) npBeacon.parentNode.removeChild(npBeacon);
     npBeacon = null;
+    var npTab = document.getElementById("appbarNP");
+    if (npTab) npTab.classList.remove("is-beacon");
   }
   function showNPBeacon() {
     var tgl = document.getElementById("soundToggle");
@@ -681,6 +683,8 @@
       if (window.MCC_TRACK) window.MCC_TRACK("sound_beacon_tap", { page: "home" });
     });
     document.body.appendChild(npBeacon);
+    var npTab = document.getElementById("appbarNP");
+    if (npTab) npTab.classList.add("is-beacon"); // the level icon glows with the beacon
     if (window.MCC_TRACK) window.MCC_TRACK("sound_beacon", { page: "home" });
     setTimeout(killNPBeacon, 12000);
   }
