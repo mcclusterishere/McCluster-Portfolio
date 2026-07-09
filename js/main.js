@@ -638,7 +638,8 @@
       // you down) — but NEVER inside the cabin: a flung scroll or a toolbar
       // resize can push progress past the band while the 360 still holds the
       // lock, and the scroll-slow homie would float into the jet with you
-      var pastBand = st.progress > 0.503 && st.progress < 0.86 && !workVR.live;
+      // brief by design: the slow-hand ask flashes past touchdown, then clears
+      var pastBand = st.progress > 0.503 && st.progress < 0.64 && !workVR.live;
       if (workSlow) workSlow.classList.toggle("is-shown", pastBand);
       if (workFly) workFly.classList.toggle("is-shown", pastBand);
       if (!st.isActive) {

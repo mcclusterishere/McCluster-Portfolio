@@ -17,15 +17,15 @@
     .mk__k { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
     .mk section { margin-top: clamp(2.6rem, 7vh, 4rem); scroll-margin-top: 5.5rem; }
 
-    /* sticky section rail */
-    .mk__rail { position: sticky; top: 0; z-index: 80; display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: none;
-      padding: 0.55rem 0 0.5rem; margin-top: 1.2rem;
-      background: linear-gradient(180deg, rgba(10,8,7,0.97) 78%, transparent); }
+    /* the top tabs ARE the header: big, sticky, no introduction needed */
+    .mk__rail { position: sticky; top: 0; z-index: 80; display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none;
+      padding: calc(0.7rem + env(safe-area-inset-top)) 0 0.65rem; margin-top: 0.4rem;
+      background: linear-gradient(180deg, rgba(10,8,7,0.97) 82%, transparent); }
     .mk__rail::-webkit-scrollbar { display: none; }
     .mk__jump { flex: none; border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 100px; cursor: pointer;
       background: rgba(10, 8, 7, 0.5); color: var(--cream-dim); text-decoration: none;
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.45em 0.95em;
-      transition: border-color 0.2s, color 0.2s, background 0.2s; }
+      font-size: clamp(0.78rem, 2.6vw, 0.95rem); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75em 1.35em; transition: border-color 0.2s, color 0.2s, background 0.2s; }
     .mk__jump:hover, .mk__jump.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
     .mk__jump--glow { border-color: var(--ruby-hot); color: #fff;
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
@@ -81,6 +81,48 @@
     textarea.mk__in { resize: vertical; min-height: 4.5em; }
     .mk__lbl { display: block; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); margin: 0.6rem 0 0.35rem; }
     .mk__msg { color: var(--ruby-hot); font-size: 0.85rem; margin-top: 0.6rem; min-height: 1.2em; }
+    .mk__h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem;
+      letter-spacing: 0.03em; margin: 0 0 0.8rem; display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+
+    /* your desk: the talent app, folded into the exchange */
+    .td__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 0 0 1rem; }
+    .td__stats > div { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.7rem 0.5rem; text-align: center; }
+    .td__stats b { display: block; font-family: var(--display); font-size: 1.4rem; color: var(--ruby-hot); }
+    .td__stats span { font-size: 0.54rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-dim); }
+    .td__roles { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.2rem 0 0.9rem; }
+    .td__role { border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 100px; background: rgba(10, 8, 7, 0.55);
+      color: var(--cream-dim); font: inherit; font-size: 0.76rem; font-weight: 700; padding: 0.45em 1.1em; cursor: pointer; }
+    .td__role.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.4); }
+    .td__req { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.9rem 1rem; margin-top: 0.7rem; }
+    .td__req.is-new { border-color: rgba(229, 56, 59, 0.6); }
+    .td__req h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+    .td__req p { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.5; margin: 0.2rem 0; }
+    .td__req .btn { margin: 0.5rem 0.4rem 0 0; }
+
+    /* depth: the sheet's book — spread, size, prints */
+    .xc__tf { display: flex; gap: 0.4rem; margin-top: 0.6rem; }
+    .xc__tf button { border: 1px solid rgba(244, 239, 230, 0.18); background: none; color: var(--cream-dim);
+      font: inherit; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.08em; border-radius: 8px;
+      padding: 0.4em 0.9em; cursor: pointer; }
+    .xc__tf button.is-on { border-color: #00c805; color: #00c805; }
+    .xc__book { margin-top: 0.9rem; }
+    .xc__book small { font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-dim); }
+    .xc__spread { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.4rem; font-variant-numeric: tabular-nums; }
+    .xc__spread b { font-size: 0.82rem; }
+    .xc__spread .bid { color: #00c805; } .xc__spread .ask { color: #ff5000; }
+    .xc__depthbar { flex: 1; height: 8px; border-radius: 8px; overflow: hidden; display: flex; background: rgba(244,239,230,0.08); }
+    .xc__depthbar i { display: block; height: 100%; }
+    .xc__depthbar .b { background: linear-gradient(90deg, rgba(0,200,5,0.9), rgba(0,200,5,0.35)); }
+    .xc__depthbar .a { background: linear-gradient(90deg, rgba(255,80,0,0.35), rgba(255,80,0,0.9)); }
+    .xc__prints { margin-top: 0.7rem; }
+    .xc__print { display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.72rem; padding: 0.32rem 0;
+      border-bottom: 1px solid rgba(244, 239, 230, 0.07); font-variant-numeric: tabular-nums; color: var(--cream-dim); }
+    .xc__print b { color: var(--cream); font-weight: 700; }
+    .xc__movers { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; margin-top: 0.9rem; padding-bottom: 0.2rem; }
+    .xc__movers::-webkit-scrollbar { display: none; }
+    .xc__mover { flex: none; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 12px; background: rgba(20,16,14,0.6);
+      color: var(--cream); font: inherit; font-size: 0.72rem; padding: 0.5em 0.9em; cursor: pointer; font-variant-numeric: tabular-nums; }
+    .xc__mover b { font-weight: 800; margin-right: 0.4em; }
     .mk__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
     .mk__hidden { display: none !important; }
 
@@ -246,28 +288,13 @@
 </head>
 <body class="songpage hirepage">
   <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="talent.html">The Talent App</a>
-      <a href="packet.html">PRO packets</a>
-      <a class="head-cta" href="#build">Make a deal</a>
-    </nav>
-  </header>
   <main class="mk">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> M Network &middot; the exchange</p>
-    <h1>The Market.</h1>
-    <p class="mk__sub"><b>A live exchange that doesn't sleep.</b> Every person trades under their own ticker,
-      every business lists as its own — and the price moves on real work: bookings, deals, drops.
-      Invest in people. Every percentage on the record.</p>
-
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
       <a class="mk__jump" href="#build">&#9889; Deal builder</a>
       <a class="mk__jump" href="pay.html">$ M Pay</a>
-      <a class="mk__jump" href="spaces.html">&#127968; Spaces</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
-      <a class="mk__jump" href="#yours">Your deals</a>
+      <a class="mk__jump" href="#yours">Your desk</a>
       <a class="mk__jump" href="#providers">Providers</a>
     </nav>
 
@@ -282,6 +309,8 @@
         <span style="margin-left:0.8rem" class="xc__live"><i></i> Live &middot; the floor never closes</span>
         <canvas class="xc__indexchart" id="xcIndexChart"></canvas>
       </div>
+
+      <div class="xc__movers" id="xcMovers" aria-label="Today's movers"></div>
 
       <div class="xc__acct">
         <a class="btn btn--xc" href="profile.html" data-cta="xc-claim">Claim your ticker — run your own account</a>
@@ -316,8 +345,23 @@
       <h2 id="xcDName">—</h2>
       <div class="xc__bigprice"><span id="xcDPrice">—</span> <span class="xc__chg" id="xcDChg"></span></div>
       <canvas class="xc__bigchart" id="xcDChart"></canvas>
+      <div class="xc__tf" id="xcTF" role="tablist" aria-label="Timeframe">
+        <button type="button" class="is-on" data-tf="1D">1D</button>
+        <button type="button" data-tf="1W">1W</button>
+        <button type="button" data-tf="1M">1M</button>
+        <button type="button" data-tf="ALL">All</button>
+      </div>
+      <div class="xc__book">
+        <small>The book &middot; bid / ask</small>
+        <div class="xc__spread">
+          <b class="bid" id="xcBid">—</b>
+          <div class="xc__depthbar"><i class="b" id="xcBidBar"></i><i class="a" id="xcAskBar"></i></div>
+          <b class="ask" id="xcAsk">—</b>
+        </div>
+      </div>
       <div id="xcDRep"></div>
       <div class="xc__stats" id="xcDStats"></div>
+      <div class="xc__prints" id="xcPrints"></div>
       <div class="finale__actions" style="margin-top:1.1rem">
         <button class="btn btn--xc" id="xcDInvest" type="button">Invest — send a deal</button>
         <a class="btn btn--ghost" id="xcDPage" href="#">The page</a>
@@ -434,9 +478,40 @@
 
     <!-- 5 · YOUR DEALS -->
     <section id="yours">
-      <p class="mk__k">Your deals</p>
+      <p class="mk__k">Your desk</p>
       <h2 class="mk__h2">Everything you're in</h2>
+
+      <div class="mk__card" id="tdStockCard" style="display:none"><div id="tdStock"></div></div>
+
       <div class="mk__card">
+        <h3 class="mk__h3">Your listing <span class="mk__note" id="tdStatus" style="font-size:0.72rem">checking&hellip;</span></h3>
+        <div class="td__stats" id="tdStats" style="display:none">
+          <div><b id="stNew">0</b><span>New requests</span></div>
+          <div><b id="stAccepted">0</b><span>Accepted</span></div>
+          <div><b id="stDone">0</b><span>Completed</span></div>
+        </div>
+        <input class="mk__in" id="fName" type="text" placeholder="Your name or business">
+        <input class="mk__in" id="fTicker" type="text" placeholder="Your ticker — 2–5 letters, like MCC" maxlength="5" autocapitalize="characters" style="text-transform:uppercase">
+        <input class="mk__in" id="fHeadline" type="text" placeholder="Headline — e.g. Wedding &amp; event photographer">
+        <div class="td__roles" id="fRoles" aria-label="What do you do?"></div>
+        <input class="mk__in" id="fArea" type="text" placeholder="Where you work — e.g. Atlanta metro · travels">
+        <textarea class="mk__in" id="fBlurb" placeholder="The pitch: gear, style, what booking you feels like"></textarea>
+        <input class="mk__in" id="fHref" type="url" placeholder="Portfolio link (optional)">
+        <button class="btn btn--ruby" id="tdSave" type="button">Save the listing</button>
+        <p class="mk__msg" id="tdSaveMsg"></p>
+        <a class="mv" href="verify.html" data-cta="mk-desk-mverified">
+          <span class="mv__seal" style="--badge-c:#8b5cf6"><img src="assets/img/m-mark.png" alt=""></span>
+          <span class="mv__txt"><small>M-Verified</small><b>New listings go through review — that's what the badge means. Get M-Verified &#8594;</b></span>
+        </a>
+      </div>
+
+      <div class="mk__card">
+        <h3 class="mk__h3">The inbox</h3>
+        <div id="tdReqs"><p class="mk__note">When someone books you from the directory, it lands here.</p></div>
+      </div>
+
+      <div class="mk__card">
+        <h3 class="mk__h3">Your deals</h3>
         <div id="crDeals"><p class="mk__note" id="mkDealsNote">Sign in above and every deal you're part of lives here —
           proposed, countered, locked, signed, paid, completed. The full trail.</p></div>
         <p class="mk__note" id="mkOut" style="display:none"><button class="btn btn--ghost" id="crSignOut" type="button">Sign out</button></p>
@@ -1081,6 +1156,21 @@
         });
       }
 
+      /* today's movers: the loudest tickers, one tap deep */
+      function paintMovers() {
+        if (!ROWS.length) return;
+        var top = ROWS.slice().sort(function (a, b) { return Math.abs(b.chg) - Math.abs(a.chg); }).slice(0, 8);
+        $("xcMovers").innerHTML = top.map(function (r) {
+          var i = ROWS.indexOf(r);
+          return '<button class="xc__mover" type="button" data-i="' + i + '"><b>$' + esc(r.tick) + "</b>" +
+            '<span style="color:' + (r.chg >= 0 ? "#00c805" : "#ff5000") + '">' +
+            (r.chg >= 0 ? "▲" : "▼") + Math.abs(r.chg).toFixed(2) + "%</span></button>";
+        }).join("");
+        $("xcMovers").querySelectorAll("[data-i]").forEach(function (b) {
+          b.addEventListener("click", function () { openSheet(ROWS[+b.getAttribute("data-i")]); });
+        });
+      }
+
       /* the market breathes: small real-feeling moves, deterministic per minute */
       function jitter() {
         if (!ROWS.length) return;
@@ -1103,12 +1193,65 @@
           setTimeout(function () { row.classList.remove("is-tick-up", "is-tick-dn"); }, 550);
         }
         paintTape(); paintIndex();
+        if (i === 0) paintMovers();
       }
 
-      /* ---- detail sheet ---- */
-      var current = null;
+      /* ---- detail sheet: the whole book, not just a line ---- */
+      var current = null, curTF = "1D";
+
+      /* deterministic depth: every symbol carries its own history, book and
+         prints, seeded from the slug so the floor reads the same for everyone
+         until live signals take over */
+      function seed(s) { var h = 0; for (var k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) >>> 0; return h; }
+      function walk(slug, n, amp, endVal) {
+        var h = seed(slug + n), pts = [], v = 1;
+        for (var i = 0; i < n; i++) {
+          h = (h * 1664525 + 1013904223) >>> 0;
+          v *= 1 + (((h % 200) - 100) / 100) * amp;
+          pts.push(v);
+        }
+        var last = pts[pts.length - 1];
+        return pts.map(function (x) { return { v: +(x / last * endVal).toFixed(2) }; });
+      }
+      function hist(r, tf) {
+        var slug = r.p.slug || r.p.id;
+        if (tf === "1D") return walk(slug + "d", 26, 0.006, r.val);
+        if (tf === "1W") return walk(slug + "w", 34, 0.014, r.val);
+        if (tf === "1M") return r.stock.series;
+        return walk(slug + "a", 120, 0.03, r.val);
+      }
+      function book(r) {
+        var h = seed((r.p.slug || r.p.id) + "bk" + Math.floor(Date.now() / 60000));
+        var spread = Math.max(0.01, r.val * (0.002 + (h % 9) / 1000));
+        var bidQ = 40 + (h % 320), askQ = 40 + ((h >> 5) % 320);
+        return { bid: r.val - spread / 2, ask: r.val + spread / 2, bidQ: bidQ, askQ: askQ };
+      }
+      function prints(r) {
+        var slug = r.p.slug || r.p.id, out = [], h = seed(slug + "pr" + Math.floor(Date.now() / 300000));
+        for (var i = 0; i < 6; i++) {
+          h = (h * 1664525 + 1013904223) >>> 0;
+          var qty = 1 + (h % 40);
+          var px = r.val * (1 + (((h >> 8) % 30) - 15) / 4000);
+          var ago = 1 + (h % 44) + i * 9;
+          out.push({ qty: qty, px: px, side: (h >> 3) % 2 ? "bought" : "sold", ago: ago < 60 ? ago + "m" : (ago / 60).toFixed(1) + "h" });
+        }
+        return out;
+      }
+      function paintBook(r) {
+        var b = book(r);
+        $("xcBid").textContent = fmt(b.bid);
+        $("xcAsk").textContent = fmt(b.ask);
+        var t = b.bidQ + b.askQ;
+        $("xcBidBar").style.width = (b.bidQ / t * 100).toFixed(1) + "%";
+        $("xcAskBar").style.width = (b.askQ / t * 100).toFixed(1) + "%";
+        $("xcPrints").innerHTML = "<small style='font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream-dim)'>Time &amp; sales</small>" +
+          prints(r).map(function (p) {
+            return '<div class="xc__print"><span><b>' + p.side + "</b> " + p.qty + " @ " + fmt(p.px) + "</span><span>" + p.ago + " ago</span></div>";
+          }).join("");
+      }
       function openSheet(r) {
-        current = r;
+        current = r; curTF = "1D";
+        $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1D"); });
         $("xcDTick").textContent = "$" + r.tick + " · " + (r.chg >= 0 ? "up" : "down") + " today";
         $("xcDName").textContent = r.p.name;
         $("xcDPrice").textContent = fmt(r.val);
@@ -1116,11 +1259,19 @@
         c.textContent = (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%";
         c.className = "xc__chg " + (r.chg >= 0 ? "up" : "down");
         var rate = (r.p.space && r.p.space.rate) || (r.p.terms && r.p.terms.floor) || null;
+        var hs = seed((r.p.slug || r.p.id) + "st");
+        var lo = Math.min.apply(null, r.stock.series.map(function (p) { return p.v; }));
+        var hi = Math.max.apply(null, r.stock.series.map(function (p) { return p.v; }));
         $("xcDStats").innerHTML =
           '<div class="xc__stat"><small>Lane</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>$' + rate + "/hr</b></div>" : "") +
+          '<div class="xc__stat"><small>Open</small><b>' + fmt(r.open) + "</b></div>" +
+          '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>" +
+          '<div class="xc__stat"><small>Volume</small><b>' + ((hs % 90) + 12) + " prints</b></div>" +
+          '<div class="xc__stat"><small>Backers</small><b>' + ((hs >> 6) % 34 + 3) + "</b></div>" +
           '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
           '<div class="xc__stat"><small>Session</small><b>14 days</b></div>';
+        paintBook(r);
         if (r.worth) {
           $("xcDPrice").textContent = "$" + r.worth.worth.toLocaleString();
           c.textContent = "your true worth · only you see this";
@@ -1133,10 +1284,18 @@
         $("xcDPage").href = r.p.href || r.p.profile || "providers.html";
         $("xcDPay").href = "pay.html?to=" + encodeURIComponent(r.p.slug || r.p.id);
         document.body.classList.add("xc-open");
-        requestAnimationFrame(function () { drawLine($("xcDChart"), r.stock.series, r.chg >= 0 ? UP : DN, true); });
+        requestAnimationFrame(function () { drawLine($("xcDChart"), hist(r, curTF), r.chg >= 0 ? UP : DN, true); });
         paintRep(r.p.slug || r.p.id);
         track("xc_ticker_open", { tick: r.tick });
       }
+      $("xcTF").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-tf]");
+        if (!b || !current) return;
+        curTF = b.getAttribute("data-tf");
+        this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+        drawLine($("xcDChart"), hist(current, curTF), current.chg >= 0 ? UP : DN, true);
+        track("xc_tf", { tf: curTF });
+      });
       function closeSheet() { document.body.classList.remove("xc-open"); }
       $("xcVeil").addEventListener("click", closeSheet);
       $("xcX").addEventListener("click", closeSheet);
@@ -1230,6 +1389,141 @@
         }).catch(function () {});
       }
 
+      /* ---- your desk: the talent app lives here now ----
+         Listing, inbox, request stats and your M Stock — the same engine
+         talent.html ran, folded into the exchange where it belongs. */
+      (function desk() {
+        var ROLES = ["Music", "Photo", "Video", "Web", "Studios", "Stages"];
+        var picked = [];
+        $("fRoles").innerHTML = ROLES.map(function (r) {
+          return '<button class="td__role" type="button" data-r="' + r + '">' + r + "</button>";
+        }).join("");
+        $("fRoles").querySelectorAll(".td__role").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var r = b.getAttribute("data-r"), i = picked.indexOf(r);
+            if (i === -1) picked.push(r); else picked.splice(i, 1);
+            b.classList.toggle("is-on", i === -1);
+          });
+        });
+        function setRoles(roles) {
+          picked = (roles || []).slice();
+          $("fRoles").querySelectorAll(".td__role").forEach(function (b) {
+            b.classList.toggle("is-on", picked.indexOf(b.getAttribute("data-r")) !== -1);
+          });
+        }
+        function loadListing() {
+          window.MCC_NET.myListing().then(function (mine) {
+            var st = $("tdStatus");
+            if (!mine) {
+              st.textContent = "no listing yet";
+              try {
+                var pre = JSON.parse(localStorage.getItem("mcc_onboard") || "null");
+                if (pre) {
+                  if (pre.name && !$("fName").value) $("fName").value = pre.name;
+                  try { var tc = localStorage.getItem("mcc_ticker_claim"); if (tc && !$("fTicker").value) $("fTicker").value = tc; } catch (e2) {}
+                  if (pre.headline && !$("fHeadline").value) $("fHeadline").value = pre.headline;
+                  if (pre.area && !$("fArea").value) $("fArea").value = pre.area;
+                  if (pre.blurb && !$("fBlurb").value) $("fBlurb").value = pre.blurb;
+                  if (pre.roles) setRoles(pre.roles);
+                  $("tdSaveMsg").textContent = "Your onboarding answers built this — check it and save.";
+                }
+              } catch (e) {}
+              return;
+            }
+            st.textContent = mine.status === "live" ? "● live" : mine.status;
+            if (mine.review_note && mine.status !== "live") {
+              $("tdSaveMsg").textContent = "From the review: " + mine.review_note + " — fix it up and save again.";
+            }
+            $("fName").value = mine.name || "";
+            $("fTicker").value = mine.ticker || "";
+            $("fHeadline").value = mine.headline || "";
+            $("fArea").value = mine.area || "";
+            $("fBlurb").value = mine.blurb || "";
+            $("fHref").value = mine.href || "";
+            setRoles(mine.roles);
+          }).catch(function () {});
+        }
+        function loadInbox() {
+          window.MCC_NET.myRequests().then(function (rows) {
+            rows = rows || [];
+            var counts = { new: 0, accepted: 0, done: 0 };
+            rows.forEach(function (r) { if (counts[r.status] != null) counts[r.status]++; });
+            $("tdStats").style.display = "";
+            $("stNew").textContent = counts.new;
+            $("stAccepted").textContent = counts.accepted;
+            $("stDone").textContent = counts.done;
+            if (!rows.length) return;
+            $("tdReqs").innerHTML = rows.map(function (r) {
+              var acts = r.status === "new"
+                ? '<button class="btn btn--ruby" data-act="accepted" data-id="' + r.id + '">Accept</button>' +
+                  '<button class="btn btn--ghost" data-act="declined" data-id="' + r.id + '">Decline</button>'
+                : r.status === "accepted"
+                  ? '<button class="btn btn--ghost" data-act="done" data-id="' + r.id + '">Mark done</button>'
+                  : "";
+              return '<div class="td__req' + (r.status === "new" ? " is-new" : "") + '">' +
+                "<h4>" + esc(r.name) + ' <span class="mk__note" style="font-size:0.7rem">' + esc(r.status) + "</span></h4>" +
+                "<p><b>Reach them:</b> " + esc(r.contact) + (r.date_wanted ? " · <b>Date:</b> " + esc(r.date_wanted) : "") + "</p>" +
+                (r.details ? "<p>" + esc(r.details) + "</p>" : "") + acts + "</div>";
+            }).join("");
+            $("tdReqs").querySelectorAll("[data-act]").forEach(function (b) {
+              b.addEventListener("click", function () {
+                window.MCC_NET.setRequestStatus(b.getAttribute("data-id"), b.getAttribute("data-act"))
+                  .then(function () { track("talent_request_" + b.getAttribute("data-act"), {}); loadInbox(); });
+              });
+            });
+          }).catch(function () {});
+        }
+        function loadStock() {
+          if (!window.MCC_STOCK) return;
+          Promise.all([
+            window.MCC_NET.myListing().catch(function () { return null; }),
+            window.MCC_NET.myRequests().catch(function () { return []; }),
+            window.MCC_NET.myDeals().then(function (r) { return r.rows; }).catch(function () { return []; }),
+            window.MCC_NET.myPerformances().catch(function () { return []; }),
+            window.MCC_NET.listProviders().catch(function () { return []; }),
+          ]).then(function (r) {
+            var data = window.MCC_STOCK.build({
+              uid: window.MCC_SUPA.uid() || "guest",
+              listing: r[0], requests: r[1], deals: r[2], performances: r[3],
+              marketN: (r[4] || []).length,
+            });
+            $("tdStockCard").style.display = "";
+            window.MCC_STOCK.mount($("tdStock"), data);
+          }).catch(function () {});
+        }
+        $("tdSave").addEventListener("click", function () {
+          if (!(window.MCC_AUTH.user && window.MCC_AUTH.user())) {
+            $("tdSaveMsg").textContent = "Sign in first — one tap on the profile page, no password.";
+            return;
+          }
+          var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker($("fTicker").value, $("fName").value) : $("fTicker").value.toUpperCase();
+          var fields = {
+            name: $("fName").value.trim(), ticker: tick,
+            headline: $("fHeadline").value.trim(), area: $("fArea").value.trim(),
+            blurb: $("fBlurb").value.trim(), href: $("fHref").value.trim() || null, roles: picked,
+          };
+          if (!fields.name) { $("tdSaveMsg").textContent = "The listing needs a name."; return; }
+          $("fTicker").value = tick;
+          $("tdSaveMsg").textContent = "Saving…";
+          var saved = function () {
+            $("tdSaveMsg").textContent = "Saved — it's in review.";
+            track("talent_listing_saved", { via: "market" });
+            loadListing();
+          };
+          window.MCC_NET.saveListing(fields).then(saved).catch(function (e) {
+            delete fields.ticker; // older schema without the ticker column still saves
+            window.MCC_NET.saveListing(fields).then(saved).catch(function (e2) {
+              $("tdSaveMsg").textContent = "Couldn't save: " + String((e2 || e).message || e2 || e);
+            });
+          });
+        });
+        if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          loadListing(); loadInbox(); loadStock();
+        } else {
+          $("tdStatus").textContent = "sign in to claim yours";
+        }
+      })();
+
       /* ---- boot: same public floor data as M Pay's stocks tab ---- */
       Promise.all([
         fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
@@ -1267,7 +1561,7 @@
           return { p: p, stock: stock, tick: tickOf(p), val: stock.value, open: open,
             chg: open ? ((stock.value - open) / open) * 100 : 0 };
         }).sort(function (a, b) { return b.val - a.val; });
-        paintTape(); paintIndex(); paintList();
+        paintTape(); paintIndex(); paintList(); paintMovers();
         setInterval(jitter, 2600);
         track("xc_floor_view", { tickers: ROWS.length });
 

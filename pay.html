@@ -501,29 +501,37 @@
 
         if (!ME) {
           html += '<div class="mp__signin" style="margin-top:0.9rem"><p class="mp__note" style="margin:0 0 1rem">Set up your listing and the whole network can find and book you — you keep 100% of your rate.</p>' +
-            '<a class="btn btn--ruby" href="talent.html" style="justify-content:center">Set up your room</a></div>';
+            '<a class="btn btn--ruby" href="market.html#yours" style="justify-content:center">Set up your room</a></div>';
         } else if (face === "artist") {
           html += '<h2 class="mp__toolhead">Your artist tools</h2><div class="mp__tools">' +
             tool("market.html?with=" + esc(ME.slug || "") + "&kind=music_collab#build", "Sell a feature / split", "Set the price, split the song — signed before it drops") +
             tool("packet.html", "Log a show, get the packet", "ASCAP / BMI live packets — get paid for the stage") +
-            tool("talent.html", "Your listing & rate", "What you charge, your roles, your inbox") + "</div>";
+            tool("market.html#yours", "Your listing & rate", "What you charge, your roles, your inbox") + "</div>";
         } else if (face === "venue") {
           var amKeys = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
           html += '<h2 class="mp__toolhead">Your space</h2><div class="mp__tools">' +
-            tool("talent.html", "Your room & rates", "Hours, day rate, house rules — your listing") +
+            tool("market.html#yours", "Your room & rates", "Hours, day rate, house rules — your listing") +
             tool("packet.html", "Log an event", "Put a booking on the record") + "</div>";
           if (amKeys.length) html += '<h2 class="mp__toolhead">Your amenities</h2>' +
             '<p class="mp__note" style="margin:0.2rem 0 0.5rem">What the room offers — not badges, amenities. <a href="amenities.html" style="color:var(--cream)">Manage on your listing →</a></p>' +
             '<div class="amenity-set" data-amenities="' + esc(amKeys.slice(0, 6).join(",")) + '" data-am-color="' + esc(color) + '"></div>';
         } else if (face === "provider") {
           html += '<h2 class="mp__toolhead">Your provider tools</h2><div class="mp__tools">' +
-            tool("talent.html", "Your listing & inbox", "Get found, get booked — requests land here") +
+            tool("market.html#yours", "Your listing & inbox", "Get found, get booked — requests land here") +
             tool("market.html?with=" + esc(ME.slug || "") + "&kind=service_booking#build", "Send a booking deal", "Name the job, the date, the rate") +
             tool("packet.html", "Log your work", "Build your record on the platform") + "</div>";
         } else {
           html += '<h2 class="mp__toolhead">Your tools</h2><div class="mp__tools">' +
-            tool("talent.html", "Your listing", "Tell the network what you do") + "</div>";
+            tool("market.html#yours", "Your listing", "Tell the network what you do") + "</div>";
         }
+
+        /* the door everyone walks through: get the badge, mean something */
+        var MV = face === "artist" ? ["M-Verified · Performer", "#8b5cf6", "Become a verified performer"]
+          : face === "venue" ? ["M-Verified · Venue", "#e5383b", "Get your space verified"]
+          : ["M-Verified · Creator", "#2aa8a0", "Get verified — the badge that opens doors"];
+        html += '<a class="mv" href="verify.html" data-cta="mpay-mverified" style="--badge-c:' + MV[1] + '">' +
+          '<span class="mv__seal"><img src="assets/img/m-mark.png" alt=""></span>' +
+          '<span class="mv__txt"><small>' + MV[0] + "</small><b>" + MV[2] + " &#8594;</b></span></a>";
 
         /* ---- THE DESK: the whole business under one tab.
            Booking link (the Calendly), payment-request links (the Cash App /

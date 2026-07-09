@@ -1,7 +1,8 @@
 # The fee policy — who eats what
 
-One sentence: **the customer pays the platform; the provider keeps
-their whole rate; the platform eats the payout costs it promises.**
+One sentence: **the customer pays the platform AND the processing;
+the provider keeps their whole rate and gets an instant payout on
+the house every time they make a sale.**
 
 ## Money in (charges)
 
@@ -9,23 +10,27 @@ their whole rate; the platform eats the payout costs it promises.**
 |---|---|---|
 | Provider's rate | customer | 100% → provider |
 | Platform fee | **customer, on top** | 8% of the rate (`FEE_PCT` in `supabase/functions/pay-deal`) |
-| Card processing | platform (inside its 8%) | ~2.9% + 30¢, Stripe's cut |
+| Processing | **customer, on top** | 1.5% of the rate (`PROC_PCT`) — itemized at checkout |
+| Card processing (Stripe's ~2.9% + 30¢) | platform, out of the 9.5% it collected | Stripe's cut |
 
-The provider sees their full rate. The customer sees rate + platform
-fee at checkout, itemized. The platform's 8% covers processing,
-the free instant transfers below, and the margin.
+The provider sees their full rate. The customer sees rate +
+platform fee + processing at checkout, all itemized. The 1.5%
+processing line exists for one reason: it pre-funds the instant
+payout below, so the platform can promise it on every sale.
 
 ## Money out (payouts, once Stripe Connect Express is live)
 
 | Payout | Cost to provider | Who eats the fee |
 |---|---|---|
 | Standard (1–2 business days) | **free, always** | nobody — Stripe standard payouts are free |
-| Instant (minutes, to debit card) | **1 free per week** | platform eats Stripe's ~1.5% for that one |
-| Extra instants in the same week | 1.5% pass-through | the provider, at cost — no markup |
+| Instant (minutes, to debit card) | **free after every sale** — each paid deal banks one platform-paid instant | platform (pre-funded by the customer's 1.5% processing line) |
+| Instants with no banked sale behind them | 1.5% pass-through | the provider, at cost — no markup |
 
-The free weekly instant is tracked per provider per calendar week
-(`payout_perks` — lands with the Connect build). It's the loyalty
-mechanic: the platform visibly pays for something real, weekly.
+The perk is per SALE, not per week: every deal that reaches `paid`
+credits the provider one instant payout on the house
+(`payout_perks` — lands with the Connect build, keyed to deal ids
+instead of calendar weeks). Sell three times, cash out instantly
+three times. The loyalty mechanic is now the sales mechanic.
 
 ## Bank linking
 

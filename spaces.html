@@ -344,7 +344,10 @@
         }).join("");
         $("spGrid").innerHTML = cards +
           '<a class="sp__list" href="list-your-space.html" data-cta="spaces-list"><span><b>List your space</b>' +
-          "<small>Own a studio, room, or stage? Get M-Verified and take bookings through the network.</small></span></a>";
+          "<small>Own a studio, room, or stage? Get M-Verified and take bookings through the network.</small></span></a>" +
+          '<a class="mv" href="verify.html" data-cta="spaces-mverified" style="--badge-c:#e5383b;grid-column:1/-1">' +
+          '<span class="mv__seal"><img src="assets/img/m-mark.png" alt=""></span>' +
+          '<span class="mv__txt"><small>M-Verified &middot; Venue</small><b>Every space here is inspected before the badge is issued. Get your space verified &#8594;</b></span></a>';
         $("spGrid").querySelectorAll(".sp__card").forEach(function (b) {
           b.addEventListener("click", function () { openSheet(ALL[+b.getAttribute("data-i")]); });
         });

@@ -5,7 +5,8 @@
 import Stripe from "npm:stripe@14";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SK")!);
-const FEE_PCT = 0.08; // the platform's cut — the CUSTOMER pays it on top
+const FEE_PCT = 0.08;   // the platform's cut — the CUSTOMER pays it on top
+const PROC_PCT = 0.015; // processing, also the customer's — funds the per-sale instant payout
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -17,16 +18,18 @@ Deno.serve(async (req) => {
 
     const base = Math.round(Number(amount) * 100);         // the provider's money
     const fee = Math.round(base * FEE_PCT);                // the customer's platform fee
+    const proc = Math.round(base * PROC_PCT);              // the customer's processing line
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
         { price_data: { currency: "usd", product_data: { name: title }, unit_amount: base }, quantity: 1 },
         { price_data: { currency: "usd", product_data: { name: "Platform fee" }, unit_amount: fee }, quantity: 1 },
+        { price_data: { currency: "usd", product_data: { name: "Processing" }, unit_amount: proc }, quantity: 1 },
       ],
       // provider connected? route their money straight through
       ...(provider_acct
-        ? { payment_intent_data: { application_fee_amount: fee, transfer_data: { destination: provider_acct } } }
+        ? { payment_intent_data: { application_fee_amount: fee + proc, transfer_data: { destination: provider_acct } } }
         : {}),
       metadata: { deal_id },
       success_url: "https://mcclusterishere.github.io/McCluster-Portfolio/market.html#yours",
