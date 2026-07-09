@@ -154,23 +154,49 @@
     window.addEventListener("orientationchange", markResize);
 
     /* ---- drag with inertia ---- */
+    /* ---- input: ONE pointer owns the drag ----
+       iOS fires pointer events for every touch. The old handler fed all of
+       them through one shared start point, so a second thumb or a resting
+       palm made the view leap between fingers — the uncontrollable spin.
+       Now the first pointer down owns the camera until it lifts; everyone
+       else is ignored, and two fingers means pinch, never pan. */
     var px = 0, py = 0, pinch0 = 0, fov0 = 0;
+    var ownerId = null, lastMoveT = 0;
+    var VMAX = 0.055; // rad/frame — no flick may spin faster than this
     canvas.style.touchAction = opts.touchAction || "none";
     canvas.addEventListener("pointerdown", function (e) {
+      if (ownerId !== null) return;           // a finger already owns the view
+      ownerId = e.pointerId;
+      state.touched = true;                    // the welcome drift retires for good
       state.dragging = true; px = e.clientX; py = e.clientY;
       state.vyaw = 0; state.vpitch = 0;
-      canvas.setPointerCapture(e.pointerId);
+      lastMoveT = performance.now();
+      try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
     });
     canvas.addEventListener("pointermove", function (e) {
-      if (!state.dragging) return;
+      if (!state.dragging || e.pointerId !== ownerId) return;
+      var now = performance.now();
+      var dt = Math.max(1, now - lastMoveT);
+      lastMoveT = now;
       var k = state.fov / canvas.clientHeight;
       var dx = (e.clientX - px) * k, dy = (e.clientY - py) * k;
       state.yaw -= dx; state.pitch += dy;
-      state.vyaw = -dx; state.vpitch = dy;
+      // momentum is normalized to REAL time — iOS delivers coalesced events
+      // with big deltas at low frequency, and per-event velocity made every
+      // flick a runaway. Per-frame velocity, hard-capped.
+      var scale = Math.min(2, 16.7 / dt);
+      state.vyaw = Math.max(-VMAX, Math.min(VMAX, -dx * scale * 0.85));
+      state.vpitch = Math.max(-VMAX, Math.min(VMAX, dy * scale * 0.85));
       px = e.clientX; py = e.clientY;
       clampPitch();
     });
-    function end() { state.dragging = false; }
+    function end(e) {
+      if (e && e.pointerId !== ownerId) return;
+      ownerId = null;
+      state.dragging = false;
+      // thumb rested before lifting = the visitor STOPPED — honor it, no coast
+      if (performance.now() - lastMoveT > 90) { state.vyaw = 0; state.vpitch = 0; }
+    }
     canvas.addEventListener("pointerup", end);
     canvas.addEventListener("pointercancel", end);
     canvas.addEventListener("wheel", function (e) {
@@ -180,6 +206,8 @@
     canvas.addEventListener("touchstart", function (e) {
       if (e.touches.length === 2) {
         pinch0 = dist(e.touches); fov0 = state.fov;
+        // two fingers = zoom, never pan: release the drag entirely
+        ownerId = null; state.dragging = false; state.vyaw = 0; state.vpitch = 0;
       }
     }, { passive: true });
     canvas.addEventListener("touchmove", function (e) {
@@ -187,6 +215,7 @@
         setFov(fov0 * pinch0 / dist(e.touches));
       }
     }, { passive: true });
+    canvas.addEventListener("touchend", function () { pinch0 = 0; }, { passive: true });
     function dist(t) { var a = t[0], b = t[1]; return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
     function setFov(f) { state.fov = Math.max(0.5, Math.min(1.9, f)); }
     function clampPitch() { state.pitch = Math.max(-1.48, Math.min(1.48, state.pitch)); }
@@ -333,8 +362,13 @@
       }
       if (!state.dragging) {
         state.yaw += state.vyaw; state.pitch += state.vpitch; clampPitch();
-        state.vyaw *= 0.94; state.vpitch *= 0.94;
-        if (!state.gyro && !state.vyaw && !state.vpitch) state.yaw += 0.0006; // idle drift keeps it alive
+        state.vyaw *= 0.93; state.vpitch *= 0.93;
+        // sub-perceptible momentum snaps to zero — a "stopped" view must be STOPPED
+        if (Math.abs(state.vyaw) < 0.00012) state.vyaw = 0;
+        if (Math.abs(state.vpitch) < 0.00012) state.vpitch = 0;
+        // the idle drift only welcomes: once a thumb has taken the wheel,
+        // the camera never moves on its own again
+        if (!state.gyro && !state.touched && !state.vyaw && !state.vpitch) state.yaw += 0.0006;
       }
       gl.uniform1f(U.uYaw, state.yaw);
       gl.uniform1f(U.uPitch, state.pitch);

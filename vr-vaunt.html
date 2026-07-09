@@ -171,6 +171,7 @@
         spots: SPOTS,
       });
       if (window.MCC_TRACK) window.MCC_TRACK("vr_view", { page: "vr-vaunt" });
+      window.__vr = viewer; // debug handle — lets tests read the camera
 
       /* ---- the watchdog: a black cabin is never the answer. If the film
              hasn't produced a frame in 8 seconds (or errors), the poster
