@@ -18,13 +18,13 @@
     .mk section { margin-top: clamp(2.6rem, 7vh, 4rem); scroll-margin-top: 5.5rem; }
 
     /* sticky section rail */
-    .mk__rail { position: sticky; top: 0; z-index: 80; display: flex; gap: 0.45rem; overflow-x: auto; scrollbar-width: none;
-      padding: 0.8rem 0 0.7rem; margin-top: 1.2rem;
-      background: linear-gradient(180deg, rgba(10,8,7,0.97) 75%, transparent); }
+    .mk__rail { position: sticky; top: 0; z-index: 80; display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: none;
+      padding: 0.55rem 0 0.5rem; margin-top: 1.2rem;
+      background: linear-gradient(180deg, rgba(10,8,7,0.97) 78%, transparent); }
     .mk__rail::-webkit-scrollbar { display: none; }
     .mk__jump { flex: none; border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 100px; cursor: pointer;
       background: rgba(10, 8, 7, 0.5); color: var(--cream-dim); text-decoration: none;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.55em 1.15em;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.45em 0.95em;
       transition: border-color 0.2s, color 0.2s, background 0.2s; }
     .mk__jump:hover, .mk__jump.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
     .mk__jump--glow { border-color: var(--ruby-hot); color: #fff;
@@ -476,6 +476,33 @@
       function $(id) { return document.getElementById(id); }
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       var ME = null, DIR = [], counterOf = null, active = "All";
+
+      /* ---------- app mode: pick a room, everything else vanishes ---------- */
+      var PANES = ["floor", "lanes", "build", "yours", "providers"];
+      window.MK_SHOW = function (id) {
+        if (PANES.indexOf(id) === -1) return;
+        PANES.forEach(function (pid) {
+          var el = document.getElementById(pid);
+          if (el) el.classList.toggle("mk__hidden", pid !== id);
+        });
+        document.querySelectorAll(".mk__jump[href^='#']").forEach(function (j) {
+          j.classList.toggle("is-on", j.getAttribute("href") === "#" + id);
+        });
+        try { history.replaceState(null, "", "#" + id); } catch (e) {}
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (window.MCC_TRACK) window.MCC_TRACK("market_pane", { pane: id });
+      };
+      document.querySelectorAll(".mk__jump[href^='#']").forEach(function (j) {
+        j.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          window.MK_SHOW(j.getAttribute("href").slice(1));
+        });
+      });
+      window.MK_SHOW(PANES.indexOf(location.hash.slice(1)) !== -1 ? location.hash.slice(1) : "floor");
+      window.addEventListener("hashchange", function () {
+        var id = location.hash.slice(1);
+        if (PANES.indexOf(id) !== -1) window.MK_SHOW(id);
+      });
       var AUTHED = !!(window.MCC_AUTH.user && window.MCC_AUTH.user());
       var KIND_LABEL = {
         service_booking: "book work", music_collab: "music collab", song_split: "song split",
@@ -526,7 +553,7 @@
             location.hash = "#build";
             $("pTitle").focus();
           } else {
-            document.getElementById("build").scrollIntoView({ behavior: "smooth" });
+            window.MK_SHOW("build");
           }
         });
       });
@@ -759,7 +786,9 @@
             } else if (d.status === "locked" && mine) {
               acts = '<span class="cr__tag">You signed — waiting on ' + esc(other) + "</span>";
             } else if (d.status === "signed") {
-              acts = '<a class="btn btn--ruby" href="https://square.link/u/MBVeuzoo?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Pay by card — Square</a>' +
+              var sq = (DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0] || {}).square
+                || "https://square.link/u/MBVeuzoo";
+              acts = '<a class="btn btn--ruby" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Pay by card — Square</a>' +
                 '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
             } else if (d.status === "paid") {
@@ -820,7 +849,7 @@
                 ((d.terms && d.terms.splits) || []).forEach(function (s) { $("pParties").appendChild(partyRow(s.party, s.pct)); });
                 total();
                 $("pSend").textContent = "Send the counter";
-                document.getElementById("build").scrollIntoView({ behavior: "smooth" });
+                window.MK_SHOW("build");
               } else if (act === "sign") {
                 var name = prompt("Sign with your full legal name — this is your signature on the record:");
                 if (!name || !name.trim()) return;
@@ -1113,7 +1142,7 @@
             if (who.options[i].value === slug) { who.value = slug; who.dispatchEvent(new Event("change", { bubbles: true })); break; }
           }
         }
-        document.getElementById("build").scrollIntoView({ behavior: "smooth" });
+        window.MK_SHOW("build");
         track("xc_invest_click", { tick: current.tick });
       });
 
