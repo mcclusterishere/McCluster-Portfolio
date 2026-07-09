@@ -20,7 +20,28 @@
     .sp__promise p { font-size: 0.82rem; line-height: 1.55; color: var(--cream-dim); }
     .sp__promise b { color: #2fbf71; }
 
-    .sp__chips { display: flex; gap: 0.45rem; overflow-x: auto; scrollbar-width: none; margin: 1.6rem 0 0; padding-bottom: 0.3rem; }
+    /* the Airbnb-style search pill: one field, the whole floor answers */
+    .sp__search { display: flex; align-items: center; gap: 0.7rem; margin: 1.6rem 0 0;
+      border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; background: rgba(20,16,14,0.75);
+      padding: 0.3rem 0.4rem 0.3rem 1.1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      transition: border-color 0.25s, box-shadow 0.25s; }
+    .sp__search:focus-within { border-color: var(--ruby-hot); box-shadow: 0 0 0 3px rgba(229,56,59,0.18), 0 10px 30px rgba(0,0,0,0.35); }
+    .sp__search svg { flex: none; width: 20px; height: 20px; stroke: var(--cream-dim); stroke-width: 2; fill: none; stroke-linecap: round; }
+    .sp__search input { flex: 1; min-width: 0; background: none; border: 0; color: var(--cream); font: inherit; font-size: 0.95rem; }
+    .sp__search input:focus { outline: none; }
+    .sp__search input::placeholder { color: var(--cream-dim); }
+    .sp__search-go { flex: none; border: 0; border-radius: 100px; cursor: pointer; font: inherit;
+      background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff;
+      font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.85em 1.4em; }
+
+    .sp__bar { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; margin-top: 1.2rem; }
+    .sp__count { font-family: var(--micro); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); }
+    .sp__count b { color: var(--cream); }
+    .sp__sort { background: rgba(20,16,14,0.75); border: 1px solid rgba(244,239,230,0.22); border-radius: 100px;
+      color: var(--cream); font: inherit; font-size: 0.74rem; padding: 0.45em 0.9em; cursor: pointer; }
+    .sp__sort:focus { outline: none; border-color: var(--ruby-hot); }
+
+    .sp__chips { display: flex; gap: 0.45rem; overflow-x: auto; scrollbar-width: none; margin: 0.9rem 0 0; padding-bottom: 0.3rem; }
     .sp__chips::-webkit-scrollbar { display: none; }
     .sp__chip { flex: none; border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; cursor: pointer; background: none;
       color: var(--cream-dim); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
@@ -62,6 +83,10 @@
     body.sp-open .sp__sheet { transform: translateY(0); }
     .sp__x { position: absolute; top: 0.7rem; right: 0.9rem; width: 34px; height: 34px; border-radius: 50%;
       border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; z-index: 2; }
+    /* the room leads the sheet — photo first, like every listing app */
+    .sp__sheet-photo { position: relative; margin: -0.2rem -0.2rem 0.9rem; border-radius: 16px; overflow: hidden; aspect-ratio: 21/9; background: #1a1512; }
+    .sp__sheet-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sp__sheet-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(10,8,7,0.65)); }
     .sp__sheet h2 { font-family: var(--display); text-transform: uppercase; font-weight: 400; font-size: 1.3rem; margin: 0.2rem 0 0.2rem; padding-right: 2.4rem; }
     .sp__sheet .sp__where2 { color: var(--cream-dim); font-size: 0.78rem; margin-bottom: 0.8rem; }
     .sp__lbl { display: block; font-family: var(--micro); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); margin: 1rem 0 0.5rem; }
@@ -125,7 +150,20 @@
       <p><b>Simple booking.</b> Pick a date, pick a window, request it. The operator confirms and you're locked. Booking fees apply — shown before you confirm, like every real app.</p>
     </div>
 
+    <div class="sp__search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="spQ" type="search" placeholder="Search rooms, studios, stages, gear…" aria-label="Search spaces" autocomplete="off">
+      <button class="sp__search-go" id="spQGo" type="button">Search</button>
+    </div>
     <div class="sp__chips" id="spChips"></div>
+    <div class="sp__bar">
+      <span class="sp__count" id="spCount"></span>
+      <select class="sp__sort" id="spSort" aria-label="Sort spaces">
+        <option value="featured">Featured first</option>
+        <option value="low">Price · low to high</option>
+        <option value="high">Price · high to low</option>
+      </select>
+    </div>
     <div class="sp__grid" id="spGrid"><p class="sp__note">Loading the spaces…</p></div>
   </main>
 
@@ -134,6 +172,7 @@
   <div class="sp__sheet" id="spSheet" role="dialog" aria-modal="true" aria-label="Book this space">
     <button class="sp__x" id="spX" type="button" aria-label="Close">✕</button>
     <div id="spBook">
+      <div class="sp__sheet-photo"><img id="spPhoto" src="" alt=""></div>
       <h2 id="spName">Space</h2>
       <p class="sp__where2" id="spWhere"></p>
       <div class="sp__card-am" id="spAm"></div>
@@ -191,7 +230,7 @@
       var SPACE_ROLES = ["Studios", "Stages"];
       var FALLBACK_PHOTO = { Studios: "assets/frames/vperf1_0001.jpg", Stages: "assets/frames/uprise_0080.jpg" };
       var SLOTS = ["Morning · 8–12", "Midday · 12–4", "Evening · 4–8", "Late · 8–12"];
-      var ALL = [], AMEN = {}, active = "All";
+      var ALL = [], AMEN = {}, active = "All", query = "", sortBy = "featured";
       var sel = { space: null, date: null, slot: null, hours: 2 };
       var calMonth = new Date(); calMonth.setDate(1);
 
@@ -243,8 +282,21 @@
         });
       }
 
-      function amChips(ids, color) {
-        return ids.slice(0, 3).map(function (id) {
+      // one string per space so search can answer on anything a renter would
+      // type: the name, the area, the vibe, even a specific amenity
+      function hayOf(p) {
+        return (p.name + " " + (p.area || "") + " " + (p.headline || "") + " " + (p.roles || []).join(" ") + " " +
+          amenOf(p).map(function (id) { return AMEN[id] ? AMEN[id].name : id; }).join(" ")).toLowerCase();
+      }
+      function matches(p) {
+        if (active !== "All" && (p.roles || []).indexOf(active) === -1) return false;
+        if (!query) return true;
+        var hay = hayOf(p);
+        return query.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
+      }
+
+      function amChips(ids, color, all) {
+        return ids.slice(0, all ? ids.length : 3).map(function (id) {
           var a = AMEN[id]; if (!a) return "";
           return '<span class="amenity" style="--am-c:' + (color || "#e5383b") + '" title="' + esc(a.name) + '">' +
             '<span class="amenity__ico"><svg viewBox="0 0 24 24"><path d="' + a.icon + '"/></svg></span>' +
@@ -253,7 +305,13 @@
       }
 
       function renderGrid() {
-        var rows = ALL.filter(function (p) { return active === "All" || (p.roles || []).indexOf(active) !== -1; });
+        var rows = ALL.filter(matches);
+        if (sortBy === "low") rows.sort(function (a, b) { return rateOf(a) - rateOf(b); });
+        else if (sortBy === "high") rows.sort(function (a, b) { return rateOf(b) - rateOf(a); });
+        // "featured" keeps the promoted-first order from load()
+        $("spCount").innerHTML = rows.length
+          ? "<b>" + rows.length + "</b> space" + (rows.length === 1 ? "" : "s") + (query ? " for &ldquo;" + esc(query) + "&rdquo;" : "")
+          : "No spaces match" + (query ? " &ldquo;" + esc(query) + "&rdquo;" : "") + " &mdash; clear the search or ask us";
         var cards = rows.map(function (p, i) {
           return '<button class="sp__card" type="button" data-i="' + ALL.indexOf(p) + '">' +
             '<span class="sp__card-img"><img src="' + esc(photoOf(p)) + '" alt="' + esc(p.name) + '" loading="lazy">' +
@@ -273,12 +331,31 @@
         });
       }
 
+      /* search-as-you-type, with the button for the deliberate ones */
+      var qTimer = null;
+      $("spQ").addEventListener("input", function () {
+        clearTimeout(qTimer);
+        qTimer = setTimeout(function () {
+          query = $("spQ").value.trim().toLowerCase();
+          renderGrid();
+          if (query) track("spaces_search", { q: query.slice(0, 60) });
+        }, 180);
+      });
+      $("spQGo").addEventListener("click", function () {
+        query = $("spQ").value.trim().toLowerCase(); renderGrid();
+      });
+      $("spSort").addEventListener("change", function () {
+        sortBy = $("spSort").value; renderGrid(); track("spaces_sort", { by: sortBy });
+      });
+
       /* ---------- the scheduler ---------- */
       function openSheet(p) {
         sel = { space: p, date: null, slot: null, hours: 2 };
+        $("spPhoto").src = photoOf(p);
+        $("spPhoto").alt = p.name;
         $("spName").textContent = p.name;
         $("spWhere").textContent = (p.area ? p.area + " · " : "") + "$" + rateOf(p) + "/hr · M-Verified";
-        $("spAm").innerHTML = amChips(amenOf(p), p.badgeColor);
+        $("spAm").innerHTML = amChips(amenOf(p), p.badgeColor, true);
         $("spHrs").textContent = "2";
         $("spContact").classList.toggle("sp__hidden", AUTHED);
         $("spBook").classList.remove("sp__hidden"); $("spDone").classList.add("sp__hidden");

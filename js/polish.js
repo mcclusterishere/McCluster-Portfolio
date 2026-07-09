@@ -191,6 +191,7 @@
       ["index.html#top", "home", "M", '<img class="appbar__m" src="assets/img/m-mark.png" alt="">'],
       ["app.html", "music", "Music", '<path class="np-bar" d="M5 10v4"/><path class="np-bar" d="M9.5 7v10"/><path class="np-bar" d="M14 9v6"/><path class="np-bar" d="M18.5 11v2"/>'],
       ["market.html", "market", "Market", '<path d="m3 7 3-4h12l3 4"/><path d="M3 7h18v3a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v7h14v-7"/><path d="M10 20v-4h4v4"/>'],
+      ["spaces.html", "spaces", "Spaces", '<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 21v-6h4v6"/><path d="M9 10h.01M15 10h.01"/>'],
       ["profile.html", "profile", "Profile", '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>'],
     ];
     var bar = document.createElement("nav");
@@ -254,7 +255,7 @@
        quiet pulse — a pointer, not a shout */
     try {
       var s0 = window.MCC_MODEL.suggest();
-      var TAB = { "app.html": "music", "market.html": "market", "providers.html": "market", "talent.html": "market", "collab.html": "market", "onboard.html": "market" };
+      var TAB = { "app.html": "music", "market.html": "market", "providers.html": "market", "talent.html": "market", "collab.html": "market", "onboard.html": "market", "spaces.html": "spaces", "list-your-space.html": "spaces" };
       var wing = TAB[s0.href];
       if (wing) {
         var tab = document.querySelector('.appbar__tab[data-appnav="' + wing + '"]');

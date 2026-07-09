@@ -3796,7 +3796,10 @@ html.vr-locked .float-pause:hover { background: var(--vaunt); }
 }
 
 /* ============ app-style bottom tab bar ============ */
-:root { --appbar-h: 3.7rem; }
+/* visitors said the old bar was damn near invisible — it's bigger now,
+   runs a deep-red gradient, and carries a soft red glow so the doors
+   into the apps read from across the room */
+:root { --appbar-h: 4.5rem; }
 body.has-appbar { padding-bottom: calc(var(--appbar-h) + env(safe-area-inset-bottom)); }
 .appbar {
   position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
@@ -3804,25 +3807,32 @@ body.has-appbar { padding-bottom: calc(var(--appbar-h) + env(safe-area-inset-bot
   height: calc(var(--appbar-h) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   display: flex; align-items: stretch;
-  background: rgba(10, 8, 7, 0.72); backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(244, 239, 230, 0.12);
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, rgba(80, 11, 15, 0.86), rgba(28, 6, 6, 0.95));
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(229, 56, 59, 0.55);
+  box-shadow:
+    0 -3px 16px rgba(229, 56, 59, 0.3),
+    0 -14px 46px rgba(193, 18, 31, 0.24),
+    0 -8px 30px rgba(0, 0, 0, 0.45);
 }
 /* wider than a phone: the strip becomes a floating dock */
 @media (min-width: 640px) {
   .appbar {
     bottom: 0.7rem; height: var(--appbar-h); padding-bottom: 0;
-    border-radius: 16px; border: 1px solid rgba(244, 239, 230, 0.14);
-    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55);
+    border-radius: 18px; border: 1px solid rgba(229, 56, 59, 0.5);
+    box-shadow:
+      0 0 24px rgba(229, 56, 59, 0.32),
+      0 0 60px rgba(193, 18, 31, 0.2),
+      0 14px 44px rgba(0, 0, 0, 0.55);
   }
 }
 .appbar__tab {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-  text-decoration: none; color: var(--cream-dim);
-  font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase;
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  text-decoration: none; color: var(--cream);
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
   transition: color 0.2s, transform 0.2s;
 }
-.appbar__tab svg { width: 1.35rem; height: 1.35rem; stroke: currentColor; stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.appbar__tab svg { width: 1.65rem; height: 1.65rem; stroke: currentColor; stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .appbar__tab:active { transform: scale(0.92); }
 .appbar__tab:hover, .appbar__tab.is-active { color: var(--ruby-hot); }
 .appbar__tab.is-active svg { filter: drop-shadow(0 0 6px rgba(229, 56, 59, 0.7)); }
@@ -4024,7 +4034,7 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .app-crumb:hover { background: rgba(193, 18, 31, 0.4); }
 
 /* ---- the M tab: the mark itself is the way home ---- */
-.appbar__m { width: 1.45rem; height: 1.45rem; object-fit: contain; display: block; }
+.appbar__m { width: 1.75rem; height: 1.75rem; object-fit: contain; display: block; }
 
 /* ---- the tab prompt: sound lives in the center tab now ---- */
 .antiabout__tabprompt { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; margin-top: 1.4rem; text-align: center; }
