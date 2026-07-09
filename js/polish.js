@@ -184,8 +184,7 @@
   /* ---------- the app bar, everywhere ----------
      The home page ships its own; every other page gets the same bar
      injected here so the whole site handles like one app. */
-  // M Pay runs as its own app — it ships its own bar
-  if (!document.querySelector(".appbar") && true) {
+  if (!document.querySelector(".appbar")) {
     var here = location.pathname.split("/").pop() || "index.html";
     var tabs = [
       ["index.html#top", "home", "M", '<img class="appbar__m" src="assets/img/m-mark.png" alt="">'],

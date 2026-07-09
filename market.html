@@ -712,6 +712,7 @@
   <script src="js/mtoken.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script src="js/amenities.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -837,20 +838,8 @@
         });
       }
       function loadDirectory() {
-        Promise.all([
-          fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); })
-            .catch(function () { return { categories: ["Photo", "Video", "Web", "Studios", "Stages"], providers: [] }; }),
-          window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
-        ]).then(function (both) {
-          DATA = both[0];
-          (both[1] || []).forEach(function (c) {
-            if (DATA.providers.some(function (p) { return (p.slug || p.id) === c.slug; })) return;
-            DATA.providers.push({
-              id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline,
-              blurb: c.blurb, area: c.area, roles: c.roles || [], badgeColor: c.badge_color,
-              href: c.href, book: c.book, terms: c.terms, ticker: c.ticker,
-            });
-          });
+        window.MCC_FLOOR.load().then(function (floor) {
+          DATA = floor;
           DIR = DATA.providers.filter(function (p) { return !ME || (p.slug || p.id) !== ME.slug; });
           $("pWho").innerHTML = '<option value="">Pick from the floor…</option>' +
             DIR.map(function (p) { return '<option value="' + esc(p.slug || p.id) + '">' + esc(p.name) + " — " + esc(p.headline || "") + "</option>"; }).join("");
@@ -1512,6 +1501,7 @@
           headline: "Listed on the M exchange", terms: { entity: "business" },
         }).then(function () {
           $("xcBizMsg").textContent = "Filed — $" + tick + " lists on the floor once it's verified.";
+          if (window.MCC_FLOOR) window.MCC_FLOOR.invalidate();
           track("xc_business_filed", { tick: tick });
         }).catch(function (e) {
           $("xcBizMsg").textContent = "Couldn't file: " + String(e && e.message || e);
@@ -1687,6 +1677,7 @@
           $("tdSaveMsg").textContent = "Saving…";
           var saved = function () {
             $("tdSaveMsg").textContent = "Saved — it's in review.";
+            if (window.MCC_FLOOR) window.MCC_FLOOR.invalidate();
             track("talent_listing_saved", { via: "market" });
             loadListing();
           };
@@ -1704,19 +1695,9 @@
         }
       })();
 
-      /* ---- boot: same public floor data as M Pay's stocks tab ---- */
-      Promise.all([
-        fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
-        window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
-      ]).then(function (res) {
-        var seen = {};
-        var all = [];
-        (res[0].providers || []).forEach(function (p) { all.push(p); seen[p.id] = 1; });
-        (res[1] || []).forEach(function (c) {
-          if (seen[c.slug]) return;
-          all.push({ id: c.slug, slug: c.slug, name: c.name, roles: c.roles || [], ticker: c.ticker,
-            terms: c.terms, space: c.space, href: c.href });
-        });
+      /* ---- boot: one shared fetch feeds every engine on the page ---- */
+      window.MCC_FLOOR.load().then(function (floor) {
+        var all = floor.providers;
         ROWS = all.map(function (p) {
           var slug = p.slug || p.id;
           var stock = window.MCC_STOCK.build({
@@ -1841,19 +1822,11 @@
       });
       paintAmt();
 
-      /* ---------- the floor data (shared with the picker) ---------- */
+      /* ---------- the floor data: same shared fetch as everyone else ---------- */
       function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
       function loadFloor() {
-        return Promise.all([
-          fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
-          window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
-        ]).then(function (both) {
-          ALL = (both[0].providers || []).slice();
-          (both[1] || []).forEach(function (c) {
-            if (ALL.some(function (p) { return (p.slug || p.id) === c.slug; })) return;
-            ALL.push({ id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline,
-              roles: c.roles || [], badgeColor: c.badge_color, ticker: c.ticker, terms: c.terms, profile: c.href });
-          });
+        return window.MCC_FLOOR.load().then(function (floor) {
+          ALL = floor.providers;
           return ALL;
         });
       }
