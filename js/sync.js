@@ -55,7 +55,8 @@
         tasks: (g.done && g.done[day] || []).length,
         shadow: (g.shadow && g.shadow[day] || []).length,
         idle: g.idleDays || 0, seen: g.lastSeen, since: g.firstSeen,
-        boost: (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0 };
+        boost: (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0,
+        street: (function () { try { return (JSON.parse(localStorage.getItem("mcc_street_last") || "null") || {}).s || null; } catch (e) { return null; } })() };
     } catch (e) { return null; }
   }
   function push() {

@@ -226,7 +226,7 @@
         var n = document.getElementById("tabNGrind");
         if (n) n.textContent = live.length;
         el.innerHTML = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;font-variant-numeric:tabular-nums">' +
-          "<tr style='text-align:left;color:var(--cream-dim)'><th style='padding:0.4em 0.6em'>Player</th><th>Score</th><th>E</th><th>Streak</th><th>Boost</th><th>Tasks</th><th>Shadow</th><th>Idle</th><th>Device</th><th>Seen</th></tr>" +
+          "<tr style='text-align:left;color:var(--cream-dim)'><th style='padding:0.4em 0.6em'>Player</th><th>Score</th><th>E</th><th>Streak</th><th>Boost</th><th>Tasks</th><th>Shadow</th><th>Idle</th><th>Street</th><th>Device</th><th>Seen</th></tr>" +
           live.map(function (row) {
             var g = row.g, sc = grindScore(g), gr = grindGrade(sc);
             var col = gr === "S" || gr === "A" ? "#00c805" : gr === "B" ? "#f8b40a" : "#ff5000";
@@ -237,6 +237,7 @@
               "<td>" + (g.boost >= 0 ? "+" : "") + (g.boost || 0) + "%</td>" +
               "<td>" + (g.tasks || 0) + "/3</td><td>" + (g.shadow || 0) + "/9</td>" +
               "<td>" + (g.idle || 0) + "</td>" +
+              "<td>" + (g.street ? "<b style='color:#f8b40a'>" + g.street + "</b>" : "—") + "</td>" +
               "<td>" + esc(String(g.device || "").slice(4, 10)) + "</td>" +
               "<td>" + esc(g.seen || "") + "</td></tr>";
           }).join("") + "</table></div>" +

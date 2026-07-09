@@ -98,6 +98,17 @@
           the dollars live here, with you.</p>
       </section>
 
+      <section class="pf__card" id="pfStreetCard" style="display:none">
+        <h2>Your Street Score <span class="ta__status">🔒 only you see this</span></h2>
+        <p style="margin:0.1rem 0 0.2rem"><span id="pfStreetN" style="font-size:2.6rem;font-weight:800;font-variant-numeric:tabular-nums">—</span>
+          <b id="pfStreetBand" style="color:#00c805;margin-left:0.4rem"></b></p>
+        <div id="pfStreetBooks" style="margin-top:0.6rem"></div>
+        <p class="pf__note" id="pfStreetNext" style="border-left:3px solid #00c805;padding-left:0.8rem"></p>
+        <p class="pf__note">The credit the bureaus can't see: payment history on the platform, cash-flow cadence,
+          the community's word, behavior, and tenure — the Street Credit Bureau model. It grows the same way
+          real credit does: finish what you sign.</p>
+      </section>
+
       <section class="pf__card" id="pfStockCard" style="display:none">
         <h2>Your M Stock <span class="ta__status">live on your labor</span></h2>
         <div id="pfStock"></div>
@@ -126,6 +137,7 @@
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
   <script src="js/mworth.js?v=__STAMP__"></script>
+  <script src="js/streetscore.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -224,6 +236,28 @@
                   b.dollars.toLocaleString() + "</b></p>";
               }).join("");
               $("pfWorthCard").style.display = "";
+              // the Street Score rides the same private books
+              if (window.MCC_STREET) {
+                var g0 = {};
+                try {
+                  var stg = window.MCC_GRIND ? window.MCC_GRIND.state() : {};
+                  var dday = new Date().toISOString().slice(0, 10);
+                  g0 = { E: stg.E || 0, streak: stg.streak || 0, idle: stg.idleDays || 0,
+                    shadow: (stg.shadow && stg.shadow[dday] || []).length };
+                } catch (e0) {}
+                var sc = window.MCC_STREET.score({ deals: res.rows, ratings: r[3] || [], listing: res.mine, grind: g0 });
+                try { localStorage.setItem("mcc_street_last", JSON.stringify({ s: sc.score, at: Date.now() })); } catch (e1) {}
+                $("pfStreetN").textContent = sc.score;
+                $("pfStreetBand").textContent = sc.band;
+                $("pfStreetBooks").innerHTML = sc.books.map(function (bk) {
+                  return '<div style="margin:0.45rem 0"><p style="display:flex;justify-content:space-between;font-size:0.78rem">' +
+                    "<span style=\"color:var(--cream-dim)\">" + bk.label + " · " + Math.round(bk.weight * 100) + "%</span><b>" + bk.value + "</b></p>" +
+                    '<div style="height:6px;border-radius:6px;background:rgba(244,239,230,0.1)">' +
+                    '<div style="height:6px;border-radius:6px;width:' + bk.value + '%;background:linear-gradient(90deg,#008f04,#00c805)"></div></div></div>';
+                }).join("");
+                $("pfStreetNext").innerHTML = "<b style=\"color:var(--cream)\">Next move:</b> " + sc.next;
+                $("pfStreetCard").style.display = "";
+              }
             }
           });
         }).catch(function () {});
