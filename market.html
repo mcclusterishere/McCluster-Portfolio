@@ -123,8 +123,110 @@
     .xc__mover { flex: none; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 12px; background: rgba(20,16,14,0.6);
       color: var(--cream); font: inherit; font-size: 0.72rem; padding: 0.5em 0.9em; cursor: pointer; font-variant-numeric: tabular-nums; }
     .xc__mover b { font-weight: 800; margin-right: 0.4em; }
+    .xc__unclaimed { display: inline-block; margin-left: 0.4em; font-size: 0.54rem; letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 800; color: #d8ba7c; border: 1px solid rgba(216, 186, 124, 0.5);
+      border-radius: 100px; padding: 0.2em 0.7em; vertical-align: middle; }
     .mk__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
     .mk__hidden { display: none !important; }
+
+    /* ---- M PAY, folded in: the keypad pane + the send sheet ---- */
+    #pay { max-width: 30rem; margin-left: auto; margin-right: auto; }
+    .mp__pay { min-height: 62dvh; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+    .mp__amt { font-family: var(--sig); font-size: clamp(3.6rem, 22vw, 6.4rem); line-height: 1; letter-spacing: 0.01em;
+      min-height: 1.1em; word-break: break-all; }
+    .mp__amt.is-zero { color: rgba(244, 239, 230, 0.4); }
+    .mp__hint { color: var(--cream-dim); font-size: 0.78rem; letter-spacing: 0.08em; margin-top: 0.5rem; min-height: 1.2em; }
+    .mp__pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; margin: clamp(1rem, 4vh, 2rem) 0 0; }
+    .mp__key { background: none; border: 0; color: var(--cream); font: inherit; font-size: 1.55rem; font-weight: 600;
+      padding: clamp(0.5em, 2.2vh, 0.85em) 0; border-radius: 14px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: background 0.12s; }
+    .mp__key:active { background: rgba(244, 239, 230, 0.1); }
+    .mp__go { display: flex; gap: 0.6rem; margin-top: clamp(0.8rem, 3vh, 1.5rem); }
+    .mp__go .btn { flex: 1; justify-content: center; padding: 1em 0; font-size: 0.8rem; text-align: center; }
+    button.btn { cursor: pointer; }
+    button.btn--ghost { background: none; }
+    .mp__veil { position: fixed; inset: 0; background: rgba(5, 4, 3, 0.72); backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 210; }
+    .mp__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 220; max-width: 30rem; margin: 0 auto;
+      background: var(--ink-2, #14100e); border: 1px solid rgba(244, 239, 230, 0.16); border-bottom: 0;
+      border-radius: 22px 22px 0 0; padding: 1.1rem 1.2rem calc(1.4rem + env(safe-area-inset-bottom));
+      transform: translateY(105%); transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.2, 1);
+      max-height: 82dvh; overflow-y: auto; }
+    body.sheet-open .mp__veil { opacity: 1; pointer-events: auto; }
+    body.sheet-open .mp__sheet { transform: translateY(0); }
+    .mp__sheet h2 { font-family: var(--display); text-transform: uppercase; font-weight: 400; font-size: 1.25rem; margin-bottom: 0.8rem; }
+    .mp__sheet h2 small { display: block; font-family: var(--micro); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--ruby-hot); font-weight: 700; }
+    .mp__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.6rem; }
+    .mp__in:focus { outline: none; border-color: var(--ruby-hot); }
+    textarea.mp__in { resize: vertical; min-height: 3.4em; }
+    .mp__row { display: flex; align-items: center; gap: 0.75rem; width: 100%; text-align: left; background: none;
+      border: 0; border-bottom: 1px solid rgba(244, 239, 230, 0.08); color: var(--cream); font: inherit;
+      padding: 0.75rem 0.15rem; cursor: pointer; -webkit-tap-highlight-color: transparent; text-decoration: none; }
+    .mp__row:active { background: rgba(244, 239, 230, 0.05); }
+    .mp__tick { flex: none; width: 52px; height: 34px; display: grid; place-items: center; border-radius: 9px;
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em;
+      background: rgba(10, 8, 7, 0.75); border: 1.5px solid var(--badge-c, var(--ruby-hot)); color: var(--badge-c, var(--ruby-hot)); }
+    .mp__row b { display: block; font-size: 0.92rem; line-height: 1.2; }
+    .mp__row small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.1rem; }
+    .mp__row .mp__val { margin-left: auto; text-align: right; flex: none; }
+    .mp__val small.up { color: #2fbf71; }
+    .mp__kinds { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.2rem 0 0.7rem; }
+    .mp__kind { border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 100px; background: none; color: var(--cream-dim);
+      font: inherit; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.5em 1em; cursor: pointer; }
+    .mp__kind.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
+    .mp__msg { color: var(--ruby-hot); font-size: 0.84rem; min-height: 1.2em; margin-top: 0.4rem; }
+    .mp__note { font-size: 0.74rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.6rem; }
+    .mp__x { position: absolute; top: 0.7rem; right: 0.9rem; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(244, 239, 230, 0.25); background: rgba(10, 8, 7, 0.6); color: var(--cream-dim);
+      font: inherit; font-size: 0.85rem; cursor: pointer; }
+    .mp__done { text-align: center; padding: 1rem 0 0.4rem; }
+    .mp__check { width: 74px; height: 74px; margin: 0 auto 0.9rem; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(47, 191, 113, 0.14); border: 2px solid #2fbf71; color: #2fbf71; font-size: 2rem; }
+    .mp__hidden { display: none !important; }
+
+    /* the You room, living on the desk now */
+    .mp__idcard { display: flex; align-items: center; gap: 0.85rem; border: 1px solid rgba(244, 239, 230, 0.14);
+      border-radius: 16px; background: rgba(20, 16, 14, 0.6); padding: 1rem 1.1rem; margin: 0.9rem 0 0.3rem; }
+    .mp__idtick { flex: none; width: 60px; height: 40px; display: grid; place-items: center; border-radius: 10px;
+      font-size: 0.8rem; font-weight: 800; letter-spacing: 0.04em; background: rgba(10, 8, 7, 0.75);
+      border: 1.5px solid var(--badge-c, var(--ruby-hot)); color: var(--badge-c, var(--ruby-hot)); }
+    .mp__idcard b { display: block; font-size: 1rem; line-height: 1.2; }
+    .mp__idcard small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.15rem; }
+    .mp__idcard .mp__role { display: inline-block; margin-top: 0.35rem; font-family: var(--micro); font-size: 0.62rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .mp__toolhead { margin: 1.3rem 0 0.2rem; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; }
+    .mp__tools { display: grid; gap: 0.55rem; margin-top: 0.5rem; }
+    .mp__tool { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--cream);
+      border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 13px; padding: 0.85rem 1rem;
+      background: rgba(20, 16, 14, 0.5); transition: border-color 0.2s, transform 0.2s; }
+    .mp__tool:active, .mp__tool:hover { border-color: var(--ruby-hot); transform: translateY(-2px); }
+    .mp__tool b { font-size: 0.9rem; }
+    .mp__tool small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.12rem; line-height: 1.35; }
+    .mp__tool .mp__arw { margin-left: auto; color: var(--ruby-hot); flex: none; }
+    .mp__signin { text-align: center; border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px;
+      background: rgba(20, 16, 14, 0.6); padding: 1.6rem 1.2rem; margin-top: 1rem; }
+    .mp__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 14px; background: rgba(20, 16, 14, 0.55);
+      padding: 1rem 1rem 1.1rem; margin-top: 0.8rem; }
+    .mp__lblx { display: block; font-family: var(--micro); font-size: 0.64rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--cream-dim); margin-bottom: 0.6rem; }
+    .mp__linkrow { display: flex; gap: 0.45rem; }
+    .mp__linkrow input { flex: 1; min-width: 0; margin: 0; }
+    .mp__linkrow .btn { padding: 0.8em 1.1em; font-size: 0.6rem; flex: none; }
+    .mp__msgs { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; margin: 0.6rem 0; }
+    .mp__bub { align-self: flex-start; background: rgba(244, 239, 230, 0.08); border-radius: 12px 12px 12px 4px;
+      padding: 0.5rem 0.8rem; font-size: 0.84rem; max-width: 86%; line-height: 1.45; }
+    .mp__bub.is-me { align-self: flex-end; background: rgba(193, 18, 31, 0.35); border-radius: 12px 12px 4px 12px; }
+    .mp__bub small { display: block; font-size: 0.58rem; color: var(--cream-dim); margin-top: 0.25rem; }
+    .mp__deal { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.75rem 0.9rem; margin-top: 0.55rem; }
+    .mp__deal-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; cursor: pointer; }
+    .mp__deal-head b { font-size: 0.88rem; }
+    .mp__deal-head small { color: var(--cream-dim); font-size: 0.68rem; flex: none; }
+    .mp__req { border-bottom: 1px dashed rgba(244, 239, 230, 0.12); padding: 0.7rem 0.1rem; }
+    .mp__req b { font-size: 0.88rem; } .mp__req p { font-size: 0.76rem; color: var(--cream-dim); margin-top: 0.2rem; line-height: 1.5; }
+    .mp__req-acts { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+    .mp__req-acts .mp__kind { font-size: 0.62rem; }
 
     .cr__party { display: grid; grid-template-columns: 1fr 5.2rem; gap: 0.5rem; align-items: center; margin-bottom: 0.55rem; }
     .cr__party input[type=text] { margin: 0; }
@@ -292,7 +394,7 @@
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
       <a class="mk__jump" href="#build">&#9889; Deal builder</a>
-      <a class="mk__jump" href="pay.html">$ M Pay</a>
+      <a class="mk__jump" href="#pay">$ Pay</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
       <a class="mk__jump" href="#yours">Your desk</a>
       <a class="mk__jump" href="#providers">Providers</a>
@@ -361,6 +463,7 @@
       </div>
       <div id="xcDRep"></div>
       <div class="xc__stats" id="xcDStats"></div>
+      <div id="xcClaim"></div>
       <div class="xc__prints" id="xcPrints"></div>
       <div class="finale__actions" style="margin-top:1.1rem">
         <button class="btn btn--xc" id="xcDInvest" type="button">Invest — send a deal</button>
@@ -476,10 +579,40 @@
       </div>
     </section>
 
+    <!-- 4.5 · M PAY: the keypad, folded into the exchange -->
+    <section id="pay">
+      <div class="mp__pay">
+        <h1 style="position:absolute;left:-9999px">M Pay</h1>
+        <div class="mp__amt is-zero" id="mpAmt">$0</div>
+        <p class="mp__hint" id="mpHint">Name your price. Then pick who it's for.</p>
+        <div class="mp__pad" id="mpPad">
+          <button class="mp__key" type="button" data-k="1">1</button>
+          <button class="mp__key" type="button" data-k="2">2</button>
+          <button class="mp__key" type="button" data-k="3">3</button>
+          <button class="mp__key" type="button" data-k="4">4</button>
+          <button class="mp__key" type="button" data-k="5">5</button>
+          <button class="mp__key" type="button" data-k="6">6</button>
+          <button class="mp__key" type="button" data-k="7">7</button>
+          <button class="mp__key" type="button" data-k="8">8</button>
+          <button class="mp__key" type="button" data-k="9">9</button>
+          <button class="mp__key" type="button" data-k=".">.</button>
+          <button class="mp__key" type="button" data-k="0">0</button>
+          <button class="mp__key" type="button" data-k="del" aria-label="Delete">⌫</button>
+        </div>
+        <div class="mp__go">
+          <button class="btn btn--ghost" id="mpRequest" type="button">Request</button>
+          <button class="btn btn--ruby" id="mpSend" type="button">Pay</button>
+        </div>
+      </div>
+    </section>
+
     <!-- 5 · YOUR DEALS -->
     <section id="yours">
       <p class="mk__k">Your desk</p>
       <h2 class="mk__h2">Everything you're in</h2>
+
+      <!-- the You room: id card, role tools, the operator's whole desk -->
+      <div id="mpYou"></div>
 
       <div class="mk__card" id="tdStockCard" style="display:none"><div id="tdStock"></div></div>
 
@@ -528,6 +661,38 @@
     </section>
   </main>
 
+  <!-- M Pay's send sheet: pick who → confirm → done -->
+  <div class="mp__veil" id="mpVeil"></div>
+  <div class="mp__sheet" id="mpSheet" role="dialog" aria-modal="true" aria-label="Send the deal">
+    <button class="mp__x" id="shX" type="button" aria-label="Close">✕</button>
+    <div id="shWho">
+      <h2><small id="shAmtK">PAY</small><span id="shAmt1">$0</span> — to who?</h2>
+      <input class="mp__in" id="shSearch" type="search" placeholder="Search the floor…">
+      <div id="shList"></div>
+    </div>
+    <div id="shFor" class="mp__hidden">
+      <h2><small>THE DEAL</small><span id="shSummary"></span></h2>
+      <div class="mp__kinds" id="shKinds"></div>
+      <input class="mp__in" id="shTitle" type="text" placeholder="What's it for — the song, the job, the project">
+      <textarea class="mp__in" id="shNote" placeholder="Anything they should know (optional)"></textarea>
+      <input class="mp__in mp__hidden" id="shContact" type="text" placeholder="Your name · email or phone">
+      <button class="btn btn--ruby" id="shGo" type="button" style="width:100%;justify-content:center">Send it</button>
+      <p class="mp__msg" id="shMsg"></p>
+      <p class="mp__note" id="shFine">This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record.</p>
+    </div>
+    <div id="shDone" class="mp__hidden mp__done">
+      <div class="mp__check">✓</div>
+      <h2 id="shDoneMsg">Sent.</h2>
+      <p class="mp__note" id="shDoneSub"></p>
+      <a class="btn btn--ruby" href="https://square.link/u/MBVeuzoo?src=mpay" target="_blank" rel="noopener" data-cta="mpay-square" style="margin-top:0.8rem">Pay by card now — Square</a>
+      <p class="mp__note">Secure Square checkout — type the exact amount and put what it's for in the note. The deal record on both sides carries the receipt.</p>
+      <div class="mp__go">
+        <a class="btn btn--ghost" href="#yours">Open the desk</a>
+        <button class="btn btn--ruby" id="shClose" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
   <div id="sheet"></div>
 
   <footer class="site-foot">
@@ -544,6 +709,9 @@
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
   <script src="js/mworth.js?v=__STAMP__"></script>
+  <script src="js/mtoken.js?v=__STAMP__"></script>
+  <script src="js/heat.js?v=__STAMP__"></script>
+  <script src="js/amenities.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -553,7 +721,7 @@
       var ME = null, DIR = [], counterOf = null, active = "All";
 
       /* ---------- app mode: pick a room, everything else vanishes ---------- */
-      var PANES = ["floor", "lanes", "build", "yours", "providers"];
+      var PANES = ["floor", "lanes", "build", "yours", "providers", "pay"];
       window.MK_SHOW = function (id) {
         if (PANES.indexOf(id) === -1) return;
         PANES.forEach(function (pid) {
@@ -1143,7 +1311,10 @@
       function paintList() {
         $("xcList").innerHTML = ROWS.map(function (r, i) {
           return '<button class="xc__row" type="button" data-i="' + i + '">' +
-            '<span class="xc__id"><b>$' + esc(r.tick) + "</b><small>" + esc(r.p.name) +
+            '<span class="xc__id"><b>$' + esc(r.tick) +
+            (r.p.entity === "program" ? '<span class="xc__unclaimed" style="color:#2f9e62;border-color:rgba(47,158,98,0.5)">program</span>' : "") +
+            (r.p.claimed === false ? '<span class="xc__unclaimed">unclaimed</span>' : "") +
+            "</b><small>" + esc(r.p.name) +
             " · " + esc((r.p.roles || [])[0] || "Member") + "</small></span>" +
             '<canvas class="xc__spark" data-spark="' + i + '"></canvas>' +
             '<span class="xc__quote" data-quote="' + i + '">' + quoteHTML(r) + "</span></button>";
@@ -1270,7 +1441,15 @@
           '<div class="xc__stat"><small>Volume</small><b>' + ((hs % 90) + 12) + " prints</b></div>" +
           '<div class="xc__stat"><small>Backers</small><b>' + ((hs >> 6) % 34 + 3) + "</b></div>" +
           '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
-          '<div class="xc__stat"><small>Session</small><b>14 days</b></div>';
+          '<div class="xc__stat"><small>Session</small><b>14 days</b></div>' +
+          (r.engage ? '<div class="xc__stat"><small>The crowd &middot; plays</small><b>' + r.engage.toLocaleString() + "</b></div>" : "");
+        /* anyone can read anyone's chart — claiming it is the door in */
+        $("xcClaim").innerHTML = r.p.claimed === false
+          ? '<div class="mk__card" style="margin-top:0.9rem;border-color:rgba(216,186,124,0.5)">' +
+            '<p class="mk__note" style="margin:0 0 0.7rem"><b style="color:#d8ba7c">Unclaimed ticker.</b> ' +
+            "These are public metrics — the chart runs whether they're here or not. If this is you, it's yours to take.</p>" +
+            '<a class="btn btn--xc" href="claim.html?who=' + encodeURIComponent(r.p.slug || r.p.id) + '" data-cta="xc-claim-self" style="width:100%;justify-content:center">This is me — claim the ticker</a></div>'
+          : "";
         paintBook(r);
         if (r.worth) {
           $("xcDPrice").textContent = "$" + r.worth.worth.toLocaleString();
@@ -1282,7 +1461,8 @@
           }).join("");
         }
         $("xcDPage").href = r.p.href || r.p.profile || "providers.html";
-        $("xcDPay").href = "pay.html?to=" + encodeURIComponent(r.p.slug || r.p.id);
+        $("xcDPay").href = "#pay";
+        $("xcDPay").setAttribute("data-to", r.p.slug || r.p.id);
         document.body.classList.add("xc-open");
         requestAnimationFrame(function () { drawLine($("xcDChart"), hist(r, curTF), r.chg >= 0 ? UP : DN, true); });
         paintRep(r.p.slug || r.p.id);
@@ -1563,6 +1743,35 @@
         }).sort(function (a, b) { return b.val - a.val; });
         paintTape(); paintIndex(); paintList(); paintMovers();
         setInterval(jitter, 2600);
+
+        /* ---- the crowd moves the price: real plays bend the line ----
+           Programs (orgs like Equity Uprise) ride their crowd hard — content
+           interaction is a big share of their move. People get a nudge from
+           the same signal, never a shove. Streaming-platform plays join this
+           exact channel when the nightly snapshot lands (docs/programs.md). */
+        if (window.MCC_HEAT) {
+          window.MCC_HEAT.counts().then(function (plays) {
+            var changed = false;
+            ROWS.forEach(function (r) {
+              var tr = r.p.tracks || [];
+              if (!tr.length) return;
+              var n = tr.reduce(function (s, t) { return s + (plays[window.MCC_HEAT.norm(t)] || 0); }, 0);
+              if (!n) return;
+              r.engage = n;
+              var isProg = r.p.entity === "program";
+              var cap = isProg ? 0.35 : 0.08;
+              var lift = Math.min(cap, Math.log10(1 + n) * (isProg ? 0.16 : 0.04));
+              r.val = +(r.val * (1 + lift)).toFixed(2);
+              r.chg = ((r.val - r.open) / r.open) * 100;
+              r.stock.series[r.stock.series.length - 1].v = r.val;
+              changed = true;
+            });
+            if (changed) {
+              ROWS.sort(function (a, b) { return b.val - a.val; });
+              paintTape(); paintIndex(); paintList(); paintMovers();
+            }
+          }).catch(function () {});
+        }
         track("xc_floor_view", { tickers: ROWS.length });
 
         /* the owner's eyes only: your row shows your TRUE dollar worth.
@@ -1583,6 +1792,544 @@
             });
         }
       });
+    })();
+  </script>
+  <script>
+    /* ============ M PAY, FOLDED IN: keypad, send sheet, the You room ============
+       The whole pay.html engine lives here now — one page, one money door.
+       The keypad is the #pay pane; the You room renders onto the desk. */
+    (function () {
+      "use strict";
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+
+      var AUTHED = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+      var ME = null, ALL = [], amt = "0", dir = "pay", pick = null, kind = "service_booking", preTo = null;
+      var KINDS = [
+        ["service_booking", "Book work"],
+        ["music_collab", "Music / feature"],
+        ["space_booking", "Studio / space"],
+        ["project_funding", "Fund it"],
+        ["custom_offer", "Custom"],
+      ];
+      var KLBL = {}; KINDS.forEach(function (k) { KLBL[k[0]] = k[1]; });
+
+      /* ---------- the amount pad ---------- */
+      function fmt(a) {
+        var parts = a.split(".");
+        parts[0] = (+parts[0]).toLocaleString("en-US");
+        return "$" + parts.join(".");
+      }
+      function paintAmt() {
+        $("mpAmt").textContent = fmt(amt);
+        $("mpAmt").classList.toggle("is-zero", +amt === 0);
+      }
+      $("mpPad").addEventListener("click", function (e) {
+        var k = e.target.getAttribute && e.target.getAttribute("data-k");
+        if (!k) return;
+        if (k === "del") amt = amt.length > 1 ? amt.slice(0, -1) : "0";
+        else if (k === ".") { if (amt.indexOf(".") === -1) amt += "."; }
+        else {
+          var dot = amt.indexOf(".");
+          if (dot !== -1 && amt.length - dot > 2) return;   // cents stop at two
+          if (dot === -1 && amt.replace(/^0+/, "").length >= 6) return; // six figures is the cap
+          amt = amt === "0" ? k : amt + k;
+        }
+        if (amt.slice(-1) === ".") { $("mpAmt").textContent = fmt(amt.slice(0, -1)) + "."; $("mpAmt").classList.remove("is-zero"); }
+        else paintAmt();
+      });
+      paintAmt();
+
+      /* ---------- the floor data (shared with the picker) ---------- */
+      function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
+      function loadFloor() {
+        return Promise.all([
+          fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
+          window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
+        ]).then(function (both) {
+          ALL = (both[0].providers || []).slice();
+          (both[1] || []).forEach(function (c) {
+            if (ALL.some(function (p) { return (p.slug || p.id) === c.slug; })) return;
+            ALL.push({ id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline,
+              roles: c.roles || [], badgeColor: c.badge_color, ticker: c.ticker, terms: c.terms, profile: c.href });
+          });
+          return ALL;
+        });
+      }
+
+      /* ---------- the picker sheet ---------- */
+      function openSheet(d) {
+        dir = d;
+        if (+amt <= 0) { $("mpHint").textContent = "Punch in a number first — any number."; return; }
+        $("shAmtK").textContent = dir === "pay" ? "PAY" : "REQUEST";
+        $("shAmt1").textContent = fmt(amt);
+        $("shWho").classList.remove("mp__hidden");
+        $("shFor").classList.add("mp__hidden");
+        $("shDone").classList.add("mp__hidden");
+        document.body.classList.add("sheet-open");
+        if (pick && preTo) { stepFor(); }
+        else renderPicker("");
+        track("mpay_open_sheet", { dir: dir, amount: +amt });
+      }
+      function closeSheet() { document.body.classList.remove("sheet-open"); }
+      $("mpVeil").addEventListener("click", closeSheet);
+      $("shX").addEventListener("click", closeSheet);
+      $("shClose").addEventListener("click", function () { closeSheet(); amt = "0"; preTo = null; pick = null; paintAmt(); });
+      $("mpSend").addEventListener("click", function () { openSheet("pay"); });
+      $("mpRequest").addEventListener("click", function () { openSheet("request"); });
+
+      /* the ticker sheet's "M Pay" door lands here with the payee pre-picked */
+      function presetTo(slug) {
+        if (!slug) return;
+        var target = ALL.filter(function (p) { return (p.slug || p.id) === slug; })[0];
+        if (!target) return;
+        pick = target; preTo = slug;
+        $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
+      }
+      var payDoor = $("xcDPay");
+      if (payDoor) payDoor.addEventListener("click", function () { presetTo(payDoor.getAttribute("data-to") || ""); });
+
+      function renderPicker(q) {
+        q = (q || "").toLowerCase();
+        var rows = ALL.filter(function (p) {
+          if (ME && (p.slug || p.id) === ME.slug) return false;
+          return !q || (p.name + " " + tickOf(p) + " " + (p.headline || "")).toLowerCase().indexOf(q) !== -1;
+        });
+        $("shList").innerHTML = rows.map(function (p) {
+          return '<button class="mp__row" type="button" data-i="' + ALL.indexOf(p) + '" style="--badge-c:' + esc(p.badgeColor || "#e5383b") + '">' +
+            '<span class="mp__tick">$' + esc(tickOf(p)) + "</span>" +
+            "<span><b>" + esc(p.name) + "</b><small>" + esc(p.headline || (p.roles || []).join(" · ") || "M-Verified") + "</small></span>" +
+            '<span class="mp__val"><small class="up">→</small></span></button>';
+        }).join("") || '<p class="mp__note">Nobody matches that — the floor is always growing.</p>';
+        $("shList").querySelectorAll(".mp__row").forEach(function (b) {
+          b.addEventListener("click", function () {
+            pick = ALL[+b.getAttribute("data-i")];
+            stepFor();
+          });
+        });
+      }
+      $("shSearch").addEventListener("input", function () { renderPicker(this.value); });
+
+      function stepFor() {
+        $("shWho").classList.add("mp__hidden");
+        $("shFor").classList.remove("mp__hidden");
+        $("shSummary").textContent = (dir === "pay" ? "Pay " : "Request ") + fmt(amt) +
+          (dir === "pay" ? " to " : " from ") + pick.name + " ($" + tickOf(pick) + ")";
+        $("shKinds").innerHTML = KINDS.map(function (k) {
+          return '<button class="mp__kind' + (k[0] === kind ? " is-on" : "") + '" type="button" data-kind="' + k[0] + '">' + k[1] + "</button>";
+        }).join("");
+        $("shKinds").querySelectorAll(".mp__kind").forEach(function (b) {
+          b.addEventListener("click", function () {
+            kind = b.getAttribute("data-kind");
+            $("shKinds").querySelectorAll(".mp__kind").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+          });
+        });
+        $("shContact").classList.toggle("mp__hidden", AUTHED);
+        $("shFine").textContent = AUTHED
+          ? "This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record."
+          : "No account needed — this lands in their inbox as a request. Sign in any time to run full deals with signatures.";
+        track("mpay_provider_pick", { who: pick.slug || pick.id });
+      }
+
+      $("shGo").addEventListener("click", function () {
+        var title = $("shTitle").value.trim() || (KLBL[kind] + " — " + fmt(amt) + " via M Pay");
+        var note = $("shNote").value.trim();
+        $("shMsg").textContent = "Sending…";
+        var done = function (kindSent) {
+          $("shFor").classList.add("mp__hidden");
+          $("shDone").classList.remove("mp__hidden");
+          $("shDoneMsg").textContent = (dir === "pay" ? "Sent — " : "Requested — ") + fmt(amt) + ".";
+          $("shDoneSub").textContent = kindSent === "deal"
+            ? pick.name + " sees it on their desk now. Counter, lock, sign — every step stays on the record."
+            : "It's in " + pick.name + "'s inbox — they answer from their desk.";
+          $("shTitle").value = ""; $("shNote").value = ""; $("shMsg").textContent = "";
+          track(kindSent === "deal" ? "mpay_deal_sent" : "mpay_request_sent", { kind: kind, dir: dir, amount: +amt });
+        };
+        var fail = function (e) { $("shMsg").textContent = "Couldn't send: " + String(e && e.message || e); };
+
+        if (AUTHED) {
+          window.MCC_NET.propose({
+            kind: kind, title: title,
+            from_name: (ME && ME.name) || (window.MCC_SUPA.email() || "Me"),
+            to_slug: pick.slug || pick.id, to_name: pick.name,
+            terms: { splits: [], fee: +amt, date: "", notes: (dir === "request" ? "[They pay me — request] " : "") + note, history: [] },
+          }).then(function () { done("deal"); }).catch(fail);
+        } else {
+          var contact = $("shContact").value.trim();
+          if (!contact) { $("shMsg").textContent = "Your name and a way to reach you — that's all it takes."; return; }
+          window.MCC_NET.requestBooking({
+            provider_id: pick.cloud_id || null, provider_slug: pick.slug || pick.id,
+            name: contact.split("·")[0].trim(), contact: contact,
+            details: "[M Pay · " + (dir === "pay" ? "pay" : "request") + " " + fmt(amt) + " · " + (KLBL[kind] || kind) + "] " +
+              title + (note ? " — " + note : ""),
+          }).then(function () { done("request"); }).catch(fail);
+        }
+      });
+
+      /* ---------- the You room: the desk wears your face ---------- */
+      var VENUE = ["Studios", "Stages"], MUSIC = ["Music"], SERVICE = ["Photo", "Video", "Web"];
+      var AMEN_BY_ROLE = {
+        Studios: ["engineer", "iso-booth", "mic-locker", "console", "tuned-room", "mix-master", "session-ready"],
+        Stages: ["broadcast-ready", "stream-uplink", "lighting-grid", "green-room", "house-audio", "multicam", "capacity-rated", "house-screen", "furnished"],
+      };
+      function roleFace(roles) {
+        roles = roles || [];
+        if (roles.some(function (r) { return MUSIC.indexOf(r) !== -1; })) return "artist";
+        if (roles.some(function (r) { return VENUE.indexOf(r) !== -1; })) return "venue";
+        if (roles.some(function (r) { return SERVICE.indexOf(r) !== -1; })) return "provider";
+        return "member";
+      }
+      var FACE_LABEL = { artist: "Artist", venue: "Venue operator", provider: "Service provider", member: "Member" };
+      function tool(href, b, s) {
+        return '<a class="mp__tool" href="' + href + '"><span><b>' + esc(b) + "</b><small>" + esc(s) + "</small></span><span class=\"mp__arw\">→</span></a>";
+      }
+      function paintYou() {
+        var box = $("mpYou");
+        if (!AUTHED) {
+          box.innerHTML =
+            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 1rem">The desk is yours the moment you sign in — your ticker, your room, and tools shaped for what you do: artist, venue, or service provider.</p>' +
+            '<a class="btn btn--ruby" href="profile.html" style="justify-content:center">Claim your room</a></div>';
+          return;
+        }
+        var face = roleFace(ME && ME.roles);
+        var tick = ME ? window.MCC_STOCK.ticker(ME.ticker, ME.name) : "MMBR";
+        var color = (ME && ME.badgeColor) || "#e5383b";
+        box.innerHTML =
+          '<div class="mp__idcard" style="--badge-c:' + esc(color) + '">' +
+          '<span class="mp__idtick">$' + esc(tick) + "</span>" +
+          "<span><b>" + esc((ME && ME.name) || (window.MCC_SUPA.email() || "Your room")) + "</b>" +
+          "<small>" + (ME ? esc(ME.status === "live" ? "● Live on the floor" : ME.status) : "No listing yet") + "</small>" +
+          '<span class="mp__role">' + esc(FACE_LABEL[face]) + "</span></span></div>" +
+          '<div id="youBody"></div>';
+        var body = $("youBody"), html = "";
+
+        if (!ME) {
+          html += '<p class="mp__note">Set up your listing below and the whole network can find and book you — you keep 100% of your rate.</p>';
+        } else if (face === "artist") {
+          html += '<h2 class="mp__toolhead">Your artist tools</h2><div class="mp__tools">' +
+            tool("market.html?with=" + esc(ME.slug || "") + "&kind=music_collab#build", "Sell a feature / split", "Set the price, split the song — signed before it drops") +
+            tool("packet.html", "Log a show, get the packet", "ASCAP / BMI live packets — get paid for the stage") + "</div>";
+        } else if (face === "venue") {
+          var amKeys = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
+          html += '<h2 class="mp__toolhead">Your space</h2><div class="mp__tools">' +
+            tool("packet.html", "Log an event", "Put a booking on the record") + "</div>";
+          if (amKeys.length) html += '<h2 class="mp__toolhead">Your amenities</h2>' +
+            '<p class="mp__note" style="margin:0.2rem 0 0.5rem">What the room offers — not badges, amenities. <a href="amenities.html" style="color:var(--cream)">Manage on your listing →</a></p>' +
+            '<div class="amenity-set" data-amenities="' + esc(amKeys.slice(0, 6).join(",")) + '" data-am-color="' + esc(color) + '"></div>';
+        } else if (face === "provider") {
+          html += '<h2 class="mp__toolhead">Your provider tools</h2><div class="mp__tools">' +
+            tool("market.html?with=" + esc(ME.slug || "") + "&kind=service_booking#build", "Send a booking deal", "Name the job, the date, the rate") +
+            tool("packet.html", "Log your work", "Build your record on the platform") + "</div>";
+        }
+
+        /* ---- THE DESK: the operator's whole business ---- */
+        if (ME) {
+          var slug = ME.slug || "";
+          var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+          html += '<h2 class="mp__toolhead">The desk</h2>';
+          if (face === "venue" || face === "provider") {
+            html += '<div class="mp__card"><span class="mp__lblx">Your booking link — send it, post it, put it in the bio</span>' +
+              '<div class="mp__linkrow"><input class="mp__in" id="dkBook" readonly value="' + esc(base + "spaces.html?who=" + slug) + '">' +
+              '<button class="btn btn--ghost" id="dkBookCopy" type="button">Copy</button></div>' +
+              '<p class="mp__note">Opens your room’s scheduler directly — dates, windows, request. Your calendar rules apply.</p></div>';
+          }
+          html += '<div class="mp__card"><span class="mp__lblx">Get paid — payment request link</span>' +
+            '<input class="mp__in" id="dkAmt" type="number" min="1" placeholder="Amount — like 250">' +
+            '<input class="mp__in" id="dkFor" type="text" placeholder="What it’s for — deposit, session, balance due">' +
+            '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkPayCopy" type="button" style="flex:1">Copy the link</button>' +
+            '<button class="btn btn--ghost" id="dkPayShare" type="button">Share</button></div>' +
+            '<p class="mp__msg" id="dkPayMsg"></p>' +
+            '<p class="mp__note">Text it, DM it, tape it to the door — it opens the Pay keypad with the amount and your name already loaded.</p></div>';
+          if (face === "venue") {
+            var sp0 = ME.space || {};
+            var amOn = sp0.amenities || [];
+            var amOpts = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
+            amOn.forEach(function (id) { if (amOpts.indexOf(id) === -1) amOpts.push(id); });
+            html += '<div class="mp__card"><span class="mp__lblx">Your room — the card renters see on Spaces</span>' +
+              '<input class="mp__in" id="dkRate" type="number" min="1" placeholder="Hourly rate — like 95" value="' + esc(sp0.rate || "") + '">' +
+              '<div class="mp__kinds" id="dkAmen">' + amOpts.map(function (id) {
+                var lbl = id.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+                return '<button class="mp__kind' + (amOn.indexOf(id) !== -1 ? " is-on" : "") + '" type="button" data-am="' + esc(id) + '">' + esc(lbl) + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkSpaceSave" type="button" style="flex:1">Save the room</button></div>' +
+              '<p class="mp__msg" id="dkSpaceMsg"></p>' +
+              '<p class="mp__note">Rate and amenity chips go straight onto your Spaces card. <a href="amenities.html" style="color:var(--cream)">What each amenity means →</a></p></div>';
+            var av = (ME.terms && ME.terms.avail) || { days: [0, 1, 2, 3, 4, 5, 6], slots: [0, 1, 2, 3] };
+            html += '<div class="mp__card"><span class="mp__lblx">Availability — what your calendar allows</span>' +
+              '<div class="mp__kinds" id="dkDays">' + ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (d, i) {
+                return '<button class="mp__kind' + ((av.days || []).indexOf(i) !== -1 ? " is-on" : "") + '" type="button" data-day="' + i + '">' + d + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__kinds" id="dkSlots">' + ["Morning", "Midday", "Evening", "Late"].map(function (s, i) {
+                return '<button class="mp__kind' + ((av.slots || []).indexOf(i) !== -1 ? " is-on" : "") + '" type="button" data-slot="' + i + '">' + s + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkAvSave" type="button" style="flex:1">Save availability</button></div>' +
+              '<p class="mp__msg" id="dkAvMsg"></p></div>';
+          }
+          html += '<div class="mp__card"><span class="mp__lblx">Promote — lead the floor</span>' +
+            '<input class="mp__in" id="dkPromo" type="text" maxlength="40" placeholder="The line — e.g. 10% off weekdays" value="' + esc((ME.terms && ME.terms.promo) || "") + '">' +
+            '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkPromoSave" type="button" style="flex:1">Set it live</button></div>' +
+            '<p class="mp__msg" id="dkPromoMsg"></p>' +
+            '<p class="mp__note">Your card jumps to the front of Spaces with a ★ tag carrying your line. Clear the box to turn it off.</p></div>';
+          html += '<div class="mp__card"><span class="mp__lblx">The pitch kit — close in the room</span>' +
+            '<div class="mp__kinds" id="dkPitchChips"><p class="mp__note">Loading templates…</p></div>' +
+            '<input class="mp__in" id="dkPClient" type="text" placeholder="Client name — e.g. Marcus">' +
+            '<input class="mp__in" id="dkPLink" type="url" placeholder="Demo link (optional — the live site you built them)">' +
+            '<textarea class="mp__in" id="dkPText" rows="7" placeholder="Pick a template above — it fills in here, ready to send."></textarea>' +
+            '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkPCopy" type="button" style="flex:1">Copy the pitch</button>' +
+            '<button class="btn btn--ghost" id="dkPShare" type="button">Share</button></div>' +
+            '<p class="mp__note">Five pitches, pre-loaded from the playbook — edit anything before it goes.</p></div>';
+          html += '<div class="mp__card"><span class="mp__lblx">Deals &amp; messages — talk inside the record</span><div id="dkDeals"><p class="mp__note">Checking…</p></div></div>';
+        }
+        body.innerHTML = html;
+        if (ME) wireDesk(body, face);
+        // the wallet: the M Token ledger rides the desk
+        if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
+        // amenity chips inside the freshly-written body
+        if (window.MCC_AMENITIES) {
+          window.MCC_AMENITIES.get().then(function (d) {
+            var byId = {}; d.amenities.forEach(function (a) { byId[a.id] = a; });
+            body.querySelectorAll(".amenity-set[data-amenities]").forEach(function (slot) {
+              slot.getAttribute("data-amenities").split(",").forEach(function (id) {
+                var a = byId[id.trim()]; if (!a) return;
+                slot.appendChild(window.MCC_AMENITIES.chip(a, slot.getAttribute("data-am-color"), { href: "amenities.html?a=" + encodeURIComponent(id.trim()) }));
+              });
+            });
+          }).catch(function () {});
+        }
+        track("mpay_you", { face: face, authed: true });
+      }
+
+      /* ---------- the desk wiring: copy, share, save, talk ---------- */
+      function copyText(txt, btn) {
+        var done = function () {
+          var old = btn.textContent; btn.textContent = "✓ Copied";
+          setTimeout(function () { btn.textContent = old; }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(done);
+        else { var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select();
+          try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(t); done(); }
+      }
+      function wireDesk(body, face) {
+        var slug = ME.slug || "";
+        var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+        var myName = ME.name || (window.MCC_SUPA.email() || "Me");
+
+        var bk = $("dkBookCopy");
+        if (bk) bk.addEventListener("click", function () {
+          copyText($("dkBook").value, bk); track("desk_booklink_copy", {});
+        });
+
+        function payLink() {
+          var a = (+$("dkAmt").value || 0);
+          if (a <= 0) { $("dkPayMsg").textContent = "Put a number on it first."; return null; }
+          $("dkPayMsg").textContent = "";
+          return base + "market.html?to=" + encodeURIComponent(slug) + "&amt=" + a +
+            ($("dkFor").value.trim() ? "&for=" + encodeURIComponent($("dkFor").value.trim()) : "") + "#pay";
+        }
+        $("dkPayCopy").addEventListener("click", function () {
+          var l = payLink(); if (!l) return;
+          copyText(l, $("dkPayCopy")); track("desk_paylink_copy", { amount: +$("dkAmt").value });
+        });
+        $("dkPayShare").addEventListener("click", function () {
+          var l = payLink(); if (!l) return;
+          if (navigator.share) navigator.share({ title: "Pay " + myName, text: ($("dkFor").value.trim() || "Payment request"), url: l }).catch(function () {});
+          else copyText(l, $("dkPayShare"));
+          track("desk_paylink_share", { amount: +$("dkAmt").value });
+        });
+
+        var spSave = $("dkSpaceSave");
+        if (spSave) {
+          body.querySelectorAll("#dkAmen .mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () { b.classList.toggle("is-on"); });
+          });
+          spSave.addEventListener("click", function () {
+            var rate = +$("dkRate").value;
+            if (!rate || rate < 1) { $("dkSpaceMsg").textContent = "Set the hourly rate first."; return; }
+            var ams = Array.prototype.map.call(body.querySelectorAll("#dkAmen .is-on"), function (b) { return b.getAttribute("data-am"); });
+            var space = Object.assign({}, ME.space || {}, { rate: rate, unit: "hour", amenities: ams });
+            $("dkSpaceMsg").textContent = "Saving…";
+            window.MCC_NET.saveListing({ space: space }).then(function () {
+              ME.space = space;
+              $("dkSpaceMsg").textContent = "Saved — your Spaces card carries it now.";
+              track("desk_space_saved", { rate: rate, amenities: ams.length });
+            }).catch(function (e) {
+              var s = String(e && e.message || e);
+              $("dkSpaceMsg").textContent = s.indexOf("space") !== -1 || s.indexOf("column") !== -1
+                ? "One paste first: docs/market-schema.sql in Supabase, then this saves."
+                : "Couldn't save: " + s;
+            });
+          });
+        }
+
+        var avSave = $("dkAvSave");
+        if (avSave) {
+          body.querySelectorAll("#dkDays .mp__kind, #dkSlots .mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () { b.classList.toggle("is-on"); });
+          });
+          avSave.addEventListener("click", function () {
+            var days = Array.prototype.map.call(body.querySelectorAll("#dkDays .is-on"), function (b) { return +b.getAttribute("data-day"); });
+            var slots = Array.prototype.map.call(body.querySelectorAll("#dkSlots .is-on"), function (b) { return +b.getAttribute("data-slot"); });
+            var terms = Object.assign({}, ME.terms || {}, { avail: { days: days, slots: slots } });
+            $("dkAvMsg").textContent = "Saving…";
+            window.MCC_NET.saveListing({ terms: terms }).then(function () {
+              ME.terms = terms; $("dkAvMsg").textContent = "Saved — the calendar obeys it now.";
+              track("desk_avail_saved", { days: days.length, slots: slots.length });
+            }).catch(function (e) { $("dkAvMsg").textContent = "Couldn't save: " + String(e.message || e); });
+          });
+        }
+
+        $("dkPromoSave").addEventListener("click", function () {
+          var line = $("dkPromo").value.trim();
+          var terms = Object.assign({}, ME.terms || {});
+          if (line) terms.promo = line; else delete terms.promo;
+          $("dkPromoMsg").textContent = "Saving…";
+          window.MCC_NET.saveListing({ terms: terms }).then(function () {
+            ME.terms = terms;
+            $("dkPromoMsg").textContent = line ? "Live — your card leads the floor." : "Promotion off.";
+            track("desk_promo_saved", { on: !!line });
+          }).catch(function (e) { $("dkPromoMsg").textContent = "Couldn't save: " + String(e.message || e); });
+        });
+
+        /* the pitch kit: registry in, filled pitch out */
+        fetch("data/pitch-templates.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (pk) {
+          var chips = $("dkPitchChips");
+          chips.innerHTML = pk.templates.map(function (t, i) {
+            return '<button class="mp__kind" type="button" data-pt="' + i + '" title="' + esc(t.tagline) + '">' + esc(t.name) + "</button>";
+          }).join("");
+          function fill() {
+            var on = chips.querySelector(".is-on"); if (!on) return;
+            var t = pk.templates[+on.getAttribute("data-pt")];
+            var client = $("dkPClient").value.trim() || "Hey";
+            var link = $("dkPLink").value.trim() || (location.origin + location.pathname.replace(/[^/]*$/, ""));
+            $("dkPText").value = t.body
+              .replace(/\{CLIENT\}/g, client)
+              .replace(/\{PRICE\}/g, "$" + t.price.toLocaleString())
+              .replace(/\{MONTHLY\}/g, "$" + t.monthly.toLocaleString())
+              .replace(/\{LINK\}/g, link);
+          }
+          chips.querySelectorAll(".mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () {
+              chips.querySelectorAll(".mp__kind").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+              fill(); track("pitch_template_pick", { template: pk.templates[+b.getAttribute("data-pt")].id });
+            });
+          });
+          $("dkPClient").addEventListener("input", fill);
+          $("dkPLink").addEventListener("input", fill);
+          $("dkPCopy").addEventListener("click", function () {
+            if (!$("dkPText").value.trim()) return;
+            copyText($("dkPText").value, $("dkPCopy")); track("pitch_copied", {});
+          });
+          $("dkPShare").addEventListener("click", function () {
+            var txt = $("dkPText").value.trim(); if (!txt) return;
+            if (navigator.share) navigator.share({ text: txt }).catch(function () {});
+            else copyText(txt, $("dkPShare"));
+            track("pitch_shared", {});
+          });
+        }).catch(function () { $("dkPitchChips").innerHTML = '<p class="mp__note">Templates didn’t load — refresh.</p>'; });
+
+        function loadDeskDeals() {
+          window.MCC_NET.myDeals().then(function (res) {
+            var rows = (res.rows || []).slice(0, 8);
+            if (!rows.length) { $("dkDeals").innerHTML = '<p class="mp__note">No deals yet — every one you make grows a thread here.</p>'; return; }
+            var KIND_TAG = { space_booking: "Space booking", service_booking: "Booking", music_collab: "Collab",
+              song_split: "Split", work_for_hire: "Hire", project_funding: "Funding", custom_offer: "Offer" };
+            $("dkDeals").innerHTML = rows.map(function (d) {
+              var other = d.to_slug === slug ? (d.from_name || "them") : (d.to_name || d.to_slug);
+              var fee = d.terms && d.terms.fee ? " · $" + (+d.terms.fee).toLocaleString() : "";
+              var mine = d.to_slug === slug && (d.status === "proposed" || d.status === "countered");
+              return '<div class="mp__deal" data-deal="' + esc(d.id) + '">' +
+                '<div class="mp__deal-head"><b>' + esc(d.title || d.kind) + "</b><small>" +
+                esc(KIND_TAG[d.kind] || d.kind) + " · " + esc(other) + fee + " · " + esc(d.status) + "</small></div>" +
+                (mine ? '<div class="mp__req-acts"><button class="mp__kind" type="button" data-act="locked">✓ Confirm the slot</button>' +
+                  '<button class="mp__kind" type="button" data-act="declined">✕ Pass</button></div>' : "") +
+                '<div class="mp__thread mp__hidden"><div class="mp__msgs"></div>' +
+                '<div class="mp__linkrow"><input class="mp__in" type="text" placeholder="Say it — they see it on their desk" maxlength="2000">' +
+                '<button class="btn btn--ruby" type="button">Send</button></div><p class="mp__msg"></p></div></div>';
+            }).join("");
+            $("dkDeals").querySelectorAll(".mp__req-acts .mp__kind").forEach(function (b) {
+              b.addEventListener("click", function (ev) {
+                ev.stopPropagation();
+                var id = b.closest(".mp__deal").getAttribute("data-deal");
+                var act = b.getAttribute("data-act");
+                b.textContent = "…";
+                window.MCC_NET.setDealStatus(id, act).then(function () {
+                  track("desk_deal_" + act, {});
+                  loadDeskDeals();
+                }).catch(function () { b.textContent = "Try again"; });
+              });
+            });
+            $("dkDeals").querySelectorAll(".mp__deal").forEach(function (card) {
+              var id = card.getAttribute("data-deal");
+              var thread = card.querySelector(".mp__thread");
+              var msgs = card.querySelector(".mp__msgs");
+              var msgEl = card.querySelector(".mp__msg");
+              function paint() {
+                window.MCC_NET.messages(id).then(function (rows) {
+                  msgs.innerHTML = (rows || []).map(function (m) {
+                    var me = m.from_owner === window.MCC_SUPA.uid();
+                    return '<div class="mp__bub' + (me ? " is-me" : "") + '">' + esc(m.body) +
+                      "<small>" + esc(me ? "You" : m.from_name || "Them") + " · " + new Date(m.created_at).toLocaleString() + "</small></div>";
+                  }).join("") || '<p class="mp__note">No messages yet — start the thread.</p>';
+                  msgs.scrollTop = msgs.scrollHeight;
+                }).catch(function () {
+                  msgEl.textContent = "The thread needs one paste: docs/messages-schema.sql in Supabase.";
+                });
+              }
+              card.querySelector(".mp__deal-head").addEventListener("click", function () {
+                thread.classList.toggle("mp__hidden");
+                if (!thread.classList.contains("mp__hidden")) { paint(); track("desk_thread_open", {}); }
+              });
+              card.querySelector("button.btn--ruby").addEventListener("click", function () {
+                var input = card.querySelector("input");
+                var txt = input.value.trim(); if (!txt) return;
+                window.MCC_NET.sendMessage(id, txt, myName).then(function () {
+                  input.value = ""; paint(); track("desk_message_sent", {});
+                }).catch(function () { msgEl.textContent = "Couldn't send — run docs/messages-schema.sql, then it's on."; });
+              });
+            });
+          }).catch(function () { $("dkDeals").innerHTML = '<p class="mp__note">Couldn’t reach the deals.</p>'; });
+        }
+        loadDeskDeals();
+      }
+
+      /* ---------- boot ---------- */
+      loadFloor().then(function () {
+        // a payment-request link: ?to=slug&amt=250&for=Deposit opens the keypad
+        // with the amount and the payee already loaded — one tap to send
+        var Q = new URLSearchParams(location.search);
+        if (Q.get("to")) {
+          var target = ALL.filter(function (p) { return (p.slug || p.id) === Q.get("to"); })[0];
+          var a = (Q.get("amt") || "").replace(/[^0-9.]/g, "");
+          if (target) {
+            if (window.MK_SHOW) window.MK_SHOW("pay");
+            pick = target; preTo = target.slug || target.id;
+            if (+a > 0) {
+              amt = a; paintAmt();
+              openSheet("pay");
+              stepFor();
+              if (Q.get("for")) $("shTitle").value = Q.get("for");
+              track("mpay_paylink_open", { to: Q.get("to"), amount: +a });
+            } else {
+              $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
+            }
+          }
+        }
+        // local rehearsal only: a staged listing so the desk can be walked
+        try {
+          if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+            var dbg = JSON.parse(localStorage.getItem("mcc_debug_listing") || "null");
+            if (dbg) { ME = dbg; AUTHED = true; }
+          }
+        } catch (e) {}
+        if (AUTHED && window.MCC_NET && !ME) {
+          window.MCC_NET.myListing().then(function (mine) {
+            ME = mine;
+            paintYou();
+          }).catch(function () { paintYou(); });
+        } else paintYou();
+      });
+      track("mpay_view", { authed: AUTHED, merged: true });
     })();
   </script>
 </body>

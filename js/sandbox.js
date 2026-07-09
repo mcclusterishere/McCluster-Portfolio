@@ -107,7 +107,7 @@
       if (a === "next") { i++; paint(); track("sandbox_step", { step: i }); }
       else if (a === "skip" || a === "done") {
         track("sandbox_enter_app", { who: p.tick, skipped: a === "skip" });
-        location.href = "pay.html";
+        location.href = "market.html#pay";
       }
     });
     paint();

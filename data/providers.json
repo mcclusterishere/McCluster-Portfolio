@@ -1,238 +1,268 @@
 {
-  "note": "The provider directory behind the Hire tab. Every listing is M-Verified before it appears; intake runs through interview.html (talent) and list-your-space.html (venues).",
-  "categories": [
+ "note": "The provider directory behind the Hire tab. Every listing is M-Verified before it appears; intake runs through interview.html (talent) and list-your-space.html (venues).",
+ "categories": [
+  "Photo",
+  "Video",
+  "Web",
+  "Studios",
+  "Stages"
+ ],
+ "providers": [
+  {
+   "id": "mccluster",
+   "ticker": "MCC",
+   "name": "Matthew McCluster",
+   "roles": [
     "Photo",
     "Video",
-    "Web",
-    "Studios",
-    "Stages"
-  ],
-  "providers": [
-    {
-      "id": "mccluster",
-      "ticker": "MCC",
-      "name": "Matthew McCluster",
-      "roles": [
-        "Photo",
-        "Video",
-        "Web"
-      ],
-      "headline": "Creative director · the builder of this site",
-      "area": "Connecticut · Georgia · travels",
-      "verified": "performer",
-      "badgeColor": "#8b5cf6",
-      "href": "profile-mccluster.html",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k.",
-      "terms": {
-        "feature": 1000,
-        "floor": 50,
-        "notes": "The Artist Offer: $1,000 for a feature — and the thousand comes with 50% of the songwriting, 50% of the publishing, 50% of everything. Signed in the Market before the song drops."
-      },
-      "profile": "profile-mccluster.html",
-      "music": {
-        "src": "assets/audio/antisocial.mp3",
-        "title": "Antisocial"
-      },
-      "square": "https://square.link/u/MBVeuzoo"
-    },
-    {
-      "id": "decibel-studios",
-      "ticker": "DCB",
-      "name": "Decibel Studios",
-      "roles": [
-        "Studios"
-      ],
-      "headline": "Zakir's boutique recording room",
-      "area": "Green Industrial Way · Atlanta, GA",
-      "verified": "studio",
-      "badgeColor": "#f8b40a",
-      "href": "profile-zakir.html",
-      "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
-      "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
-      "profile": "profile-zakir.html",
-      "photo": "assets/frames/vperf1_0001.jpg",
-      "space": {
-        "rate": 45,
-        "unit": "hour",
-        "amenities": [
-          "engineer",
-          "iso-booth",
-          "mic-locker",
-          "console",
-          "tuned-room",
-          "mix-master"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            0,
-            1,
-            2
-          ]
-        }
-      },
-      "music": {
-        "src": "assets/audio/vaunt.mp3",
-        "title": "Vaunt (Acoustic) — Zakir on the six-string"
-      }
-    },
-    {
-      "id": "k-cohiba",
-      "ticker": "KCHB",
-      "name": "K-Cohiba",
-      "roles": [
-        "Music"
-      ],
-      "headline": "Boston artist — the catalogue lands as he claims it",
-      "area": "Boston, MA · onboarding — final rates being confirmed with the team",
-      "verified": "pending",
-      "badgeColor": "#4a7fb5",
-      "href": "claim.html?who=k-cohiba",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "Boston artist joining the network. His songs load through his own desk, his shows book through the team, and his ticker trades on the market.",
-      "photo": "assets/frames/uprise_0080.jpg",
-      "space": {
-        "rate": 95,
-        "unit": "hour",
-        "amenities": [
-          "house-audio",
-          "lighting-grid",
-          "green-room",
-          "capacity-rated"
-        ]
-      }
-    },
-    {
-      "id": "revent-space",
-      "ticker": "RVNT",
-      "name": "Revent Space",
-      "roles": [
-        "Stages"
-      ],
-      "headline": "Dorchester's community event room — furnished, lit, ready by 10am",
-      "area": "413 Neponset Ave · Dorchester, Boston, MA",
-      "verified": "pending",
-      "badgeColor": "#45b6ff",
-      "href": "space-revent.html",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "A community-first event room in Dorchester: 32 seated at tables, up to 48 for a mixer, with the 65″ smart display, mic, speakers, and LED color lighting already in the room. Pop-ups, seminars, brunches, showers, open mics — bookable 10am to midnight.",
-      "photo": "assets/clients/revent/img/w1.jpg",
-      "space": {
-        "rate": 185,
-        "unit": "hour",
-        "amenities": [
-          "house-audio",
-          "lighting-grid",
-          "capacity-rated",
-          "house-screen",
-          "furnished"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            1,
-            2,
-            3
-          ]
-        }
-      }
-    },
-    {
-      "id": "revent-lounge",
-      "name": "Revent Work Lounge & Photo Studio",
-      "roles": [
-        "Studios"
-      ],
-      "headline": "1,200 sq ft of natural light — shoots by day, sessions all week",
-      "area": "413 Neponset Ave · Dorchester, Boston, MA",
-      "verified": "pending",
-      "badgeColor": "#45b6ff",
-      "href": "space-revent.html#lounge",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Work%20Lounge%20via%20M%20Network&body=Shoot%20or%20session%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "Revent's second room: 1,200 square feet of natural light built for photo sessions and focused work — with a 15-seat conference room, whiteboard, grass wall, 65″ smart display, Bluetooth speakers, LED bar uplighting, and WiFi.",
-      "photo": "assets/clients/revent/img/Home.jpeg",
-      "space": {
-        "rate": 65,
-        "unit": "hour",
-        "amenities": [
-          "natural-light",
-          "client-lounge",
-          "house-screen",
-          "furnished",
-          "capacity-rated"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            0,
-            1,
-            2
-          ]
-        }
-      }
-    },
-    {
-      "id": "laire",
-      "ticker": "LRE",
-      "name": "Laire",
-      "roles": [
-        "Video",
-        "Photo"
-      ],
-      "headline": "Cameraman · M Network",
-      "area": "Onboarding — claiming this profile now",
-      "verified": "pending",
-      "badgeColor": "#8b5cf6",
-      "href": "onboard.html?role=provider",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile."
-    },
-    {
-      "id": "mccluster-pullup",
-      "ticker": "PLUP",
-      "name": "The Pull-Up · McCluster mobile",
-      "roles": [
-        "Video",
-        "Photo"
-      ],
-      "headline": "The engineer comes to you — recording, shoot, edit, on site",
-      "area": "Books by zone · exact locations never published",
-      "verified": "performer",
-      "badgeColor": "#2fbf71",
-      "href": "hire.html",
-      "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
-      "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
-      "profile": "hire.html"
+    "Web"
+   ],
+   "headline": "Creative director · the builder of this site",
+   "area": "Connecticut · Georgia · travels",
+   "verified": "performer",
+   "badgeColor": "#8b5cf6",
+   "href": "profile-mccluster.html",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
+   "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k.",
+   "terms": {
+    "feature": 1000,
+    "floor": 50,
+    "notes": "The Artist Offer: $1,000 for a feature — and the thousand comes with 50% of the songwriting, 50% of the publishing, 50% of everything. Signed in the Market before the song drops."
+   },
+   "profile": "profile-mccluster.html",
+   "music": {
+    "src": "assets/audio/antisocial.mp3",
+    "title": "Antisocial"
+   },
+   "square": "https://square.link/u/MBVeuzoo",
+   "tracks": [
+    "antisocial",
+    "vaunt",
+    "who-did-the-shoot",
+    "got-wifi",
+    "dealer-plates",
+    "dealer-plates-b",
+    "money-or-the-power"
+   ],
+   "claimed": true
+  },
+  {
+   "id": "equity-uprise",
+   "ticker": "EU",
+   "name": "Equity Uprise",
+   "roles": [
+    "Programs"
+   ],
+   "entity": "program",
+   "headline": "The civic fellowship — equity, then we rise",
+   "area": "Bridgeport, CT · on the public record",
+   "verified": "nonprofit",
+   "badgeColor": "#2f9e62",
+   "href": "equity-uprise.html",
+   "tracks": [
+    "environmental-injustice"
+   ],
+   "claimed": true,
+   "book": "mailto:matthew@mccluster.org?subject=Equity%20Uprise%20%E2%80%94%20get%20involved"
+  },
+  {
+   "id": "decibel-studios",
+   "ticker": "DCB",
+   "name": "Decibel Studios",
+   "roles": [
+    "Studios"
+   ],
+   "headline": "Zakir's boutique recording room",
+   "area": "Green Industrial Way · Atlanta, GA",
+   "verified": "studio",
+   "badgeColor": "#f8b40a",
+   "href": "profile-zakir.html",
+   "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
+   "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
+   "profile": "profile-zakir.html",
+   "photo": "assets/frames/vperf1_0001.jpg",
+   "space": {
+    "rate": 45,
+    "unit": "hour",
+    "amenities": [
+     "engineer",
+     "iso-booth",
+     "mic-locker",
+     "console",
+     "tuned-room",
+     "mix-master"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      0,
+      1,
+      2
+     ]
     }
-  ]
+   },
+   "music": {
+    "src": "assets/audio/vaunt.mp3",
+    "title": "Vaunt (Acoustic) — Zakir on the six-string"
+   }
+  },
+  {
+   "id": "k-cohiba",
+   "ticker": "KCHB",
+   "name": "K-Cohiba",
+   "roles": [
+    "Music"
+   ],
+   "headline": "Boston artist — the catalogue lands as he claims it",
+   "area": "Boston, MA · onboarding — final rates being confirmed with the team",
+   "verified": "pending",
+   "badgeColor": "#4a7fb5",
+   "href": "claim.html?who=k-cohiba",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "Boston artist joining the network. His songs load through his own desk, his shows book through the team, and his ticker trades on the market.",
+   "photo": "assets/frames/uprise_0080.jpg",
+   "space": {
+    "rate": 95,
+    "unit": "hour",
+    "amenities": [
+     "house-audio",
+     "lighting-grid",
+     "green-room",
+     "capacity-rated"
+    ]
+   },
+   "claimed": false
+  },
+  {
+   "id": "revent-space",
+   "ticker": "RVNT",
+   "name": "Revent Space",
+   "roles": [
+    "Stages"
+   ],
+   "headline": "Dorchester's community event room — furnished, lit, ready by 10am",
+   "area": "413 Neponset Ave · Dorchester, Boston, MA",
+   "verified": "pending",
+   "badgeColor": "#45b6ff",
+   "href": "space-revent.html",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "A community-first event room in Dorchester: 32 seated at tables, up to 48 for a mixer, with the 65″ smart display, mic, speakers, and LED color lighting already in the room. Pop-ups, seminars, brunches, showers, open mics — bookable 10am to midnight.",
+   "photo": "assets/clients/revent/img/w1.jpg",
+   "space": {
+    "rate": 185,
+    "unit": "hour",
+    "amenities": [
+     "house-audio",
+     "lighting-grid",
+     "capacity-rated",
+     "house-screen",
+     "furnished"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      1,
+      2,
+      3
+     ]
+    }
+   }
+  },
+  {
+   "id": "revent-lounge",
+   "name": "Revent Work Lounge & Photo Studio",
+   "roles": [
+    "Studios"
+   ],
+   "headline": "1,200 sq ft of natural light — shoots by day, sessions all week",
+   "area": "413 Neponset Ave · Dorchester, Boston, MA",
+   "verified": "pending",
+   "badgeColor": "#45b6ff",
+   "href": "space-revent.html#lounge",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Work%20Lounge%20via%20M%20Network&body=Shoot%20or%20session%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "Revent's second room: 1,200 square feet of natural light built for photo sessions and focused work — with a 15-seat conference room, whiteboard, grass wall, 65″ smart display, Bluetooth speakers, LED bar uplighting, and WiFi.",
+   "photo": "assets/clients/revent/img/Home.jpeg",
+   "space": {
+    "rate": 65,
+    "unit": "hour",
+    "amenities": [
+     "natural-light",
+     "client-lounge",
+     "house-screen",
+     "furnished",
+     "capacity-rated"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      0,
+      1,
+      2
+     ]
+    }
+   }
+  },
+  {
+   "id": "laire",
+   "ticker": "LRE",
+   "name": "Laire",
+   "roles": [
+    "Video",
+    "Photo"
+   ],
+   "headline": "Cameraman · M Network",
+   "area": "Onboarding — claiming this profile now",
+   "verified": "pending",
+   "badgeColor": "#8b5cf6",
+   "href": "onboard.html?role=provider",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
+   "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile."
+  },
+  {
+   "id": "mccluster-pullup",
+   "ticker": "PLUP",
+   "name": "The Pull-Up · McCluster mobile",
+   "roles": [
+    "Video",
+    "Photo"
+   ],
+   "headline": "The engineer comes to you — recording, shoot, edit, on site",
+   "area": "Books by zone · exact locations never published",
+   "verified": "performer",
+   "badgeColor": "#2fbf71",
+   "href": "hire.html",
+   "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
+   "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
+   "profile": "hire.html"
+  }
+ ]
 }
