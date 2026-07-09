@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-09T14:37:36.896Z",
+  "generated_at": "2026-07-09T17:37:58.808Z",
   "isrc_prefix": "QT6KV",
-  "count": 10,
+  "count": 11,
   "tracks": [
     {
       "slug": "who-did-the-shoot",
@@ -112,6 +112,17 @@
       "available": true,
       "order": 10,
       "no": "10"
+    },
+    {
+      "slug": "please-set-me-free",
+      "title": "Please Set Me Free",
+      "credit": "",
+      "album": "Unfiled",
+      "page": "",
+      "length": "3:22",
+      "available": true,
+      "order": 500,
+      "no": "11"
     }
   ]
 }
