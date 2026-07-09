@@ -66,6 +66,8 @@
         <input class="pf__in" id="pfEmail" type="email" placeholder="you@yourwork.com" autocomplete="email">
         <input class="pf__in" id="pfTicker" type="text" placeholder="Claim your ticker — 2–5 letters, like MCC" maxlength="5" autocapitalize="characters" style="text-transform:uppercase">
         <button class="btn btn--ruby" id="pfSignIn" type="button">Sign up / sign in — email me the key</button>
+        <p class="pf__note" style="text-align:center;margin:0.6rem 0 0.2rem">— or skip the inbox entirely —</p>
+        <button class="btn btn--ghost" id="pfInstant" type="button" style="width:100%">Start instantly — no email needed</button>
         <p class="pf__msg" id="pfMsg"></p>
         <div class="pf__gets">
           <div class="pf__get"><b>Your ticker</b><small>Your own symbol — you trade on the floor like a stock, moved by real work.</small></div>
@@ -134,10 +136,22 @@
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
       });
 
+      /* instant start: real cloud account, zero email — the ticker claim
+         rides along exactly like the magic-link path */
+      $("pfInstant").addEventListener("click", function () {
+        var tc = window.MCC_STOCK ? window.MCC_STOCK.ticker($("pfTicker").value, "") : $("pfTicker").value.toUpperCase();
+        if ($("pfTicker").value.trim()) { try { localStorage.setItem("mcc_ticker_claim", tc); } catch (e) {} }
+        $("pfMsg").textContent = "Opening your room…";
+        window.MCC_AUTH.signInAnon().then(function () {
+          track("profile_instant_start", {});
+          location.reload();
+        }).catch(function (e) { $("pfMsg").textContent = String(e.message || e); });
+      });
+
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
         $("pfOut").classList.add("pf__hidden");
         $("pfIn").classList.remove("pf__hidden");
-        $("pfWho").textContent = window.MCC_SUPA.email() || "Signed in";
+        $("pfWho").textContent = window.MCC_SUPA.email() || "Instant account — this device is the key";
         // the archetype: what the model reads in you, and how deep you're standing
         if (window.MCC_MODEL) {
           var pr = window.MCC_MODEL.profile();
