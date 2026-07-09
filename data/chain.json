@@ -1,0 +1,230 @@
+{
+ "note": "The M Chain — hash-linked attestations. Rebuild/verify with tools/chain.mjs. Never edit by hand.",
+ "entries": [
+  {
+   "i": 0,
+   "prev": "genesis",
+   "at": "2026-07-09T18:28:11.131Z",
+   "type": "recording",
+   "subject": "antisocial",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/antisocial.mp3",
+   "sha256": "4975c4a0c04f12d0e64decf364c9f9ab64934a069d72e8ca7ec987d09bb18600",
+   "digest": "13e0a51cff3e53f43df09dfa703cdd990010a5dd9e1f8e51e651a0413d643846"
+  },
+  {
+   "i": 1,
+   "prev": "13e0a51cff3e53f43df09dfa703cdd990010a5dd9e1f8e51e651a0413d643846",
+   "at": "2026-07-09T18:28:11.142Z",
+   "type": "recording",
+   "subject": "dealer-plates-b",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/dealer-plates-b.mp3",
+   "sha256": "889837d76ad097d3457ea24d0224e7460ee5774af4987a3ecace75d4a9aa052b",
+   "digest": "4bf82c10beaf6739f534ddafe7222aadba26e6ef77e30b8f1b9eed2fc1c79646"
+  },
+  {
+   "i": 2,
+   "prev": "4bf82c10beaf6739f534ddafe7222aadba26e6ef77e30b8f1b9eed2fc1c79646",
+   "at": "2026-07-09T18:28:11.152Z",
+   "type": "recording",
+   "subject": "dealer-plates",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/dealer-plates.mp3",
+   "sha256": "ec8a6af0b42f058496b7944d6f9fcc090289fa0964275163dd2d4e5c32ebe2fa",
+   "digest": "03f59dff80324372da72ad84df06c64be0ffbf6fddb5cf540acb9b313fa861be"
+  },
+  {
+   "i": 3,
+   "prev": "03f59dff80324372da72ad84df06c64be0ffbf6fddb5cf540acb9b313fa861be",
+   "at": "2026-07-09T18:28:11.158Z",
+   "type": "recording",
+   "subject": "environmental-injustice-brave",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/environmental-injustice-brave.mp3",
+   "sha256": "68dc1dbea865bfe72bc71b87697ade056e315f1204da7d7adcf8e3132fba86d3",
+   "digest": "6ce404383d9ccb4c904acb07a40a7927865d8f316ec01f98f0177e9f261e0a4c"
+  },
+  {
+   "i": 4,
+   "prev": "6ce404383d9ccb4c904acb07a40a7927865d8f316ec01f98f0177e9f261e0a4c",
+   "at": "2026-07-09T18:28:11.171Z",
+   "type": "recording",
+   "subject": "environmental-injustice",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/environmental-injustice.mp3",
+   "sha256": "f7732c0bf6ea03014196e119030ab86612c19d0b7447049e868f676cc881f362",
+   "digest": "e1e9da64239a811fe0723e2e52dfa3c8871aa016103517d60db477c07736b8e0"
+  },
+  {
+   "i": 5,
+   "prev": "e1e9da64239a811fe0723e2e52dfa3c8871aa016103517d60db477c07736b8e0",
+   "at": "2026-07-09T18:28:11.180Z",
+   "type": "recording",
+   "subject": "got-wifi",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/got-wifi.mp3",
+   "sha256": "2fcf899b19fa064d6cd1730f835bd75605a6f6d9d275484cf45f034bdc876d21",
+   "digest": "5d61a9ce5b7f0504cdd76aec19fca7cc81789a720b041cdfa167bb54ca1bae5c"
+  },
+  {
+   "i": 6,
+   "prev": "5d61a9ce5b7f0504cdd76aec19fca7cc81789a720b041cdfa167bb54ca1bae5c",
+   "at": "2026-07-09T18:28:11.186Z",
+   "type": "recording",
+   "subject": "money-or-the-power",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/money-or-the-power.mp3",
+   "sha256": "c43137cbb66aa38906ac8eb82d413a95f60fbd0acfe1dcb9c12a7e93820ebf4e",
+   "digest": "675c722864e2bcc7b4daae0226263e859f2175ebb1830082abc8a0305d419290"
+  },
+  {
+   "i": 7,
+   "prev": "675c722864e2bcc7b4daae0226263e859f2175ebb1830082abc8a0305d419290",
+   "at": "2026-07-09T18:28:11.198Z",
+   "type": "recording",
+   "subject": "please-set-me-free",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/please-set-me-free.mp3",
+   "sha256": "dc789f000af66925b8a758d7674e2c0f6432168faec1ec037f750cf98f049d42",
+   "digest": "58e0a628816678a0f214e134af931a59f084c294d76f7b2b039f20d4186d437b"
+  },
+  {
+   "i": 8,
+   "prev": "58e0a628816678a0f214e134af931a59f084c294d76f7b2b039f20d4186d437b",
+   "at": "2026-07-09T18:28:11.212Z",
+   "type": "recording",
+   "subject": "scar-stories",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/scar-stories.mp3",
+   "sha256": "a7faa6cf20adeadaec8e9a3899cfbc3b7ae4368bcc4980cf2d23ea73726b7b46",
+   "digest": "77021b9fad1f40ca88b5116d19b36bb9f0239685fd45aa716c31f9ff6282d599"
+  },
+  {
+   "i": 9,
+   "prev": "77021b9fad1f40ca88b5116d19b36bb9f0239685fd45aa716c31f9ff6282d599",
+   "at": "2026-07-09T18:28:11.240Z",
+   "type": "recording",
+   "subject": "sjw",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/sjw.mp3",
+   "sha256": "0b52a66586e541435f1cf63fd8d5217892233721f7fa6822011887310b011cc3",
+   "digest": "3f06517c1287ff26d9a27fbfa43b3a0db4e7c94feb436c8553afcc1b3b8abe93"
+  },
+  {
+   "i": 10,
+   "prev": "3f06517c1287ff26d9a27fbfa43b3a0db4e7c94feb436c8553afcc1b3b8abe93",
+   "at": "2026-07-09T18:28:11.262Z",
+   "type": "recording",
+   "subject": "vaunt-full",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/vaunt-full.mp3",
+   "sha256": "e5a18b3002c7e43346496d9c6c8840f3babfcef034fc9fd5f4d835f39ac6f559",
+   "digest": "979922c244750e78895924301982d112c6d3ef3c03e8cf25b00438ba2e078693"
+  },
+  {
+   "i": 11,
+   "prev": "979922c244750e78895924301982d112c6d3ef3c03e8cf25b00438ba2e078693",
+   "at": "2026-07-09T18:28:11.283Z",
+   "type": "recording",
+   "subject": "vaunt",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/vaunt.mp3",
+   "sha256": "df402af762eb96510edfd202d9a81bef7416bf05a8ea3b37f64488ce52a33c30",
+   "digest": "32eb1d3a1d8db5ca211f5aef93f67133136a011db86ed4fe7990548745ae9f4d"
+  },
+  {
+   "i": 12,
+   "prev": "32eb1d3a1d8db5ca211f5aef93f67133136a011db86ed4fe7990548745ae9f4d",
+   "at": "2026-07-09T18:28:11.288Z",
+   "type": "recording",
+   "subject": "who-did-the-shoot",
+   "claim": "Master recording — authorship and existence of these exact bytes",
+   "path": "assets/audio/who-did-the-shoot.mp3",
+   "sha256": "449603d99a5906e1316080b6000d9e0d437ba3ba0a978d8c09572bceb11cd590",
+   "digest": "a4860506827af0edf29c7191a7495daa6a5f483fd415bb41178121ae87441c09"
+  },
+  {
+   "i": 13,
+   "prev": "a4860506827af0edf29c7191a7495daa6a5f483fd415bb41178121ae87441c09",
+   "at": "2026-07-09T18:28:11.296Z",
+   "type": "paper",
+   "subject": "scb-alternative-credit-ecosystems",
+   "claim": "Published paper — the document of record",
+   "path": "assets/papers/scb-alternative-credit-ecosystems.pdf",
+   "sha256": "855eff3c22ec597ebe354b2b0d93165ce9dd0b90ac45d2878f7a1f4b58c2fd2b",
+   "digest": "44709670655f9007fcbecb0d2d6e65354d0af6e3d0742db737992677b27b828d"
+  },
+  {
+   "i": 14,
+   "prev": "44709670655f9007fcbecb0d2d6e65354d0af6e3d0742db737992677b27b828d",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "lyrics",
+   "subject": "dealer-plates",
+   "claim": "Synchronized lyric — the written work, timecoded",
+   "path": "data/lyrics/dealer-plates.ttml",
+   "sha256": "34bd9dc010c99f475e7c17edbe2a8fd99fdc8d2926f30aadff8928d9c9e7550b",
+   "digest": "6c7df9c74910bda801475b7d99f6c65479c1accdec0d8ab1c0cbbc428dcfe9e7"
+  },
+  {
+   "i": 15,
+   "prev": "6c7df9c74910bda801475b7d99f6c65479c1accdec0d8ab1c0cbbc428dcfe9e7",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "lyrics",
+   "subject": "environmental-injustice-brave",
+   "claim": "Synchronized lyric — the written work, timecoded",
+   "path": "data/lyrics/environmental-injustice-brave.ttml",
+   "sha256": "3ef15416784ecfb4f06db43c0535dc713137f6681cdd5f1534cc420084a30339",
+   "digest": "c52527995e798d3456270f7ad5b4cab7e8292b226662c905005b0b3527531627"
+  },
+  {
+   "i": 16,
+   "prev": "c52527995e798d3456270f7ad5b4cab7e8292b226662c905005b0b3527531627",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "lyrics",
+   "subject": "money-or-the-power",
+   "claim": "Synchronized lyric — the written work, timecoded",
+   "path": "data/lyrics/money-or-the-power.ttml",
+   "sha256": "c2c7b50d7d23238d3d812f3b6a926d437cff29052569741e29681f5b95110edb",
+   "digest": "7a233123a79ac269479eb67d4af1539715bb5091c8fcc382ae57999325530b78"
+  },
+  {
+   "i": 17,
+   "prev": "7a233123a79ac269479eb67d4af1539715bb5091c8fcc382ae57999325530b78",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "badge",
+   "subject": "mccluster",
+   "claim": "M-Verified · performer — issued on the M Network to Matthew McCluster",
+   "digest": "b89b58e84b6b59f820cebc9726aa86024ac4e88bbe3ebf9f733748f3ec355361"
+  },
+  {
+   "i": 18,
+   "prev": "b89b58e84b6b59f820cebc9726aa86024ac4e88bbe3ebf9f733748f3ec355361",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "badge",
+   "subject": "equity-uprise",
+   "claim": "M-Verified · nonprofit — issued on the M Network to Equity Uprise",
+   "digest": "65c7d78b382f0eeffa9596550001508b884767a42b517620d51b3e3cdcbb1598"
+  },
+  {
+   "i": 19,
+   "prev": "65c7d78b382f0eeffa9596550001508b884767a42b517620d51b3e3cdcbb1598",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "badge",
+   "subject": "decibel-studios",
+   "claim": "M-Verified · studio — issued on the M Network to Decibel Studios",
+   "digest": "772845f31171dc9907558e37b007c2c4b8933ffbf354f81ec7dc4af0dfbc7591"
+  },
+  {
+   "i": 20,
+   "prev": "772845f31171dc9907558e37b007c2c4b8933ffbf354f81ec7dc4af0dfbc7591",
+   "at": "2026-07-09T18:28:11.297Z",
+   "type": "badge",
+   "subject": "mccluster-pullup",
+   "claim": "M-Verified · performer — issued on the M Network to The Pull-Up · McCluster mobile",
+   "digest": "54b88a8045882a51b1a7e7f7877e722aece7f98370fa760d7705bfa652b0c997"
+  }
+ ],
+ "head": "54b88a8045882a51b1a7e7f7877e722aece7f98370fa760d7705bfa652b0c997",
+ "built_at": "2026-07-09T18:28:11.297Z"
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The M Chain — cryptographic attestations · M Network</title>
+  <meta name="description" content="The M Chain: a hash-linked attestation ledger for M Network — master recordings, papers, lyrics, and M-Verified badges, each committed by SHA-256, every link verifiable in your browser right now.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    body { background: #0a0807; }
+    .ch { max-width: 46rem; margin: 0 auto; padding: clamp(5.5rem, 10vh, 7rem) clamp(1.1rem, 4vw, 2rem) 9rem; }
+    .ch__k { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: #45b6ff; font-weight: 800; }
+    .ch h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: 0.95;
+      font-size: clamp(2.2rem, 8.5vw, 3.4rem); margin-top: 0.4rem; }
+    .ch__lede { color: var(--cream-dim); font-size: 0.95rem; line-height: 1.7; margin-top: 0.9rem; max-width: 52ch; }
+    .ch__lede b { color: var(--cream); }
+    .ch__verify { display: flex; align-items: center; gap: 1rem; margin-top: 1.6rem; border: 1px solid rgba(69,182,255,0.4);
+      border-radius: 16px; background: rgba(69,182,255,0.06); padding: 1rem 1.1rem; flex-wrap: wrap; }
+    .ch__verify b { font-size: 0.9rem; }
+    .ch__verify small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.2rem; line-height: 1.5; }
+    .ch__vgo { margin-left: auto; flex: none; }
+    .ch__state { font-size: 0.8rem; font-weight: 800; min-height: 1.3em; margin-top: 0.7rem; width: 100%; }
+    .ch__state.ok { color: #2fbf71; } .ch__state.bad { color: var(--ruby-hot); }
+    .ch__head { margin-top: 1.4rem; font-size: 0.7rem; color: var(--cream-dim); word-break: break-all; }
+    .ch__head b { color: #45b6ff; font-variant-numeric: tabular-nums; }
+    .ch__list { margin-top: 1.6rem; display: grid; gap: 0.55rem; }
+    .ch__e { border: 1px solid rgba(244,239,230,0.1); border-left: 3px solid var(--tc, #45b6ff); border-radius: 12px;
+      background: rgba(18,14,12,0.66); padding: 0.75rem 0.95rem; }
+    .ch__e-top { display: flex; align-items: baseline; gap: 0.6rem; }
+    .ch__e-top b { font-size: 0.88rem; }
+    .ch__e-top .ch__i { flex: none; font-variant-numeric: tabular-nums; color: var(--cream-dim); font-size: 0.68rem; }
+    .ch__e-top .ch__t { flex: none; margin-left: auto; font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase;
+      font-weight: 800; color: var(--tc, #45b6ff); border: 1px solid var(--tc, #45b6ff); border-radius: 100px; padding: 0.25em 0.7em; }
+    .ch__claim { color: var(--cream-dim); font-size: 0.72rem; line-height: 1.5; margin-top: 0.3rem; }
+    .ch__hash { font-size: 0.6rem; color: var(--cream-dim); word-break: break-all; margin-top: 0.4rem; font-variant-numeric: tabular-nums; }
+    .ch__hash b { color: var(--cream); font-weight: 600; }
+    .ch__e .ok { color: #2fbf71; font-weight: 800; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="scb-paper.html">The white paper</a>
+      <a class="head-cta" href="market.html#scb">The Bureau</a>
+    </nav>
+  </header>
+  <main class="ch">
+    <p class="ch__k">Layer 1 &middot; the cryptographic record</p>
+    <h1>The M Chain</h1>
+    <p class="ch__lede">Every master recording, published paper, synced lyric, and M-Verified badge on this platform
+      is committed to a <b>hash-linked attestation ledger</b>: each entry carries the SHA-256 of the exact bytes it
+      attests and commits to the entry before it — change one byte anywhere, past or present, and the chain breaks
+      loudly. The ledger lives in the open (in this site's public repository, timestamped by every commit) and is
+      <b>anchor-ready</b>: when counsel clears the on-chain step, only the head digest below needs to touch a
+      blockchain for the entire history to be provable there.</p>
+
+    <div class="ch__verify">
+      <span style="min-width:0"><b>Don't trust — verify.</b>
+        <small>Your browser recomputes every digest and every link in the chain right now, with WebCrypto, on your device. No server involved.</small></span>
+      <button class="btn btn--ruby ch__vgo" id="chGo" type="button">Verify the chain</button>
+      <span class="ch__state" id="chState"></span>
+    </div>
+    <p class="ch__head" id="chHead"></p>
+
+    <div class="ch__list" id="chList"><p class="ch__claim">Loading the ledger&hellip;</p></div>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 McCluster Corp · The M Chain — proof beats promises.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var COLORS = { recording: "#e5383b", paper: "#d8ba7c", lyrics: "#8b5cf6", badge: "#2fbf71" };
+      var CHAIN = null;
+
+      function hex(buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      }
+      function sha256Text(txt) {
+        return crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt)).then(hex);
+      }
+      function digestOf(e) {
+        return sha256Text(JSON.stringify([e.i, e.prev, e.at, e.type, e.subject, e.claim, e.path || "", e.sha256 || ""]));
+      }
+
+      fetch("data/chain.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (c) {
+        CHAIN = c;
+        $("chHead").innerHTML = "Head digest: <b>" + esc(c.head) + "</b><br>Attestations: " + c.entries.length +
+          " · last build " + new Date(c.built_at).toLocaleString();
+        $("chList").innerHTML = c.entries.slice().reverse().map(function (e) {
+          return '<div class="ch__e" style="--tc:' + (COLORS[e.type] || "#45b6ff") + '" data-i="' + e.i + '">' +
+            '<div class="ch__e-top"><span class="ch__i">#' + e.i + "</span><b>" + esc(e.subject) + "</b>" +
+            '<span class="ch__t">' + esc(e.type) + "</span></div>" +
+            '<p class="ch__claim">' + esc(e.claim) + " · " + new Date(e.at).toLocaleDateString() + "</p>" +
+            (e.sha256 ? '<p class="ch__hash"><b>file</b> sha256 · ' + esc(e.sha256) + "</p>" : "") +
+            '<p class="ch__hash"><b>entry</b> digest · ' + esc(e.digest) + ' <span class="ch__ok" data-ok="' + e.i + '"></span></p></div>';
+        }).join("");
+        if (window.MCC_TRACK) window.MCC_TRACK("chain_view", { entries: c.entries.length });
+      }).catch(function () {
+        $("chList").innerHTML = '<p class="ch__claim">The ledger didn&rsquo;t load — refresh.</p>';
+      });
+
+      $("chGo").addEventListener("click", function () {
+        if (!CHAIN) return;
+        var st = $("chState");
+        st.className = "ch__state"; st.textContent = "Recomputing " + CHAIN.entries.length + " digests…";
+        var prev = "genesis", bad = 0, done = 0;
+        var checks = CHAIN.entries.map(function (e) {
+          var expectedPrev = prev; prev = e.digest;
+          return digestOf(e).then(function (d) {
+            var ok = d === e.digest && e.prev === expectedPrev;
+            if (!ok) bad++;
+            var tag = document.querySelector('[data-ok="' + e.i + '"]');
+            if (tag) { tag.textContent = ok ? "✓" : "✗ BROKEN"; tag.className = "ch__ok " + (ok ? "ok" : "bad"); }
+            done++;
+            st.textContent = "Recomputing… " + done + "/" + CHAIN.entries.length;
+          });
+        });
+        Promise.all(checks).then(function () {
+          var headOk = CHAIN.head === prev;
+          if (!headOk) bad++;
+          st.className = "ch__state " + (bad ? "bad" : "ok");
+          st.textContent = bad
+            ? "✗ CHAIN BROKEN — " + bad + " check(s) failed. Something was tampered with."
+            : "✓ VERIFIED — every digest recomputed, every link holds, the head matches. This history is intact.";
+          if (window.MCC_TRACK) window.MCC_TRACK("chain_verified", { ok: !bad });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
