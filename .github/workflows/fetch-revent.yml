@@ -1,0 +1,68 @@
+name: Fetch Revent site assets
+
+# reventboston.com answers browsers but 403s datacenter fetchers, so a
+# runner (which presents like a normal client) collects the site's real
+# pages and photos for the rebuild, and commits them to production.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: production
+
+      - name: Collect pages and media
+        run: |
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
+          BASE="https://reventboston.com"
+          OUT="assets/clients/revent"
+          mkdir -p "$OUT/src" "$OUT/img"
+
+          # the site's own pages, for copy and structure
+          for p in "" "event-space" "co-working-space-work-lounge" "gallery" "testimonials" "virtual-office" "store"; do
+            name="${p:-home}"
+            echo "page: $name"
+            curl -fsSL --retry 3 --retry-delay 2 -A "$UA" -H "Accept: text/html" \
+              "$BASE/$p/" -o "$OUT/src/$name.html" || echo "  (skipped $name)"
+          done
+
+          # WordPress media API: every upload with its real URL
+          echo "media api:"
+          for page in 1 2 3; do
+            curl -fsSL --retry 2 -A "$UA" -H "Accept: application/json" \
+              "$BASE/wp-json/wp/v2/media?per_page=100&page=$page" \
+              -o "$OUT/src/media-$page.json" || break
+            # stop when a page comes back empty
+            [ "$(jq 'length' "$OUT/src/media-$page.json" 2>/dev/null || echo 0)" = "0" ] && break
+          done
+
+          # download every image the API named (plus any found in the HTML)
+          {
+            jq -r '.[].source_url // empty' "$OUT"/src/media-*.json 2>/dev/null
+            grep -hoE 'https?://[^"'"'"' )]+\.(jpe?g|png|webp)' "$OUT"/src/*.html 2>/dev/null
+          } | grep -iE 'reventboston|wp-content' | sort -u | head -80 | while read -r url; do
+            f="$OUT/img/$(basename "${url%%\?*}")"
+            [ -f "$f" ] && continue
+            echo "img: $url"
+            curl -fsSL --retry 2 -A "$UA" -o "$f" "$url" || rm -f "$f"
+          done
+
+          echo "---- haul ----"
+          ls -la "$OUT/img" | head -40
+          du -sh "$OUT" || true
+
+      - name: Commit the haul
+        run: |
+          git config user.name "Matthew McCluster"
+          git config user.email "matthew@mccluster.org"
+          git add assets/clients/revent
+          git diff --cached --quiet && { echo "nothing fetched"; exit 0; }
+          git commit -m "Revent site assets: real pages and photos for the rebuild"
+          git push origin production
