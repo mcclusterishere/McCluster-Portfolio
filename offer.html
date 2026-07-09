@@ -45,6 +45,7 @@
         <div class="offer__toggle" role="tablist" aria-label="Billing">
           <button class="offer__bill is-on" type="button" role="tab" aria-selected="true" data-bill="year">Annual <em>Save $9,504</em></button>
           <button class="offer__bill" type="button" role="tab" aria-selected="false" data-bill="month">Monthly</button>
+          <button class="offer__bill" type="button" role="tab" aria-selected="false" data-bill="eup">E-Up <em>10,000 E⤴︎</em></button>
         </div>
         <p class="offer__price" id="offerPrice"><span>$14,400</span> / year, upfront<small>One payment locks the year — monthly runs 66% higher.</small></p>
         <ul class="offer__terms">
@@ -122,7 +123,7 @@
         <div class="bexp__card"><span><b>12 strategy hours</b><small>A one-hour call every month: what to post, what to shoot next, what's landing.</small></span></div>
         <div class="bexp__card"><span><b>Photography &amp; a bio</b><small>Pro stills and a written bio that make you look the part.</small></span></div>
         <div class="bexp__card"><span><b>Your interactive site</b><small>A custom build like this one — designed, hosted, and managed all year.</small></span></div>
-        <div class="bexp__card"><span><b>Upfront or monthly</b><small>$14,400 for the year paid upfront — or $1,992/mo (66% higher) to run it month to month.</small></span></div>
+        <div class="bexp__card"><span><b>Upfront, monthly, or E-Up</b><small>$14,400 for the year upfront — $1,992/mo (66% higher) month to month — or the house door: 10,000 E⤴︎ upfront / 1,383 E⤴︎/mo in platform credit.</small></span></div>
       </div>
 
       <!-- HOW IT WORKS -->
@@ -145,6 +146,7 @@
       <div class="hire__faq">
         <details><summary>What's included for $14,400?</summary><p>Your full year: the weekly Shoot System (two hours on site — 45 minutes of video, 45 minutes of photography, and a 30-minute photo edit delivered on the spot), the week's video cut within 24 hours, a one-hour strategy call every month, your photography and a written bio, and a custom interactive site built, hosted, and managed. Pay the year upfront at $14,400 — or run it monthly at $1,992/mo, which works out 66% higher over the year.</p></details>
         <details><summary>Annual or monthly — what's the real difference?</summary><p>The work is identical. Upfront is $14,400. Monthly is $1,992/mo — $23,904 over twelve months — because week-to-week commitments carry week-to-week risk. Paying the year upfront saves you $9,504.</p></details>
+        <details><summary>What's the E-Up price about?</summary><p>The house deals in its own credit. Pay the year in E-Up — 10,000 E⤴︎ upfront (a $4,400 saving against the dollar price) or 1,383 E⤴︎/mo (16,600 over the year, the same 66% monthly law). You load credit at 1 E⤴︎ = $1 from your desk on <a href="market.html#yours">the Market</a>, it lives in your wallet, and every payment builds your record at the Street Credit Bureau. The discount is real because you're banking with the house.</p></details>
         <details><summary>What's the $500/month requirement?</summary><p>Every client commits $500 a month of their own budget to social media enhancements — boosting, placements — and Meta verification. It's non-negotiable because it's the multiplier: the system makes the content, your $500 makes sure the right people see it and that the platforms treat you as verified and real.</p></details>
         <details><summary>Why only three clients?</summary><p>Because I'm on site with every client every single week. Three clients is the ceiling where the quality holds. One spot is claimed — <a href="vaunt.html" style="color:var(--ruby-hot)">see what they got</a>. Two remain.</p></details>
         <details><summary>How do we start?</summary><p>Claim a spot and we set up a quick call to scope your page and your weekly window. Then I build.</p></details>
@@ -184,6 +186,7 @@
       var COPY = {
         year: '<span>$14,400</span> / year, upfront<small>One payment locks the year — monthly runs 66% higher.</small>',
         month: '<span>$1,992</span> / month<small>66% higher over the year ($23,904) — upfront saves you $9,504.</small>',
+        eup: '<span>10,000 E⤴︎</span> / year, upfront<small>The house door — pay in E-Up credit and the year runs $4,400 lighter. Monthly: 1,383 E⤴︎/mo (16,600 over the year, the same 66% law).</small>',
       };
       var billing = "year";
       bills.forEach(function (b) {
@@ -202,7 +205,7 @@
       var pay = window.PAYMENTS || {};
       var claimMail = "mailto:matthew@mccluster.org?subject=" +
         encodeURIComponent("Limited Offer, Claim a Spot") +
-        "&body=" + encodeURIComponent("I want to claim a limited spot ($14,400 for the year upfront — or $1,992/mo).\n\nMy brand / who I am:\nWhat I want the site to do:\nUpfront or monthly:\nTimeline:\n\n");
+        "&body=" + encodeURIComponent("I want to claim a limited spot ($14,400 upfront — $1,992/mo — or in E-Up: 10,000 upfront / 1,383 per month).\n\nMy brand / who I am:\nWhat I want the site to do:\nUpfront, monthly, or E-Up:\nTimeline:\n\n");
       var hasLink = pay.bookcall && pay.bookcall.link;
       var dest = hasLink ? pay.bookcall.link : claimMail;
       document.querySelectorAll("[data-book]").forEach(function (el) {
