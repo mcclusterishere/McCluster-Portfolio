@@ -1449,7 +1449,7 @@
               b.dollars.toLocaleString() + "</b></div>";
           }).join("");
         }
-        $("xcDPage").href = r.p.href || r.p.profile || "providers.html";
+        $("xcDPage").href = "page.html?who=" + encodeURIComponent(r.p.slug || r.p.id);
         $("xcDPay").href = "#pay";
         $("xcDPay").setAttribute("data-to", r.p.slug || r.p.id);
         document.body.classList.add("xc-open");
@@ -2001,6 +2001,8 @@
           var slug = ME.slug || "";
           var base = location.origin + location.pathname.replace(/[^/]*$/, "");
           html += '<h2 class="mp__toolhead">The desk</h2>';
+          html += '<div class="mp__tools">' + tool("page.html?who=" + esc(slug),
+            "Your page — the social you", "Post to your supporters, edit the vibe, export your fan book") + "</div>";
           if (face === "venue" || face === "provider") {
             html += '<div class="mp__card"><span class="mp__lblx">Your booking link — send it, post it, put it in the bio</span>' +
               '<div class="mp__linkrow"><input class="mp__in" id="dkBook" readonly value="' + esc(base + "spaces.html?who=" + slug) + '">' +

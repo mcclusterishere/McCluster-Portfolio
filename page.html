@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The Page · M Network</title>
+  <meta name="description" content="An artist's own social page on M Network — their vibe, their posts, their supporters. Better than a link tree; yours to design.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    :root { --pg: #e5383b; }
+    body { background: #0a0807; }
+    .pg { max-width: 42rem; margin: 0 auto; padding: 0 0 9rem; }
+
+    /* the vibe: the page wears its owner's colors */
+    .pg__aura { position: fixed; inset: -22%; z-index: -2; pointer-events: none; }
+    .pg__aura i { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+    .pg__aura i:nth-child(1) { width: 56vmax; height: 56vmax; left: -12%; top: -8%; opacity: 0.42;
+      background: radial-gradient(circle, color-mix(in srgb, var(--pg) 60%, transparent), transparent 65%);
+      animation: pgA 30s ease-in-out infinite alternate; }
+    .pg__aura i:nth-child(2) { width: 44vmax; height: 44vmax; right: -14%; bottom: -12%; opacity: 0.3;
+      background: radial-gradient(circle, rgba(244, 239, 230, 0.16), transparent 65%);
+      animation: pgB 40s ease-in-out infinite alternate; }
+    @keyframes pgA { to { transform: translate(14vw, 12vh) scale(1.15); } }
+    @keyframes pgB { to { transform: translate(-12vw, -10vh) scale(1.1); } }
+    body.bg-noir .pg__aura { display: none; }
+    @media (prefers-reduced-motion: reduce) { .pg__aura i { animation: none; } }
+
+    /* ---- the cover ---- */
+    .pg__cover { position: relative; min-height: clamp(15rem, 42vh, 22rem); border-radius: 0 0 26px 26px;
+      overflow: hidden; display: flex; align-items: flex-end;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--pg) 32%, #14100e), #0d0a08); }
+    .pg__cover-img { position: absolute; inset: 0; }
+    .pg__cover-img img { width: 100%; height: 100%; object-fit: cover; }
+    .pg__cover-img::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(10,8,7,0.35), rgba(10,8,7,0.92) 92%); }
+    .pg__head { position: relative; z-index: 2; width: 100%; padding: 5rem 1.3rem 1.3rem; }
+    .pg__seal { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(10, 8, 7, 0.8); border: 2.5px solid var(--pg);
+      box-shadow: 0 0 24px color-mix(in srgb, var(--pg) 60%, transparent); margin-bottom: 0.7rem; }
+    .pg__seal img { width: 52%; }
+    .pg__name { font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: clamp(2rem, 8.5vw, 3rem); line-height: 0.95; }
+    .pg__tick { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.16em; color: var(--pg); margin-top: 0.3rem; }
+    .pg__headline { color: var(--cream-dim); font-size: 0.9rem; margin-top: 0.4rem; line-height: 1.55; max-width: 40ch; }
+    .pg__row { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
+    .pg__follow { border: 0; border-radius: 100px; cursor: pointer; font: inherit; font-weight: 800;
+      font-size: 0.78rem; letter-spacing: 0.06em; padding: 0.8em 1.7em; color: #fff;
+      background: linear-gradient(120deg, color-mix(in srgb, var(--pg) 80%, #000), var(--pg));
+      box-shadow: 0 8px 26px color-mix(in srgb, var(--pg) 45%, transparent); }
+    .pg__follow.is-on { background: none; border: 1px solid var(--pg); color: var(--pg); box-shadow: none; }
+    .pg__count { font-size: 0.72rem; color: var(--cream-dim); }
+    .pg__count b { color: var(--cream); font-size: 0.9rem; }
+    .pg__edit { margin-left: auto; border: 1px solid rgba(244,239,230,0.3); background: rgba(10,8,7,0.55);
+      color: var(--cream); font: inherit; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; border-radius: 100px; padding: 0.7em 1.2em; cursor: pointer; }
+
+    /* the links: the linktree, buried */
+    .pg__links { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 1rem 1.3rem 0; }
+    .pg__link { border: 1px solid color-mix(in srgb, var(--pg) 55%, transparent); border-radius: 100px;
+      color: var(--cream); text-decoration: none; font-size: 0.74rem; font-weight: 700; padding: 0.6em 1.25em;
+      background: color-mix(in srgb, var(--pg) 12%, transparent); transition: background 0.2s; }
+    .pg__link:hover { background: color-mix(in srgb, var(--pg) 28%, transparent); }
+
+    /* ---- the feed ---- */
+    .pg__sec { padding: 1.6rem 1.3rem 0; }
+    .pg__k { font-size: 0.56rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--pg); font-weight: 800; }
+    .pg__compose { margin-top: 0.8rem; border: 1px solid rgba(244,239,230,0.14); border-radius: 16px;
+      background: rgba(18,14,12,0.7); padding: 0.9rem; }
+    .pg__ta { width: 100%; background: none; border: 0; color: var(--cream); font: inherit; font-size: 0.95rem;
+      min-height: 3.2em; resize: vertical; }
+    .pg__ta:focus { outline: none; }
+    .pg__compose-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+    .pg__compose-bar small { color: var(--cream-dim); font-size: 0.66rem; }
+    .pg__post { border: 1px solid rgba(244,239,230,0.12); border-radius: 16px; background: rgba(18,14,12,0.66);
+      padding: 1rem 1.1rem; margin-top: 0.9rem; }
+    .pg__post-head { display: flex; align-items: baseline; gap: 0.6rem; }
+    .pg__post-head b { font-size: 0.85rem; }
+    .pg__post-head small { color: var(--cream-dim); font-size: 0.64rem; margin-left: auto; flex: none; }
+    .pg__post-body { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+    .pg__post-x { background: none; border: 0; color: var(--cream-dim); cursor: pointer; font: inherit; font-size: 0.66rem; }
+    .pg__cmts { margin-top: 0.8rem; border-top: 1px solid rgba(244,239,230,0.08); padding-top: 0.7rem; }
+    .pg__cmt { display: flex; gap: 0.5rem; font-size: 0.8rem; line-height: 1.5; padding: 0.3rem 0; }
+    .pg__cmt b { color: var(--pg); flex: none; font-size: 0.74rem; }
+    .pg__cmt span { min-width: 0; word-break: break-word; }
+    .pg__cmt button { margin-left: auto; background: none; border: 0; color: var(--cream-dim); cursor: pointer; font-size: 0.62rem; flex: none; }
+    .pg__cmt-row { display: flex; gap: 0.45rem; margin-top: 0.5rem; }
+    .pg__cmt-in { flex: 1; min-width: 0; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.18);
+      border-radius: 100px; color: var(--cream); font: inherit; font-size: 0.82rem; padding: 0.55em 1em; }
+    .pg__cmt-in:focus { outline: none; border-color: var(--pg); }
+    .pg__cmt-go { flex: none; border: 0; border-radius: 100px; cursor: pointer; font: inherit; font-size: 0.66rem;
+      font-weight: 800; letter-spacing: 0.08em; padding: 0 1.1em; color: #fff;
+      background: color-mix(in srgb, var(--pg) 75%, #000); }
+    .pg__note { color: var(--cream-dim); font-size: 0.74rem; line-height: 1.6; margin-top: 0.7rem; }
+    .pg__note a { color: var(--pg); }
+
+    /* the music shelf */
+    .pg__tracks { display: grid; gap: 0.5rem; margin-top: 0.8rem; }
+    .pg__track { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.1);
+      border-radius: 12px; padding: 0.6rem 0.8rem; text-decoration: none; color: var(--cream);
+      background: rgba(18,14,12,0.6); }
+    .pg__track b { font-size: 0.85rem; flex: 1; min-width: 0; }
+    .pg__track small { color: var(--cream-dim); font-size: 0.68rem; flex: none; }
+    .pg__track .fire { color: #ff7a00; font-weight: 800; }
+
+    /* the doors */
+    .pg__doors { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.9rem; }
+
+    /* ---- sheets: the editor + the supporter door ---- */
+    .pg__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.75); backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 210; }
+    .pg__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 220; max-width: 34rem; margin: 0 auto;
+      background: #14100e; border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0;
+      padding: 1.2rem 1.3rem calc(1.5rem + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 86dvh; overflow-y: auto; }
+    body.pg-open .pg__veil { opacity: 1; pointer-events: auto; }
+    body.pg-open .pg__sheet { transform: translateY(0); }
+    .pg__sheet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.2rem; }
+    .pg__x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; }
+    .pg__lbl { display: block; font-family: var(--micro); font-size: 0.62rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--cream-dim); margin: 1.1rem 0 0.5rem; }
+    .pg__swatches { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .pg__swatch { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+    .pg__swatch.is-on { border-color: #fff; box-shadow: 0 0 14px rgba(255,255,255,0.35); }
+    .pg__bgs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pg__bg { border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; background: none; color: var(--cream-dim);
+      font: inherit; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.6em 1.3em; cursor: pointer; }
+    .pg__bg.is-on { border-color: var(--pg); color: #fff; background: color-mix(in srgb, var(--pg) 25%, transparent); }
+    .pg__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.2); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: 0.92rem; padding: 0.75em 1em; margin-bottom: 0.55rem; }
+    .pg__in:focus { outline: none; border-color: var(--pg); }
+    .pg__linkrow { display: flex; gap: 0.45rem; }
+    .pg__linkrow .pg__in { margin-bottom: 0.45rem; }
+    .pg__msg { color: var(--pg); font-size: 0.84rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .pg__hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="pg__aura" aria-hidden="true"><i></i><i></i></div>
+  <main class="pg">
+    <section class="pg__cover" id="pgCover">
+      <div class="pg__cover-img pg__hidden" id="pgCoverImg"><img id="pgCoverPic" src="" alt=""></div>
+      <div class="pg__head">
+        <span class="pg__seal"><img src="assets/img/m-mark.png" alt=""></span>
+        <h1 class="pg__name" id="pgName">The Page</h1>
+        <p class="pg__tick" id="pgTick"></p>
+        <p class="pg__headline" id="pgHeadline"></p>
+        <div class="pg__row">
+          <button class="pg__follow" id="pgFollow" type="button">&#10084;&#65038; Support</button>
+          <span class="pg__count" id="pgCount"></span>
+          <button class="pg__edit pg__hidden" id="pgEdit" type="button">&#9998; Edit the vibe</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="pg__links" id="pgLinks"></div>
+
+    <section class="pg__sec" id="pgFeedSec">
+      <p class="pg__k">The feed</p>
+      <div class="pg__compose pg__hidden" id="pgCompose">
+        <textarea class="pg__ta" id="pgTa" maxlength="2000" placeholder="Say it to your people…"></textarea>
+        <div class="pg__compose-bar"><small>Your supporters see it here — fans comment, only you post.</small>
+          <button class="btn btn--ruby" id="pgPostGo" type="button">Post</button></div>
+      </div>
+      <div id="pgFeed"><p class="pg__note">Opening the page&hellip;</p></div>
+    </section>
+
+    <section class="pg__sec pg__hidden" id="pgMusicSec">
+      <p class="pg__k">The music</p>
+      <div class="pg__tracks" id="pgTracks"></div>
+    </section>
+
+    <section class="pg__sec">
+      <p class="pg__k">The doors</p>
+      <div class="pg__doors" id="pgDoors"></div>
+      <p class="pg__note" id="pgOwnerNote"></p>
+    </section>
+  </main>
+
+  <!-- the sheets -->
+  <div class="pg__veil" id="pgVeil"></div>
+  <div class="pg__sheet" id="pgSheet" role="dialog" aria-modal="true">
+    <button class="pg__x" id="pgX" type="button" aria-label="Close">✕</button>
+
+    <!-- the editor: the vibe is yours -->
+    <div id="pgEditor" class="pg__hidden">
+      <h2>Edit the vibe</h2>
+      <p class="pg__note" style="margin-top:0.2rem">This is YOUR page — the color, the mood, the cover, the links. Changes go live the second you save.</p>
+      <span class="pg__lbl">The accent</span>
+      <div class="pg__swatches" id="pgSwatches"></div>
+      <span class="pg__lbl">The mood</span>
+      <div class="pg__bgs" id="pgBgs">
+        <button class="pg__bg" type="button" data-bg="aurora">Aurora</button>
+        <button class="pg__bg" type="button" data-bg="noir">Noir</button>
+        <button class="pg__bg" type="button" data-bg="photo">Cover photo</button>
+      </div>
+      <span class="pg__lbl">Cover photo URL (for the Cover mood)</span>
+      <input class="pg__in" id="pgCoverIn" type="url" placeholder="https://… or assets/…">
+      <span class="pg__lbl">Your links — the whole internet, on your page</span>
+      <div id="pgLinkRows"></div>
+      <button class="btn btn--ghost" id="pgLinkAdd" type="button" style="margin-top:0.3rem">+ Add a link</button>
+      <div style="margin-top:1.2rem"><button class="btn btn--ruby" id="pgSave" type="button" style="width:100%;justify-content:center">Save the vibe</button></div>
+      <p class="pg__msg" id="pgEditMsg"></p>
+    </div>
+
+    <!-- the supporter door: fans get a name, not a wall -->
+    <div id="pgJoin" class="pg__hidden">
+      <h2>Become a supporter</h2>
+      <p class="pg__note" style="margin-top:0.2rem">Pick a handle and you can follow and comment across the whole network — no email, no password, no feed of your own to feed. Artists post; supporters ride.</p>
+      <span class="pg__lbl">Your handle</span>
+      <input class="pg__in" id="pgHandle" type="text" maxlength="24" placeholder="lowercase_letters_numbers" autocapitalize="none">
+      <span class="pg__lbl">Display name (optional)</span>
+      <input class="pg__in" id="pgDisplay" type="text" maxlength="60" placeholder="What the page calls you">
+      <button class="btn btn--ruby" id="pgJoinGo" type="button" style="width:100%;justify-content:center">Claim the handle</button>
+      <p class="pg__msg" id="pgJoinMsg"></p>
+    </div>
+  </div>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
+  <script src="js/heat.js?v=__STAMP__"></script>
+  <script src="js/social.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      var WHO = new URLSearchParams(location.search).get("who") || "mccluster";
+      var P = null, PAGE = {}, OWNER = false, SUP = null, POSTS = [];
+      var SWATCHES = ["#e5383b", "#8b5cf6", "#45b6ff", "#2f9e62", "#d4a017", "#ff7a00", "#2aa8a0", "#f472b6"];
+
+      function vibe() {
+        var accent = PAGE.accent || (P && P.badgeColor) || "#e5383b";
+        document.documentElement.style.setProperty("--pg", accent);
+        document.body.classList.remove("bg-noir");
+        var bg = PAGE.bg || "aurora";
+        if (bg === "noir") document.body.classList.add("bg-noir");
+        var photo = bg === "photo" && (PAGE.cover || (P && P.photo));
+        $("pgCoverImg").classList.toggle("pg__hidden", !photo);
+        if (photo) $("pgCoverPic").src = PAGE.cover || P.photo;
+      }
+
+      function paintHead() {
+        var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker(P.ticker, P.name) : (P.ticker || "");
+        document.title = P.name + " · The Page · M Network";
+        $("pgName").textContent = P.name;
+        $("pgTick").textContent = "$" + tick + (P.roles && P.roles.length ? " · " + P.roles.join(" · ") : "");
+        $("pgHeadline").textContent = P.headline || "";
+        var links = (PAGE.links || []).filter(function (l) { return l && l.href; });
+        if (!links.length && P.href) links = [{ label: "The site", href: P.href }];
+        $("pgLinks").innerHTML = links.map(function (l) {
+          return '<a class="pg__link" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label || l.href) + "</a>";
+        }).join("");
+        window.MCC_SOCIAL.followers(P.slug || P.id).then(function (n) {
+          $("pgCount").innerHTML = "<b>" + n.toLocaleString() + "</b> supporter" + (n === 1 ? "" : "s");
+        });
+        window.MCC_SOCIAL.amFollowing(P.slug || P.id).then(function (on) {
+          $("pgFollow").classList.toggle("is-on", on);
+          $("pgFollow").innerHTML = on ? "&#10003; Supporting" : "&#10084;&#65038; Support";
+        });
+      }
+
+      /* ---- the feed ---- */
+      function paintFeed() {
+        window.MCC_SOCIAL.posts(P.slug || P.id).then(function (rows) {
+          POSTS = rows || [];
+          if (!POSTS.length) {
+            $("pgFeed").innerHTML = '<p class="pg__note">' + (OWNER
+              ? "Nothing posted yet — the composer above is yours. Your supporters are waiting on the first word."
+              : "Nothing posted yet — support the page and you'll be in the room when the first word drops.") + "</p>";
+            return;
+          }
+          return window.MCC_SOCIAL.comments(POSTS.map(function (p) { return p.id; })).catch(function () { return []; })
+            .then(function (cmts) {
+              cmts = cmts || [];
+              $("pgFeed").innerHTML = POSTS.map(function (post) {
+                var mine = cmts.filter(function (c) { return c.post_id === post.id; });
+                return '<article class="pg__post" data-post="' + post.id + '">' +
+                  '<div class="pg__post-head"><b>' + esc(P.name) + "</b><small>" +
+                  new Date(post.created_at).toLocaleDateString() + "</small>" +
+                  (OWNER ? ' <button class="pg__post-x" data-del="' + post.id + '">delete</button>' : "") + "</div>" +
+                  '<p class="pg__post-body">' + esc(post.body) + "</p>" +
+                  '<div class="pg__cmts">' +
+                  mine.map(function (c) {
+                    var h = c.supporters ? c.supporters.handle : "supporter";
+                    return '<div class="pg__cmt"><b>@' + esc(h) + "</b><span>" + esc(c.body) + "</span>" +
+                      (OWNER ? '<button data-delc="' + c.id + '">✕</button>' : "") + "</div>";
+                  }).join("") +
+                  '<div class="pg__cmt-row"><input class="pg__cmt-in" maxlength="1000" placeholder="' +
+                  (SUP ? "Say something as @" + esc(SUP.handle) : "Become a supporter to comment") + '"' + (SUP ? "" : " readonly") + ">" +
+                  '<button class="pg__cmt-go" data-cmt="' + post.id + '">Send</button></div>' +
+                  "</div></article>";
+              }).join("");
+              wireFeed();
+            });
+        }).catch(function () {
+          $("pgFeed").innerHTML = '<p class="pg__note">The feed lives in the cloud — one paste arms it: docs/social-schema.sql.</p>';
+        });
+      }
+      function wireFeed() {
+        document.querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            window.MCC_SOCIAL.delPost(b.getAttribute("data-del")).then(paintFeed);
+          });
+        });
+        document.querySelectorAll("[data-delc]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            window.MCC_SOCIAL.delComment(b.getAttribute("data-delc")).then(paintFeed);
+          });
+        });
+        document.querySelectorAll("[data-cmt]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (!SUP) { openSheet("join"); return; }
+            var input = b.closest(".pg__cmt-row").querySelector("input");
+            var txt = input.value.trim();
+            if (!txt) return;
+            b.textContent = "…";
+            window.MCC_SOCIAL.comment(b.getAttribute("data-cmt"), txt).then(function () {
+              track("page_comment", { page: WHO });
+              paintFeed();
+            }).catch(function () { b.textContent = "Retry"; });
+          });
+        });
+        document.querySelectorAll(".pg__cmt-in[readonly]").forEach(function (i) {
+          i.addEventListener("click", function () { openSheet("join"); });
+        });
+      }
+
+      /* ---- the music shelf: heat rides along ---- */
+      function paintMusic() {
+        var tr = P.tracks || [];
+        if (!tr.length) return;
+        $("pgMusicSec").classList.remove("pg__hidden");
+        window.MCC_HEAT.counts().then(function (n) {
+          $("pgTracks").innerHTML = tr.map(function (t) {
+            var plays = n[window.MCC_HEAT.norm(t)] || 0;
+            var label = t.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+            return '<a class="pg__track" href="app.html#music"><b>' + esc(label) + "</b>" +
+              (plays ? '<small class="fire">&#9835; ' + plays.toLocaleString() + " plays</small>" : "<small>&#9835;</small>") + "</a>";
+          }).join("");
+        });
+      }
+
+      function paintDoors() {
+        var slug = P.slug || P.id;
+        $("pgDoors").innerHTML =
+          '<a class="btn btn--ruby" href="market.html?to=' + encodeURIComponent(slug) + '#pay">Pay / book</a>' +
+          '<a class="btn btn--ghost" href="market.html#floor">$' + esc(window.MCC_STOCK.ticker(P.ticker, P.name)) + " on the floor</a>" +
+          (P.href ? '<a class="btn btn--ghost" href="' + esc(P.href) + '">The site</a>' : "");
+        if (OWNER) {
+          $("pgOwnerNote").innerHTML = 'Your fans, your data: <button class="pg__post-x" id="pgExport" style="color:var(--pg);font-size:0.74rem">export the fan book (CSV) &#8595;</button>';
+          $("pgExport").addEventListener("click", function () {
+            window.MCC_SOCIAL.exportFans().then(function (out) {
+              var a = document.createElement("a");
+              a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(out.csv);
+              a.download = slug + "-supporters.csv";
+              a.click();
+              track("fans_exported", { rows: out.rows.length });
+            }).catch(function () { alert("The fan book needs one paste first: docs/social-schema.sql"); });
+          });
+        }
+      }
+
+      /* ---- sheets ---- */
+      function openSheet(which) {
+        $("pgEditor").classList.toggle("pg__hidden", which !== "editor");
+        $("pgJoin").classList.toggle("pg__hidden", which !== "join");
+        document.body.classList.add("pg-open");
+      }
+      function closeSheet() { document.body.classList.remove("pg-open"); }
+      $("pgVeil").addEventListener("click", closeSheet);
+      $("pgX").addEventListener("click", closeSheet);
+
+      /* the editor */
+      function linkRow(l) {
+        var div = document.createElement("div");
+        div.className = "pg__linkrow";
+        div.innerHTML = '<input class="pg__in" data-l="label" placeholder="Label" value="' + esc((l && l.label) || "") + '">' +
+          '<input class="pg__in" data-l="href" placeholder="https://…" value="' + esc((l && l.href) || "") + '">';
+        return div;
+      }
+      function openEditor() {
+        $("pgSwatches").innerHTML = SWATCHES.map(function (c) {
+          return '<button class="pg__swatch' + ((PAGE.accent || P.badgeColor) === c ? " is-on" : "") +
+            '" type="button" data-c="' + c + '" style="background:' + c + '"></button>';
+        }).join("");
+        $("pgSwatches").querySelectorAll(".pg__swatch").forEach(function (b) {
+          b.addEventListener("click", function () {
+            PAGE.accent = b.getAttribute("data-c");
+            $("pgSwatches").querySelectorAll(".pg__swatch").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+            vibe(); // live preview
+          });
+        });
+        $("pgBgs").querySelectorAll(".pg__bg").forEach(function (b) {
+          b.classList.toggle("is-on", (PAGE.bg || "aurora") === b.getAttribute("data-bg"));
+          b.addEventListener("click", function () {
+            PAGE.bg = b.getAttribute("data-bg");
+            $("pgBgs").querySelectorAll(".pg__bg").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+            vibe();
+          });
+        });
+        $("pgCoverIn").value = PAGE.cover || "";
+        var rowsBox = $("pgLinkRows");
+        rowsBox.innerHTML = "";
+        ((PAGE.links && PAGE.links.length ? PAGE.links : [{}, {}])).forEach(function (l) { rowsBox.appendChild(linkRow(l)); });
+        openSheet("editor");
+      }
+      $("pgEdit").addEventListener("click", openEditor);
+      $("pgLinkAdd").addEventListener("click", function () { $("pgLinkRows").appendChild(linkRow()); });
+      $("pgSave").addEventListener("click", function () {
+        PAGE.cover = $("pgCoverIn").value.trim() || undefined;
+        PAGE.links = Array.prototype.map.call($("pgLinkRows").children, function (row) {
+          return { label: row.querySelector('[data-l="label"]').value.trim(), href: row.querySelector('[data-l="href"]').value.trim() };
+        }).filter(function (l) { return l.href; });
+        $("pgEditMsg").textContent = "Saving…";
+        window.MCC_NET.saveListing({ page: PAGE }).then(function () {
+          $("pgEditMsg").textContent = "Live — the page wears it now.";
+          if (window.MCC_FLOOR) window.MCC_FLOOR.invalidate();
+          vibe(); paintHead();
+          track("page_vibe_saved", { page: WHO });
+        }).catch(function (e) {
+          var s = String(e && e.message || e);
+          $("pgEditMsg").textContent = s.indexOf("page") !== -1 || s.indexOf("column") !== -1
+            ? "One paste first: docs/social-schema.sql in Supabase, then the vibe saves."
+            : "Couldn't save: " + s;
+        });
+      });
+
+      /* the supporter door */
+      $("pgFollow").addEventListener("click", function () {
+        var slug = P.slug || P.id;
+        if (!SUP) { openSheet("join"); return; }
+        var on = $("pgFollow").classList.contains("is-on");
+        (on ? window.MCC_SOCIAL.unfollow(slug) : window.MCC_SOCIAL.follow(slug)).then(function () {
+          track(on ? "page_unfollow" : "page_follow", { page: WHO });
+          paintHead();
+        }).catch(function () {});
+      });
+      $("pgJoinGo").addEventListener("click", function () {
+        var h = $("pgHandle").value.trim().toLowerCase();
+        if (h.length < 3) { $("pgJoinMsg").textContent = "Three characters minimum — letters, numbers, underscores."; return; }
+        $("pgJoinMsg").textContent = "Claiming…";
+        window.MCC_SOCIAL.become(h, $("pgDisplay").value.trim()).then(function (row) {
+          SUP = row;
+          $("pgJoinMsg").textContent = "You're in, @" + row.handle + ".";
+          track("supporter_created", { page: WHO });
+          setTimeout(function () { closeSheet(); paintFeed(); paintHead(); }, 700);
+        }).catch(function (e) {
+          var s = String(e && e.message || e);
+          $("pgJoinMsg").textContent = s.indexOf("duplicate") !== -1 || s.indexOf("23505") !== -1
+            ? "That handle is taken — try another."
+            : s.indexOf("404") !== -1 ? "One paste arms this: docs/social-schema.sql." : "Couldn't claim it: " + s;
+        });
+      });
+
+      /* the composer */
+      $("pgPostGo").addEventListener("click", function () {
+        var txt = $("pgTa").value.trim();
+        if (!txt) return;
+        $("pgPostGo").textContent = "…";
+        window.MCC_SOCIAL.post(P.slug || P.id, txt).then(function () {
+          $("pgTa").value = ""; $("pgPostGo").textContent = "Post";
+          track("page_post", { page: WHO });
+          paintFeed();
+        }).catch(function (e) {
+          $("pgPostGo").textContent = "Post";
+          alert(String(e && e.message || e).indexOf("404") !== -1
+            ? "One paste arms the feed: docs/social-schema.sql in Supabase."
+            : "Couldn't post: " + String(e && e.message || e));
+        });
+      });
+
+      /* ---- boot ---- */
+      window.MCC_FLOOR.load().then(function (floor) {
+        P = floor.providers.filter(function (x) { return (x.slug || x.id) === WHO; })[0];
+        if (!P) { $("pgName").textContent = "No page here yet"; $("pgFeed").innerHTML = '<p class="pg__note">This slug isn’t on the floor. <a href="onboard.html">Get on the platform &#8594;</a></p>'; return; }
+        PAGE = P.page || {};
+        vibe(); paintHead(); paintMusic(); paintDoors(); paintFeed();
+        // the owner unlocks the editor + composer
+        if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          window.MCC_NET.myListing().then(function (mine) {
+            if (mine && mine.slug === (P.slug || P.id)) {
+              OWNER = true;
+              PAGE = mine.page || PAGE;
+              $("pgEdit").classList.remove("pg__hidden");
+              $("pgCompose").classList.remove("pg__hidden");
+              vibe(); paintDoors(); paintFeed();
+            }
+          }).catch(function () {});
+          window.MCC_SOCIAL.me().then(function (s) { SUP = s; if (s) paintFeed(); });
+        }
+        track("page_view", { page: WHO });
+      });
+    })();
+  </script>
+</body>
+</html>
