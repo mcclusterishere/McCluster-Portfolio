@@ -43,3 +43,13 @@ create policy "participants work their deals"
 alter table providers add column if not exists ticker text;
 create unique index if not exists providers_ticker_key
   on providers (upper(ticker)) where ticker is not null and ticker <> '';
+
+-- ============================================================
+-- THE ROOM (added for Spaces + the M Pay desk): the property
+-- itself — rate, amenities, photo — lives on the listing and is
+-- edited from the owner's desk in M Pay.
+--   space: { "rate": 95, "unit": "hour", "amenities": ["house-audio", ...] }
+--   photo: url or repo path shown on the Spaces floor
+-- ============================================================
+alter table providers add column if not exists space jsonb;
+alter table providers add column if not exists photo text;

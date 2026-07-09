@@ -539,6 +539,20 @@
             '<p class="mp__msg" id="dkPayMsg"></p>' +
             '<p class="mp__note">Text it, DM it, tape it to the door — it opens M Pay with the amount and your name already loaded.</p></div>';
           if (face === "venue") {
+            // the room itself: what renters see on the Spaces floor
+            var sp0 = ME.space || {};
+            var amOn = sp0.amenities || [];
+            var amOpts = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
+            amOn.forEach(function (id) { if (amOpts.indexOf(id) === -1) amOpts.push(id); });
+            html += '<div class="mp__card"><span class="mp__lblx">Your room — the card renters see on Spaces</span>' +
+              '<input class="mp__in" id="dkRate" type="number" min="1" placeholder="Hourly rate — like 95" value="' + esc(sp0.rate || "") + '">' +
+              '<div class="mp__kinds" id="dkAmen">' + amOpts.map(function (id) {
+                var lbl = id.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+                return '<button class="mp__kind' + (amOn.indexOf(id) !== -1 ? " is-on" : "") + '" type="button" data-am="' + esc(id) + '">' + esc(lbl) + "</button>";
+              }).join("") + "</div>" +
+              '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkSpaceSave" type="button" style="flex:1">Save the room</button></div>' +
+              '<p class="mp__msg" id="dkSpaceMsg"></p>' +
+              '<p class="mp__note">Rate and amenity chips go straight onto your Spaces card. <a href="amenities.html" style="color:var(--cream)">What each amenity means →</a></p></div>';
             var av = (ME.terms && ME.terms.avail) || { days: [0, 1, 2, 3, 4, 5, 6], slots: [0, 1, 2, 3] };
             html += '<div class="mp__card"><span class="mp__lblx">Availability — what your calendar allows</span>' +
               '<div class="mp__kinds" id="dkDays">' + ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (d, i) {
@@ -627,6 +641,30 @@
           else copyText(l, $("dkPayShare"));
           track("desk_paylink_share", { amount: +$("dkAmt").value });
         });
+
+        var spSave = $("dkSpaceSave");
+        if (spSave) {
+          body.querySelectorAll("#dkAmen .mp__kind").forEach(function (b) {
+            b.addEventListener("click", function () { b.classList.toggle("is-on"); });
+          });
+          spSave.addEventListener("click", function () {
+            var rate = +$("dkRate").value;
+            if (!rate || rate < 1) { $("dkSpaceMsg").textContent = "Set the hourly rate first."; return; }
+            var ams = Array.prototype.map.call(body.querySelectorAll("#dkAmen .is-on"), function (b) { return b.getAttribute("data-am"); });
+            var space = Object.assign({}, ME.space || {}, { rate: rate, unit: "hour", amenities: ams });
+            $("dkSpaceMsg").textContent = "Saving…";
+            window.MCC_NET.saveListing({ space: space }).then(function () {
+              ME.space = space;
+              $("dkSpaceMsg").textContent = "Saved — your Spaces card carries it now.";
+              track("desk_space_saved", { rate: rate, amenities: ams.length });
+            }).catch(function (e) {
+              var s = String(e && e.message || e);
+              $("dkSpaceMsg").textContent = s.indexOf("space") !== -1 || s.indexOf("column") !== -1
+                ? "One paste first: docs/market-schema.sql in Supabase, then this saves."
+                : "Couldn't save: " + s;
+            });
+          });
+        }
 
         var avSave = $("dkAvSave");
         if (avSave) {
@@ -722,14 +760,34 @@
           window.MCC_NET.myDeals().then(function (res) {
             var rows = (res.rows || []).slice(0, 8);
             if (!rows.length) { $("dkDeals").innerHTML = '<p class="mp__note">No deals yet — every one you make grows a thread here.</p>'; return; }
+            var KIND_TAG = { space_booking: "Space booking", service_booking: "Booking", music_collab: "Collab",
+              song_split: "Split", work_for_hire: "Hire", project_funding: "Funding", custom_offer: "Offer" };
             $("dkDeals").innerHTML = rows.map(function (d, i) {
               var other = d.to_slug === slug ? (d.from_name || "them") : (d.to_name || d.to_slug);
+              var fee = d.terms && d.terms.fee ? " · $" + (+d.terms.fee).toLocaleString() : "";
+              // a booking pointed AT this desk, still open = the owner decides here
+              var mine = d.to_slug === slug && (d.status === "proposed" || d.status === "countered");
               return '<div class="mp__deal" data-deal="' + esc(d.id) + '">' +
-                '<div class="mp__deal-head"><b>' + esc(d.title || d.kind) + "</b><small>" + esc(other) + " · " + esc(d.status) + "</small></div>" +
+                '<div class="mp__deal-head"><b>' + esc(d.title || d.kind) + "</b><small>" +
+                esc(KIND_TAG[d.kind] || d.kind) + " · " + esc(other) + fee + " · " + esc(d.status) + "</small></div>" +
+                (mine ? '<div class="mp__req-acts"><button class="mp__kind" type="button" data-act="locked">✓ Confirm the slot</button>' +
+                  '<button class="mp__kind" type="button" data-act="declined">✕ Pass</button></div>' : "") +
                 '<div class="mp__thread mp__hidden"><div class="mp__msgs"></div>' +
                 '<div class="mp__linkrow"><input class="mp__in" type="text" placeholder="Say it — they see it in their M Pay" maxlength="2000">' +
                 '<button class="btn btn--ruby" type="button">Send</button></div><p class="mp__msg"></p></div></div>';
             }).join("");
+            $("dkDeals").querySelectorAll(".mp__req-acts .mp__kind").forEach(function (b) {
+              b.addEventListener("click", function (ev) {
+                ev.stopPropagation();
+                var id = b.closest(".mp__deal").getAttribute("data-deal");
+                var act = b.getAttribute("data-act");
+                b.textContent = "…";
+                window.MCC_NET.setDealStatus(id, act).then(function () {
+                  track("desk_deal_" + act, {});
+                  loadDeskDeals(); // repaint with the new status
+                }).catch(function () { b.textContent = "Try again"; });
+              });
+            });
             $("dkDeals").querySelectorAll(".mp__deal").forEach(function (card) {
               var id = card.getAttribute("data-deal");
               var thread = card.querySelector(".mp__thread");
