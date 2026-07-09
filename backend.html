@@ -93,7 +93,7 @@
     </div>
     <div id="crBonus" style="display:none;margin-top:0.8rem;border:1px solid rgba(47,191,113,0.5);border-radius:14px;background:rgba(47,191,113,0.07);padding:0.9rem 1rem">
       <p style="font-size:0.82rem;line-height:1.6;color:var(--cream-dim)"><b style="color:#2fbf71">Operator rank reached.</b>
-        The run pays: <b style="color:var(--cream)">5 M Tokens</b> — $5 of platform credit, minted once to your ledger.</p>
+        The run pays: <b style="color:var(--cream)">5 E⤴</b> — $5 of E-Up credit, minted once to your ledger.</p>
       <button class="btn btn--ruby" id="crBonusGo" type="button" style="margin-top:0.7rem">Claim the run bonus</button>
       <p style="font-size:0.78rem;color:#2fbf71;min-height:1.2em;margin-top:0.5rem" id="crBonusMsg"></p>
     </div>
@@ -198,7 +198,7 @@
             bonusDone = true;
             try { localStorage.setItem("mcc_claimrun_paid", "1"); } catch (e) {}
             $("crBonusMsg").textContent = +minted > 0
-              ? "✓ 5 M Tokens on your ledger — spend them on platform fees and promotion."
+              ? "✓ 5 E⤴ on your ledger — spend it on platform fees and promotion."
               : "Already paid — the bonus mints once.";
             track("claimrun_bonus", { minted: +minted });
             setTimeout(function () { $("crBonus").style.display = "none"; }, 3500);
