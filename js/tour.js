@@ -1,0 +1,214 @@
+/* MCC_TOUR — the walk of the floor.
+   The sandbox personas are gone; this is what replaced them. A real
+   spotlight tour over the REAL market — no fake identity, no costume,
+   just the room shown properly: the floor, a live ticker, the pay
+   door, the keypad, the desk. Each step spotlights the actual control
+   and either the visitor taps it themselves or Next performs the move.
+
+   Runs once for signed-out first visits (mcc_tour_done banks it),
+   forced any time with ?tour=1 or #tour, re-launched from the
+   "✦ Show me around" chip in the rail. Missing target → the card
+   centers itself; the tour never leaves a blank overlay. */
+(function () {
+  "use strict";
+  if (!document.getElementById("floor")) return; // market only
+
+  var DONE_KEY = "mcc_tour_done";
+  var box, veil, card, current = -1, alive = false;
+
+  var css = document.createElement("style");
+  css.textContent =
+    "#mccTour{position:fixed;inset:0;z-index:9000;pointer-events:none}" +
+    "#mccTour .tour__veil{position:absolute;border-radius:14px;box-shadow:0 0 0 200vmax rgba(5,4,3,0.82);" +
+    "transition:top 0.35s,left 0.35s,width 0.35s,height 0.35s;border:1px solid rgba(244,239,230,0.35)}" +
+    "#mccTour .tour__card{position:absolute;pointer-events:auto;max-width:330px;width:calc(100vw - 2.4rem);" +
+    "background:rgba(20,16,14,0.97);border:1px solid rgba(244,239,230,0.18);border-radius:16px;" +
+    "padding:1.05rem 1.1rem 1.15rem;box-shadow:0 18px 50px rgba(0,0,0,0.55);transition:top 0.35s,left 0.35s}" +
+    "#mccTour .tour__kick{font-family:var(--micro,monospace);font-size:0.62rem;letter-spacing:0.22em;" +
+    "text-transform:uppercase;color:#c99d45;display:flex;justify-content:space-between;gap:0.6rem}" +
+    "#mccTour h3{font-family:var(--display,inherit);font-weight:400;text-transform:uppercase;" +
+    "font-size:1.25rem;line-height:1.05;margin:0.45rem 0 0.35rem;color:var(--cream,#f4efe6)}" +
+    "#mccTour p{margin:0;color:rgba(244,239,230,0.75);font-size:0.85rem;line-height:1.55}" +
+    "#mccTour .tour__acts{display:flex;gap:0.5rem;margin-top:0.85rem;align-items:center}" +
+    "#mccTour .tour__next{border:0;border-radius:10px;cursor:pointer;font:inherit;font-weight:800;" +
+    "letter-spacing:0.05em;text-transform:uppercase;font-size:0.8rem;padding:0.65em 1.3em;color:#fff;" +
+    "background:linear-gradient(120deg,var(--ruby,#a4161a),var(--ruby-hot,#e5383b))}" +
+    "#mccTour .tour__skip{background:none;border:0;cursor:pointer;font:inherit;font-size:0.78rem;" +
+    "color:rgba(244,239,230,0.5);text-decoration:underline;padding:0.4em}";
+  document.head.appendChild(css);
+
+  function q(sel) { return document.querySelector(sel); }
+  function track(ev, data) { if (window.MCC_TRACK) window.MCC_TRACK(ev, data || {}); }
+
+  /* every step: where the light lands, what the card says, and what
+     Next does before the light moves on */
+  var STEPS = [
+    {
+      target: null,
+      kick: "The floor",
+      title: "Everybody trades.",
+      body: "Every artist, room, and operator here runs under a ticker — moved by real work: deals kept, ratings earned, plays counted. This is the whole city on one screen.",
+    },
+    {
+      target: function () { return q("#xcList .xc__row"); },
+      kick: "The ticker",
+      title: "Tap any name — the book opens.",
+      body: "Price, chart, the order book, time & sales. Real records behind every line. Next opens the first one for you.",
+      act: function () { var r = q("#xcList .xc__row"); if (r) r.click(); },
+    },
+    {
+      target: function () { return q("#xcDPay"); },
+      kick: "The green door",
+      title: "M Pay rides every ticker.",
+      body: "One tap from anyone's book and the keypad opens already loaded with their name. Paying somebody should never take more than that.",
+      act: function () {
+        var b = q("#xcDPay");
+        if (b) b.click(); else if (window.MK_SHOW) window.MK_SHOW("pay");
+      },
+    },
+    {
+      target: function () { return q("#mpPad"); },
+      kick: "The keypad",
+      title: "Name your price.",
+      body: "Punch in any number. Deposits, features, bookings, a dollar for the culture — the keypad doesn't judge.",
+    },
+    {
+      target: function () { return q("#mpSend"); },
+      kick: "Send it",
+      title: "It goes out as a real deal.",
+      body: "Propose, counter, lock, sign — every step on the record. Desks that carry the card rail check out by card right here; the record holds it either way.",
+      act: function () { if (window.MK_SHOW) window.MK_SHOW("yours"); },
+    },
+    {
+      target: function () { return q("#mpYou"); },
+      kick: "Your desk",
+      title: "This one's yours.",
+      body: "Your ticker, your listing, your inbox, your payment link — the whole business. It opens with one tap, no email needed. That button right there.",
+    },
+    {
+      target: null,
+      kick: "The record",
+      title: "The record carries it.",
+      body: "Deals build your street credit. Plays move your ticker. Everything you do here becomes yours to keep. ✦ Show me around lives in the rail whenever you want the walk again.",
+    },
+  ];
+
+  function ensureDom() {
+    if (box) return;
+    box = document.createElement("div");
+    box.id = "mccTour";
+    veil = document.createElement("div");
+    veil.className = "tour__veil";
+    card = document.createElement("div");
+    card.className = "tour__card";
+    box.appendChild(veil);
+    box.appendChild(card);
+    document.body.appendChild(box);
+  }
+
+  function place(step, tries) {
+    tries = tries || 0;
+    var t = step.target ? step.target() : null;
+    var r = t ? t.getBoundingClientRect() : null;
+    // a hidden target (pane mid-switch) reads 0×0 — wait for it a few
+    // beats, then let the card carry the moment centered
+    if (r && r.width === 0 && r.height === 0) {
+      if (tries < 5) { setTimeout(function () { if (alive) place(step, tries + 1); }, 300); return; }
+      r = null;
+    }
+    if (r && (r.bottom < 60 || r.top > innerHeight - 60) && tries < 6) {
+      if (t.scrollIntoView) t.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(function () { if (alive) place(step, tries + 1); }, 380);
+      return;
+    }
+    var pad = 8;
+    if (r) {
+      veil.style.border = "1px solid rgba(244,239,230,0.35)";
+      veil.style.top = (r.top - pad) + "px";
+      veil.style.left = (r.left - pad) + "px";
+      veil.style.width = (r.width + pad * 2) + "px";
+      veil.style.height = (r.height + pad * 2) + "px";
+    } else {
+      // no target: the veil collapses to an invisible point mid-screen
+      // (its shadow still dims the room) and the card speaks alone
+      veil.style.border = "0";
+      veil.style.top = "50%"; veil.style.left = "50%";
+      veil.style.width = "0px"; veil.style.height = "0px";
+    }
+    var below = r ? r.bottom + pad * 2 + 12 : innerHeight / 2 - 110;
+    var cardH = 210;
+    var top = r ? (below + cardH < innerHeight ? below : Math.max(12, r.top - pad - cardH - 12)) : below;
+    card.style.top = top + "px";
+    card.style.left = Math.max(12, Math.min(innerWidth - 342, r ? r.left : innerWidth / 2 - 165)) + "px";
+  }
+
+  function paint() {
+    var s = STEPS[current];
+    card.innerHTML =
+      '<div class="tour__kick"><span>' + s.kick + "</span><span>" + (current + 1) + " / " + STEPS.length + "</span></div>" +
+      "<h3>" + s.title + "</h3><p>" + s.body + "</p>" +
+      '<div class="tour__acts">' +
+      '<button class="tour__next" type="button" data-tour-next>' + (current === STEPS.length - 1 ? "Walk the floor" : "Next") + "</button>" +
+      '<button class="tour__skip" type="button" data-tour-skip>Skip the tour</button></div>';
+    card.querySelector("[data-tour-next]").addEventListener("click", next);
+    card.querySelector("[data-tour-skip]").addEventListener("click", end);
+    place(s);
+  }
+
+  function next() {
+    var s = STEPS[current];
+    if (s && s.act) s.act();
+    current += 1;
+    if (current >= STEPS.length) { end(); return; }
+    track("tour_step", { step: current });
+    // give the acted-on UI a beat to arrive before the light moves
+    setTimeout(function () { if (alive) paint(); }, s && s.act ? 420 : 0);
+  }
+
+  function start() {
+    if (alive) return;
+    alive = true;
+    current = 0;
+    ensureDom();
+    box.style.display = "";
+    if (window.MK_SHOW) window.MK_SHOW("floor");
+    track("tour_start", {});
+    paint();
+  }
+
+  function end() {
+    alive = false;
+    current = -1;
+    if (box) box.style.display = "none";
+    try { localStorage.setItem(DONE_KEY, "1"); } catch (e) {}
+    track("tour_done", {});
+  }
+
+  document.addEventListener("keydown", function (ev) {
+    if (alive && ev.key === "Escape") end();
+  });
+  window.addEventListener("resize", function () {
+    if (alive && current >= 0) place(STEPS[current]);
+  });
+
+  /* the rail chip: the walk is always one tap away */
+  var rail = q(".mk__rail");
+  if (rail) {
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "mk__jump";
+    chip.id = "mkTourChip";
+    chip.textContent = "✦ Tour";
+    chip.addEventListener("click", start);
+    rail.appendChild(chip);
+  }
+
+  /* first visit, signed out, standing on the floor → the walk begins */
+  var forced = /(^|[?&])tour=1/.test(location.search) || location.hash === "#tour";
+  var done = false;
+  try { done = !!localStorage.getItem(DONE_KEY); } catch (e) {}
+  var signedIn = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+  if (forced || (!done && !signedIn)) setTimeout(start, 900);
+
+  window.MCC_TOUR = { start: start, end: end };
+})();

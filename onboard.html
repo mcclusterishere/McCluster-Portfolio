@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Get On the Platform · M Network · Equity Uprise</title>
   <meta name="description" content="Artists, studios, spaces, and service providers: get your own landing page, a booking system, verification badges, and 100% of your rate — we eat the fees. Onboard in minutes.">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
@@ -58,7 +58,7 @@
     <nav class="site-head__nav">
       <a href="index.html">← Home</a>
       <a href="market.html">The Market</a>
-      <a class="head-cta" id="obHeadCta" href="market.html#yours">Start onboarding</a>
+      <a class="head-cta" id="obHeadCta" href="#obIntake">Start onboarding</a>
     </nav>
   </header>
   <main>
@@ -101,7 +101,7 @@
       </p>
     </section>
 
-    <section class="ob-sec">
+    <section class="ob-sec" id="obIntake">
       <p class="ob-kick">The intake — two minutes</p>
       <h2 class="ob-h2">Answer these and your profile builds itself</h2>
       <p class="ob-lede">Five questions. When you sign in on the next page, the form is already
@@ -135,7 +135,8 @@
     <section class="ob-sec" style="text-align:center">
       <p class="ob-kick">Ready?</p>
       <h2 class="ob-h2" id="obCtaH">Start your onboarding</h2>
-      <p class="ob-lede" style="margin:0 auto 1.4rem">It starts with your email — a sign-in link, no password, no app store.</p>
+      <p class="ob-lede" style="margin:0 auto 1.4rem" id="obCtaLede">It starts with one tap — an instant account, or email yourself the key.</p>
+      <div id="obDoor" style="margin:0 auto 1.2rem;max-width:430px;text-align:left"></div>
       <div class="finale__actions" style="justify-content:center">
         <a class="btn btn--ruby" id="obGo" href="market.html#yours" data-cta="onboard-go">Open your desk in the Market →</a>
         <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Onboarding%20question&body=My%20lane%20(artist%2Fprovider%2Fspace)%3A%0AMy%20question%3A%0A" data-cta="onboard-question">Ask a question first</a>
@@ -153,6 +154,8 @@
   </footer>
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -232,7 +235,8 @@
         }).join("");
         $("obGo").setAttribute("href", c.go[0]);
         $("obGo").innerHTML = c.go[1];
-        $("obHeadCta").setAttribute("href", c.go[0]);
+        // the head CTA walks you to the intake on THIS page — the trip to
+        // the desk happens at the bottom, with the answers stashed
         $("obGoTop").setAttribute("href", c.go[0]);
         if (window.MCC_TRACK) window.MCC_TRACK("onboard_role", { role: role });
       }
@@ -275,6 +279,19 @@
       $("obGo").addEventListener("click", stashQuiz);
       $("obHeadCta").addEventListener("click", stashQuiz);
       $("obGoTop").addEventListener("click", stashQuiz);
+
+      /* the finish line IS the door: signed out, the account opens right
+         here and the desk arrives prefilled — the anchors below stay as
+         the signed-in path */
+      if (window.MCC_DOOR && !(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) {
+        window.MCC_DOOR.mount($("obDoor"), {
+          ticker: true,
+          context: "onboard",
+          onDone: function () { stashQuiz(); location.href = "market.html#yours"; },
+        });
+      } else if ($("obCtaLede") && window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        $("obCtaLede").textContent = "You're in — your desk is waiting, and the intake answers ride along.";
+      }
       if (window.MCC_TRACK) window.MCC_TRACK("onboard_view", { role: want || "artist" });
     })();
   </script>

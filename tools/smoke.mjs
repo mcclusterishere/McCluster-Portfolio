@@ -75,10 +75,18 @@ function check(name, cond, detail) {
   await page.close();
 }
 
-// the market: one shared floor fetch, all panes alive
+// the market: one shared floor fetch, the first-visit tour, all panes alive
 {
   const { page, errors, netCounts } = await boot("/market.html", { settle: 1800 });
   check("market", errors.length === 0, "page errors: " + errors.join(" | "));
+  // a cold signed-out boot MUST open the tour — it replaced the sandbox
+  // and is a tested invariant now; skipping it frees the pane checks
+  const tour = await page.$("#mccTour");
+  check("market", tour, "first-visit tour did not appear");
+  if (tour) {
+    await page.click("[data-tour-skip]");
+    await page.waitForTimeout(300);
+  }
   const provFetches = Object.entries(netCounts).filter(([u]) => u.endsWith("providers.json")).map(([, n]) => n)[0] || 0;
   check("market", provFetches === 1, `providers.json fetched ${provFetches}× — the cache should make it exactly 1`);
   check("market", (await page.$$(".xc__row")).length >= 6, "floor underpopulated");

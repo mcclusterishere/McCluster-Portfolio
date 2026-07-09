@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>The Market · M Network · McCluster</title>
   <meta name="description" content="One market for everything: book work, make music, book space, fund a project. Verified providers, a deal builder with splits and signatures, and every deal you're in — one engine, one page.">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
@@ -577,10 +577,10 @@
         <input class="mk__in" id="pContact" type="text" placeholder="Name · email or phone">
         <button class="btn btn--ruby" id="pSend" type="button">Send it</button>
         <p class="mk__msg" id="pMsg"></p>
-        <p class="mk__note"><b style="color:var(--cream)">How money moves today:</b> when a deal is signed, the
-          <em style="color:var(--cream)">Pay by card</em> button opens secure Square checkout — type the exact amount,
-          put the deal name in the note, done. Both sides then mark it paid and the record carries it.
-          Card rails built into the deal itself land with Stripe Connect.</p>
+        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> when a signed deal carries the card
+          rail, <em style="color:var(--cream)">Pay by card</em> opens secure checkout — the rate, the platform fee,
+          and processing on one receipt, and the deal marks itself paid. Desks still arming their rail run the
+          payment note instead: copy it, pay outside, mark it paid — the record carries it either way.</p>
         <p class="mk__note">Signed in, this is the full engine: counters, terms lock, signatures, and a printable
           sheet. Signed out, it's a quick request straight to the provider's inbox. Either way —
           <em style="color:var(--cream)">part of every dollar spent here builds the next artist.</em></p>
@@ -744,6 +744,7 @@
       <input class="mp__in" id="shTitle" type="text" placeholder="What's it for — the song, the job, the project">
       <textarea class="mp__in" id="shNote" placeholder="Anything they should know (optional)"></textarea>
       <input class="mp__in mp__hidden" id="shContact" type="text" placeholder="Your name · email or phone">
+      <div id="shDoor"></div>
       <button class="btn btn--ruby" id="shGo" type="button" style="width:100%;justify-content:center">Send it</button>
       <p class="mp__msg" id="shMsg"></p>
       <p class="mp__note" id="shFine">This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record.</p>
@@ -752,8 +753,7 @@
       <div class="mp__check">✓</div>
       <h2 id="shDoneMsg">Sent.</h2>
       <p class="mp__note" id="shDoneSub"></p>
-      <a class="btn btn--ruby" href="https://square.link/u/MBVeuzoo?src=mpay" target="_blank" rel="noopener" data-cta="mpay-square" style="margin-top:0.8rem">Pay by card now — Square</a>
-      <p class="mp__note">Secure Square checkout — type the exact amount and put what it's for in the note. The deal record on both sides carries the receipt.</p>
+      <div id="shPayRail" style="margin-top:0.8rem"></div>
       <p class="mp__note" style="color:#2fbf71">&#127963;&#65038; Every clean deal stamps your books at the Street Credit Bureau — <a href="#scb" id="shScbLink" style="color:#2fbf71;font-weight:700">your record builds itself &#8594;</a></p>
       <div class="mp__go">
         <a class="btn btn--ghost" href="#yours">Open the desk</a>
@@ -771,9 +771,9 @@
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/mgrind.js?v=__STAMP__"></script>
-  <script src="js/sandbox.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
@@ -807,11 +807,16 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
         if (window.MCC_TRACK) window.MCC_TRACK("market_pane", { pane: id });
       };
-      document.querySelectorAll(".mk__jump[href^='#']").forEach(function (j) {
-        j.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          window.MK_SHOW(j.getAttribute("href").slice(1));
-        });
+      /* one delegated router: ANY in-page link to a pane switches it —
+         plain hash anchors don't fire hashchange when the hash already
+         matches, which used to make "Open the desk" a dead click */
+      document.addEventListener("click", function (ev) {
+        var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="#"]') : null;
+        if (!a) return;
+        var id = (a.getAttribute("href") || "").slice(1);
+        if (PANES.indexOf(id) === -1) return;
+        ev.preventDefault();
+        window.MK_SHOW(id);
       });
       window.MK_SHOW(PANES.indexOf(location.hash.slice(1)) !== -1 ? location.hash.slice(1) : "floor");
       window.addEventListener("hashchange", function () {
@@ -1089,13 +1094,26 @@
             } else if (d.status === "locked" && mine) {
               acts = '<span class="cr__tag">You signed — waiting on ' + esc(other) + "</span>";
             } else if (d.status === "signed") {
-              var sq = (DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0] || {}).square
-                || "https://square.link/u/MBVeuzoo";
-              acts = '<button class="btn btn--ruby" data-act="stripe" data-i="' + i + '">Pay by card — checkout</button>' +
-                '<a class="btn btn--ghost" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Square</a>' +
-                '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
-                '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
+              // the card button renders ONLY when it truly pays the named
+              // payee: the house, or a Stripe-verified provider. rail() is
+              // the single source of truth — no mission-fund fallbacks here.
+              var payee = DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0];
+              var rail = window.MCC_STRIPE.rail(payee);
+              acts = "";
+              if (mySide === "from" && rail.card) {
+                acts += '<button class="btn btn--ruby" data-act="stripe" data-i="' + i + '">Pay by card — checkout</button>';
+              }
+              if (rail.square) {
+                acts += '<a class="btn btn--ghost" href="' + esc(rail.square) +
+                  (rail.square.indexOf("?") === -1 ? "?src=deal" : "&src=deal") +
+                  '" target="_blank" rel="noopener" data-cta="deal-square">Square</a>';
+              }
+              acts += '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
+                '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid — money moved outside the app</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
+              if (mySide === "from" && !rail.card && !rail.square) {
+                acts += '<span class="cr__tag">Card checkout isn’t on this desk yet — the payment note is the rail.</span>';
+              }
             } else if (d.status === "paid") {
               acts = '<button class="btn btn--ruby" data-act="completed" data-i="' + i + '">Mark completed</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
@@ -1145,10 +1163,10 @@
               var act = b.getAttribute("data-act");
               if (act === "stripe") {
                 b.textContent = "Opening checkout…";
-                window.MCC_STRIPE.payDeal(d).then(function (went) {
+                var payeeRow = DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0];
+                window.MCC_STRIPE.payDeal(d, window.MCC_STRIPE.rail(payeeRow)).then(function (went) {
                   if (went) { track("deal_stripe_checkout", { amount: (d.terms && d.terms.fee) || 0 }); return; }
-                  // the rail isn't armed yet — Square keeps the register
-                  b.textContent = "Card rail arming — use Square →";
+                  b.textContent = "The rail hiccuped — copy the payment note instead";
                   setTimeout(function () { b.textContent = "Pay by card — checkout"; }, 3200);
                 });
               } else if (act === "paynote") {
@@ -1171,11 +1189,33 @@
                 $("pSend").textContent = "Send the counter";
                 window.MK_SHOW("build");
               } else if (act === "sign") {
-                var name = prompt("Sign with your full legal name — this is your signature on the record:");
-                if (!name || !name.trim()) return;
-                window.MCC_NET.signDeal(d, side(d), name.trim()).then(function () {
-                  track("collab_signed", {}); loadDeals();
+                // the signature deserves better than a browser prompt —
+                // an inline sheet, right in the deal card
+                var actsRow = b.closest(".cr__acts");
+                if (!actsRow || actsRow.querySelector(".cr__signrow")) return;
+                var row = document.createElement("div");
+                row.className = "cr__signrow";
+                row.style.cssText = "display:flex;gap:0.5rem;flex-wrap:wrap;width:100%;margin-top:0.5rem";
+                var inp = document.createElement("input");
+                inp.className = "mk__in"; inp.type = "text";
+                inp.placeholder = "Your full legal name — this is your signature on the record";
+                inp.style.cssText = "flex:1;min-width:200px;margin:0";
+                var go = document.createElement("button");
+                go.className = "btn btn--ruby"; go.type = "button"; go.textContent = "Sign the record";
+                var no = document.createElement("button");
+                no.className = "btn btn--ghost"; no.type = "button"; no.textContent = "Not yet";
+                go.addEventListener("click", function () {
+                  var name = inp.value.trim();
+                  if (!name) { inp.focus(); return; }
+                  go.textContent = "Signing…";
+                  window.MCC_NET.signDeal(d, side(d), name).then(function () {
+                    track("collab_signed", {}); loadDeals();
+                  });
                 });
+                no.addEventListener("click", function () { row.remove(); });
+                row.appendChild(inp); row.appendChild(go); row.appendChild(no);
+                actsRow.appendChild(row);
+                inp.focus();
               } else if (act === "print") {
                 printSheet(d);
               } else {
@@ -1743,7 +1783,30 @@
         }
         $("tdSave").addEventListener("click", function () {
           if (!(window.MCC_AUTH.user && window.MCC_AUTH.user())) {
-            $("tdSaveMsg").textContent = "Sign in first — one tap on the profile page, no password.";
+            // the door opens right here — the filled form survives the reload
+            // because the door banks nothing and the inputs stay put until
+            // the account exists, then Save runs for real
+            $("tdSaveMsg").textContent = "One tap first — open your account and this saves:";
+            var host = document.getElementById("tdDoorHost");
+            if (!host) {
+              host = document.createElement("div");
+              host.id = "tdDoorHost";
+              host.style.margin = "0.6rem 0";
+              $("tdSaveMsg").parentNode.insertBefore(host, $("tdSaveMsg").nextSibling);
+            }
+            if (window.MCC_DOOR) window.MCC_DOOR.mount(host, {
+              context: "desk-save",
+              onDone: function () {
+                // bank the form so the reload restores it into the prefill path
+                try {
+                  localStorage.setItem("mcc_onboard", JSON.stringify({
+                    name: $("fName").value.trim(), headline: $("fHeadline").value.trim(),
+                    area: $("fArea").value.trim(), blurb: $("fBlurb").value.trim(), roles: picked,
+                  }));
+                } catch (e) {}
+                location.reload();
+              },
+            });
             return;
           }
           var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker($("fTicker").value, $("fName").value) : $("fTicker").value.toUpperCase();
@@ -1771,7 +1834,7 @@
         if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
           loadListing(); loadInbox(); loadStock();
         } else {
-          $("tdStatus").textContent = "sign in to claim yours";
+          $("tdStatus").textContent = "one tap to claim yours";
         }
       })();
 
@@ -1941,7 +2004,11 @@
         $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
       }
       var payDoor = $("xcDPay");
-      if (payDoor) payDoor.addEventListener("click", function () { presetTo(payDoor.getAttribute("data-to") || ""); });
+      if (payDoor) payDoor.addEventListener("click", function () {
+        presetTo(payDoor.getAttribute("data-to") || "");
+        // the ticker sheet steps aside — the keypad is the room now
+        document.body.classList.remove("xc-open");
+      });
 
       function renderPicker(q) {
         q = (q || "").toLowerCase();
@@ -1980,8 +2047,23 @@
         });
         $("shContact").classList.toggle("mp__hidden", AUTHED);
         $("shFine").textContent = AUTHED
-          ? "This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record."
-          : "No account needed — this lands in their inbox as a request. Sign in any time to run full deals with signatures.";
+          ? "This sends a real deal into the Market engine — propose, counter, lock, sign. When the desk carries the card rail, checkout opens right after."
+          : "No account needed — this lands in their inbox as a request. Or open your account below and it goes out as a real deal.";
+        // mid-flow door: the keypad and the payee survive — the account
+        // opens in place and the send upgrades from request to real deal
+        var doorHost = $("shDoor");
+        doorHost.innerHTML = "";
+        if (!AUTHED && window.MCC_DOOR) {
+          window.MCC_DOOR.mount(doorHost, {
+            lede: "Start instantly and this goes on the record under your name — deals, signatures, your own desk.",
+            context: "pay",
+            onDone: function () {
+              AUTHED = !!(window.MCC_AUTH.user && window.MCC_AUTH.user());
+              stepFor();
+              paintYou();
+            },
+          });
+        }
         track("mpay_provider_pick", { who: pick.slug || pick.id });
       }
 
@@ -1989,16 +2071,50 @@
         var title = $("shTitle").value.trim() || (KLBL[kind] + " — " + fmt(amt) + " via M Pay");
         var note = $("shNote").value.trim();
         $("shMsg").textContent = "Sending…";
-        var done = function (kindSent) {
+        var done = function (kindSent, dealRow) {
           $("shFor").classList.add("mp__hidden");
           $("shDone").classList.remove("mp__hidden");
           $("shDoneMsg").textContent = (dir === "pay" ? "Sent — " : "Requested — ") + fmt(amt) + ".";
           $("shDoneSub").textContent = kindSent === "deal"
             ? pick.name + " sees it on their desk now. Counter, lock, sign — every step stays on the record."
             : "It's in " + pick.name + "'s inbox — they answer from their desk.";
+          paintShRail(kindSent, dealRow);
           $("shTitle").value = ""; $("shNote").value = ""; $("shMsg").textContent = "";
           track(kindSent === "deal" ? "mpay_deal_sent" : "mpay_request_sent", { kind: kind, dir: dir, amount: +amt });
         };
+        /* the done-screen register: a card button only when it truly pays
+           the picked payee — the house or a Stripe-verified desk. No deal
+           row, no card. Everyone else gets the truth, not a donation link. */
+        function paintShRail(kindSent, dealRow) {
+          var host = $("shPayRail");
+          host.innerHTML = "";
+          if (dir !== "pay") return;
+          var rail = window.MCC_STRIPE.rail(pick);
+          if (kindSent === "deal" && dealRow && rail.card) {
+            var b = document.createElement("button");
+            b.className = "btn btn--ruby"; b.type = "button";
+            b.textContent = "Pay by card now — checkout";
+            b.addEventListener("click", function () {
+              b.textContent = "Opening checkout…";
+              window.MCC_STRIPE.payDeal(dealRow, rail).then(function (went) {
+                if (went) { track("mpay_stripe_checkout", { amount: +amt }); return; }
+                b.textContent = "The rail hiccuped — the deal waits on your desk";
+                setTimeout(function () { b.textContent = "Pay by card now — checkout"; }, 3200);
+              });
+            });
+            host.appendChild(b);
+            var p = document.createElement("p");
+            p.className = "mp__note";
+            p.textContent = "Secure checkout — the rate, the platform fee, and processing on one receipt. The deal marks itself paid.";
+            host.appendChild(p);
+          } else if (rail.square) {
+            var sq = rail.square + (rail.square.indexOf("?") === -1 ? "?src=mpay" : "&src=mpay");
+            host.innerHTML = '<a class="btn btn--ruby" href="' + esc(sq) + '" target="_blank" rel="noopener" data-cta="mpay-square">Pay by card now — their Square</a>' +
+              '<p class="mp__note">' + esc(pick.name) + "&rsquo;s own Square checkout — type the exact amount and put the deal name in the note.</p>";
+          } else {
+            host.innerHTML = '<p class="mp__note">' + esc(pick.name) + "&rsquo;s card rail isn&rsquo;t armed yet — the deal carries the payment note, money moves outside the app, and the record holds it.</p>";
+          }
+        }
         var fail = function (e) { $("shMsg").textContent = "Couldn't send: " + String(e && e.message || e); };
 
         if (AUTHED) {
@@ -2007,7 +2123,7 @@
             from_name: (ME && ME.name) || (window.MCC_SUPA.email() || "Me"),
             to_slug: pick.slug || pick.id, to_name: pick.name,
             terms: { splits: [], fee: +amt, date: "", notes: (dir === "request" ? "[They pay me — request] " : "") + note, history: [] },
-          }).then(function () { done("deal"); }).catch(fail);
+          }).then(function (row) { done("deal", row); }).catch(fail);
         } else {
           var contact = $("shContact").value.trim();
           if (!contact) { $("shMsg").textContent = "Your name and a way to reach you — that's all it takes."; return; }
@@ -2040,9 +2156,20 @@
       function paintYou() {
         var box = $("mpYou");
         if (!AUTHED) {
+          // the welcome desk: the door opens RIGHT HERE — no detour to
+          // another page, no fake persona. One tap and it's real.
+          var hasStash = false;
+          try { hasStash = !!(localStorage.getItem("mcc_onboard") || localStorage.getItem("mcc_ticker_claim")); } catch (e) {}
           box.innerHTML =
-            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 1rem">The desk is yours the moment you sign in — your ticker, your room, and tools shaped for what you do: artist, venue, or service provider.</p>' +
-            '<a class="btn btn--ruby" href="profile.html" style="justify-content:center">Claim your room</a></div>';
+            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">The desk is the whole business</b> — your ticker, your listing, your inbox, your deals, your payment link. It opens with one tap.</p>' +
+            (hasStash ? '<p class="mp__note" style="color:#2fbf71;margin:0 0 0.6rem">Your onboarding answers are saved on this device — the listing form fills itself the moment you’re in.</p>' : "") +
+            '<div id="youDoor" style="margin:0.6rem 0"></div>' +
+            '<button class="btn btn--ghost" id="youTour" type="button" style="justify-content:center">✦ Show me around first</button></div>';
+          if (window.MCC_DOOR) window.MCC_DOOR.mount($("youDoor"), { ticker: true, context: "desk" });
+          var tb = $("youTour");
+          if (tb) tb.addEventListener("click", function () {
+            if (window.MCC_TOUR) window.MCC_TOUR.start();
+          });
           return;
         }
         var face = roleFace(ME && ME.roles);
@@ -2097,6 +2224,17 @@
             '<button class="btn btn--ghost" id="dkPayShare" type="button">Share</button></div>' +
             '<p class="mp__msg" id="dkPayMsg"></p>' +
             '<p class="mp__note">Text it, DM it, tape it to the door — it opens the Pay keypad with the amount and your name already loaded.</p></div>';
+          /* the card rail: three states — live, mid-onboarding, not started */
+          if (ME.charges_enabled === true) {
+            html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
+              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● Card rail live — buyers check out by card on your signed deals and the money lands in your bank. Your full rate arrives; the platform fee rides on the buyer&rsquo;s side.</p></div>';
+          } else {
+            html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
+              '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkRailBtn" type="button" style="flex:1">' +
+              (ME.stripe_acct ? "Finish setting up payouts →" : "Set up payouts — get paid by card") + "</button></div>" +
+              '<p class="mp__msg" id="dkRailMsg"></p>' +
+              '<p class="mp__note">Five minutes with Stripe — identity and a bank account, all on their secure page. Then every signed deal grows a card checkout and your rate lands straight in your bank.</p></div>';
+          }
           if (face === "venue") {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
@@ -2139,6 +2277,32 @@
         }
         body.innerHTML = html;
         if (ME) wireDesk(body, face);
+        /* the rail door: opens Stripe's hosted onboarding, resumes it, or
+           quietly reports the rail still being armed platform-side */
+        var railBtn = body.querySelector("#dkRailBtn");
+        if (railBtn) {
+          railBtn.addEventListener("click", function () {
+            railBtn.textContent = "Opening the Stripe door…";
+            window.MCC_STRIPE.connectOnboard().then(function (j) {
+              if (j && j.url) { track("connect_onboard_open", {}); location.href = j.url; return; }
+              if (j && j.status === "live") {
+                ME.charges_enabled = true;
+                paintYou();
+                return;
+              }
+              railBtn.textContent = ME.stripe_acct ? "Finish setting up payouts →" : "Set up payouts — get paid by card";
+              var m = body.querySelector("#dkRailMsg");
+              if (m) m.textContent = "The rail is being armed for your desk — check back soon.";
+            });
+          });
+          // back from Stripe (or a fresh visit mid-onboarding): ask once
+          // whether the account went live and stamp the desk if so
+          if (ME.stripe_acct && ME.charges_enabled !== true) {
+            window.MCC_STRIPE.connectOnboard().then(function (j) {
+              if (j && j.status === "live") { ME.charges_enabled = true; paintYou(); }
+            });
+          }
+        }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
         // amenity chips inside the freshly-written body
@@ -2369,6 +2533,12 @@
             } else {
               $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
             }
+          } else {
+            // a pay link naming a ticker that isn't on the floor must never
+            // die silently — open the keypad and say so
+            if (window.MK_SHOW) window.MK_SHOW("pay");
+            $("mpHint").textContent = "That ticker isn't on the floor yet — search below or pick anyone.";
+            track("mpay_paylink_miss", { to: Q.get("to") });
           }
         }
         // local rehearsal only: a staged listing so the desk can be walked
@@ -2449,5 +2619,6 @@
       armed();
     })();
   </script>
+  <script src="js/tour.js?v=__STAMP__"></script>
 </body>
 </html>
