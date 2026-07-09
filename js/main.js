@@ -12,11 +12,20 @@
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------------- Lenis smooth scroll ---------------- */
+  /* ---------------- Lenis smooth scroll ----------------
+     Tuned for CONTROL: the page must feel held, not driven. A shorter
+     glide (0.85s), and on touch devices the scroll runs through Lenis
+     too (syncTouch) — one pipeline for finger and film, which also
+     kills the pinned-section jitter iOS gets on native momentum. A
+     firmer syncTouchLerp keeps the page pinned to the finger, and a
+     calmer inertia stops the coast sooner after a flick. */
   var lenis = new Lenis({
-    duration: 1.15,
+    duration: 0.85,
     easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-    smoothWheel: true,
+    smoothWheel: !prefersReduced,
+    syncTouch: !prefersReduced,
+    syncTouchLerp: 0.14,
+    touchInertiaMultiplier: 22,
   });
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
@@ -48,13 +57,14 @@
   /* ---------------- scroll-scrubbed frame sequences ---------------- */
   function pad4(n) { return String(n).padStart(4, "0"); }
 
-  function createSequence(canvasId, fallbackId) {
+  function createSequence(canvasId, fallbackId, isHero) {
     var canvas = document.getElementById(canvasId);
     if (!canvas) return null;
     var seq = {
       canvas: canvas,
       ctx: canvas.getContext("2d"),
       fallbackId: fallbackId,
+      isHero: !!isHero,
       frames: [],
       count: 0,
       current: 0,   // lerped position
@@ -62,7 +72,13 @@
       lastDrawn: -1,
       loadedMax: -1, // highest contiguous loaded frame index
       ready: false,
+      onScreen: true, // visibility gate — offscreen films don't draw
     };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        seq.onScreen = es[0].isIntersecting;
+      }, { rootMargin: "20% 0px" }).observe(canvas);
+    }
     seq.drawImg = function (img) {
       if (!img || !img.complete || !img.naturalWidth) return false;
       var cw = canvas.width, ch = canvas.height;
@@ -75,7 +91,9 @@
       // phones don't need a 2× backing store for a full-bleed film — cap the
       // device-pixel-ratio to 1 on small screens so the canvas costs a quarter
       // of the GPU memory and each drawImage is far cheaper (smoother scrub).
-      var maxDpr = window.matchMedia("(max-width: 768px)").matches ? 1 : 2;
+      // the hero earns retina; the background films run at 1.5× — half the
+      // pixels pushed per drawImage, and nobody can tell behind a scrim
+      var maxDpr = window.matchMedia("(max-width: 768px)").matches ? 1 : (seq.isHero ? 2 : 1.5);
       var dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
@@ -104,7 +122,7 @@
   }
 
   var sequences = {
-    hero: createSequence("orbitCanvas", "heroFallback"),
+    hero: createSequence("orbitCanvas", "heroFallback", true),
     pillarsbg: createSequence("pillarsCanvas", "pillarsVideo"),
     keynote: createSequence("loadoutCanvas", null),
     vauntlive: createSequence("cmdCanvas5", null),
@@ -122,12 +140,15 @@
     return s ? PAR.attach(s.canvas, opts || { depth: 15, tilt: 2.4, push: 0.06 }) : null;
   }
 
-  // butter loop: every tick, lerp each sequence toward its scroll target
+  // butter loop: every tick, lerp each sequence toward its scroll target.
+  // The film must feel HELD by the scroll, not chasing it — touch tracks
+  // tighter than mouse because a finger expects 1:1.
+  var FILM_LERP = ("ontouchstart" in window || navigator.maxTouchPoints > 0) ? 0.42 : 0.3;
   gsap.ticker.add(function () {
     Object.keys(sequences).forEach(function (k) {
       var s = sequences[k];
-      if (!s || !s.ready) return;
-      s.current += (s.target - s.current) * 0.2;
+      if (!s || !s.ready || !s.onScreen) return;
+      s.current += (s.target - s.current) * FILM_LERP;
       var i = Math.round(s.current);
       i = Math.max(0, Math.min(s.count - 1, i));
       // never scrub past what's decoded — hold the nearest loaded frame
