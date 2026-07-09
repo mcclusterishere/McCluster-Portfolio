@@ -826,6 +826,10 @@
         var id = (a.getAttribute("href") || "").slice(1);
         if (PANES.indexOf(id) === -1) return;
         ev.preventDefault();
+        // walking through a pane door closes any overlay standing over it —
+        // "Open the desk" on the done sheet used to switch the room behind
+        // a wall the visitor couldn't see through
+        document.body.classList.remove("sheet-open", "xc-open");
         window.MK_SHOW(id);
       });
       window.MK_SHOW(PANES.indexOf(location.hash.slice(1)) !== -1 ? location.hash.slice(1) : "floor");
