@@ -107,7 +107,17 @@
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
   document.body.appendChild(overlay);
-  function closeOverlay() { overlay.classList.remove("is-open"); document.documentElement.classList.remove("psy-locked"); }
+  function closeOverlay() {
+    overlay.classList.remove("is-open");
+    document.documentElement.classList.remove("psy-locked");
+    // the ride waits at the door while a question is open, then rolls on —
+    // but only when no follow-up overlay takes the room right after
+    if (ride && ride.wasOn) {
+      setTimeout(function () {
+        if (!overlay.classList.contains("is-open") && ride.wasOn) { ride.wasOn = false; rideStart(); }
+      }, 300);
+    }
+  }
   function openOverlay(html) {
     overlay.innerHTML = '<div class="psyoverlay__box psyoverlay__box--poll">' + html + "</div>";
     overlay.classList.add("is-open");
@@ -163,6 +173,7 @@
     tele("answer_submitted", unit); // metadata only — never the answer
     queueRow(unit, value, label, opts.field);
     markDone(unit);
+    award(unit, 10);
     checkModule(unit);
   }
 
@@ -174,9 +185,26 @@
 
   function checkModule(unit) {
     var mates = DATA.units.filter(function (u) { return u.module === unit.module && (deep || u.priority); });
-    if (mates.length && mates.every(answered)) tele("module_completed", unit);
+    if (mates.length && mates.every(answered)) {
+      tele("module_completed", unit);
+      if (!game.mods[unit.module]) {
+        game.mods[unit.module] = 1;
+        game.cp += 25; // the module bonus: a whole verse held down
+        store("mcc_psmf_game", game);
+        paintHUD(true);
+      }
+    }
     var pool = DATA.units.filter(function (u) { return deep || u.priority; });
-    if (pool.length && pool.every(answered)) { tele("quiz_completed"); showResults(); }
+    if (pool.length && pool.every(answered)) {
+      tele("quiz_completed");
+      if (!game.fullRun) {
+        game.fullRun = 1;
+        game.cp += 50; // the full run: every open bar answered
+        store("mcc_psmf_game", game);
+        paintHUD(true);
+      }
+      showResults();
+    }
   }
 
   function afterAnswerHTML(unit) {
@@ -193,7 +221,7 @@
       b.addEventListener("click", function () {
         var act = b.getAttribute("data-act");
         if (act === "deeper") { deep = true; store("mcc_psmf_deep", true); renderBars(); tele("deep_mode_on"); }
-        if (act === "skip") tele("questions_skipped", unit);
+        if (act === "skip") { tele("questions_skipped", unit); breakStreak(); }
         closeOverlay();
       });
     });
@@ -355,6 +383,119 @@
     next();
   }
 
+  /* ---------- THE GAME: civic points, streaks, ranks ----------
+     Every answered bar pays. Consecutive answers build a streak
+     multiplier; whole modules pay a bonus; the full run pays the
+     biggest. Points are civic engagement, worn like a rank. */
+  var game = load("mcc_psmf_game", { cp: 0, streak: 0, best: 0, mods: {} });
+  var LEVELS = [[0, "Listener"], [60, "Witness"], [150, "Advocate"], [300, "Organizer"], [500, "Freedom Writer"]];
+  function levelOf(cp) { var l = LEVELS[0]; LEVELS.forEach(function (x) { if (cp >= x[0]) l = x; }); return l; }
+  function nextLevel(cp) { for (var i = 0; i < LEVELS.length; i++) if (LEVELS[i][0] > cp) return LEVELS[i]; return null; }
+  var hud = document.createElement("div");
+  hud.className = "psmf__hud";
+  document.body.appendChild(hud);
+  function paintHUD(flash) {
+    if (!DATA) return;
+    hud.classList.add("is-live");
+    var pool = DATA.units.filter(function (u) { return deep || u.priority; });
+    var done = pool.filter(answered).length;
+    var lvl = levelOf(game.cp), nx = nextLevel(game.cp);
+    var pct = pool.length ? Math.round((done / pool.length) * 100) : 0;
+    hud.innerHTML =
+      '<span class="psmf__ring" style="--p:' + pct + '"><b>' + done + "</b><small>/" + pool.length + "</small></span>" +
+      '<span class="psmf__hud-mid"><b>' + esc(lvl[1]) + "</b><small>" + game.cp + " CP" +
+      (nx ? " · " + (nx[0] - game.cp) + " to " + esc(nx[1]) : " · top rank") + "</small></span>" +
+      (game.streak > 1 ? '<span class="psmf__streak">&#128293;&#215;' + Math.min(game.streak, 9) + "</span>" : "");
+    if (flash) { hud.classList.remove("is-flash"); void hud.offsetWidth; hud.classList.add("is-flash"); }
+  }
+  function award(unit, pts) {
+    game.streak++;
+    game.best = Math.max(game.best, game.streak);
+    var mult = Math.min(3, 1 + (game.streak - 1) * 0.5); // ×1 → ×3, five deep
+    var got = Math.round(pts * mult);
+    game.cp += got;
+    store("mcc_psmf_game", game);
+    paintHUD(true);
+    var el = root.querySelector('[data-lyric="' + unit.lyric_id + '"]');
+    if (el) {
+      var pop = document.createElement("i");
+      pop.className = "psmf__pop";
+      pop.textContent = "+" + got + " CP";
+      el.appendChild(pop);
+      setTimeout(function () { pop.remove(); }, 1400);
+    }
+  }
+  function breakStreak() {
+    if (game.streak) { game.streak = 0; store("mcc_psmf_game", game); paintHUD(); }
+  }
+
+  /* ---------- THE RIDE: press play, the song carries you ----------
+     Bars light one by one and the page rides along. The pace runs on
+     a reading clock today; the moment the master recording lands at
+     assets/audio/please-set-me-free.mp3 the same button plays it and
+     paces the bars across its real duration — no code change needed. */
+  var ride = { on: false, wasOn: false, i: -1, timer: null, audio: null, mode: "clock", barMs: 3200 };
+  function rideBars() { return Array.prototype.slice.call(root.querySelectorAll(".poll__bar")); }
+  function playBtnPaint() {
+    var b = document.getElementById("psmfPlay");
+    if (!b) return;
+    b.classList.toggle("is-on", ride.on);
+    b.querySelector("b").textContent = ride.on ? "Pause the ride" : "Play the song";
+    b.querySelector("small").textContent = ride.on
+      ? (ride.mode === "audio" ? "synced to the record — tap a lit bar to score" : "riding the bars — tap a lit bar to score")
+      : "ride every bar · score the run";
+  }
+  function rideStep() {
+    if (!ride.on) return;
+    var bars = rideBars();
+    ride.i++;
+    if (ride.i >= bars.length) { rideEnd(true); return; }
+    var b = bars[ride.i];
+    root.querySelectorAll(".poll__bar.is-riding").forEach(function (x) { x.classList.remove("is-riding", "is-score"); });
+    b.classList.add("is-riding");
+    // only open, unanswered bars carry the score invite
+    if (!b.classList.contains("is-locked") && !b.classList.contains("is-answered")) b.classList.add("is-score");
+    b.scrollIntoView({ behavior: "smooth", block: "center" });
+    ride.timer = setTimeout(rideStep, ride.barMs);
+  }
+  function rideStart() {
+    ride.on = true;
+    if (!ride.audio) {
+      ride.audio = new Audio("assets/audio/please-set-me-free.mp3");
+      ride.audio.addEventListener("loadedmetadata", function () {
+        var n = rideBars().length;
+        if (ride.audio.duration && n) ride.barMs = Math.max(1200, (ride.audio.duration * 1000 - 3000) / n);
+      });
+      ride.audio.addEventListener("ended", function () { rideEnd(true); });
+    }
+    ride.audio.play().then(function () { ride.mode = "audio"; playBtnPaint(); }).catch(function () { /* clock mode until the master lands */ });
+    clearTimeout(ride.timer);
+    rideStep();
+    playBtnPaint();
+    tele("ride_start");
+  }
+  function ridePause() {
+    ride.on = false;
+    clearTimeout(ride.timer);
+    if (ride.audio) ride.audio.pause();
+    ride.i = Math.max(-1, ride.i - 1); // the lit bar replays on resume
+    playBtnPaint();
+  }
+  function rideEnd(finished) {
+    ride.on = false; ride.wasOn = false;
+    clearTimeout(ride.timer);
+    if (ride.audio) { ride.audio.pause(); try { ride.audio.currentTime = 0; } catch (e) {} }
+    root.querySelectorAll(".poll__bar.is-riding").forEach(function (x) { x.classList.remove("is-riding"); });
+    ride.i = -1;
+    playBtnPaint();
+    if (finished) {
+      if (!game.rode) { game.rode = 1; game.cp += 30; store("mcc_psmf_game", game); } // first full ride pays
+      paintHUD(true);
+      tele("ride_complete");
+      showResults();
+    }
+  }
+
   /* ---------- results: your signal ---------- */
   function showResults() {
     var top = topIssue();
@@ -388,6 +529,7 @@
   }
 
   function renderBars() {
+    if (ride && ride.on) rideEnd(false); // the room changed under the ride
     var html = "";
     DATA.modules.forEach(function (mod) {
       var units = DATA.units.filter(function (u) { return u.module === mod.id; });
@@ -439,6 +581,11 @@
       progressEl = document.getElementById("pollProgress");
       renderBars();
       follow();
+      paintHUD();
+      var playBtn = document.getElementById("psmfPlay");
+      if (playBtn) playBtn.addEventListener("click", function () {
+        if (ride.on) { ridePause(); tele("ride_pause"); } else rideStart();
+      });
       tele("song_poll_view");
       var deepBtn = document.getElementById("pollDeep");
       if (deepBtn) deepBtn.addEventListener("click", function () {
@@ -454,6 +601,7 @@
         var u = DATA.units.find(function (x) { return x.lyric_id === bar.getAttribute("data-lyric"); });
         if (!u) return;
         if (bar.classList.contains("is-locked")) { tele("locked_bar_tap", u); return; }
+        if (ride.on) { ride.wasOn = true; ridePause(); } // the question holds the ride
         consentGate(function () { ask(u); });
       });
       root.addEventListener("keydown", function (ev) {

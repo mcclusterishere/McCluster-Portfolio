@@ -4167,3 +4167,58 @@ html, body { overflow-x: clip; overscroll-behavior-x: none; }
 .mv__txt b { display: block; font-size: 0.86rem; line-height: 1.5; font-weight: 600; color: var(--cream); }
 .mv:hover .mv__seal { box-shadow: 0 0 24px color-mix(in srgb, var(--badge-c, #8b5cf6) 85%, transparent),
   inset 0 0 10px rgba(0, 0, 0, 0.5); }
+
+/* ---- Please Set Me Free: the game layer ----
+   Civic points, streaks, levels, and the ride — the poll plays like a
+   record and scores like a run. */
+.psmf__play { display: flex; align-items: center; gap: 1rem; margin: 1.7rem auto 0; cursor: pointer;
+  border: 1px solid rgba(229, 56, 59, 0.6); color: var(--cream); font: inherit; border-radius: 100px;
+  background: linear-gradient(140deg, rgba(193, 18, 31, 0.4), rgba(20, 16, 14, 0.85));
+  padding: 0.7rem 1.9rem 0.7rem 0.7rem; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s, box-shadow 0.3s; }
+.psmf__play:hover { transform: translateY(-2px); box-shadow: 0 20px 56px rgba(0, 0, 0, 0.6), 0 0 30px rgba(229, 56, 59, 0.3); }
+.psmf__play-ic { position: relative; flex: none; width: 64px; height: 64px; border-radius: 50%;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--ruby), var(--ruby-hot)); }
+.psmf__play-ic::after { content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid rgba(229, 56, 59, 0.55); animation: psmfPulse 1.8s ease-out infinite; }
+.psmf__play.is-on .psmf__play-ic::after { animation: none; opacity: 0; }
+@keyframes psmfPulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.55); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .psmf__play-ic::after { animation: none; } }
+.psmf__play-ic svg { width: 44%; fill: currentColor; }
+.psmf__play-tx { text-align: left; }
+.psmf__play-tx b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: 1.35rem; letter-spacing: 0.04em; line-height: 1; }
+.psmf__play-tx small { display: block; color: var(--cream-dim); font-size: 0.64rem; letter-spacing: 0.16em;
+  text-transform: uppercase; margin-top: 0.3rem; }
+
+.psmf__hud { position: fixed; top: calc(0.7rem + env(safe-area-inset-top)); right: 0.8rem; z-index: 150;
+  display: none; align-items: center; gap: 0.7rem; border: 1px solid rgba(244, 239, 230, 0.16);
+  background: rgba(12, 9, 8, 0.9); backdrop-filter: blur(12px); border-radius: 100px;
+  padding: 0.4rem 0.95rem 0.4rem 0.45rem; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
+.psmf__hud.is-live { display: flex; }
+.psmf__hud.is-flash { animation: psmfFlash 0.7s; }
+@keyframes psmfFlash { 30% { border-color: var(--ruby-hot); box-shadow: 0 0 26px rgba(229, 56, 59, 0.7); } }
+.psmf__ring { position: relative; flex: none; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; grid-auto-flow: column; align-items: baseline;
+  background: conic-gradient(var(--ruby-hot) calc(var(--p, 0) * 1%), rgba(244, 239, 230, 0.14) 0); }
+.psmf__ring::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: #14100e; }
+.psmf__ring b { position: relative; font-size: 0.8rem; }
+.psmf__ring small { position: relative; font-size: 0.55rem; color: var(--cream-dim); }
+.psmf__hud-mid b { display: block; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.psmf__hud-mid small { display: block; color: var(--cream-dim); font-size: 0.6rem; margin-top: 0.1rem; }
+.psmf__streak { font-size: 0.82rem; font-weight: 800; color: #ffb057; }
+
+.poll__bar { position: relative; }
+.poll__bar.is-riding { color: #fff; background: rgba(193, 18, 31, 0.22); border-color: var(--ruby-hot);
+  box-shadow: 0 0 24px rgba(229, 56, 59, 0.25); }
+.psmf__pop { position: absolute; right: 0.6rem; top: -0.6rem; font-style: normal; font-size: 0.72rem;
+  font-weight: 800; color: #ffd98a; pointer-events: none; animation: psmfPop 1.3s ease-out forwards; }
+@keyframes psmfPop { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-18px); } }
+.poll__bar.is-riding.is-score::after { content: "TAP · SCORE IT"; position: absolute; right: 0.7rem; top: 50%;
+  transform: translateY(-50%); font-size: 0.52rem; font-weight: 800; letter-spacing: 0.18em; color: #ffd98a;
+  border: 1px solid rgba(216, 186, 124, 0.55); border-radius: 100px; padding: 0.3em 0.8em;
+  background: rgba(10, 8, 7, 0.75); animation: psmfInvite 1.2s ease-in-out infinite alternate; }
+@keyframes psmfInvite { from { opacity: 0.65; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .poll__bar.is-riding.is-score::after { animation: none; } }
