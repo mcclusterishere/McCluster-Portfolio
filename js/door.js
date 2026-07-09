@@ -1,16 +1,13 @@
 /* MCC_DOOR — one way in, mounted anywhere.
-   Every "get an account" moment on the platform used to point somewhere
-   else (profile.html, a sandbox persona, a device-only locker). This is
-   the replacement: a small inline door that opens a REAL account right
-   where the person is standing — instant with no email (Supabase
-   anonymous auth, a true auth.uid), or the magic-link email for people
-   who want their key back on any device. Mount it in a desk, a pay
-   sheet, a claim page; the page decides what happens after with onDone.
+   Every sign-in on the platform is this exact component now — same
+   big readable buttons, same plain words, whether it stands on the
+   desk, the pay sheet, the profile page, the music house, or the
+   members room. The styles live in css/style.css under .door.
 
    MCC_DOOR.mount(hostEl, {
      lede:    optional line above the buttons,
      ticker:  true → a "claim your ticker" input banks mcc_ticker_claim,
-     context: short label for analytics ("desk" | "pay" | "onboard" | "claim"),
+     context: short label for analytics ("desk" | "pay" | "profile" | …),
      onDone:  called after the account exists (default: reload the page)
    })
 
@@ -23,10 +20,14 @@
   // stuck wearing a costume that no longer exists
   try { localStorage.removeItem("mcc_sandbox"); } catch (e) {}
 
-  var IN_CSS = "width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.22);" +
-    "border-radius:10px;color:var(--cream,#f4efe6);font:inherit;padding:0.72em 1em;margin:0";
-
   function track(ev, data) { if (window.MCC_TRACK) window.MCC_TRACK(ev, data || {}); }
+
+  function el(tag, cls, txt) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt) n.textContent = txt;
+    return n;
+  }
 
   function mount(host, opts) {
     if (!host) return;
@@ -34,25 +35,18 @@
     var ctx = opts.context || "door";
     host.innerHTML = "";
 
-    var wrap = document.createElement("div");
-    wrap.className = "door";
-    wrap.style.cssText = "display:flex;flex-direction:column;gap:0.6rem;width:100%;max-width:430px";
+    var wrap = el("div", "door");
 
-    if (opts.lede) {
-      var lede = document.createElement("p");
-      lede.style.cssText = "margin:0;color:rgba(244,239,230,0.72);font-size:0.88rem;line-height:1.5";
-      lede.textContent = opts.lede;
-      wrap.appendChild(lede);
-    }
+    if (opts.lede) wrap.appendChild(el("p", "door__lede", opts.lede));
 
     var tick = null;
     if (opts.ticker) {
-      tick = document.createElement("input");
+      tick = el("input", "door__in");
       tick.type = "text";
-      tick.placeholder = "Claim your ticker — 3–5 letters (optional)";
+      tick.placeholder = "Your ticker — 3–5 letters (optional)";
       tick.maxLength = 6;
       tick.autocapitalize = "characters";
-      tick.style.cssText = IN_CSS + ";text-transform:uppercase;letter-spacing:0.08em";
+      tick.style.textTransform = "uppercase";
       try {
         var held = localStorage.getItem("mcc_ticker_claim");
         if (held) tick.value = held;
@@ -60,8 +54,7 @@
       wrap.appendChild(tick);
     }
 
-    var msg = document.createElement("p");
-    msg.style.cssText = "margin:0;min-height:1.2em;color:rgba(244,239,230,0.8);font-size:0.84rem";
+    var msg = el("p", "door__msg");
 
     function bankTicker() {
       if (!tick) return;
@@ -76,11 +69,8 @@
       if (opts.onDone) opts.onDone(); else location.reload();
     }
 
-    var instant = document.createElement("button");
+    var instant = el("button", "door__go", "Start instantly — no email needed");
     instant.type = "button";
-    instant.className = "btn btn--ruby";
-    instant.style.cssText = "width:100%;justify-content:center";
-    instant.textContent = "Start instantly — no email needed";
     instant.addEventListener("click", function () {
       instant.textContent = "Opening your account…";
       window.MCC_AUTH.signInAnon().then(function () { finish("instant"); }).catch(function (e) {
@@ -90,40 +80,31 @@
     });
     wrap.appendChild(instant);
 
-    var or = document.createElement("p");
-    or.style.cssText = "margin:0;text-align:center;color:rgba(244,239,230,0.4);font-size:0.78rem;letter-spacing:0.14em";
-    or.textContent = "— or —";
-    wrap.appendChild(or);
+    wrap.appendChild(el("p", "door__or", "or use your email"));
 
-    var row = document.createElement("div");
-    row.style.cssText = "display:flex;gap:0.5rem;flex-wrap:wrap";
-    var em = document.createElement("input");
+    var row = el("div", "door__row");
+    var em = el("input", "door__in");
     em.type = "email";
     em.placeholder = "you@email.com";
     em.autocomplete = "email";
-    em.style.cssText = IN_CSS + ";flex:1;min-width:170px;width:auto";
-    var go = document.createElement("button");
+    var go = el("button", "door__alt", "Email me a sign-in link");
     go.type = "button";
-    go.className = "btn btn--ghost";
-    go.textContent = "Email me the key";
     go.addEventListener("click", function () {
       var v = em.value.trim();
       if (!v) { msg.textContent = "Drop your email first."; em.focus(); return; }
       bankTicker();
-      msg.textContent = "Sending the key…";
+      msg.textContent = "Sending the link…";
       window.MCC_AUTH.signIn(v).then(function () {
         track("door_key_sent", { context: ctx });
-        msg.textContent = "Check your email — the link signs you in right here.";
+        msg.textContent = "Check your email — one tap on the link signs you in right here.";
       }).catch(function (e) { msg.textContent = String((e && e.message) || e); });
     });
     row.appendChild(em);
     row.appendChild(go);
     wrap.appendChild(row);
 
-    var fine = document.createElement("p");
-    fine.style.cssText = "margin:0;color:rgba(244,239,230,0.45);font-size:0.76rem;line-height:1.5";
-    fine.textContent = "Instant accounts are real accounts — attach an email later and your desk follows you to any device.";
-    wrap.appendChild(fine);
+    wrap.appendChild(el("p", "door__fine",
+      "Instant accounts are real accounts — attach an email later and your desk follows you to any device."));
     wrap.appendChild(msg);
 
     host.appendChild(wrap);

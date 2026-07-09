@@ -87,7 +87,7 @@ async function boot(opts = {}) {
     console.log("LIVE walk: stopped at the payee step — finish by hand with a 4242.");
   } else {
     // the mid-flow door: instant account, keypad and payee survive
-    const doorBtn = await page.$('#shDoor button.btn--ruby');
+    const doorBtn = await page.$('#shDoor .door__go');
     check("buyer", doorBtn, "inline door did not mount for the signed-out buyer");
     await doorBtn.click();
     await page.waitForTimeout(600);

@@ -542,12 +542,8 @@
         <div id="mkAnon">
           <p class="mk__note" style="margin:0 0 0.9rem"><b style="color:var(--cream)">Quick request</b> — no account needed.
             Pick who it's for, say what you need; it lands in their inbox. Want counters, splits, and
-            signatures? <button class="btn btn--ghost" id="mkSignBtn" type="button" style="padding:0.4em 1em;font-size:0.7rem">Sign in — one email</button></p>
-          <div id="mkSignRow" class="mk__hidden">
-            <input class="mk__in" id="mkEmail" type="email" placeholder="you@yourwork.com" autocomplete="email">
-            <button class="btn btn--ruby" id="mkSignSend" type="button">Email me the key</button>
-            <p class="mk__msg" id="mkSignMsg"></p>
-          </div>
+            signatures? <button class="btn btn--ghost" id="mkSignBtn" type="button" style="padding:0.4em 1em;font-size:0.7rem">Open your account</button></p>
+          <div id="mkSignRow" class="mk__hidden"><div id="mkDoor"></div></div>
         </div>
 
         <label class="mk__lbl">What's the move? Tap it.</label>
@@ -847,15 +843,13 @@
       };
       var MUSIC_KINDS = ["music_collab", "song_split"];
 
-      /* ---------- auth rails ---------- */
-      $("mkSignBtn").addEventListener("click", function () { $("mkSignRow").classList.toggle("mk__hidden"); });
-      $("mkSignSend").addEventListener("click", function () {
-        var em = $("mkEmail").value.trim();
-        if (!em) { $("mkSignMsg").textContent = "Drop your email first."; return; }
-        $("mkSignMsg").textContent = "Sending the key…";
-        window.MCC_AUTH.signIn(em).then(function () {
-          $("mkSignMsg").textContent = "Check your email — the link signs you in right here.";
-        }).catch(function (e) { $("mkSignMsg").textContent = String(e.message || e); });
+      /* ---------- auth rails: the one door ---------- */
+      $("mkSignBtn").addEventListener("click", function () {
+        var row = $("mkSignRow");
+        row.classList.toggle("mk__hidden");
+        if (!row.classList.contains("mk__hidden") && window.MCC_DOOR && !$("mkDoor").children.length) {
+          window.MCC_DOOR.mount($("mkDoor"), { context: "build" });
+        }
       });
       $("crSignOut").addEventListener("click", function () {
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
