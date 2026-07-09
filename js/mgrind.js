@@ -102,14 +102,27 @@
   function emit(name, props) {
     props = props || {};
     props.device = st.device;
-    props.model = "grind_v1";
+    props.model = "grind_v2";
+    var d = new Date();
+    props.hour = d.getHours(); props.dow = d.getDay();
+    props.page = location.pathname.split("/").pop() || "index.html";
+    props.streak = st.streak; props.E = +(st.E || 0).toFixed(1);
+    props.tasksToday = doneToday().length;
+    props.shadowToday = (st.shadow && st.shadow[today()] || []).length;
     if (window.MCC_TRACK) window.MCC_TRACK(name, props);
   }
 
+  var lastCredit = 0;
   function did(id) {
     var t = today();
     st.done[t] = st.done[t] || [];
     if (st.done[t].indexOf(id) !== -1) return false;
+    // the wall against the console cowboy: credits land 20s apart, minimum
+    if (Date.now() - lastCredit < 20000 && st.done[t].length) {
+      emit("grind_throttled", { task: id });
+      return false;
+    }
+    lastCredit = Date.now();
     st.done[t].push(id);
     st.E = Math.min(1000, st.E + 10);
     // a comeback pays down the silence one day per task — no instant absolution
@@ -120,6 +133,56 @@
     return true;
   }
 
+  /* ---- THE SHADOW BOARD: underlying tasks nobody is shown ----
+     They pay no boost — they pay E (the training signal) and they
+     paint the admin's picture of who this player really is. */
+  var SHADOW = {
+    dwell_60:   "stayed a full minute",
+    scroll_deep:"read past 80% of a page",
+    wanderer:   "walked 4+ rooms in a day",
+    night_owl:  "moved between midnight and 5am",
+    early_bird: "moved between 5 and 8am",
+    vr_pilot:   "entered the 360 cabin",
+    listener:   "played 3 different songs in a day",
+    closer:     "spoke inside a deal thread",
+    scholar:    "read the fine rooms (amenities, docs, markers)",
+  };
+  function shadowDid(id) {
+    var t = today();
+    st.shadow = st.shadow || {};
+    st.shadow[t] = st.shadow[t] || [];
+    if (st.shadow[t].indexOf(id) !== -1) return;
+    st.shadow[t].push(id);
+    st.E = Math.min(1000, st.E + 6);
+    jset(KEY, st);
+    emit("grind_shadow", { task: id });
+  }
+  (function armShadows() {
+    var h = new Date().getHours();
+    if (h >= 0 && h < 5) shadowDid("night_owl");
+    if (h >= 5 && h < 8) shadowDid("early_bird");
+    // rooms walked today
+    var t = today();
+    st.pages = st.pages || {};
+    st.pages[t] = st.pages[t] || [];
+    var pg = location.pathname.split("/").pop() || "index.html";
+    if (st.pages[t].indexOf(pg) === -1) { st.pages[t].push(pg); jset(KEY, st); }
+    if (st.pages[t].length >= 4) shadowDid("wanderer");
+    if (["amenities.html", "badge-explainer.html", "psychology-markers.html", "docket-516.html"].indexOf(pg) !== -1) shadowDid("scholar");
+    setTimeout(function () { shadowDid("dwell_60"); }, 60000);
+    var deepFired = false;
+    window.addEventListener("scroll", function () {
+      if (deepFired) return;
+      var max = document.documentElement.scrollHeight - innerHeight;
+      if (max > 400 && window.scrollY / max > 0.8) { deepFired = true; shadowDid("scroll_deep"); }
+    }, { passive: true });
+  })();
+  var SHADOW_MAP = {
+    vr_view: "vr_pilot", vr_inline_view: "vr_pilot",
+    desk_message_sent: "closer", desk_thread_open: "closer",
+  };
+  var songsToday = {};
+
   /* ---- the events already flowing become the game: intercept the pipe ---- */
   var MAP = {
     xc_floor_view: "floor", song_start: "play", spaces_view: "spaces",
@@ -128,7 +191,14 @@
   };
   var orig = window.MCC_TRACK;
   window.MCC_TRACK = function (n, p) {
-    try { if (MAP[n]) did(MAP[n]); } catch (e) {}
+    try {
+      if (MAP[n]) did(MAP[n]);
+      if (SHADOW_MAP[n]) shadowDid(SHADOW_MAP[n]);
+      if (n === "song_start" && p && p.song) {
+        songsToday[p.song] = 1;
+        if (Object.keys(songsToday).length >= 3) shadowDid("listener");
+      }
+    } catch (e) {}
     if (orig) return orig(n, p);
   };
 
@@ -216,6 +286,6 @@
 
   window.MCC_GRIND = {
     device: deviceId, boost: boost, did: did, state: function () { return st; },
-    tasks: TASKS, openBoard: openBoard,
+    tasks: TASKS, shadow: SHADOW, openBoard: openBoard,
   };
 })();

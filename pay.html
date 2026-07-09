@@ -20,6 +20,9 @@
     .mp__me { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: var(--cream-dim); text-decoration: none;
       border: 1px solid rgba(244, 239, 230, 0.25); border-radius: 100px; padding: 0.45em 1em; }
     .mp__me.is-live { border-color: #2fbf71; color: #2fbf71; }
+    .mp__me--coin { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.3em 0.9em 0.3em 0.35em; }
+    .mp__me--coin img { width: 30px; height: 30px; border-radius: 9px; display: block;
+      box-shadow: 0 4px 14px rgba(0, 200, 5, 0.35); }
 
     /* ---- the pay screen ---- */
     .mp__pay { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
@@ -154,7 +157,7 @@
   <main class="mp">
     <div class="mp__head">
       <a class="mp__brand" href="index.html"><img src="assets/img/m-mark.png" alt="M"><b>Pay</b></a>
-      <a class="mp__me" id="mpMe" href="profile.html">Sign in</a>
+      <a class="mp__me mp__me--coin" id="mpMe" href="profile.html" title="Sign in" aria-label="Your profile"><img src="assets/img/mpay-logo.svg" alt="M Pay"><span id="mpMeTxt">Sign in</span></a>
     </div>
 
     <!-- PAY -->
@@ -871,12 +874,12 @@
         window.MCC_NET.myListing().then(function (mine) {
           ME = mine;
           if (mine) {
-            $("mpMe").textContent = "$" + window.MCC_STOCK.ticker(mine.ticker, mine.name);
+            $("mpMeTxt").textContent = "$" + window.MCC_STOCK.ticker(mine.ticker, mine.name);
             $("mpMe").classList.toggle("is-live", mine.status === "live");
-          } else $("mpMe").textContent = "Your room";
+          } else $("mpMeTxt").textContent = "Your room";
         }).catch(function () { $("mpMe").textContent = "Your room"; });
       } else if (ME) {
-        $("mpMe").textContent = "$" + window.MCC_STOCK.ticker(ME.ticker, ME.name);
+        $("mpMeTxt").textContent = "$" + window.MCC_STOCK.ticker(ME.ticker, ME.name);
         $("mpMe").classList.toggle("is-live", ME.status === "live");
       }
       track("mpay_view", { authed: AUTHED });

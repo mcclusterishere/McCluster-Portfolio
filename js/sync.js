@@ -43,10 +43,27 @@
   }
 
   var pushed = false;
+  /* the grind rides shotgun: a compact snapshot of the staging model
+     joins the model document at push time, straight from its own
+     ledger — no shared-key races with the behavior model */
+  function grindSnap() {
+    try {
+      var g = JSON.parse(localStorage.getItem("mcc_grind_v1") || "null");
+      if (!g) return null;
+      var day = new Date().toISOString().slice(0, 10);
+      return { device: g.device, E: +(g.E || 0).toFixed(1), streak: g.streak || 0,
+        tasks: (g.done && g.done[day] || []).length,
+        shadow: (g.shadow && g.shadow[day] || []).length,
+        idle: g.idleDays || 0, seen: g.lastSeen, since: g.firstSeen,
+        boost: (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0 };
+    } catch (e) { return null; }
+  }
   function push() {
     if (pushed) return;
     var model = local(K_MODEL);
     if (!model || !model.last) return; // nothing worth carrying
+    var g = grindSnap();
+    if (g) model = Object.assign({}, model, { grind: g });
     pushed = true;
     authed("device_state?on_conflict=owner", {
       method: "POST", keepalive: true,

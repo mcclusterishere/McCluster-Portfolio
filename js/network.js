@@ -230,6 +230,7 @@
         return authed("providers?id=eq." + id, { method: "PATCH", body: body, prefer: "return=minimal" });
       },
       deals: function () { return authed("deals?order=updated_at.desc&select=*"); },
+      grind: function () { return authed("device_state?select=owner,model,updated_at&order=updated_at.desc"); },
       requests: function () { return authed("booking_requests?order=created_at.desc&select=*"); },
       setRequest: function (id, status) {
         return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });

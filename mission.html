@@ -84,6 +84,7 @@
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
+        <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
       </nav>
@@ -113,6 +114,14 @@
         <div id="mcDeals"><p class="mc__empty">Loading…</p></div>
       </section>
 
+      <section class="mc__card mc__hidden" id="pane-mcGrind">
+        <h2>The Grind — who's really playing</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem">The staging model's whole picture: visible tasks, the shadow board
+          nobody is shown, streaks, silence, and an admin score per player. Every row is a synced account;
+          the exhaust behind it lives in Analytics tagged <b>model:grind_v2</b> with its device id.</p>
+        <div id="mcGrind"><p class="mc__empty">Loading…</p></div>
+      </section>
+
       <section class="mc__card mc__hidden" id="pane-mcSms">
         <h2>The text list</h2>
         <div id="mcSms"><p class="mc__empty">Loading…</p></div>
@@ -133,6 +142,7 @@
   </main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script>
@@ -167,6 +177,59 @@
         });
       }
 
+      /* ---- THE GRIND BOARD: the whole staging model, admin eyes only ----
+         Each row is a synced account; the model column carries the grind
+         snapshot (device, E, streak, boost, visible tasks, shadow tasks,
+         idle days). The admin score grades the player:
+           score = E×0.4 + streak×12 + tasks×8 + shadow×6 − idle×15 */
+      function grindScore(g) {
+        return Math.round((g.E || 0) * 0.4 + (g.streak || 0) * 12 + (g.tasks || 0) * 8 +
+          (g.shadow || 0) * 6 - (g.idle || 0) * 15);
+      }
+      function grindGrade(n) {
+        return n >= 120 ? "S" : n >= 80 ? "A" : n >= 45 ? "B" : n >= 20 ? "C" : n >= 0 ? "D" : "F";
+      }
+      function paintGrind(rows) {
+        var el = $("mcGrind");
+        if (!el) return;
+        // this device always shows, cloud rows follow
+        var live = [];
+        try {
+          if (window.MCC_GRIND) {
+            var st = window.MCC_GRIND.state();
+            live.push({ owner: "this device", updated_at: new Date().toISOString(),
+              g: { device: st.device, E: +(st.E || 0).toFixed(1), streak: st.streak,
+                boost: window.MCC_GRIND.boost(), tasks: (st.done[new Date().toISOString().slice(0,10)] || []).length,
+                shadow: (st.shadow && st.shadow[new Date().toISOString().slice(0,10)] || []).length,
+                idle: st.idleDays || 0, seen: st.lastSeen } });
+          }
+        } catch (e) {}
+        (rows || []).forEach(function (r) {
+          if (r.model && r.model.grind) live.push({ owner: r.owner, updated_at: r.updated_at, g: r.model.grind });
+        });
+        if (!live.length) { el.innerHTML = "<p class='mc__empty'>No players synced yet — the board fills as accounts move.</p>"; return; }
+        live.sort(function (a, b) { return grindScore(b.g) - grindScore(a.g); });
+        var n = document.getElementById("tabNGrind");
+        if (n) n.textContent = live.length;
+        el.innerHTML = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;font-variant-numeric:tabular-nums">' +
+          "<tr style='text-align:left;color:var(--cream-dim)'><th style='padding:0.4em 0.6em'>Player</th><th>Score</th><th>E</th><th>Streak</th><th>Boost</th><th>Tasks</th><th>Shadow</th><th>Idle</th><th>Device</th><th>Seen</th></tr>" +
+          live.map(function (row) {
+            var g = row.g, sc = grindScore(g), gr = grindGrade(sc);
+            var col = gr === "S" || gr === "A" ? "#00c805" : gr === "B" ? "#f8b40a" : "#ff5000";
+            return "<tr style='border-top:1px solid rgba(244,239,230,0.1)'>" +
+              "<td style='padding:0.5em 0.6em'>" + esc(String(row.owner).slice(0, 8)) + "</td>" +
+              "<td><b style='color:" + col + "'>" + sc + " · " + gr + "</b></td>" +
+              "<td>" + (g.E || 0) + "</td><td>" + (g.streak || 0) + "</td>" +
+              "<td>" + (g.boost >= 0 ? "+" : "") + (g.boost || 0) + "%</td>" +
+              "<td>" + (g.tasks || 0) + "/3</td><td>" + (g.shadow || 0) + "/9</td>" +
+              "<td>" + (g.idle || 0) + "</td>" +
+              "<td>" + esc(String(g.device || "").slice(4, 10)) + "</td>" +
+              "<td>" + esc(g.seen || "") + "</td></tr>";
+          }).join("") + "</table></div>" +
+          "<p class='mc__empty' style='margin-top:0.7rem'>Shadow tasks (never shown to players): " +
+          (window.MCC_GRIND ? Object.keys(window.MCC_GRIND.shadow).map(function (k) { return k; }).join(" · ") : "loads with the grind engine") + ".</p>";
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -174,8 +237,10 @@
           A.members().catch(function () { return null; }),
           A.sms().catch(function () { return null; }),
           A.deals().catch(function () { return null; }),
+          A.grind ? A.grind().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
+          paintGrind(r[5]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";

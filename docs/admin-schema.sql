@@ -25,3 +25,8 @@ drop policy if exists "admin updates all members" on members;
 create policy "admin updates all members"  on members          for update using (is_mcc_admin());
 drop policy if exists "admin reads the sms list" on sms_optins;
 create policy "admin reads the sms list"   on sms_optins       for select using (is_mcc_admin());
+
+-- the engagement board: the admin reads every player's synced state
+-- (device_state carries the grind snapshot inside its model column)
+drop policy if exists "admin reads all device state" on device_state;
+create policy "admin reads all device state" on device_state for select using (is_mcc_admin());
