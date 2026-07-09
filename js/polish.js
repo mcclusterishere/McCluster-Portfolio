@@ -5,6 +5,20 @@
    ============================================================ */
 (function () {
   "use strict";
+
+  /* ---------- the sideways pin: the page scrolls ONE way ----------
+     Third layer under the CSS seal: iOS Safari has a history of panning
+     the document past root overflow rules when anything overflows. If
+     the window ever drifts off x=0, it snaps back the same frame. ---------- */
+  (function () {
+    var pin = function () {
+      if (window.scrollX) window.scrollTo(0, window.scrollY);
+    };
+    window.addEventListener("scroll", pin, { passive: true });
+    window.addEventListener("pageshow", pin);
+    pin();
+  })();
+
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
