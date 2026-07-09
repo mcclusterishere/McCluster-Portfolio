@@ -367,13 +367,13 @@
         var n = document.getElementById("tabNHouse");
         if (n) n.textContent = open || "";
         if (!rows.length) {
-          el.innerHTML = "<p class='mc__empty'>No claims yet — the race is on. First to 1,500 ᴹ shows up here.</p>";
+          el.innerHTML = "<p class='mc__empty'>No claims yet — the race is on. First to 1,500 E⤴ shows up here.</p>";
           return;
         }
         el.innerHTML = rows.map(function (c) {
           var o = c.house_offers || {};
           return '<div class="mc__row' + (c.status === "claimed" ? " is-hot" : "") + '"><div>' +
-            "<b>" + esc(o.title || "offer gone") + "</b> · " + (+c.paid).toFixed(0) + " ᴹ paid" +
+            "<b>" + esc(o.title || "offer gone") + "</b> · " + (+c.paid).toFixed(0) + " E⤴ paid" +
             "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>claimant " + esc(String(c.owner).slice(0, 8)) +
             " · " + esc(new Date(c.at).toLocaleString()) + " · " + esc(c.status) + "</p></div>" +
             rowActs("house", c.id, c.status === "done" ? [] :
