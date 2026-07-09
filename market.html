@@ -789,6 +789,7 @@
               var sq = (DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0] || {}).square
                 || "https://square.link/u/MBVeuzoo";
               acts = '<a class="btn btn--ruby" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Pay by card — Square</a>' +
+                '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
                 '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
             } else if (d.status === "paid") {
@@ -838,7 +839,14 @@
             b.addEventListener("click", function () {
               var d = rows[+b.getAttribute("data-i")];
               var act = b.getAttribute("data-act");
-              if (act === "counter") {
+              if (act === "paynote") {
+                // paste this into the Square note and the deal marks itself paid
+                var noteTxt = d.title + " · " + d.id;
+                var doneCopy = function () { b.textContent = "✓ Copied — paste it in the Square note"; setTimeout(function () { b.textContent = "Copy the payment note"; }, 2600); };
+                if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(noteTxt).then(doneCopy).catch(doneCopy);
+                else doneCopy();
+                track("deal_paynote_copy", {});
+              } else if (act === "counter") {
                 counterOf = d;
                 $("pKind").value = KIND_LABEL[d.kind] ? (MUSIC_KINDS.indexOf(d.kind) !== -1 || d.kind === "song-split" ? "song_split" : d.kind in { service_booking: 1, work_for_hire: 1, space_booking: 1, project_funding: 1, custom_offer: 1 } ? d.kind : "custom_offer") : "custom_offer";
                 shapeForm();
