@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Own Your Back End — The Claim Run · M Network</title>
+  <meta name="description" content="The claim run: every platform where an artist claims their page, opens the developer door, and exports their own numbers — gamified. Learn your back end, level up, earn toward M-Verified.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    body { background: #0a0807; }
+    .cr { max-width: 46rem; margin: 0 auto; padding: clamp(5.5rem, 10vh, 7rem) clamp(1.1rem, 4vw, 2rem) 9rem; }
+    .cr__k { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .cr h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: 0.95;
+      font-size: clamp(2.2rem, 8.5vw, 3.4rem); margin-top: 0.4rem; }
+    .cr__lede { color: var(--cream-dim); font-size: 0.95rem; line-height: 1.7; margin-top: 0.9rem; max-width: 52ch; }
+    .cr__lede b { color: var(--cream); }
+
+    /* the rank HUD */
+    .cr__hud { position: sticky; top: 0.7rem; z-index: 80; display: flex; align-items: center; gap: 0.9rem;
+      margin-top: 1.6rem; border: 1px solid rgba(244,239,230,0.16); border-radius: 100px;
+      background: rgba(12, 9, 8, 0.92); backdrop-filter: blur(12px); padding: 0.5rem 1.1rem 0.5rem 0.55rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .cr__ring { position: relative; flex: none; width: 52px; height: 52px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: conic-gradient(#d8ba7c calc(var(--p, 0) * 1%), rgba(244,239,230,0.12) 0); }
+    .cr__ring::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #14100e; }
+    .cr__ring b { position: relative; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    .cr__hud-mid { flex: 1; min-width: 0; }
+    .cr__hud-mid b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: 1.05rem; letter-spacing: 0.04em; }
+    .cr__hud-mid small { display: block; color: var(--cream-dim); font-size: 0.64rem; margin-top: 0.1rem; }
+    .cr__hud.is-flash { animation: crFlash 0.7s; }
+    @keyframes crFlash { 30% { border-color: #d8ba7c; box-shadow: 0 0 26px rgba(216, 186, 124, 0.6); } }
+
+    /* tiers + cards */
+    .cr__tier { margin-top: 2.4rem; }
+    .cr__tier-h { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+      border-bottom: 1px solid rgba(216, 186, 124, 0.35); padding-bottom: 0.5rem; }
+    .cr__tier-h h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.4rem; }
+    .cr__tier-h small { color: #d8ba7c; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; flex: none; }
+    .cr__tier-d { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; margin-top: 0.6rem; }
+    .cr__card { border: 1px solid rgba(244,239,230,0.12); border-radius: 16px; background: rgba(18,14,12,0.66);
+      padding: 1rem 1.1rem; margin-top: 0.9rem; transition: border-color 0.3s; }
+    .cr__card.is-done { border-color: rgba(47, 191, 113, 0.55); }
+    .cr__card h3 { font-size: 1rem; display: flex; align-items: baseline; gap: 0.5rem; }
+    .cr__card h3 .cr__done { color: #2fbf71; font-size: 0.72rem; font-weight: 800; margin-left: auto; flex: none; }
+    .cr__why { color: var(--cream-dim); font-size: 0.78rem; line-height: 1.6; margin-top: 0.4rem; }
+    .cr__moves { display: grid; gap: 0.45rem; margin-top: 0.75rem; }
+    .cr__move { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.14);
+      border-radius: 12px; padding: 0.6rem 0.8rem; }
+    .cr__move.is-on { border-color: rgba(47, 191, 113, 0.55); background: rgba(47, 191, 113, 0.06); }
+    .cr__check { flex: none; width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid rgba(244,239,230,0.3);
+      background: none; cursor: pointer; color: transparent; font-size: 0.9rem; display: grid; place-items: center; }
+    .cr__move.is-on .cr__check { border-color: #2fbf71; color: #2fbf71; background: rgba(47,191,113,0.12); }
+    .cr__move-mid { flex: 1; min-width: 0; }
+    .cr__move-mid a { color: var(--cream); text-decoration: none; font-size: 0.84rem; font-weight: 600; }
+    .cr__move-mid a:hover { color: var(--ruby-hot); }
+    .cr__move-mid small { display: block; color: var(--cream-dim); font-size: 0.66rem; margin-top: 0.15rem; line-height: 1.45; }
+    .cr__pts { flex: none; font-size: 0.66rem; font-weight: 800; color: #d8ba7c; font-variant-numeric: tabular-nums; }
+    .cr__kind { flex: none; font-size: 0.52rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800;
+      border: 1px solid rgba(244,239,230,0.25); border-radius: 100px; padding: 0.25em 0.7em; color: var(--cream-dim); }
+    .cr__move[data-kind="api"] .cr__kind { color: #45b6ff; border-color: rgba(69,182,255,0.5); }
+    .cr__move[data-kind="export"] .cr__kind { color: #2fbf71; border-color: rgba(47,191,113,0.5); }
+    .cr__pop { position: fixed; right: 1rem; top: 5.4rem; z-index: 90; font-size: 0.8rem; font-weight: 800;
+      color: #ffd98a; pointer-events: none; animation: crPop 1.3s ease-out forwards; }
+    @keyframes crPop { 0% { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav">
+      <a href="market.html#yours">Your desk</a>
+      <a class="head-cta" href="verify.html">Get M-Verified</a>
+    </nav>
+  </header>
+  <main class="cr">
+    <p class="cr__k">The claim run &middot; own your back end</p>
+    <h1>Every Door<br>Has Your Name On It.</h1>
+    <p class="cr__lede">Most artists rent their own careers — the pages, the numbers, the royalties all sit in
+      back ends somebody else set up. This is the run that fixes it: <b>claim every artist page, open every
+      developer door, export every number.</b> Each move pays run points, the rank climbs, and a finished run
+      is exactly the receipts an <b>M-Verified &middot; Performer</b> application wants to see.</p>
+
+    <div class="cr__hud" id="crHud">
+      <span class="cr__ring" id="crRing" style="--p:0"><b id="crPts">0</b></span>
+      <span class="cr__hud-mid"><b id="crRank">Tenant</b><small id="crRankLine">Somebody else runs your back end.</small></span>
+      <span style="flex:none;color:var(--cream-dim);font-size:0.62rem" id="crCount"></span>
+    </div>
+    <div id="crBonus" style="display:none;margin-top:0.8rem;border:1px solid rgba(47,191,113,0.5);border-radius:14px;background:rgba(47,191,113,0.07);padding:0.9rem 1rem">
+      <p style="font-size:0.82rem;line-height:1.6;color:var(--cream-dim)"><b style="color:#2fbf71">Operator rank reached.</b>
+        The run pays: <b style="color:var(--cream)">5 M Tokens</b> — $5 of platform credit, minted once to your ledger.</p>
+      <button class="btn btn--ruby" id="crBonusGo" type="button" style="margin-top:0.7rem">Claim the run bonus</button>
+      <p style="font-size:0.78rem;color:#2fbf71;min-height:1.2em;margin-top:0.5rem" id="crBonusMsg"></p>
+    </div>
+
+    <div id="crTiers"><p class="cr__why">Opening the registry&hellip;</p></div>
+
+    <a class="mv" href="verify.html?from=claimrun" data-cta="claimrun-mverified" style="--badge-c:#8b5cf6">
+      <span class="mv__seal"><img src="assets/img/m-mark.png" alt=""></span>
+      <span class="mv__txt"><small>M-Verified &middot; Performer</small><b id="crBadgeLine">Finish the money tier and the consoles — then apply with your receipts &#8594;</b></span>
+    </a>
+  </main>
+  <footer class="site-foot">
+    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
+    <p class="site-foot__note">© 2026 McCluster Corp · The claim run — your career, your keys.</p>
+  </footer>
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      var DATA = null;
+      var K = "mcc_claimrun_v1";
+      var done = {};
+      try { done = JSON.parse(localStorage.getItem(K)) || {}; } catch (e) {}
+      function save() { try { localStorage.setItem(K, JSON.stringify(done)); } catch (e) {} }
+
+      function moves(p) {
+        var out = [];
+        if (p.claim) out.push(["claim", "Claim", p.claim]);
+        if (p.api) out.push(["api", "API", p.api]);
+        if (p.export) out.push(["export", "Export", p.export]);
+        return out;
+      }
+      function totalPts() {
+        var t = 0;
+        DATA.platforms.forEach(function (p) {
+          moves(p).forEach(function (m) { if (done[p.id + ":" + m[0]]) t += m[2].pts || 0; });
+        });
+        return t;
+      }
+      function maxPts() {
+        var t = 0;
+        DATA.platforms.forEach(function (p) { moves(p).forEach(function (m) { t += m[2].pts || 0; }); });
+        return t;
+      }
+      function rankOf(pts) {
+        var r = DATA.ranks[0];
+        DATA.ranks.forEach(function (x) { if (pts >= x.at) r = x; });
+        return r;
+      }
+
+      function paintHUD(flash) {
+        var pts = totalPts(), max = maxPts();
+        var r = rankOf(pts);
+        var next = DATA.ranks.filter(function (x) { return x.at > pts; })[0];
+        $("crPts").textContent = pts;
+        $("crRing").style.setProperty("--p", Math.round((pts / max) * 100));
+        $("crRank").textContent = r.name;
+        $("crRankLine").textContent = next ? r.line + " " + (next.at - pts) + " to " + next.name + "." : r.line;
+        var moved = 0, all = 0;
+        DATA.platforms.forEach(function (p) { moves(p).forEach(function (m) { all++; if (done[p.id + ":" + m[0]]) moved++; }); });
+        $("crCount").textContent = moved + "/" + all + " moves";
+        // the badge line sharpens as the run fills
+        var moneyDone = DATA.platforms.filter(function (p) { return p.tier === "money"; })
+          .every(function (p) { return moves(p).some(function (m) { return done[p.id + ":" + m[0]]; }); });
+        $("crBadgeLine").innerHTML = pts >= 200 && moneyDone
+          ? "Receipts in hand — apply for the badge now &#8594;"
+          : "Finish the money tier and the consoles — then apply with your receipts &#8594;";
+        if (flash) { $("crHud").classList.remove("is-flash"); void $("crHud").offsetWidth; $("crHud").classList.add("is-flash"); }
+        paintBonus(pts);
+      }
+
+      /* ---- the payout: Operator rank mints 5 M Tokens, once ---- */
+      var bonusDone = false;
+      try { bonusDone = localStorage.getItem("mcc_claimrun_paid") === "1"; } catch (e) {}
+      function paintBonus(pts) {
+        var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+        $("crBonus").style.display = pts >= 200 && !bonusDone ? "" : "none";
+        if (pts >= 200 && !authed) $("crBonusMsg").textContent = "Sign in on the profile page first — the tokens mint to your account.";
+      }
+      $("crBonusGo").addEventListener("click", function () {
+        var S = window.MCC_SUPA;
+        if (!(window.MCC_AUTH.user && window.MCC_AUTH.user())) {
+          $("crBonusMsg").textContent = "Sign in on the profile page first — then come claim it.";
+          return;
+        }
+        $("crBonusMsg").textContent = "Minting…";
+        S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/claim_run_bonus", {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+            body: "{}",
+          });
+        }).then(function (r) { return r.ok ? r.json() : r.text().then(function (x) { throw new Error(x.slice(0, 120)); }); })
+          .then(function (minted) {
+            bonusDone = true;
+            try { localStorage.setItem("mcc_claimrun_paid", "1"); } catch (e) {}
+            $("crBonusMsg").textContent = +minted > 0
+              ? "✓ 5 M Tokens on your ledger — spend them on platform fees and promotion."
+              : "Already paid — the bonus mints once.";
+            track("claimrun_bonus", { minted: +minted });
+            setTimeout(function () { $("crBonus").style.display = "none"; }, 3500);
+          }).catch(function (e) {
+            $("crBonusMsg").textContent = String(e.message || e).indexOf("404") !== -1
+              ? "One paste arms the payout: docs/claimrun-bonus.sql in Supabase."
+              : "Couldn't mint: " + String(e.message || e);
+          });
+      });
+
+      function render() {
+        var html = "";
+        DATA.tiers.forEach(function (tier) {
+          var plats = DATA.platforms.filter(function (p) { return p.tier === tier.id; });
+          html += '<section class="cr__tier"><div class="cr__tier-h"><h2>' + esc(tier.name) + "</h2>" +
+            '<small data-tiercount="' + tier.id + '"></small></div>' +
+            '<p class="cr__tier-d">' + esc(tier.desc) + "</p>";
+          plats.forEach(function (p) {
+            html += '<article class="cr__card" data-plat="' + p.id + '"><h3>' + esc(p.name) +
+              ' <span class="cr__done" data-donetag="' + p.id + '"></span></h3>' +
+              '<p class="cr__why">' + esc(p.why) + "</p>" +
+              '<div class="cr__moves">' +
+              moves(p).map(function (m) {
+                var key = p.id + ":" + m[0], mv = m[2];
+                return '<div class="cr__move' + (done[key] ? " is-on" : "") + '" data-kind="' + m[0] + '" data-key="' + key + '" data-pts="' + (mv.pts || 0) + '">' +
+                  '<button class="cr__check" type="button" aria-label="Mark done">&#10003;</button>' +
+                  '<span class="cr__move-mid">' +
+                  (mv.url ? '<a href="' + esc(mv.url) + '"' + (mv.url.indexOf("http") === 0 ? ' target="_blank" rel="noopener"' : "") + ">" + esc(mv.label) + " &#8599;</a>" : "<a>" + esc(mv.label) + "</a>") +
+                  (mv.note ? "<small>" + esc(mv.note) + "</small>" : "") + "</span>" +
+                  '<span class="cr__kind">' + m[1] + "</span>" +
+                  '<span class="cr__pts">+' + (mv.pts || 0) + "</span></div>";
+              }).join("") + "</div></article>";
+          });
+          html += "</section>";
+        });
+        $("crTiers").innerHTML = html;
+        refreshCards();
+        $("crTiers").querySelectorAll(".cr__check").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var row = b.closest(".cr__move");
+            var key = row.getAttribute("data-key");
+            done[key] = !done[key];
+            if (!done[key]) delete done[key];
+            save();
+            row.classList.toggle("is-on", !!done[key]);
+            if (done[key]) {
+              var pop = document.createElement("i");
+              pop.className = "cr__pop";
+              pop.textContent = "+" + row.getAttribute("data-pts") + " run points";
+              document.body.appendChild(pop);
+              setTimeout(function () { pop.remove(); }, 1400);
+              track("claimrun_move", { key: key });
+            }
+            refreshCards();
+            paintHUD(true);
+          });
+        });
+      }
+      function refreshCards() {
+        DATA.platforms.forEach(function (p) {
+          var ms = moves(p);
+          var got = ms.filter(function (m) { return done[p.id + ":" + m[0]]; }).length;
+          var card = document.querySelector('[data-plat="' + p.id + '"]');
+          if (card) {
+            card.classList.toggle("is-done", got === ms.length);
+            card.querySelector("[data-donetag]").textContent = got === ms.length ? "✓ owned" : got ? got + "/" + ms.length : "";
+          }
+        });
+        DATA.tiers.forEach(function (tier) {
+          var plats = DATA.platforms.filter(function (p) { return p.tier === tier.id; });
+          var owned = plats.filter(function (p) {
+            return moves(p).every(function (m) { return done[p.id + ":" + m[0]]; });
+          }).length;
+          var el = document.querySelector('[data-tiercount="' + tier.id + '"]');
+          if (el) el.textContent = owned + "/" + plats.length + " owned";
+        });
+      }
+
+      fetch("data/claims.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { DATA = d; render(); paintHUD(); track("claimrun_view", {}); })
+        .catch(function () { $("crTiers").innerHTML = '<p class="cr__why">The registry didn&rsquo;t load — refresh.</p>'; });
+    })();
+  </script>
+</body>
+</html>
