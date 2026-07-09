@@ -245,31 +245,45 @@
       function isSpace(p) { return (p.roles || []).some(function (r) { return SPACE_ROLES.indexOf(r) !== -1; }); }
 
       function load() {
+        // the floor paints from the local seed IMMEDIATELY — the cloud
+        // directory merges in when (and if) it answers. Nobody stares at
+        // "Loading…" because a network call is thinking.
+        var seen = {};
+        var opened = false;
+        function openFromLink() {
+          var who = new URLSearchParams(location.search).get("who");
+          if (!who || opened) return;
+          var mine = ALL.filter(function (p) { return (p.slug || p.id) === who; })[0];
+          if (mine) { opened = true; openSheet(mine); track("spaces_link_open", { space: who }); }
+        }
         Promise.all([
           fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
-          window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
           window.MCC_AMENITIES ? window.MCC_AMENITIES.get().catch(function () { return { amenities: [] }; }) : Promise.resolve({ amenities: [] }),
         ]).then(function (r) {
-          var seen = {};
           (r[0].providers || []).forEach(function (p) { if (isSpace(p)) { ALL.push(p); seen[p.id] = 1; } });
-          (r[1] || []).forEach(function (c) {
-            if (seen[c.slug]) return;
-            var p = { id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline, area: c.area,
-              roles: c.roles || [], badgeColor: c.badge_color, ticker: c.ticker, terms: c.terms, space: c.space, photo: c.photo };
-            if (isSpace(p)) ALL.push(p);
-          });
-          (r[2].amenities || []).forEach(function (a) { AMEN[a.id] = a; });
+          (r[1].amenities || []).forEach(function (a) { AMEN[a.id] = a; });
           // promoted rooms lead the floor — self-serve advertising from the operator hub
           ALL.sort(function (a, b) { return (promoOf(b) ? 1 : 0) - (promoOf(a) ? 1 : 0); });
           renderChips(); renderGrid();
           // the booking link: spaces.html?who=slug drops the visitor straight
           // into that room's scheduler — the operator's Calendly
-          var who = new URLSearchParams(location.search).get("who");
-          if (who) {
-            var mine = ALL.filter(function (p) { return (p.slug || p.id) === who; })[0];
-            if (mine) { openSheet(mine); track("spaces_link_open", { space: who }); }
-          }
+          openFromLink();
         });
+        (window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]))
+          .then(function (rows) {
+            var grew = false;
+            (rows || []).forEach(function (c) {
+              if (seen[c.slug]) return;
+              var p = { id: c.slug, slug: c.slug, cloud_id: c.id, name: c.name, headline: c.headline, area: c.area,
+                roles: c.roles || [], badgeColor: c.badge_color, ticker: c.ticker, terms: c.terms, space: c.space, photo: c.photo };
+              if (isSpace(p)) { ALL.push(p); seen[c.slug] = 1; grew = true; }
+            });
+            if (grew) {
+              ALL.sort(function (a, b) { return (promoOf(b) ? 1 : 0) - (promoOf(a) ? 1 : 0); });
+              renderGrid();
+            }
+            openFromLink();
+          });
       }
       function promoOf(p) { return (p.terms && p.terms.promo) || ""; }
       function availOf(p) { return (p.terms && p.terms.avail) || null; }

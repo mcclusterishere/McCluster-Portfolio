@@ -51,8 +51,35 @@
       "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
       "profile": "profile-zakir.html",
       "photo": "assets/frames/vperf1_0001.jpg",
-      "space": { "rate": 45, "unit": "hour", "amenities": ["engineer", "iso-booth", "mic-locker", "console", "tuned-room", "mix-master"] },
-      "terms": { "avail": { "days": [1, 2, 3, 4, 5, 6], "slots": [0, 1, 2] } },
+      "space": {
+        "rate": 45,
+        "unit": "hour",
+        "amenities": [
+          "engineer",
+          "iso-booth",
+          "mic-locker",
+          "console",
+          "tuned-room",
+          "mix-master"
+        ]
+      },
+      "terms": {
+        "avail": {
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "slots": [
+            0,
+            1,
+            2
+          ]
+        }
+      },
       "music": {
         "src": "assets/audio/vaunt.mp3",
         "title": "Vaunt (Acoustic) — Zakir on the six-string"
@@ -61,19 +88,73 @@
     {
       "id": "k-cohiba",
       "ticker": "KCHB",
-      "name": "K-Cohiba's Space",
+      "name": "K-Cohiba",
       "roles": [
-        "Stages"
+        "Music"
       ],
-      "headline": "Event space · Boston — bookings run through the team",
+      "headline": "Boston artist — the catalogue lands as he claims it",
       "area": "Boston, MA · onboarding — final rates being confirmed with the team",
       "verified": "pending",
       "badgeColor": "#4a7fb5",
-      "href": "onboard.html?role=provider",
+      "href": "claim.html?who=k-cohiba",
       "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "An operating Boston event space joining the network — the room already runs a full booking calendar. Request a window and the team answers; listed rate is the intro number while final rates are confirmed.",
+      "blurb": "Boston artist joining the network. His songs load through his own desk, his shows book through the team, and his ticker trades on the market.",
       "photo": "assets/frames/uprise_0080.jpg",
-      "space": { "rate": 95, "unit": "hour", "amenities": ["house-audio", "lighting-grid", "green-room", "capacity-rated"] }
+      "space": {
+        "rate": 95,
+        "unit": "hour",
+        "amenities": [
+          "house-audio",
+          "lighting-grid",
+          "green-room",
+          "capacity-rated"
+        ]
+      }
+    },
+    {
+      "id": "revent-space",
+      "ticker": "RVNT",
+      "name": "Revent Space",
+      "roles": [
+        "Stages"
+      ],
+      "headline": "Dorchester's community event room — furnished, lit, ready by 10am",
+      "area": "413 Neponset Ave · Dorchester, Boston, MA",
+      "verified": "pending",
+      "badgeColor": "#45b6ff",
+      "href": "space-revent.html",
+      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+      "blurb": "A community-first event room in Dorchester: 32 seated at tables, up to 48 for a mixer, with the 65″ smart display, mic, speakers, and LED color lighting already in the room. Pop-ups, seminars, brunches, showers, open mics — bookable 10am to midnight.",
+      "photo": "assets/frames/equity_0001.jpg",
+      "space": {
+        "rate": 185,
+        "unit": "hour",
+        "amenities": [
+          "house-audio",
+          "lighting-grid",
+          "capacity-rated",
+          "house-screen",
+          "furnished"
+        ]
+      },
+      "terms": {
+        "avail": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "slots": [
+            1,
+            2,
+            3
+          ]
+        }
+      }
     },
     {
       "id": "laire",
