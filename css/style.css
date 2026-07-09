@@ -4043,6 +4043,10 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .site-foot__links {
   display: grid !important; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 0.35rem 1.1rem; max-width: 44rem; margin-left: auto; margin-right: auto;
+  /* as a flex item this grid sized to max-content — every column on one
+     row — and quietly stretched the whole page 282px past the phone's
+     edge. A definite basis keeps auto-fill inside the viewport. */
+  flex: 1 1 100%; width: 100%; min-width: 0;
 }
 .site-foot__links a { font-size: 0.68rem !important; letter-spacing: 0.06em; line-height: 1.5;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -4117,3 +4121,11 @@ html.vr-locked .wayback { bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-i
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc, var(--ruby-hot));
   border: 1px solid color-mix(in srgb, var(--cc, #e5383b) 55%, transparent); border-radius: 100px; padding: 0.45em 1em; }
 .clientfloor__note { text-align: center; color: var(--cream-dim); font-size: 0.82rem; margin-top: 1rem; }
+
+/* ============ THE SIDEWAYS SEAL ============
+   The page scrolls one way. No element — footer grid, kinetic type,
+   fly pill, anything future — may ever pan the viewport horizontally.
+   clip forbids the scroll without creating a scroll container, so
+   position: sticky inside the films keeps working. */
+html, body { overflow-x: clip; overscroll-behavior-x: none; }
+@supports not (overflow: clip) { html, body { overflow-x: hidden; } }
