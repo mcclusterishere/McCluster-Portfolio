@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Claim your account · McCluster</title>
-  <meta name="description" content="Claim your artist or operator account on the McCluster platform — no password, no email, your phone is the key.">
+  <meta name="description" content="Claim your artist or operator account on the McCluster platform — one tap, no password, a real account in the network.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,25 +30,7 @@
       box-shadow: 0 10px 30px rgba(229,56,59,0.4); }
     .cl__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.65; margin-top: 0.8rem; }
     .cl__note b { color: var(--cream); }
-    .cl__lbl { display: block; font-family: var(--micro); font-size: 0.68rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--cream-dim); margin: 1.5rem 0 0.6rem; }
-    .cl__drop { border: 2px dashed rgba(69,182,255,0.45); border-radius: 16px; text-align: center;
-      padding: 1.6rem 1rem; cursor: pointer; color: var(--cream); transition: border-color 0.25s, background 0.25s; }
-    .cl__drop:hover { border-color: #45b6ff; background: rgba(69,182,255,0.07); }
-    .cl__drop b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.1rem; }
-    .cl__drop small { color: var(--cream-dim); font-size: 0.76rem; }
-    .cl__songs { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.9rem; }
-    .cl__song { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.12);
-      border-radius: 13px; background: rgba(10,8,7,0.55); padding: 0.65rem 0.8rem; }
-    .cl__song-play { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
-      background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff; font-size: 0.9rem; }
-    .cl__song-meta { flex: 1; min-width: 0; }
-    .cl__song-meta b { display: block; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cl__song-meta small { color: var(--cream-dim); font-size: 0.7rem; }
-    .cl__song-x { flex: none; background: none; border: 1px solid rgba(244,239,230,0.2); border-radius: 8px;
-      color: var(--cream-dim); font: inherit; font-size: 0.72rem; padding: 0.4em 0.8em; cursor: pointer; }
     .cl__msg { color: #45b6ff; font-size: 0.84rem; min-height: 1.2em; margin-top: 0.6rem; }
-    .cl__unclaim { display: inline-block; margin-top: 1.6rem; color: var(--cream-dim); font-size: 0.72rem; }
     .cl__hidden { display: none !important; }
   </style>
 </head>
@@ -59,224 +41,124 @@
   </header>
 
   <main class="cl">
-    <!-- state 1: the invitation -->
-    <div id="clClaim">
-      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Your key to the platform</p>
-      <h1>Claim Your<br>Account.</h1>
-      <p class="cl__sub">No password. No email. No waiting. <b>This phone becomes the key</b> — tap once and your account lives on this device, ready to work.</p>
-      <div class="cl__card">
-        <div class="cl__who">
-          <img id="clPhoto" src="assets/img/m-mark.png" alt="">
-          <div><h2 id="clName">…</h2><span class="cl__tick" id="clTick"></span></div>
-        </div>
-        <div class="cl__roles" id="clRoles"></div>
-        <p class="cl__note" id="clBlurb"></p>
-        <button class="cl__big" id="clGo" type="button">Claim it on this phone</button>
-        <p class="cl__note"><b>How it works:</b> your account saves to this device — your songs, your desk, your listing controls. The moment the network cloud opens, everything on this phone rides up under your name. Nothing is lost, nothing needs re-doing.</p>
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Your key to the platform</p>
+    <h1>Claim Your<br>Account.</h1>
+    <p class="cl__sub" id="clSub">No password, no waiting. <b>One tap opens a real account in the network</b> — your ticker, your desk, your listing, your deals.</p>
+
+    <!-- the named claim: ?who= matched a ticker on the floor -->
+    <div class="cl__card cl__hidden" id="clWhoCard">
+      <div class="cl__who">
+        <img id="clPhoto" src="assets/img/m-mark.png" alt="">
+        <div><h2 id="clName">…</h2><span class="cl__tick" id="clTick"></span></div>
       </div>
-      <p class="cl__msg" id="clErr"></p>
+      <div class="cl__roles" id="clRoles"></div>
+      <p class="cl__note" id="clBlurb"></p>
+      <button class="cl__big" id="clGo" type="button">This is me — claim it</button>
+      <p class="cl__note"><b>How it works:</b> one tap opens your account, your desk arrives with this listing's
+        details already filled, and the ticker rides with you. Add an email later and the key follows you to any device.</p>
     </div>
 
-    <!-- state 2: the desk -->
-    <div id="clDesk" class="cl__hidden">
-      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Claimed — this phone is the key</p>
-      <h1 id="clDeskName">Your<br>Desk.</h1>
-      <p class="cl__sub" id="clDeskSub"></p>
-
-      <span class="cl__lbl">Your songs — load the catalogue</span>
-      <div class="cl__drop" id="clDrop">
-        <b>Add your songs</b>
-        <small>Tap to pick audio files — MP3, WAV, M4A. They save to this phone.</small>
-        <input id="clFile" type="file" accept="audio/*" multiple style="display:none">
-      </div>
-      <div class="cl__songs" id="clSongs"></div>
-      <p class="cl__msg" id="clMsg"></p>
-      <p class="cl__note"><b>Your masters stay in your hands.</b> Songs save to this device only — nothing uploads anywhere yet. When the cloud opens, one tap publishes your catalogue to your artist page and the market.</p>
-
-      <span class="cl__lbl">Your rooms on the platform</span>
-      <div class="cl__card" style="margin-top:0.2rem">
-        <div class="finale__actions" style="justify-content:flex-start">
-          <a class="btn btn--ruby" id="clPay" href="market.html#pay">Open M Pay — your desk</a>
-          <a class="btn btn--ghost" id="clSpace" href="spaces.html">Your space on the floor</a>
-          <a class="btn btn--ghost" href="market.html">The Market</a>
-        </div>
-        <p class="cl__note">M Pay carries your booking link, payment links, availability, and deal threads. The full cloud desk unlocks when the network backend opens — your device account is ready for it.</p>
-      </div>
-      <a class="cl__unclaim" href="#" id="clOut">Release this account from the phone</a>
+    <!-- the door itself: revealed on claim, or standing open when no name rode in -->
+    <div class="cl__card cl__hidden" id="clDoorCard">
+      <div id="clDoor"></div>
     </div>
+
+    <!-- already signed in -->
+    <div class="cl__card cl__hidden" id="clInCard">
+      <p class="cl__note" style="margin-top:0"><b>You're already in.</b> The desk is where the claim finishes —
+        the listing form is prefilled and one Save puts you on the floor.</p>
+      <a class="cl__big" id="clDeskGo" href="market.html#yours" style="text-align:center;text-decoration:none">Open your desk →</a>
+    </div>
+
+    <p class="cl__msg" id="clErr"></p>
   </main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
       function $(id) { return document.getElementById(id); }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-      var KEY = "mcc_device_me";
       var who = new URLSearchParams(location.search).get("who") || "";
-      var me = null;
-      try { me = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+      var AUTHED = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
 
-      /* ---- the song locker: IndexedDB, blobs and all ---- */
-      var DB = null;
-      function db() {
-        if (DB) return Promise.resolve(DB);
-        return new Promise(function (res, rej) {
-          var r = indexedDB.open("mcc_locker", 1);
-          r.onupgradeneeded = function () { r.result.createObjectStore("songs", { keyPath: "id" }); };
-          r.onsuccess = function () { DB = r.result; res(DB); };
-          r.onerror = function () { rej(r.error); };
-        });
-      }
-      function songsAll() {
-        return db().then(function (d) {
-          return new Promise(function (res, rej) {
-            var out = [];
-            var c = d.transaction("songs").objectStore("songs").openCursor();
-            c.onsuccess = function () {
-              var cur = c.result;
-              if (!cur) return res(out);
-              out.push(cur.value); cur.continue();
-            };
-            c.onerror = function () { rej(c.error); };
-          });
-        });
-      }
-      function songPut(row) {
-        return db().then(function (d) {
-          return new Promise(function (res, rej) {
-            var t = d.transaction("songs", "readwrite");
-            t.objectStore("songs").put(row);
-            t.oncomplete = res; t.onerror = function () { rej(t.error); };
-          });
-        });
-      }
-      function songDel(id) {
-        return db().then(function (d) {
-          return new Promise(function (res, rej) {
-            var t = d.transaction("songs", "readwrite");
-            t.objectStore("songs").delete(id);
-            t.oncomplete = res; t.onerror = function () { rej(t.error); };
-          });
-        });
+      // the old device-only claim is legacy now: read it once for a
+      // friendlier prefill, never write it again
+      var legacy = null;
+      try { legacy = JSON.parse(localStorage.getItem("mcc_device_me") || "null"); } catch (e) {}
+
+      function bankIntent(p) {
+        try {
+          if (p.ticker) localStorage.setItem("mcc_ticker_claim", String(p.ticker).toUpperCase());
+          localStorage.setItem("mcc_onboard", JSON.stringify({
+            name: p.name || "", headline: p.headline || "",
+            area: p.area || "", blurb: p.blurb || "", roles: p.roles || [],
+          }));
+        } catch (e) {}
       }
 
-      /* ---- find the account being claimed ---- */
-      function findProvider() {
-        return fetch("data/providers.json", { cache: "no-cache" })
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            return (d.providers || []).filter(function (p) { return p.id === who || p.slug === who; })[0] || null;
-          }).catch(function () { return null; });
+      function openDoor(context) {
+        $("clDoorCard").classList.remove("cl__hidden");
+        window.MCC_DOOR.mount($("clDoor"), {
+          ticker: !who,
+          lede: who ? "Open the account and the desk finishes the claim — the form arrives filled."
+            : "Name your ticker if you want one, then open the account — the desk is where you build.",
+          context: context,
+          onDone: function () { location.href = "market.html#yours"; },
+        });
       }
 
       function paintClaim(p) {
+        $("clWhoCard").classList.remove("cl__hidden");
         $("clName").textContent = p.name;
         $("clTick").textContent = p.ticker ? "$" + p.ticker + " · on the market" : "";
         if (p.photo) $("clPhoto").src = p.photo;
-        $("clBlurb").textContent = p.headline || "";
+        $("clBlurb").textContent = p.headline || p.blurb || "";
         $("clRoles").innerHTML = (p.roles || []).map(function (r) {
           return '<span class="cl__role' + (r === "Music" ? " cl__role--music" : "") + '">' +
             esc(r === "Music" ? "Artist" : r === "Stages" ? "Venue operator" : r) + "</span>";
         }).join("");
         $("clGo").addEventListener("click", function () {
-          me = { slug: p.id, name: p.name, ticker: p.ticker || "", roles: p.roles || [], claimed_at: Date.now(), device: true };
-          try { localStorage.setItem(KEY, JSON.stringify(me)); } catch (e) {}
-          track("claim_account", { who: p.id });
-          paintDesk();
+          bankIntent(p);
+          track("claim_account", { who: p.slug || p.id });
+          if (AUTHED) { location.href = "market.html#yours"; return; }
+          $("clGo").textContent = "Claimed — open your account below";
+          $("clGo").disabled = true;
+          openDoor("claim");
+          $("clDoorCard").scrollIntoView({ behavior: "smooth", block: "center" });
         });
       }
 
-      function fmtSize(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, b / 1024 | 0) + " KB"; }
-      var playing = null;
-      function paintSongs() {
-        songsAll().then(function (rows) {
-          rows.sort(function (a, b) { return b.added_at - a.added_at; });
-          $("clSongs").innerHTML = rows.map(function (s) {
-            return '<div class="cl__song" data-id="' + esc(s.id) + '">' +
-              '<button class="cl__song-play" type="button" aria-label="Play">►</button>' +
-              '<span class="cl__song-meta"><b>' + esc(s.title) + "</b><small>" + fmtSize(s.size) + " · saved on this phone</small></span>" +
-              '<button class="cl__song-x" type="button">Remove</button></div>';
-          }).join("") || "";
-          $("clMsg").textContent = rows.length ? rows.length + " song" + (rows.length === 1 ? "" : "s") + " in the locker." : "";
-          $("clSongs").querySelectorAll(".cl__song").forEach(function (card) {
-            var id = card.getAttribute("data-id");
-            card.querySelector(".cl__song-play").addEventListener("click", function () {
-              var btn = this;
-              songsAll().then(function (rows2) {
-                var s = rows2.filter(function (x) { return x.id === id; })[0];
-                if (!s) return;
-                if (playing && playing.id === id) { playing.audio.pause(); playing = null; btn.textContent = "►"; return; }
-                if (playing) { playing.audio.pause(); playing.btn.textContent = "►"; }
-                var a = new Audio(URL.createObjectURL(s.blob));
-                a.play();
-                a.addEventListener("ended", function () { btn.textContent = "►"; playing = null; });
-                playing = { id: id, audio: a, btn: btn };
-                btn.textContent = "❚❚";
-                track("locker_play", {});
-              });
-            });
-            card.querySelector(".cl__song-x").addEventListener("click", function () {
-              if (playing && playing.id === id) { playing.audio.pause(); playing = null; }
-              songDel(id).then(paintSongs);
-            });
-          });
-        }).catch(function () { $("clMsg").textContent = "This browser blocks the locker — try Safari or Chrome outside private mode."; });
-      }
-
-      function paintDesk() {
-        $("clClaim").classList.add("cl__hidden");
-        $("clDesk").classList.remove("cl__hidden");
-        var first = (me.name || "You").split(/\s+/)[0];
-        $("clDeskName").innerHTML = esc(first) + "&rsquo;s<br>Desk.";
-        $("clDeskSub").innerHTML = "<b>" + esc(me.name) + "</b>" + (me.ticker ? " · trading as <b>$" + esc(me.ticker) + "</b>" : "") +
-          " — claimed on this device. Load your songs, work your rooms.";
-        var hasRoom = (me.roles || []).some(function (r) { return r === "Stages" || r === "Studios"; });
-        if (hasRoom && me.slug) {
-          $("clSpace").href = "spaces.html?who=" + encodeURIComponent(me.slug);
-        } else {
-          $("clSpace").textContent = "Your card on the Market";
-          $("clSpace").href = "market.html";
-        }
-        var drop = $("clDrop"), file = $("clFile");
-        drop.addEventListener("click", function () { file.click(); });
-        file.addEventListener("change", function () {
-          var list = Array.prototype.slice.call(file.files || []);
-          if (!list.length) return;
-          $("clMsg").textContent = "Saving " + list.length + "…";
-          Promise.all(list.map(function (f) {
-            return songPut({
-              id: "s_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
-              slug: me.slug, title: f.name.replace(/\.[^.]+$/, ""), type: f.type,
-              size: f.size, added_at: Date.now(), blob: f,
-            });
-          })).then(function () {
-            file.value = "";
-            track("locker_add", { n: list.length });
-            paintSongs();
-          }).catch(function (e) { $("clMsg").textContent = "Couldn't save: " + String(e && e.message || e); });
-        });
-        $("clOut").addEventListener("click", function (ev) {
-          ev.preventDefault();
-          if (!confirm("Release this account from the phone? Your saved songs stay in the locker.")) return;
-          try { localStorage.removeItem(KEY); } catch (e) {}
-          location.href = location.pathname + location.search;
-        });
-        paintSongs();
-      }
-
-      /* ---- boot ---- */
-      if (me && (!who || me.slug === who)) {
-        paintDesk();
-      } else if (who) {
-        findProvider().then(function (p) {
-          if (p) { paintClaim(p); track("claim_view", { who: who }); }
-          else $("clErr").textContent = "That account isn't on the list yet — check the link, or ask for a fresh one.";
-        });
+      /* ---- boot: the floor (cloud + seed) answers every name ---- */
+      if (AUTHED && !who) {
+        $("clInCard").classList.remove("cl__hidden");
       } else {
-        $("clErr").textContent = "This door needs a named key — the link should carry ?who=your-name.";
+        window.MCC_FLOOR.load().then(function (floor) {
+          var p = who ? (floor.providers || []).filter(function (x) {
+            return (x.slug || x.id) === who;
+          })[0] : null;
+          if (who && p) {
+            paintClaim(p);
+            if (AUTHED) $("clInCard").classList.remove("cl__hidden");
+            track("claim_view", { who: who });
+          } else {
+            if (who && !p) {
+              $("clErr").textContent = "That name isn't on the floor yet — no problem, the door still opens.";
+              track("claim_miss", { who: who });
+            }
+            if (legacy && legacy.ticker) {
+              try { localStorage.setItem("mcc_ticker_claim", String(legacy.ticker).toUpperCase()); } catch (e) {}
+            }
+            if (AUTHED) $("clInCard").classList.remove("cl__hidden");
+            else openDoor("claim-open");
+          }
+        });
       }
     })();
   </script>

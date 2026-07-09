@@ -744,6 +744,7 @@
       <input class="mp__in" id="shTitle" type="text" placeholder="What's it for — the song, the job, the project">
       <textarea class="mp__in" id="shNote" placeholder="Anything they should know (optional)"></textarea>
       <input class="mp__in mp__hidden" id="shContact" type="text" placeholder="Your name · email or phone">
+      <div id="shDoor"></div>
       <button class="btn btn--ruby" id="shGo" type="button" style="width:100%;justify-content:center">Send it</button>
       <p class="mp__msg" id="shMsg"></p>
       <p class="mp__note" id="shFine">This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record.</p>
@@ -773,6 +774,7 @@
   <script src="js/sandbox.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
@@ -1782,7 +1784,30 @@
         }
         $("tdSave").addEventListener("click", function () {
           if (!(window.MCC_AUTH.user && window.MCC_AUTH.user())) {
-            $("tdSaveMsg").textContent = "Sign in first — one tap on the profile page, no password.";
+            // the door opens right here — the filled form survives the reload
+            // because the door banks nothing and the inputs stay put until
+            // the account exists, then Save runs for real
+            $("tdSaveMsg").textContent = "One tap first — open your account and this saves:";
+            var host = document.getElementById("tdDoorHost");
+            if (!host) {
+              host = document.createElement("div");
+              host.id = "tdDoorHost";
+              host.style.margin = "0.6rem 0";
+              $("tdSaveMsg").parentNode.insertBefore(host, $("tdSaveMsg").nextSibling);
+            }
+            if (window.MCC_DOOR) window.MCC_DOOR.mount(host, {
+              context: "desk-save",
+              onDone: function () {
+                // bank the form so the reload restores it into the prefill path
+                try {
+                  localStorage.setItem("mcc_onboard", JSON.stringify({
+                    name: $("fName").value.trim(), headline: $("fHeadline").value.trim(),
+                    area: $("fArea").value.trim(), blurb: $("fBlurb").value.trim(), roles: picked,
+                  }));
+                } catch (e) {}
+                location.reload();
+              },
+            });
             return;
           }
           var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker($("fTicker").value, $("fName").value) : $("fTicker").value.toUpperCase();
@@ -1810,7 +1835,7 @@
         if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
           loadListing(); loadInbox(); loadStock();
         } else {
-          $("tdStatus").textContent = "sign in to claim yours";
+          $("tdStatus").textContent = "one tap to claim yours";
         }
       })();
 
@@ -2019,8 +2044,23 @@
         });
         $("shContact").classList.toggle("mp__hidden", AUTHED);
         $("shFine").textContent = AUTHED
-          ? "This sends a real deal into the Market engine — propose, counter, lock, sign. Money moves outside the app until the rail lands; the deal is the record."
-          : "No account needed — this lands in their inbox as a request. Sign in any time to run full deals with signatures.";
+          ? "This sends a real deal into the Market engine — propose, counter, lock, sign. When the desk carries the card rail, checkout opens right after."
+          : "No account needed — this lands in their inbox as a request. Or open your account below and it goes out as a real deal.";
+        // mid-flow door: the keypad and the payee survive — the account
+        // opens in place and the send upgrades from request to real deal
+        var doorHost = $("shDoor");
+        doorHost.innerHTML = "";
+        if (!AUTHED && window.MCC_DOOR) {
+          window.MCC_DOOR.mount(doorHost, {
+            lede: "Start instantly and this goes on the record under your name — deals, signatures, your own desk.",
+            context: "pay",
+            onDone: function () {
+              AUTHED = !!(window.MCC_AUTH.user && window.MCC_AUTH.user());
+              stepFor();
+              paintYou();
+            },
+          });
+        }
         track("mpay_provider_pick", { who: pick.slug || pick.id });
       }
 
@@ -2113,9 +2153,20 @@
       function paintYou() {
         var box = $("mpYou");
         if (!AUTHED) {
+          // the welcome desk: the door opens RIGHT HERE — no detour to
+          // another page, no fake persona. One tap and it's real.
+          var hasStash = false;
+          try { hasStash = !!(localStorage.getItem("mcc_onboard") || localStorage.getItem("mcc_ticker_claim")); } catch (e) {}
           box.innerHTML =
-            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 1rem">The desk is yours the moment you sign in — your ticker, your room, and tools shaped for what you do: artist, venue, or service provider.</p>' +
-            '<a class="btn btn--ruby" href="profile.html" style="justify-content:center">Claim your room</a></div>';
+            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">The desk is the whole business</b> — your ticker, your listing, your inbox, your deals, your payment link. It opens with one tap.</p>' +
+            (hasStash ? '<p class="mp__note" style="color:#2fbf71;margin:0 0 0.6rem">Your onboarding answers are saved on this device — the listing form fills itself the moment you’re in.</p>' : "") +
+            '<div id="youDoor" style="margin:0.6rem 0"></div>' +
+            '<button class="btn btn--ghost" id="youTour" type="button" style="justify-content:center">✦ Show me around first</button></div>';
+          if (window.MCC_DOOR) window.MCC_DOOR.mount($("youDoor"), { ticker: true, context: "desk" });
+          var tb = $("youTour");
+          if (tb) tb.addEventListener("click", function () {
+            if (window.MCC_TOUR) window.MCC_TOUR.start();
+          });
           return;
         }
         var face = roleFace(ME && ME.roles);
