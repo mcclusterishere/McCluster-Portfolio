@@ -1,0 +1,15 @@
+{
+  "name": "street-credit-bureau",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Street Credit Bureau — your street credit, computed from your own Stripe data, kept by you. From the McCluster Corp white paper: Alternative Credit Ecosystems.",
+  "dependencies": {
+    "@stripe/ui-extension-sdk": "^9",
+    "react": "^18",
+    "stripe": "^14"
+  },
+  "devDependencies": {
+    "@types/react": "^18",
+    "typescript": "^5"
+  }
+}

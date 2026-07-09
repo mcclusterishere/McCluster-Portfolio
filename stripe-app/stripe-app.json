@@ -1,0 +1,44 @@
+{
+  "id": "org.mcclustercorp.street-credit-bureau",
+  "version": "0.1.0",
+  "name": "Street Credit Bureau",
+  "icon": "./icon.png",
+  "permissions": [
+    {
+      "permission": "charge_read",
+      "purpose": "Reads your payment history to compute your Street Score — successful charges are your payment-history book."
+    },
+    {
+      "permission": "dispute_read",
+      "purpose": "Disputes and their outcomes feed the reliability side of your payment-history book."
+    },
+    {
+      "permission": "balance_read",
+      "purpose": "Recent balance activity feeds the cash-flow book — how many recent months saw money move."
+    },
+    {
+      "permission": "account_read",
+      "purpose": "Your account's age feeds the tenure book. Nothing else is read from the account."
+    }
+  ],
+  "ui_extension": {
+    "views": [
+      {
+        "viewport": "stripe.dashboard.home.overview",
+        "component": "BureauHome"
+      },
+      {
+        "viewport": "stripe.dashboard.payment.detail",
+        "component": "PaymentBureau"
+      }
+    ],
+    "content_security_policy": {
+      "connect-src": [],
+      "purpose": "The score is computed entirely inside your dashboard from your own Stripe data. Nothing leaves."
+    }
+  },
+  "post_install_action": {
+    "type": "external",
+    "url": "https://mcclusterishere.github.io/McCluster-Portfolio/scb-paper.html"
+  }
+}
