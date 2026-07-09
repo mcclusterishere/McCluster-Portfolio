@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Rails check · McCluster</title>
+  <meta name="description" content="The preflight board — every payment rail probed live: functions, secrets, schema, and the instant-account switch.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .rc { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 46rem; margin: 0 auto; }
+    .rc h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 8vw, 3.6rem); }
+    .rc__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; }
+    .rc__board { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.6rem; }
+    .rc__row { border: 1px solid rgba(244,239,230,0.13); border-radius: 14px; background: rgba(20,16,14,0.65);
+      padding: 0.9rem 1rem; display: flex; gap: 0.8rem; align-items: flex-start; }
+    .rc__lamp { flex: none; width: 14px; height: 14px; border-radius: 50%; margin-top: 0.3rem;
+      background: #666; box-shadow: 0 0 12px rgba(0,0,0,0.4); }
+    .rc__row.is-ok .rc__lamp { background: #2fbf71; box-shadow: 0 0 14px rgba(47,191,113,0.7); }
+    .rc__row.is-bad .rc__lamp { background: var(--ruby-hot); box-shadow: 0 0 14px rgba(229,56,59,0.7); }
+    .rc__row.is-warn .rc__lamp { background: #c99d45; box-shadow: 0 0 14px rgba(201,157,69,0.7); }
+    .rc__row b { display: block; font-size: 0.95rem; color: var(--cream); }
+    .rc__row small { display: block; color: var(--cream-dim); font-size: 0.8rem; line-height: 1.55; margin-top: 0.2rem; }
+    .rc__row small a { color: var(--ruby-hot); }
+    .rc__fix { color: #c99d45 !important; }
+    .rc__btnrow { margin-top: 1.4rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+  </header>
+
+  <main class="rc">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> The preflight board</p>
+    <h1>Rails<br>Check.</h1>
+    <p class="rc__sub">Every door on the money rail, probed live from this device. Green means armed.
+      Anything red carries its fix. Nothing here uses a secret — the public key knocks, the lamps report.</p>
+
+    <div class="rc__board" id="rcBoard"></div>
+
+    <div class="rc__btnrow">
+      <button class="btn btn--ruby" id="rcAgain" type="button">Run it again</button>
+      <button class="btn btn--ghost" id="rcAnon" type="button">Test instant start (makes one throwaway account)</button>
+    </div>
+    <p class="rc__sub" style="font-size:0.78rem;margin-top:1.2rem">
+      Two things no browser can see from here, check by hand: the Stripe webhook destination
+      (<b style="color:var(--cream)">m-network-paid-flip · Active</b> in Stripe → Workbench → Webhooks) and each
+      function's <b style="color:var(--cream)">JWT verification</b> switch (the probes below infer it, but the
+      dashboard is the truth).
+    </p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var S = window.MCC_SUPA;
+      var board = document.getElementById("rcBoard");
+
+      function row(id, title) {
+        var el = document.createElement("div");
+        el.className = "rc__row"; el.id = id;
+        el.innerHTML = '<span class="rc__lamp"></span><span><b>' + title + '</b><small>Knocking…</small></span>';
+        board.appendChild(el);
+        return el;
+      }
+      function set(el, state, msg, fix) {
+        el.className = "rc__row is-" + state;
+        var s = el.querySelector("small");
+        s.innerHTML = msg + (fix ? ' <span class="rc__fix">Fix: ' + fix + "</span>" : "");
+      }
+      function fn(name, body) {
+        return fetch(S.url + "/functions/v1/" + name, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+          body: JSON.stringify(body || {}),
+        }).then(function (r) {
+          return r.text().then(function (t) { return { status: r.status, text: t }; });
+        }).catch(function (e) { return { status: 0, text: String(e) }; });
+      }
+
+      /* ---- the lamps ---- */
+      var L = {
+        payDeal: row("rcPayDeal", "pay-deal — the checkout maker"),
+        allIn: row("rcAllIn", "All-in pricing — one price mints a real checkout"),
+        ghost: row("rcGhost", "The old pay-de door — should be gone"),
+        webhook: row("rcWebhook", "stripe-webhook — the paid-flip listener"),
+        connect: row("rcConnect", "connect-onboard — the get-paid-by-card door"),
+        columns: row("rcColumns", "Rail columns — square / stripe_acct / charges_enabled"),
+      };
+
+      function runAll() {
+        /* pay-deal deployed + answering */
+        fn("pay-deal").then(function (r) {
+          if (r.status === 400 && /deal_id/.test(r.text)) set(L.payDeal, "ok", "Deployed at the exact right address and validating input.");
+          else if (r.status === 404) set(L.payDeal, "bad", "Nothing answers at /functions/v1/pay-deal.", "deploy a NEW function named exactly pay-deal (the name is set at creation — renames don't move the door).");
+          else if (r.status === 401) set(L.payDeal, "bad", "The gateway wants a login (HTTP 401).", "open the function's details and turn JWT verification OFF.");
+          else set(L.payDeal, "warn", "Unexpected answer (HTTP " + r.status + "): " + r.text.slice(0, 120));
+        });
+
+        /* all-in end to end: a $1 probe should mint a checkout URL */
+        fn("pay-deal", { deal_id: "probe-rails-check", amount: 1, title: "Rails check probe" }).then(function (r) {
+          var j = {}; try { j = JSON.parse(r.text); } catch (e) {}
+          if (j.url && /checkout\.stripe\.com/.test(j.url)) {
+            set(L.allIn, "ok", 'A live test checkout minted — STRIPE_SK is in the vault and the rail runs end to end. <a href="' + j.url + '" target="_blank" rel="noopener">Open it</a>: one line, one price ($1.10 for a $1 ask).');
+          } else if (r.status === 404) set(L.allIn, "bad", "Can't test — pay-deal isn't deployed.", "fix the lamp above first.");
+          else set(L.allIn, "bad", "The function answered but couldn't mint a checkout: " + r.text.slice(0, 140), "usually the STRIPE_SK secret — check Edge Functions → Secrets.");
+        });
+
+        /* the ghost */
+        fn("pay-de").then(function (r) {
+          if (r.status === 404) set(L.ghost, "ok", "Gone. Only the real door remains.");
+          else set(L.ghost, "warn", "Something still answers at /pay-de (HTTP " + r.status + ").", "delete that function — nothing on the site calls it, it can only confuse.");
+        });
+
+        /* webhook: no signature → it should refuse politely, not demand a login */
+        fn("stripe-webhook").then(function (r) {
+          if (r.status === 401 && /authorization/i.test(r.text)) set(L.webhook, "bad", "The gateway demands a login — Stripe's servers can't give one.", "open stripe-webhook and turn JWT verification OFF.");
+          else if (r.status === 404) set(L.webhook, "bad", "Nothing answers at /functions/v1/stripe-webhook.", "deploy it (exact lowercase name).");
+          else if (r.status >= 400) set(L.webhook, "ok", "Deployed and guarding — it refused an unsigned knock, which is exactly right.");
+          else set(L.webhook, "warn", "It answered HTTP " + r.status + " to an unsigned call — it should refuse those.");
+        });
+
+        /* connect-onboard */
+        fn("connect-onboard").then(function (r) {
+          if (r.status === 404) set(L.connect, "warn", "Not deployed yet — providers can't self-onboard to card payouts until it is.", "deploy a new function named exactly connect-onboard with the code from docs/connect-onboard.md.");
+          else if (r.status === 401 && /signed out/.test(r.text)) set(L.connect, "ok", "Deployed and checking identity — it refused an anonymous knock, which is exactly right.");
+          else if (r.status === 401) set(L.connect, "warn", "Deployed but the GATEWAY answered, not the function (JWT verification looks ON).", "turn JWT verification OFF — the function verifies callers itself.");
+          else set(L.connect, "warn", "Unexpected answer (HTTP " + r.status + "): " + r.text.slice(0, 120));
+        });
+
+        /* rail columns on providers */
+        fetch(S.url + "/rest/v1/providers?select=slug,square,stripe_acct,charges_enabled&limit=1", {
+          headers: { apikey: S.key, Authorization: "Bearer " + S.key },
+        }).then(function (r) {
+          if (r.ok) set(L.columns, "ok", "All three rail columns answer — the schema paste took.");
+          else if (r.status === 400) set(L.columns, "bad", "The columns aren't there.", "run docs/payments-schema.sql in the SQL Editor (expect 3 rows).");
+          else set(L.columns, "warn", "Unexpected answer (HTTP " + r.status + ").");
+        }).catch(function () { set(L.columns, "warn", "Couldn't reach the database from here."); });
+      }
+
+      runAll();
+      document.getElementById("rcAgain").addEventListener("click", function () {
+        board.querySelectorAll(".rc__row").forEach(function (el) {
+          el.className = "rc__row";
+          el.querySelector("small").textContent = "Knocking…";
+        });
+        runAll();
+      });
+
+      /* the one check that writes: a real anonymous signup proves the
+         instant-start switch. Behind a tap so it never spams accounts. */
+      document.getElementById("rcAnon").addEventListener("click", function () {
+        var btn = this;
+        btn.textContent = "Knocking on the auth door…";
+        var el = document.getElementById("rcAnonRow") || row("rcAnonRow", "Instant accounts — the anonymous sign-in switch");
+        fetch(S.url + "/auth/v1/signup", {
+          method: "POST",
+          headers: { apikey: S.key, "Content-Type": "application/json" },
+          body: "{}",
+        }).then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
+          .then(function (r) {
+            if (r.j && r.j.access_token) set(el, "ok", "The switch is ON — instant accounts open in one tap. (This probe made one throwaway account.)");
+            else set(el, "bad", "The door refused: " + ((r.j && (r.j.msg || r.j.error_description || r.j.error)) || "HTTP " + r.status), "Supabase → Authentication → Sign In / Providers → enable Anonymous sign-ins.");
+            btn.textContent = "Test instant start (makes one throwaway account)";
+          })
+          .catch(function () { set(el, "warn", "Couldn't reach the auth door from here."); btn.textContent = "Test instant start"; });
+      });
+    })();
+  </script>
+</body>
+</html>
