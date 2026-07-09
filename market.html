@@ -129,18 +129,26 @@
     .mk__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
     .mk__hidden { display: none !important; }
 
-    /* ---- M PAY, folded in: the keypad pane + the send sheet ---- */
-    #pay { max-width: 30rem; margin-left: auto; margin-right: auto; }
-    .mp__pay { min-height: 62dvh; display: flex; flex-direction: column; justify-content: center; text-align: center; }
-    .mp__amt { font-family: var(--sig); font-size: clamp(3.6rem, 22vw, 6.4rem); line-height: 1; letter-spacing: 0.01em;
-      min-height: 1.1em; word-break: break-all; }
+    /* ---- M PAY, folded in: the keypad pane + the send sheet ----
+       The register has to read like money: a clean display face for
+       the number (the signature font turned "$5" into glyph soup),
+       dialer-round keys with a hairline, and clearance at the bottom
+       so the floating chips never sit on the zero row. */
+    #pay { max-width: 30rem; margin-left: auto; margin-right: auto;
+      padding-bottom: calc(var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom) + 4.5rem); }
+    .mp__pay { min-height: 58dvh; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+    .mp__amt { font-family: var(--display); font-weight: 400; font-size: clamp(3.4rem, 19vw, 5.8rem);
+      line-height: 1; letter-spacing: 0.03em; min-height: 1.1em; word-break: break-all;
+      font-variant-numeric: tabular-nums; }
     .mp__amt.is-zero { color: rgba(244, 239, 230, 0.4); }
     .mp__hint { color: var(--cream-dim); font-size: 0.78rem; letter-spacing: 0.08em; margin-top: 0.5rem; min-height: 1.2em; }
-    .mp__pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; margin: clamp(1rem, 4vh, 2rem) 0 0; }
-    .mp__key { background: none; border: 0; color: var(--cream); font: inherit; font-size: 1.55rem; font-weight: 600;
-      padding: clamp(0.5em, 2.2vh, 0.85em) 0; border-radius: 14px; cursor: pointer; -webkit-tap-highlight-color: transparent;
-      transition: background 0.12s; }
-    .mp__key:active { background: rgba(244, 239, 230, 0.1); }
+    .mp__pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem 0.9rem;
+      max-width: 20.5rem; margin: clamp(0.9rem, 3vh, 1.6rem) auto 0; }
+    .mp__key { background: rgba(244, 239, 230, 0.045); border: 1px solid rgba(244, 239, 230, 0.08);
+      color: var(--cream); font: inherit; font-size: 1.45rem; font-weight: 600;
+      height: clamp(3.3rem, 7.5vh, 4rem); padding: 0; border-radius: 100px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: background 0.12s, transform 0.08s, border-color 0.12s; }
+    .mp__key:active { background: rgba(244, 239, 230, 0.12); border-color: rgba(244, 239, 230, 0.2); transform: scale(0.96); }
     .mp__go { display: flex; gap: 0.6rem; margin-top: clamp(0.8rem, 3vh, 1.5rem); }
     .mp__go .btn { flex: 1; justify-content: center; padding: 1em 0; font-size: 0.8rem; text-align: center; }
     button.btn { cursor: pointer; }
