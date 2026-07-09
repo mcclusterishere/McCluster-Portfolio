@@ -97,6 +97,8 @@ async function boot(opts = {}) {
     const doorIns = await page.$$('#shDoor .door__in');
     await doorIns[0].fill("Josiah Walk");
     await doorIns[1].fill("JSW");
+    // joining IS signing — the Agreement box is part of the door now
+    await page.check('#shDoor input[type="checkbox"]');
     await doorBtn.click();
     await page.waitForTimeout(600);
     check("buyer", await page.$eval("#shDoor", (el) => el.children.length === 0), "door did not clear after the account opened");

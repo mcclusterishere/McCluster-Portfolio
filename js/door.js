@@ -29,6 +29,22 @@
     return n;
   }
 
+  (function sweepPendingAgreement() {
+    try {
+      var p = JSON.parse(localStorage.getItem("mcc_agree_pending") || "null");
+      var S = window.MCC_SUPA;
+      if (!p || !S || !window.MCC_AUTH || !window.MCC_AUTH.user || !window.MCC_AUTH.user()) return;
+      S.token().then(function (t) {
+        if (!t) return;
+        return fetch(S.url + "/rest/v1/agreements", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t, Prefer: "return=minimal" },
+          body: JSON.stringify({ owner: S.uid(), version: p.v, context: p.ctx || "email" }),
+        }).then(function () { try { localStorage.removeItem("mcc_agree_pending"); } catch (e3) {} });
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+
   function mount(host, opts) {
     if (!host) return;
     opts = opts || {};
@@ -67,6 +83,37 @@
       wrap.appendChild(tick);
     }
 
+    /* joining IS signing: the Association's Member Agreement, one box,
+       recorded with version + time the moment the account opens */
+    var AGREE_V = "v1-2026-07";
+    var agreeRow = el("label", null);
+    agreeRow.style.cssText = "display:flex;gap:0.6rem;align-items:flex-start;cursor:pointer;" +
+      "color:rgba(244,239,230,0.7);font-size:0.8rem;line-height:1.5";
+    var agreeBox = el("input", null);
+    agreeBox.type = "checkbox";
+    agreeBox.style.cssText = "flex:none;width:1.15rem;height:1.15rem;margin-top:0.1rem;accent-color:#e5383b";
+    var agreeTxt = el("span", null);
+    agreeTxt.innerHTML = 'I\u2019m joining the M Network Association and signing ' +
+      '<a href="agreement.html" target="_blank" rel="noopener" style="color:var(--ruby-hot,#e5383b)">the Member Agreement</a>.';
+    agreeRow.appendChild(agreeBox);
+    agreeRow.appendChild(agreeTxt);
+    wrap.appendChild(agreeRow);
+
+    function recordAgreement(context) {
+      try {
+        var S = window.MCC_SUPA;
+        if (!S || !S.token) return;
+        S.token().then(function (t) {
+          if (!t) return;
+          return fetch(S.url + "/rest/v1/agreements", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t, Prefer: "return=minimal" },
+            body: JSON.stringify({ owner: S.uid(), version: AGREE_V, context: context || ctx }),
+          });
+        }).catch(function () {});
+      } catch (e) {}
+    }
+
     var msg = el("p", "door__msg");
 
     function tickerVal() {
@@ -95,8 +142,10 @@
       var tk = tickerVal();
       if (!nm) { msg.textContent = "Your name first — the floor doesn't trade with ghosts."; nameIn.focus(); return; }
       if (tick && !tk) { msg.textContent = "Pick your ticker — 3–5 letters, it's yours."; tick.focus(); return; }
+      if (!agreeBox.checked) { msg.textContent = "The Association runs on the Agreement — one box, then you're in."; return; }
       instant.textContent = "Opening your account…";
       window.MCC_AUTH.signInAnon().then(function () {
+        recordAgreement(ctx);
         // the ticker hits the market NOW: the listing files under this
         // account (pending review), and the session stays on this device
         if (window.MCC_NET && window.MCC_NET.saveListing) {
@@ -123,6 +172,8 @@
     go.addEventListener("click", function () {
       var v = em.value.trim();
       if (!v) { msg.textContent = "Drop your email first."; em.focus(); return; }
+      if (!agreeBox.checked) { msg.textContent = "The Association runs on the Agreement — one box, then the link sends."; return; }
+      try { localStorage.setItem("mcc_agree_pending", JSON.stringify({ v: "v1-2026-07", ctx: ctx, at: Date.now() })); } catch (e2) {}
       bank();
       msg.textContent = "Sending the link…";
       window.MCC_AUTH.signIn(v).then(function () {
