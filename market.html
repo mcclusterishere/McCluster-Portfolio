@@ -771,7 +771,6 @@
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/mgrind.js?v=__STAMP__"></script>
-  <script src="js/sandbox.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/door.js?v=__STAMP__"></script>
@@ -2005,7 +2004,11 @@
         $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
       }
       var payDoor = $("xcDPay");
-      if (payDoor) payDoor.addEventListener("click", function () { presetTo(payDoor.getAttribute("data-to") || ""); });
+      if (payDoor) payDoor.addEventListener("click", function () {
+        presetTo(payDoor.getAttribute("data-to") || "");
+        // the ticker sheet steps aside — the keypad is the room now
+        document.body.classList.remove("xc-open");
+      });
 
       function renderPicker(q) {
         q = (q || "").toLowerCase();
@@ -2579,5 +2582,6 @@
       armed();
     })();
   </script>
+  <script src="js/tour.js?v=__STAMP__"></script>
 </body>
 </html>
