@@ -1446,6 +1446,11 @@ a { color: inherit; text-decoration: none; }
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; will-change: transform;
 }
+/* the music-video card: real footage as the block's backdrop */
+.songblock__video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; background: #0a0807;
+}
 
 /* ---------- phone-width fixes: the header must never wrap, the strips
    must stack, and nothing may collide with the panel text ---------- */

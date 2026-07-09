@@ -339,6 +339,28 @@
       gsap.ticker.add(function () { if (playing && !audio.paused) karaoke(audio.currentTime); });
       window.__MCC_KARAOKE = karaoke; // verification hook
     }
+
+    /* ---------- the music-video card: real footage rides the master ----------
+       A .songblock__video element is the film itself, muted — the master
+       track carries the sound. While the song plays, the video holds the
+       song's clock (within drift tolerance); when the footage runs out,
+       it freezes on its last frame and the film sequences take over. */
+    var mv = document.querySelector(".songblock__video");
+    if (mv) {
+      mv.muted = true; mv.playsInline = true; mv.preload = "auto";
+      gsap.ticker.add(function () {
+        if (!mv.duration) return;
+        var end = mv.duration - 0.05;
+        if (playing && !audio.paused) {
+          var t = Math.min(audio.currentTime, end);
+          if (Math.abs(mv.currentTime - t) > 0.3) mv.currentTime = t; // re-clock on drift
+          if (audio.currentTime < end) { if (mv.paused) mv.play().catch(function () {}); }
+          else if (!mv.paused) mv.pause(); // footage over: hold the last frame
+        } else if (!mv.paused) {
+          mv.pause();
+        }
+      });
+    }
     // the Now Playing tab mirrors this page's song; a tap presses play
     function announceNP() {
       var title = (document.querySelector(".songhero__title") || {}).textContent || window.SONG.key;
