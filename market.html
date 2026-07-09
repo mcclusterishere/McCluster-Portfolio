@@ -779,6 +779,7 @@
   <script src="js/mstock.js?v=__STAMP__"></script>
   <script src="js/mworth.js?v=__STAMP__"></script>
   <script src="js/mtoken.js?v=__STAMP__"></script>
+  <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script src="js/amenities.js?v=__STAMP__"></script>
   <script src="js/floorcache.js?v=__STAMP__"></script>
@@ -1090,7 +1091,8 @@
             } else if (d.status === "signed") {
               var sq = (DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0] || {}).square
                 || "https://square.link/u/MBVeuzoo";
-              acts = '<a class="btn btn--ruby" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Pay by card — Square</a>' +
+              acts = '<button class="btn btn--ruby" data-act="stripe" data-i="' + i + '">Pay by card — checkout</button>' +
+                '<a class="btn btn--ghost" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Square</a>' +
                 '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
                 '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
@@ -1141,7 +1143,15 @@
             b.addEventListener("click", function () {
               var d = rows[+b.getAttribute("data-i")];
               var act = b.getAttribute("data-act");
-              if (act === "paynote") {
+              if (act === "stripe") {
+                b.textContent = "Opening checkout…";
+                window.MCC_STRIPE.payDeal(d).then(function (went) {
+                  if (went) { track("deal_stripe_checkout", { amount: (d.terms && d.terms.fee) || 0 }); return; }
+                  // the rail isn't armed yet — Square keeps the register
+                  b.textContent = "Card rail arming — use Square →";
+                  setTimeout(function () { b.textContent = "Pay by card — checkout"; }, 3200);
+                });
+              } else if (act === "paynote") {
                 // paste this into the Square note and the deal marks itself paid
                 var noteTxt = d.title + " · " + d.id;
                 var doneCopy = function () { b.textContent = "✓ Copied — paste it in the Square note"; setTimeout(function () { b.textContent = "Copy the payment note"; }, 2600); };
