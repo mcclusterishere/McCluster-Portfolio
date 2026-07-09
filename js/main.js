@@ -634,9 +634,13 @@
     onUpdate: function (st) {
       applyCommand(st.progress);
       workVRSet(st.progress);
-      // the last card opens on the ask for a slow hand (right where Land sets you down)
-      if (workSlow) workSlow.classList.toggle("is-shown", st.progress > 0.503 && st.progress < 0.86);
-      if (workFly) workFly.classList.toggle("is-shown", st.progress > 0.503 && st.progress < 0.86);
+      // the last card opens on the ask for a slow hand (right where Land sets
+      // you down) — but NEVER inside the cabin: a flung scroll or a toolbar
+      // resize can push progress past the band while the 360 still holds the
+      // lock, and the scroll-slow homie would float into the jet with you
+      var pastBand = st.progress > 0.503 && st.progress < 0.86 && !workVR.live;
+      if (workSlow) workSlow.classList.toggle("is-shown", pastBand);
+      if (workFly) workFly.classList.toggle("is-shown", pastBand);
       if (!st.isActive) {
         Object.keys(parCmdCanvases).forEach(function (k) { PAR.set(parCmdCanvases[k], 0); });
         PAR.set(parCmdPanels, 0);

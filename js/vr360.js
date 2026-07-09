@@ -197,8 +197,20 @@
       // thumb rested before lifting = the visitor STOPPED — honor it, no coast
       if (performance.now() - lastMoveT > 90) { state.vyaw = 0; state.vpitch = 0; }
     }
+    function forceRelease() {
+      ownerId = null; state.dragging = false; state.vyaw = 0; state.vpitch = 0;
+    }
     canvas.addEventListener("pointerup", end);
     canvas.addEventListener("pointercancel", end);
+    // iOS system gestures (edge swipes, notification pulls) can hijack a
+    // touch and never deliver its release — the owner would hold the camera
+    // forever and every new finger would be ignored. Releases are therefore
+    // also caught at the window, and lost fingers are force-released.
+    window.addEventListener("pointerup", end, true);
+    window.addEventListener("pointercancel", end, true);
+    window.addEventListener("blur", forceRelease);
+    document.addEventListener("visibilitychange", forceRelease);
+    canvas.addEventListener("touchend", function (e) { if (e.touches.length === 0 && ownerId !== null) forceRelease(); }, { passive: true });
     canvas.addEventListener("wheel", function (e) {
       e.preventDefault();
       setFov(state.fov + e.deltaY * 0.002);
@@ -376,6 +388,9 @@
       gl.uniform1f(U.uAspect, canvas.width / canvas.height);
       gl.uniform2f(U.uRes, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      // the watchdog: a real drag moves or ends. A "drag" frozen for 1.2s
+      // is a finger the system stole — release it so the next touch works.
+      if (state.dragging && performance.now() - lastMoveT > 1200) forceRelease();
       // the pin overlay re-projects every OTHER frame on touch — 30fps DOM
       // writes are invisible on labels, and the pan keeps its full budget
       state.frameN++;

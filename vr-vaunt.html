@@ -17,8 +17,13 @@
     .vr { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; background: #0a0807; }
     .vr__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
     .vr__canvas:active { cursor: grabbing; }
+    /* The controls anchor to the VISIBLE viewport (fixed), not the 100lvh
+       stage — with the stage sized as-if-bars-hidden, absolute bottom:0 put
+       the whole transport UNDER Safari's toolbar. That was "the buttons
+       disappeared": they were there, just behind chrome. Fixed children ride
+       the layout viewport, which always ends above the toolbar. */
     .vr__top {
-      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 5;
       display: flex; align-items: center; justify-content: space-between;
       padding: calc(0.9rem + env(safe-area-inset-top)) 1.2rem 0.9rem;
       background: linear-gradient(180deg, rgba(10,8,7,0.85), transparent);
@@ -28,8 +33,17 @@
     .vr__brand b { font-family: var(--display); font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; }
     .vr__badge { font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: #fff;
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); border-radius: 100px; padding: 0.45em 1em; }
+    /* the door out: always on screen, big enough for a thumb, impossible to miss */
+    .vr__exit {
+      display: inline-flex; align-items: center; gap: 0.5em; min-height: 44px; min-width: 44px;
+      padding: 0 1.15em; border-radius: 100px; text-decoration: none; color: #fff;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      background: linear-gradient(120deg, #c93a04, #f84c0a);
+      box-shadow: 0 6px 22px rgba(248, 76, 10, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .vr__exit b { font-size: 1.05rem; font-weight: 700; line-height: 1; }
     .vr__hud {
-      position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; text-align: center;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; text-align: center;
       padding: 1rem 1.2rem calc(1.2rem + env(safe-area-inset-bottom));
       background: linear-gradient(0deg, rgba(10,8,7,0.85), transparent);
     }
@@ -118,7 +132,7 @@
     <canvas class="vr__canvas" id="vrCanvas"></canvas>
     <div class="vr__top">
       <a class="vr__brand" href="vaunt.html"><img src="assets/img/m-mark.png" alt="M"><b>Vaunt · Inside the Jet</b></a>
-      <span class="vr__badge">360 &middot; VR</span>
+      <a class="vr__exit" href="vaunt.html" aria-label="Leave the cabin"><b aria-hidden="true">&#10005;</b> Exit</a>
     </div>
     <div class="vr__coach" id="vrCoach">
       <div class="vr__coach-in">
