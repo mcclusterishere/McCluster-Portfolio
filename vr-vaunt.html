@@ -156,8 +156,11 @@
         { yaw: 131, pitch: -29, label: "The bag · M Pay", href: "pay.html" },
       ];
       var IS_VIDEO = true; // the real inside-the-jet 360 film
+      // touch devices get the 1600×800 cut — half the pixels per GPU upload,
+      // and iOS pays for every one of them on the CPU
+      var TOUCH = "ontouchstart" in window || navigator.maxTouchPoints > 0;
       var viewer = VR360.mount(document.getElementById("vrCanvas"), {
-        src: "assets/video/vaunt-360.mp4",
+        src: TOUCH ? "assets/video/vaunt-360-m.mp4" : "assets/video/vaunt-360.mp4",
         poster: "assets/img/vaunt-360-poster.jpg",
         video: IS_VIDEO,
         yaw: -140, pitch: -32, // open facing McCluster in his seat

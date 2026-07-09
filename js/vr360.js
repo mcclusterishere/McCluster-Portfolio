@@ -32,7 +32,12 @@
     "gl_FragColor=texture2D(uTex,vec2(u,v));}";
 
   function mount(canvas, opts) {
-    var gl = canvas.getContext("webgl", { antialias: true, preserveDrawingBuffer: false });
+    // no MSAA (the shader is one texture lookup — antialias just costs),
+    // no alpha compositing, and ask for the fast GPU + desynchronized paints
+    var gl = canvas.getContext("webgl", {
+      antialias: false, alpha: false, preserveDrawingBuffer: false,
+      powerPreference: "high-performance", desynchronized: true,
+    });
     if (!gl) return null;
 
     function sh(type, src) {
@@ -61,11 +66,13 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
+    var TOUCH = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     var state = {
       yaw: (opts.yaw || 0) * Math.PI / 180, pitch: (opts.pitch || 0) * Math.PI / 180, fov: 75 * Math.PI / 180,
       vyaw: 0, vpitch: 0, dragging: false,
       src: null, isVideo: !!opts.video, ready: false,
       gyro: false, gyawBase: null,
+      touchThrottle: TOUCH, frameN: 0,
     };
 
     // a still poster fills the sphere the moment it decodes, so the
@@ -117,7 +124,10 @@
     state.needResize = true;
     function size() {
       state.needResize = false;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // touch devices run the sphere at ~1× — the equirect shader is
+      // per-pixel work, and a retina framebuffer quadruples it for detail
+      // nobody sees mid-pan
+      var dpr = Math.min(window.devicePixelRatio || 1, TOUCH ? 1.15 : 2);
       var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
       if (w && h && (canvas.width !== w || canvas.height !== h)) { canvas.width = w; canvas.height = h; }
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -287,9 +297,15 @@
       // upload a video frame to the GPU only when a fresh one exists. First
       // upload allocates (texImage2D); the rest update in place (texSubImage2D),
       // which is far cheaper than reallocating a full equirect every frame.
+      // On touch devices uploads are additionally capped at ~15/sec — iOS
+      // converts every upload on the CPU, and the pan stays 60fps regardless
+      // because drawing reuses the last texture.
       var wantFrame = media.requestVideoFrameCallback ? state.newFrame : true;
+      var nowMs = performance.now();
+      if (wantFrame && state.touchThrottle && nowMs - (state.lastUpload || 0) < 66) wantFrame = false;
       if (state.ready && state.isVideo && media.readyState >= 2 && wantFrame) {
         state.newFrame = false;
+        state.lastUpload = nowMs;
         gl.bindTexture(gl.TEXTURE_2D, tex);
         if (state.texW === media.videoWidth && state.texH === media.videoHeight) {
           gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, media);
@@ -309,7 +325,10 @@
       gl.uniform1f(U.uAspect, canvas.width / canvas.height);
       gl.uniform2f(U.uRes, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      placeSpots();
+      // the pin overlay re-projects every OTHER frame on touch — 30fps DOM
+      // writes are invisible on labels, and the pan keeps its full budget
+      state.frameN++;
+      if (!state.touchThrottle || (state.frameN & 1)) placeSpots();
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
