@@ -39,11 +39,24 @@
 
     if (opts.lede) wrap.appendChild(el("p", "door__lede", opts.lede));
 
+    /* no ghosts on this floor: every account walks in with a NAME and a
+       TICKER, and the ticker files onto the market the moment the door
+       opens — pending review, but real, and it belongs to this session */
+    var nameIn = el("input", "door__in");
+    nameIn.type = "text";
+    nameIn.placeholder = "Your name — how the floor knows you";
+    nameIn.autocomplete = "name";
+    try {
+      var heldName = JSON.parse(localStorage.getItem("mcc_onboard") || "{}").name;
+      if (heldName) nameIn.value = heldName;
+    } catch (e) {}
+    wrap.appendChild(nameIn);
+
     var tick = null;
-    if (opts.ticker) {
+    if (opts.ticker !== false) {
       tick = el("input", "door__in");
       tick.type = "text";
-      tick.placeholder = "Your ticker — 3–5 letters (optional)";
+      tick.placeholder = "Your ticker — 3–5 letters, like MCC";
       tick.maxLength = 6;
       tick.autocapitalize = "characters";
       tick.style.textTransform = "uppercase";
@@ -56,15 +69,21 @@
 
     var msg = el("p", "door__msg");
 
-    function bankTicker() {
-      if (!tick) return;
-      var v = tick.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    function tickerVal() {
+      return tick ? tick.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "") : "";
+    }
+    function bank() {
+      var t = tickerVal();
       try {
-        if (v) localStorage.setItem("mcc_ticker_claim", v);
+        if (t) localStorage.setItem("mcc_ticker_claim", t);
+        var ob = {};
+        try { ob = JSON.parse(localStorage.getItem("mcc_onboard") || "{}") || {}; } catch (e2) {}
+        if (nameIn.value.trim()) ob.name = nameIn.value.trim();
+        localStorage.setItem("mcc_onboard", JSON.stringify(ob));
       } catch (e) {}
     }
     function finish(how) {
-      bankTicker();
+      bank();
       track("door_open", { how: how, context: ctx });
       if (opts.onDone) opts.onDone(); else location.reload();
     }
@@ -72,8 +91,20 @@
     var instant = el("button", "door__go", "Start instantly — no email needed");
     instant.type = "button";
     instant.addEventListener("click", function () {
+      var nm = nameIn.value.trim();
+      var tk = tickerVal();
+      if (!nm) { msg.textContent = "Your name first — the floor doesn't trade with ghosts."; nameIn.focus(); return; }
+      if (tick && !tk) { msg.textContent = "Pick your ticker — 3–5 letters, it's yours."; tick.focus(); return; }
       instant.textContent = "Opening your account…";
-      window.MCC_AUTH.signInAnon().then(function () { finish("instant"); }).catch(function (e) {
+      window.MCC_AUTH.signInAnon().then(function () {
+        // the ticker hits the market NOW: the listing files under this
+        // account (pending review), and the session stays on this device
+        if (window.MCC_NET && window.MCC_NET.saveListing) {
+          instant.textContent = "Filing your ticker on the floor…";
+          return window.MCC_NET.saveListing({ name: nm, ticker: tk || null, roles: [] })
+            .catch(function () {}); // the desk prefill catches anything the file misses
+        }
+      }).then(function () { finish("instant"); }).catch(function (e) {
         instant.textContent = "Start instantly — no email needed";
         msg.textContent = String((e && e.message) || e);
       });
@@ -92,7 +123,7 @@
     go.addEventListener("click", function () {
       var v = em.value.trim();
       if (!v) { msg.textContent = "Drop your email first."; em.focus(); return; }
-      bankTicker();
+      bank();
       msg.textContent = "Sending the link…";
       window.MCC_AUTH.signIn(v).then(function () {
         track("door_key_sent", { context: ctx });
@@ -104,7 +135,8 @@
     wrap.appendChild(row);
 
     wrap.appendChild(el("p", "door__fine",
-      "Instant accounts are real accounts — attach an email later and your desk follows you to any device."));
+      "Instant accounts are real accounts: your name and ticker file onto the floor (pending review), " +
+      "this device stays signed in so you can come right back, and attaching an email later carries it anywhere."));
     wrap.appendChild(msg);
 
     host.appendChild(wrap);

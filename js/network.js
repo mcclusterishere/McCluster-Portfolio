@@ -253,6 +253,7 @@
         return authed("members?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
+      events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid&limit=" + (limit || 1500)); },
     },
   };
 })();

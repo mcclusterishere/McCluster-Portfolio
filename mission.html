@@ -90,6 +90,7 @@
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
+        <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
       </nav>
@@ -125,6 +126,18 @@
           nobody is shown, streaks, silence, and an admin score per player. Every row is a synced account;
           the exhaust behind it lives in Analytics tagged <b>model:grind_v2</b> with its device id.</p>
         <div id="mcGrind"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcAnalytics">
+        <h2>Analytics — the platform's own eyes</h2>
+        <div id="mcAnna"><p class="mc__empty">Loading…</p></div>
+        <p class="mc__empty" style="margin-top:0.9rem">The outside eyes, one tap each:
+          <a href="https://analytics.google.com/" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Google Analytics</a> ·
+          <a href="https://search.google.com/search-console" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Search Console</a> ·
+          <a href="https://studio.youtube.com/" target="_blank" rel="noopener" style="color:var(--ruby-hot)">YouTube Studio</a> ·
+          <a href="https://dashboard.stripe.com/" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Stripe</a>.
+          Google's numbers live behind Google's login; everything below is first-party — the platform's own
+          record of every tap, play, deal, and door, straight from your database.</p>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcSms">
@@ -245,6 +258,58 @@
           (window.MCC_GRIND ? Object.keys(window.MCC_GRIND.shadow).map(function (k) { return k; }).join(" · ") : "loads with the grind engine") + ".</p>";
       }
 
+      /* ---- THE PLATFORM'S OWN EYES: first-party events, admin only ----
+         Every MCC_TRACK event mirrors into the events table; this room
+         aggregates the last ~1500 into today/7-day pulse, top events,
+         top pages, and how many distinct signed-in souls moved. */
+      function paintAnalytics(rows) {
+        var el = $("mcAnna");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The eyes need one paste: docs/analytics-schema.sql in Supabase — then every tap on the site lands here.</p>";
+          return;
+        }
+        if (!rows.length) {
+          el.innerHTML = "<p class='mc__empty'>Armed and watching — no events banked yet. They start landing the moment anyone touches the live site.</p>";
+          return;
+        }
+        var now = Date.now(), day = 864e5;
+        var today = 0, week = 0, souls = {};
+        var byName = {}, byPage = {};
+        rows.forEach(function (r) {
+          var t = new Date(r.at).getTime();
+          if (now - t < day) today++;
+          if (now - t < 7 * day) {
+            week++;
+            if (r.uid) souls[r.uid] = 1;
+            byName[r.name] = (byName[r.name] || 0) + 1;
+            byPage[r.path || "?"] = (byPage[r.path || "?"] || 0) + 1;
+          }
+        });
+        function top(map, n) {
+          return Object.keys(map).map(function (k) { return [k, map[k]]; })
+            .sort(function (a, b) { return b[1] - a[1]; }).slice(0, n);
+        }
+        function bars(pairs) {
+          var max = pairs.length ? pairs[0][1] : 1;
+          return pairs.map(function (p) {
+            return '<p style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;margin:0.25em 0">' +
+              '<span style="flex:0 0 11rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cream-dim)">' + esc(p[0]) + "</span>" +
+              '<span style="flex:1;height:8px;border-radius:100px;background:rgba(244,239,230,0.08);overflow:hidden">' +
+              '<span style="display:block;height:100%;width:' + Math.max(3, Math.round(p[1] / max * 100)) + '%;background:linear-gradient(90deg,var(--ruby),var(--ruby-hot))"></span></span>' +
+              "<b style='font-variant-numeric:tabular-nums'>" + p[1] + "</b></p>";
+          }).join("");
+        }
+        var n = document.getElementById("tabNAnna");
+        if (n) n.textContent = today;
+        el.innerHTML =
+          '<div class="mc__stats" style="margin:0 0 0.9rem">' +
+          stat("events today", today) + stat("events · 7 days", week) +
+          stat("signed-in souls · 7d", Object.keys(souls).length) + "</div>" +
+          "<p class='mc__empty' style='margin:0 0 0.3rem'>What they do (7 days)</p>" + bars(top(byName, 12)) +
+          "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it (7 days)</p>" + bars(top(byPage, 10));
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -253,9 +318,11 @@
           A.sms().catch(function () { return null; }),
           A.deals().catch(function () { return null; }),
           A.grind ? A.grind().catch(function () { return null; }) : Promise.resolve(null),
+          A.events ? A.events().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
+          paintAnalytics(r[6]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -383,7 +450,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });
