@@ -1,36 +1,36 @@
 // PAY-DEAL — creates the Stripe Checkout for a signed deal.
-// The buyer eats the platform fee (added on top); the provider's
-// rate arrives whole. Deploy: Supabase → Edge Functions → paste,
-// with secrets STRIPE_SK set. See docs/fees.md for the fee policy.
+// ALL-IN PRICING: the buyer sees ONE line, one price. The seller's
+// ask (net) is grossed up by 9.5% into that price; the platform's
+// cut is carved out as the application fee on the back end. No fee
+// lines on any receipt — institutions can't pay surcharges, and
+// nobody's receipt should read like one. See docs/fees.md.
 import Stripe from "npm:stripe@14";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SK")!);
-const FEE_PCT = 0.08;   // the platform's cut — the CUSTOMER pays it on top
-const PROC_PCT = 0.015; // processing, also the customer's — funds the per-sale instant payout
+const RATE = 0.095; // 8% platform + 1.5% processing, baked into the price
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: cors() });
   }
   try {
-    const { deal_id, amount, provider_acct, title } = await req.json();
+    const { deal_id, amount, price, provider_acct, title } = await req.json();
     if (!deal_id || !amount || !title) throw new Error("deal_id, amount, title required");
 
-    const base = Math.round(Number(amount) * 100);         // the provider's money
-    const fee = Math.round(base * FEE_PCT);                // the customer's platform fee
-    const proc = Math.round(base * PROC_PCT);              // the customer's processing line
+    const net = Math.round(Number(amount) * 100);              // the seller's money, cents
+    let total = Math.round(Number(price || 0) * 100);          // the buyer's one price, cents
+    if (!total || total < net) total = Math.round(net * (1 + RATE));
+    const cut = total - net;                                   // the platform's, back-end only
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
-        { price_data: { currency: "usd", product_data: { name: title }, unit_amount: base }, quantity: 1 },
-        { price_data: { currency: "usd", product_data: { name: "Platform fee" }, unit_amount: fee }, quantity: 1 },
-        { price_data: { currency: "usd", product_data: { name: "Processing" }, unit_amount: proc }, quantity: 1 },
+        { price_data: { currency: "usd", product_data: { name: title }, unit_amount: total }, quantity: 1 },
       ],
-      // provider connected? their base arrives whole: full charge minus
-      // application_fee (= fee + proc) lands on the destination account
+      // provider connected? their net arrives whole: full charge minus
+      // the application fee (= the platform's cut) lands on their account
       ...(provider_acct
-        ? { payment_intent_data: { application_fee_amount: fee + proc, transfer_data: { destination: provider_acct } } }
+        ? { payment_intent_data: { application_fee_amount: cut, transfer_data: { destination: provider_acct } } }
         : {}),
       metadata: { deal_id },
       success_url: "https://mcclusterishere.github.io/McCluster-Portfolio/market.html#yours",

@@ -104,6 +104,22 @@ window.STRIPE_PK = "pk_test_51TrMvCLaNrHsnVOb2T9QPoPsBdCDxzFuE1CLft3NzTK7Z93MYDT
 window.MCC_STRIPE = {
   HOUSE: { "mccluster": 1, "equity-uprise": 1 },
 
+  /* ALL-IN PRICING — one number to the buyer's face, the split on the
+     back end. Institutions (counties included) can't pay surcharges,
+     and a receipt with fee lines reads like one. So: the seller names
+     what they want to RECEIVE (net); the platform grosses it up into
+     the only price the buyer ever sees. RATE = 8% platform + 1.5%
+     processing, baked in, never itemized to the buyer. */
+  RATE: 0.095,
+  quote: function (net) {           // seller's ask → the buyer's one price
+    net = Math.max(0, +net || 0);
+    return Math.round(net * (1 + window.MCC_STRIPE.RATE) * 100) / 100;
+  },
+  net: function (price) {           // the buyer's one price → what the seller receives
+    price = Math.max(0, +price || 0);
+    return Math.round((price * 100) / (1 + window.MCC_STRIPE.RATE)) / 100;
+  },
+
   rail: function (p) {
     if (!p) return { card: false, acct: null, square: null, house: false };
     var house = !!window.MCC_STRIPE.HOUSE[p.slug || p.id] || p.entity === "program";
@@ -133,9 +149,11 @@ window.MCC_STRIPE = {
   payDeal: function (deal, rail) {
     var S = window.MCC_SUPA;
     if (!S || !S.url) return Promise.resolve(null);
+    var net = (deal.terms && deal.terms.fee) || 0;
     var body = {
       deal_id: deal.id,
-      amount: (deal.terms && deal.terms.fee) || 0,
+      amount: net,                                              // the seller's money
+      price: (deal.terms && deal.terms.price) || window.MCC_STRIPE.quote(net), // the buyer's one number
       title: deal.title || deal.kind || "M Network deal",
     };
     if (rail && rail.acct) body.provider_acct = rail.acct;
