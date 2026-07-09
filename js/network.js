@@ -254,6 +254,10 @@
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
       events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid&limit=" + (limit || 1500)); },
+      intake: function () { return authed("intake?order=at.desc&select=*&limit=200"); },
+      setIntake: function (id, status) {
+        return authed("intake?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      },
     },
   };
 })();

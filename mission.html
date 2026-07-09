@@ -90,6 +90,7 @@
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
+        <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
@@ -126,6 +127,14 @@
           nobody is shown, streaks, silence, and an admin score per player. Every row is a synced account;
           the exhaust behind it lives in Analytics tagged <b>model:grind_v2</b> with its device id.</p>
         <div id="mcGrind"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcIntake">
+        <h2>The intake — every ask, on the record</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem">Fellowship sign-ups, quote requests, notify-me taps —
+          everything that used to vanish into the inbox files here now, tagged by kind. The kind is the hook the
+          back-end algorithms route on.</p>
+        <div id="mcIntake"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
@@ -310,6 +319,34 @@
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it (7 days)</p>" + bars(top(byPage, 10));
       }
 
+      /* ---- THE INTAKE QUEUE: kinds, contacts, one-tap status ---- */
+      function paintIntake(rows) {
+        var el = $("mcIntake");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The rail needs one paste: docs/intake-schema.sql — then every mailto door on the site files here.</p>";
+          return;
+        }
+        var fresh = (rows || []).filter(function (r) { return r.status === "new"; }).length;
+        var n = document.getElementById("tabNIntake");
+        if (n) n.textContent = fresh || "";
+        if (!rows.length) {
+          el.innerHTML = "<p class='mc__empty'>Armed and empty — the next ask on any page lands here.</p>";
+          return;
+        }
+        el.innerHTML = rows.map(function (t) {
+          return '<div class="mc__row' + (t.status === "new" ? " is-hot" : "") + '"><div>' +
+            "<b>" + esc(t.kind) + "</b> · " + esc(t.name || "—") +
+            ' <span style="color:var(--cream-dim)">· ' + esc(t.contact) + "</span>" +
+            (t.body ? "<p style='margin:0.3em 0 0;color:var(--cream-dim);font-size:0.82rem;white-space:pre-wrap'>" + esc(t.body) + "</p>" : "") +
+            "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>" + esc(t.page || "") + " · " +
+            esc(new Date(t.at).toLocaleString()) + " · " + esc(t.status) + "</p></div>" +
+            rowActs("intake", t.id, t.status === "answered" ? [] :
+              [["read", "Mark read"], ["answered", "Answered", "btn--ruby"]]) + "</div>";
+        }).join("");
+        wireActs(el, function (id, to) { return A.setIntake(id, to); });
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -319,10 +356,12 @@
           A.deals().catch(function () { return null; }),
           A.grind ? A.grind().catch(function () { return null; }) : Promise.resolve(null),
           A.events ? A.events().catch(function () { return null; }) : Promise.resolve(null),
+          A.intake ? A.intake().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
           paintAnalytics(r[6]);
+          paintIntake(r[7]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -450,7 +489,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });

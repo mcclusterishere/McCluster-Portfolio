@@ -79,6 +79,128 @@
       : here + location.search);
   })();
 
+  /* ---------- the intake rail: no ask lost to an inbox ----------
+     Every mailto link on every page used to throw the visitor into
+     their email app — and the ask vanished from the platform's view.
+     Now the tap opens a small sheet, the ask files into the intake
+     table tagged with a KIND parsed from the subject line, and the
+     back end can answer algorithmically. The email app stays one tap
+     away as the fallback; if the cloud is dark the mailto proceeds
+     untouched. Self-contained keys: this file loads before backend.js. */
+  (function intakeRail() {
+    var SB_URL = "https://fxbkvcrfbbcmrrupdcjt.supabase.co";
+    var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4Ymt2Y3JmYmJjbXJydXBkY2p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0Mjk5NzAsImV4cCI6MjA5OTAwNTk3MH0.ar1MYPC4gF9V7wn3UpTW0Q7PniGJdbBD1UmOKjNqJWU";
+
+    function kindOf(subject) {
+      var s = (subject || "").toLowerCase();
+      if (/fellowship/.test(s)) return "fellowship";
+      if (/heal|notify/.test(s)) return "notify";
+      if (/web/.test(s)) return "quote-web";
+      if (/photo|shoot|gallery/.test(s)) return "quote-photo";
+      if (/video/.test(s)) return "quote-video";
+      if (/record|studio/.test(s)) return "quote-recording";
+      if (/residual|giv|donor|member/.test(s)) return "giving";
+      if (/onboard/.test(s)) return "onboard-question";
+      if (/space|venue|stage/.test(s)) return "space";
+      if (/quote|build|project|inquiry|premium/.test(s)) return "quote";
+      return "general";
+    }
+
+    var sheet = null;
+    function openSheet(subject, bodyPrefill) {
+      var kind = kindOf(subject);
+      if (!sheet) {
+        sheet = document.createElement("div");
+        sheet.id = "mccIntake";
+        sheet.innerHTML =
+          '<style>#mccIntake{position:fixed;inset:0;z-index:9500;display:flex;align-items:flex-end;justify-content:center;' +
+          'background:rgba(5,4,3,0.78);backdrop-filter:blur(3px)}' +
+          '#mccIntake .itk{width:100%;max-width:30rem;background:#141110;border:1px solid rgba(244,239,230,0.16);' +
+          'border-bottom:0;border-radius:22px 22px 0 0;padding:1.2rem 1.2rem calc(1.5rem + env(safe-area-inset-bottom))}' +
+          '#mccIntake h3{font-family:var(--display,inherit);text-transform:uppercase;font-weight:400;' +
+          'font-size:1.3rem;margin:0 0 0.2rem;color:var(--cream,#f4efe6)}' +
+          '#mccIntake .itk__sub{margin:0 0 0.8rem;color:rgba(244,239,230,0.6);font-size:0.8rem;line-height:1.5}' +
+          '#mccIntake .itk__in{width:100%;background:rgba(10,8,7,0.75);border:1px solid rgba(244,239,230,0.3);' +
+          'border-radius:12px;color:var(--cream,#f4efe6);font:inherit;font-size:max(16px,1rem);padding:0.8em 1em;margin:0 0 0.55rem}' +
+          '#mccIntake textarea.itk__in{min-height:5.2em;resize:vertical}' +
+          '#mccIntake .itk__go{display:block;width:100%;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800;' +
+          'font-size:0.95rem;letter-spacing:0.05em;text-transform:uppercase;padding:1em;color:#fff;' +
+          'background:linear-gradient(120deg,var(--ruby,#a4161a),var(--ruby-hot,#e5383b))}' +
+          '#mccIntake .itk__alt{display:block;width:100%;background:none;border:0;color:rgba(244,239,230,0.55);' +
+          'font:inherit;font-size:0.8rem;text-decoration:underline;cursor:pointer;padding:0.7em;text-align:center}' +
+          '#mccIntake .itk__msg{margin:0.4rem 0 0;min-height:1.2em;color:var(--cream,#f4efe6);font-size:0.85rem;text-align:center}</style>' +
+          '<div class="itk" role="dialog" aria-modal="true">' +
+          '<h3>Say the word.</h3>' +
+          '<p class="itk__sub" data-itk-sub></p>' +
+          '<input class="itk__in" data-itk-name type="text" placeholder="Your name" autocomplete="name">' +
+          '<input class="itk__in" data-itk-contact type="text" placeholder="Email or phone — where the answer lands" autocomplete="email">' +
+          '<textarea class="itk__in" data-itk-body placeholder="What you need, in your words"></textarea>' +
+          '<button class="itk__go" type="button" data-itk-send>Send it — straight to the desk</button>' +
+          '<button class="itk__alt" type="button" data-itk-mail>or open your email app instead</button>' +
+          '<p class="itk__msg" data-itk-msg></p></div>';
+        document.body.appendChild(sheet);
+        sheet.addEventListener("click", function (ev) { if (ev.target === sheet) sheet.style.display = "none"; });
+      }
+      sheet.style.display = "flex";
+      var box = sheet.querySelector(".itk");
+      box.querySelector("[data-itk-sub]").textContent = (subject || "Whatever it is") +
+        " — it files straight onto the platform, on the record, answered from the desk.";
+      box.querySelector("[data-itk-body]").value = bodyPrefill || "";
+      box.querySelector("[data-itk-msg]").textContent = "";
+      var send = box.querySelector("[data-itk-send]");
+      var mail = box.querySelector("[data-itk-mail]");
+      send.onclick = function () {
+        var nm = box.querySelector("[data-itk-name]").value.trim();
+        var ct = box.querySelector("[data-itk-contact]").value.trim();
+        var bd = box.querySelector("[data-itk-body]").value.trim();
+        var msg = box.querySelector("[data-itk-msg]");
+        if (!ct) { msg.textContent = "A way to reach you — that's the one thing it needs."; return; }
+        send.textContent = "Sending…";
+        var uid = null;
+        try {
+          var s = JSON.parse(localStorage.getItem("mccdb_session") || "null");
+          if (s && s.access_token) uid = JSON.parse(atob(s.access_token.split(".")[1])).sub || null;
+        } catch (e) {}
+        fetch(SB_URL + "/rest/v1/intake", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: SB_KEY, Prefer: "return=minimal" },
+          body: JSON.stringify({ kind: kind, name: nm, contact: ct, body: bd + (subject ? "\n[" + subject + "]" : ""),
+            page: location.pathname.split("/").pop() || "index.html", uid: uid }),
+        }).then(function (r) {
+          if (!r.ok) throw new Error("net");
+          if (window.MCC_TRACK) window.MCC_TRACK("intake_filed", { kind: kind });
+          box.querySelector("[data-itk-msg]").textContent = "On the record — the desk answers from here.";
+          send.textContent = "✓ Sent";
+          setTimeout(function () { sheet.style.display = "none"; send.textContent = "Send it — straight to the desk"; }, 1600);
+        }).catch(function () {
+          send.textContent = "Send it — straight to the desk";
+          box.querySelector("[data-itk-msg]").textContent = "The rail hiccuped — use the email door below.";
+        });
+      };
+      mail.onclick = function () {
+        location.href = "mailto:matthew@mccluster.org?subject=" + encodeURIComponent(subject || "From the site");
+        sheet.style.display = "none";
+      };
+    }
+
+    document.addEventListener("click", function (ev) {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="mailto:matthew@mccluster.org"]') : null;
+      if (!a) return;
+      ev.preventDefault();
+      var href = a.getAttribute("href");
+      var subject = "", body = "";
+      try {
+        var q = href.split("?")[1] || "";
+        q.split("&").forEach(function (kv) {
+          var p = kv.split("=");
+          if (p[0] === "subject") subject = decodeURIComponent(p[1] || "");
+          if (p[0] === "body") body = decodeURIComponent(p[1] || "");
+        });
+      } catch (e) {}
+      openSheet(subject, body);
+    });
+  })();
+
   /* ---------- one-tap install: skip the app store ----------
      Chrome/Edge/Android fire beforeinstallprompt — we bank it and
      any [data-getapp] tap opens the real install sheet. iOS never
