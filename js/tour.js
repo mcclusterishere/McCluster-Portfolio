@@ -59,8 +59,8 @@
     {
       target: function () { return q("#xcDPay"); },
       kick: "The green door",
-      title: "M Pay rides every ticker.",
-      body: "One tap from anyone's book and the keypad opens already loaded with their name. Paying somebody should never take more than that.",
+      title: "E-Up Pay rides every ticker.",
+      body: "Come to E-Up, get your re-up: one tap from anyone's book and the keypad opens loaded with their name. Paying somebody never takes more than that.",
       act: function () {
         var b = q("#xcDPay");
         if (b) b.click(); else if (window.MK_SHOW) window.MK_SHOW("pay");

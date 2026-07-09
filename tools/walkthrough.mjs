@@ -86,9 +86,17 @@ async function boot(opts = {}) {
   if (LIVE) {
     console.log("LIVE walk: stopped at the payee step — finish by hand with a 4242.");
   } else {
-    // the mid-flow door: instant account, keypad and payee survive
+    // the mid-flow door: instant account, keypad and payee survive.
+    // no ghosts — the door demands a name and a ticker before it opens
     const doorBtn = await page.$('#shDoor .door__go');
     check("buyer", doorBtn, "inline door did not mount for the signed-out buyer");
+    await doorBtn.click();
+    await page.waitForTimeout(200);
+    check("buyer", await page.$eval('#shDoor .door__msg', (el) => /name/i.test(el.textContent)),
+      "door opened for a ghost — name must be required");
+    const doorIns = await page.$$('#shDoor .door__in');
+    await doorIns[0].fill("Josiah Walk");
+    await doorIns[1].fill("JSW");
     await doorBtn.click();
     await page.waitForTimeout(600);
     check("buyer", await page.$eval("#shDoor", (el) => el.children.length === 0), "door did not clear after the account opened");

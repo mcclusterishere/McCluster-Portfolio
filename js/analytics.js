@@ -45,7 +45,30 @@ if ("serviceWorker" in navigator) {
 window.MCC_TRACK = (function () {
   var gaId = window.ANALYTICS_ID;
   var endpoint = window.TRACK_ENDPOINT;
-  if (!gaId && !endpoint) return function () {};
+
+  /* ---- the first-party mirror: the platform's own eyes ----
+     Google keeps its copy behind Google's login; this copy lands in
+     the platform's own database (docs/analytics-schema.sql) and
+     Mission Control reads it live. Write-only from here — the anon
+     key can insert an event, never read one back. Self-contained
+     constants because this file loads before backend.js. */
+  var SB_URL = "https://fxbkvcrfbbcmrrupdcjt.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4Ymt2Y3JmYmJjbXJydXBkY2p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0Mjk5NzAsImV4cCI6MjA5OTAwNTk3MH0.ar1MYPC4gF9V7wn3UpTW0Q7PniGJdbBD1UmOKjNqJWU";
+  function mirror(name, params) {
+    try {
+      var uid = null;
+      try {
+        var s = JSON.parse(localStorage.getItem("mccdb_session") || "null");
+        if (s && s.access_token) uid = JSON.parse(atob(s.access_token.split(".")[1])).sub || null;
+      } catch (e2) {}
+      fetch(SB_URL + "/rest/v1/events", {
+        method: "POST",
+        keepalive: true,
+        headers: { "Content-Type": "application/json", apikey: SB_KEY, Prefer: "return=minimal" },
+        body: JSON.stringify({ name: name, path: location.pathname.split("/").pop() || "index.html", props: params || {}, uid: uid }),
+      }).catch(function () {});
+    } catch (e) {}
+  }
 
   var gtag = null;
   if (gaId) {
@@ -85,6 +108,7 @@ window.MCC_TRACK = (function () {
   return function (name, params) {
     params = params || {};
     if (gtag) gtag("event", name, params);
+    mirror(name, params);
     // any booking CTA anywhere on the site counts as the conversion
     if (name === "cta_click" && /book-call|offer-claim/.test(params.label || "")) window.MCC_CONVERT(params.label);
     if (endpoint) {
