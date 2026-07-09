@@ -790,6 +790,7 @@
   <script src="js/heat.js?v=__STAMP__"></script>
   <script src="js/amenities.js?v=__STAMP__"></script>
   <script src="js/floorcache.js?v=__STAMP__"></script>
+  <script src="js/house.js?v=__STAMP__"></script>
   <script src="js/streetscore.js?v=__STAMP__"></script>
   <script>
     (function () {
@@ -2329,6 +2330,12 @@
         }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
+        // the house shelf: services the house pays for in E-Up credit
+        if (ME && window.MCC_HOUSE) {
+          var hhHost = document.createElement("div");
+          body.appendChild(hhHost);
+          window.MCC_HOUSE.shelf(hhHost);
+        }
         // amenity chips inside the freshly-written body
         if (window.MCC_AMENITIES) {
           window.MCC_AMENITIES.get().then(function (d) {
