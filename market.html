@@ -2072,7 +2072,8 @@
           var base = location.origin + location.pathname.replace(/[^/]*$/, "");
           html += '<h2 class="mp__toolhead">The desk</h2>';
           html += '<div class="mp__tools">' + tool("page.html?who=" + esc(slug),
-            "Your page — the social you", "Post to your supporters, edit the vibe, export your fan book") + "</div>";
+            "Your page — the social you", "Post to your supporters, edit the vibe, export your fan book") +
+            tool("backend.html", "Own your back end — the claim run", "Claim every artist page, open every API, export every number — level up, earn tokens") + "</div>";
           if (face === "venue" || face === "provider") {
             html += '<div class="mp__card"><span class="mp__lblx">Your booking link — send it, post it, put it in the bio</span>' +
               '<div class="mp__linkrow"><input class="mp__in" id="dkBook" readonly value="' + esc(base + "spaces.html?who=" + slug) + '">' +
