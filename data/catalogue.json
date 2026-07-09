@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T03:19:56.815Z",
+  "generated_at": "2026-07-09T14:37:36.896Z",
   "isrc_prefix": "QT6KV",
   "count": 10,
   "tracks": [
@@ -108,8 +108,8 @@
       "credit": "Prod. Zakir & McCluster",
       "album": "Whip Equipped",
       "page": "song-dealer-plates-b.html",
-      "length": "soon",
-      "available": false,
+      "length": "1:37",
+      "available": true,
       "order": 10,
       "no": "10"
     }
