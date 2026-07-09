@@ -569,17 +569,19 @@
         </div>
         <label class="mk__lbl" for="pDate" id="pDateLbl">Date / window wanted</label>
         <input class="mk__in" id="pDate" type="text" placeholder="e.g. Aug 14, 6–10pm">
-        <label class="mk__lbl" for="pFee">The money ($ — rate, budget, or contribution; blank for split-only)</label>
+        <label class="mk__lbl" for="pFee">The money ($ — what the receiving side gets, whole; blank for split-only)</label>
         <input class="mk__in" id="pFee" type="number" min="0" placeholder="0">
+        <p class="mk__note" id="pFeeQuote" style="margin:0.3rem 0 0"></p>
         <label class="mk__lbl" for="pNotes">The terms in plain words</label>
         <textarea class="mk__in" id="pNotes" placeholder="Deliverables, who owns what, what happens if someone walks — say it plain."></textarea>
         <label class="mk__lbl" for="pContact" id="pContactLbl">Your name &amp; a way to reach you (quick request)</label>
         <input class="mk__in" id="pContact" type="text" placeholder="Name · email or phone">
         <button class="btn btn--ruby" id="pSend" type="button">Send it</button>
         <p class="mk__msg" id="pMsg"></p>
-        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> when a signed deal carries the card
-          rail, <em style="color:var(--cream)">Pay by card</em> opens secure checkout — the rate, the platform fee,
-          and processing on one receipt, and the deal marks itself paid. Desks still arming their rail run the
+        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> one price, no fee lines, ever.
+          Name what you want to receive and the platform prices the other side automatically — when a signed deal
+          carries the card rail, <em style="color:var(--cream)">Pay by card</em> opens secure checkout showing
+          exactly one number, and your ask arrives whole. Desks still arming their rail run the
           payment note instead: copy it, pay outside, mark it paid — the record carries it either way.</p>
         <p class="mk__note">Signed in, this is the full engine: counters, terms lock, signatures, and a printable
           sheet. Signed out, it's a quick request straight to the provider's inbox. Either way —
@@ -857,6 +859,13 @@
         $("pSend").textContent = counterOf ? "Send the counter" : AUTHED ? "Send the proposition" : "Send the quick request";
       }
       $("pKind").addEventListener("change", shapeForm);
+      /* all-in pricing, live: name your number, see their one price */
+      $("pFee").addEventListener("input", function () {
+        var v = +this.value || 0;
+        $("pFeeQuote").textContent = v
+          ? "They see one price: $" + window.MCC_STRIPE.quote(v).toFixed(2) + " — your $" + v + " arrives whole. No fee lines, ever."
+          : "";
+      });
 
       /* ---------- lanes preset the whole floor ---------- */
       document.querySelectorAll(".mk__lane").forEach(function (b) {
@@ -1038,6 +1047,8 @@
         var terms = {
           splits: isMusic ? parties() : [],
           fee: $("pFee").value ? +$("pFee").value : 0,
+          // all-in pricing: the payer sees ONE number; the ask arrives whole
+          price: $("pFee").value ? window.MCC_STRIPE.quote(+$("pFee").value) : 0,
           date: $("pDate").value.trim(),
           notes: $("pNotes").value.trim(),
           history: counterOf ? (counterOf.terms.history || []).concat([{
@@ -1130,7 +1141,7 @@
               "<h3>" + esc(d.title) + '<span class="cr__tag ' + tag + '">' + esc(d.status) + "</span>" +
               '<span class="cr__tag">' + esc(KIND_LABEL[d.kind] || d.kind) + "</span></h3>" +
               "<p>" + (mySide === "from" ? "you → " : "from ") + esc(other) +
-              (t.fee ? " · $" + t.fee : "") + (t.date ? " · " + esc(t.date) : "") + "</p>" +
+              (t.fee ? " · $" + (mySide === "from" ? (t.price || t.fee) : t.fee) : "") + (t.date ? " · " + esc(t.date) : "") + "</p>" +
               (splits ? '<table class="cr__splits">' + splits + "</table>" : "") +
               (t.notes ? "<p>" + esc(t.notes) + "</p>" : "") +
               (signedBy ? '<p style="color:#2fbf71">Signed: ' + signedBy + "</p>" : "") +
@@ -2105,7 +2116,7 @@
             host.appendChild(b);
             var p = document.createElement("p");
             p.className = "mp__note";
-            p.textContent = "Secure checkout — the rate, the platform fee, and processing on one receipt. The deal marks itself paid.";
+            p.textContent = "Secure checkout — one price, exactly what you punched in. The deal marks itself paid.";
             host.appendChild(p);
           } else if (rail.square) {
             var sq = rail.square + (rail.square.indexOf("?") === -1 ? "?src=mpay" : "&src=mpay");
@@ -2118,11 +2129,17 @@
         var fail = function (e) { $("shMsg").textContent = "Couldn't send: " + String(e && e.message || e); };
 
         if (AUTHED) {
+          // all-in pricing: a PAYER's punched number is the one price they
+          // pay (the payee's net comes out of it); a REQUESTER's number is
+          // what they want to receive (the payer's price grosses up)
+          var isPay = dir === "pay";
+          var net = isPay ? window.MCC_STRIPE.net(+amt) : +amt;
+          var price = isPay ? +amt : window.MCC_STRIPE.quote(+amt);
           window.MCC_NET.propose({
             kind: kind, title: title,
             from_name: (ME && ME.name) || (window.MCC_SUPA.email() || "Me"),
             to_slug: pick.slug || pick.id, to_name: pick.name,
-            terms: { splits: [], fee: +amt, date: "", notes: (dir === "request" ? "[They pay me — request] " : "") + note, history: [] },
+            terms: { splits: [], fee: net, price: price, date: "", notes: (dir === "request" ? "[They pay me — request] " : "") + note, history: [] },
           }).then(function (row) { done("deal", row); }).catch(fail);
         } else {
           var contact = $("shContact").value.trim();
@@ -2227,7 +2244,7 @@
           /* the card rail: three states — live, mid-onboarding, not started */
           if (ME.charges_enabled === true) {
             html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
-              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● Card rail live — buyers check out by card on your signed deals and the money lands in your bank. Your full rate arrives; the platform fee rides on the buyer&rsquo;s side.</p></div>';
+              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● Card rail live — buyers check out by card on your signed deals and the money lands in your bank. Your ask arrives whole; the platform&rsquo;s cut is built into the one price the buyer sees.</p></div>';
           } else {
             html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
               '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkRailBtn" type="button" style="flex:1">' +
@@ -2343,8 +2360,11 @@
         function payLink() {
           var a = (+$("dkAmt").value || 0);
           if (a <= 0) { $("dkPayMsg").textContent = "Put a number on it first."; return null; }
-          $("dkPayMsg").textContent = "";
-          return base + "market.html?to=" + encodeURIComponent(slug) + "&amt=" + a +
+          // all-in pricing: you name what YOU receive; the link carries the
+          // payer's one price and your number arrives whole
+          var priced = window.MCC_STRIPE.quote(a);
+          $("dkPayMsg").textContent = "Their side sees $" + priced.toFixed(2) + " — your $" + a + " arrives whole.";
+          return base + "market.html?to=" + encodeURIComponent(slug) + "&amt=" + priced +
             ($("dkFor").value.trim() ? "&for=" + encodeURIComponent($("dkFor").value.trim()) : "") + "#pay";
         }
         $("dkPayCopy").addEventListener("click", function () {

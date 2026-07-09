@@ -102,7 +102,10 @@ async function boot(opts = {}) {
       await railBtn.click();
       await page.waitForTimeout(900);
       check("buyer", record.payDeal && record.payDeal.deal_id === "deal-walk-1", "pay-deal not called with the filed deal");
-      check("buyer", record.payDeal && record.payDeal.amount === 5, "pay-deal amount drifted: " + (record.payDeal && record.payDeal.amount));
+      // all-in pricing: the buyer punched 5 → that IS the price; the
+      // payee's net comes out of it (5 / 1.095 = 4.57)
+      check("buyer", record.payDeal && record.payDeal.price === 5, "buyer's one price drifted: " + (record.payDeal && record.payDeal.price));
+      check("buyer", record.payDeal && record.payDeal.amount === 4.57, "payee net drifted: " + (record.payDeal && record.payDeal.amount));
       check("buyer", record.payDeal && !("provider_acct" in record.payDeal), "house payment must NOT carry provider_acct");
       check("buyer", record.checkoutHit, "checkout redirect never attempted");
     }
