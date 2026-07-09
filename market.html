@@ -475,6 +475,9 @@
       </div>
 
       <div class="xc__list" id="xcList"><p class="mk__note">Opening the floor…</p></div>
+
+      <!-- the outside board: real markets, our record -->
+      <div id="xcOutside" style="margin-top:1.6rem"></div>
     </section>
 
     <!-- the ticker detail sheet -->
@@ -2546,6 +2549,51 @@
         }
         loadDeskDeals();
       }
+
+      /* ---------- the outside board: real tickers, our record ----------
+         Actual public companies the platform has dealings with, priced by
+         the market-sweep workflow (tools/fetch-stocks.mjs) — the page only
+         reads the committed JSON, never a market API. */
+      (function outsideBoard() {
+        var host = $("xcOutside");
+        if (!host) return;
+        function spark(series, up) {
+          if (!series || series.length < 2) return "";
+          var min = Math.min.apply(null, series), max = Math.max.apply(null, series);
+          var pts = series.map(function (v, i) {
+            var x = (i / (series.length - 1)) * 60;
+            var y = 16 - (max === min ? 8 : ((v - min) / (max - min)) * 14 + 1);
+            return x.toFixed(1) + "," + y.toFixed(1);
+          }).join(" ");
+          return '<svg width="60" height="18" viewBox="0 0 60 18" aria-hidden="true" style="flex:none">' +
+            '<polyline points="' + pts + '" fill="none" stroke="' + (up ? "#00c805" : "#ff5000") + '" stroke-width="1.5"/></svg>';
+        }
+        fetch("data/realstocks.json", { cache: "no-cache" })
+          .then(function (r) { return r.json(); })
+          .then(function (b) {
+            var lbl = '<small style="display:block;font-family:var(--micro);font-size:0.62rem;letter-spacing:0.22em;' +
+              'text-transform:uppercase;color:#c99d45;margin-bottom:0.5rem">The outside board · real markets, our record' +
+              (b.updated ? " · " + new Date(b.updated).toLocaleDateString() : "") + "</small>";
+            var rows = (b.rows || []).filter(function (x) { return !x.dark; });
+            if (!b.updated || !rows.some(function (x) { return x.price != null; })) {
+              host.innerHTML = lbl + '<p class="mk__note" style="margin:0">Arming — the first market sweep lands after the next close.</p>';
+              return;
+            }
+            host.innerHTML = lbl + rows.map(function (x) {
+              if (x.price == null) return "";
+              var up = (x.chg || 0) >= 0;
+              return '<div style="display:flex;align-items:center;gap:0.8rem;padding:0.55rem 0.2rem;' +
+                'border-bottom:1px dashed rgba(244,239,230,0.1)">' +
+                '<b style="flex:0 0 4.2rem;font-variant-numeric:tabular-nums">$' + esc(x.label) + "</b>" +
+                '<span style="flex:1;min-width:0"><span style="font-size:0.85rem">' + esc(x.name) + "</span>" +
+                '<small style="display:block;color:var(--cream-dim);font-size:0.7rem">' + esc(x.note || "") + "</small></span>" +
+                spark(x.series, up) +
+                '<span style="text-align:right;flex:0 0 5.4rem"><b style="font-variant-numeric:tabular-nums">$' + (+x.price).toFixed(2) + "</b>" +
+                '<small style="display:block;color:' + (up ? "#00c805" : "#ff5000") + ';font-variant-numeric:tabular-nums">' +
+                (up ? "▲ " : "▼ ") + Math.abs(x.chg || 0).toFixed(2) + "%</small></span></div>";
+            }).join("");
+          }).catch(function () {});
+      })();
 
       /* ---------- boot ---------- */
       loadFloor().then(function () {
