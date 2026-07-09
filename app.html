@@ -39,6 +39,47 @@
         radial-gradient(120% 90% at 12% 0%, rgba(29, 78, 216, 0.32), transparent 62%),
         radial-gradient(100% 80% at 92% 4%, rgba(164, 22, 26, 0.38), transparent 62%); }
 
+    /* ---- the living room: slow aurora drift + a bloom wherever you touch ---- */
+    .sp__aura { position: fixed; inset: -22%; z-index: -2; pointer-events: none; }
+    .sp__aura i { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+    .sp__aura i:nth-child(1) { width: 58vmax; height: 58vmax; left: -12%; top: -10%; opacity: 0.5;
+      background: radial-gradient(circle, rgba(164, 22, 26, 0.55), transparent 65%);
+      animation: auraA 26s ease-in-out infinite alternate; }
+    .sp__aura i:nth-child(2) { width: 48vmax; height: 48vmax; right: -14%; bottom: -12%; opacity: 0.4;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.45), transparent 65%);
+      animation: auraB 34s ease-in-out infinite alternate; }
+    .sp__aura i:nth-child(3) { width: 44vmax; height: 44vmax; left: 30%; top: 42%; opacity: 0.32;
+      background: radial-gradient(circle, rgba(29, 78, 216, 0.4), transparent 65%);
+      animation: auraC 42s ease-in-out infinite alternate; }
+    @keyframes auraA { to { transform: translate(16vw, 14vh) scale(1.18); } }
+    @keyframes auraB { to { transform: translate(-14vw, -12vh) scale(1.12); } }
+    @keyframes auraC { to { transform: translate(10vw, -16vh) scale(0.9); } }
+    .sp__bloom { position: fixed; left: 0; top: 0; z-index: -1; width: 46vmax; height: 46vmax;
+      margin: -23vmax 0 0 -23vmax; border-radius: 50%; pointer-events: none; filter: blur(30px);
+      background: radial-gradient(circle, rgba(229, 56, 59, 0.22), rgba(139, 92, 246, 0.12) 45%, transparent 66%);
+      opacity: 0; transition: opacity 0.9s ease; will-change: transform, opacity; }
+    @media (prefers-reduced-motion: reduce) { .sp__aura i { animation: none; } .sp__bloom { display: none; } }
+
+    /* ---- the heat: live plays, painted hot to cold ---- */
+    .heat { margin: 0.2rem clamp(1rem, 4vw, 2rem) 0; }
+    .heat__row { position: relative; display: flex; align-items: center; gap: 0.75rem; width: 100%;
+      border: none; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+      padding: 0.62rem 0.7rem; border-radius: 10px; overflow: hidden; }
+    .heat__row::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 10px;
+      width: var(--w, 8%); opacity: 0.26;
+      background: linear-gradient(90deg, var(--hc, #3b82f6), transparent); transition: width 0.8s ease; }
+    .heat__row:active { background: rgba(244, 239, 230, 0.05); }
+    .heat__rank { flex: none; width: 1.7rem; font-family: var(--display); font-size: 1.05rem; color: var(--gild); }
+    .heat__row img { width: 2.7rem; height: 2.7rem; border-radius: 6px; object-fit: cover; flex: none; }
+    .heat__mid { flex: 1; min-width: 0; }
+    .heat__mid b { display: block; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .heat__mid small { color: var(--cream-dim); font-size: 0.66rem; }
+    .heat__n { flex: none; font-variant-numeric: tabular-nums; font-size: 0.78rem; font-weight: 800; color: var(--hc, var(--cream-dim)); text-align: right; }
+    .heat__n small { display: block; font-weight: 400; color: var(--cream-dim); font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .heat__priv { display: flex; align-items: center; gap: 0.55rem; margin: 0.9rem clamp(1rem, 4vw, 2rem) 0;
+      color: var(--cream-dim); font-size: 0.72rem; line-height: 1.5; cursor: pointer; }
+    .heat__priv input { accent-color: var(--ruby-hot); width: 1.05rem; height: 1.05rem; flex: none; }
+
     /* ---- header: greeting + filter pills ---- */
     .sp__head { position: sticky; top: 0; z-index: 60; padding: calc(0.9rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 0.75rem;
       background: linear-gradient(180deg, rgba(10,8,7,0.97) 70%, transparent); }
@@ -257,6 +298,8 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <div class="sp__aura" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="sp__bloom" id="bloom" aria-hidden="true"></div>
   <main class="sp">
     <div class="sp__glow" aria-hidden="true"></div>
     <header class="sp__head">
@@ -291,6 +334,16 @@
       <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
     </a>
     <div id="bill" data-cat="song"></div>
+
+    <!-- the heat: what the whole network is playing, right now -->
+    <section class="sprow" data-cat="song" id="heatRow">
+      <div class="sprow__t"><div><p class="sprow__k">Live plays &middot; the whole floor</p><h2>The Heat</h2></div>
+        <span class="sprow__n" id="heatNote">warming up&hellip;</span></div>
+      <div class="heat" id="heat"></div>
+      <label class="heat__priv"><input type="checkbox" id="heatPub" checked>
+        <span>Count my plays in the public heat. Switch it off and your plays stay on this device —
+        hidden, like hiding your likes.</span></label>
+    </section>
 
     <!-- your listening: the analytics strip -->
     <section class="sprow" id="statsRow" data-cat="song">
@@ -483,6 +536,7 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/persona.js?v=__STAMP__"></script>
   <script src="js/entities.js?v=__STAMP__"></script>
+  <script src="js/heat.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -613,6 +667,7 @@
             '<a class="sp__cta sp__cta--ghost" href="mailto:matthew@mccluster.org?subject=Heal%20the%203%20%E2%80%94%20notify%20me">Notify me</a></div></div></div>';
         }
         applyFilter(HASH2F[location.hash] || "song");
+        paintHeat();
         renderRecent();
         renderPersona();
         renderStats();
@@ -720,6 +775,71 @@
         if (HASH2F[location.hash]) applyFilter(HASH2F[location.hash]);
       });
 
+      /* ---------- the heat: live plays across the floor, hot to cold ----------
+         Real numbers: the cloud counter (every listener, every device) plus
+         this device's plays. GA gets the same events for the deep analytics;
+         this is the number the room can read RIGHT NOW. */
+      function heatColor(ratio) {
+        return ratio > 0.75 ? "#ff7a00" : ratio > 0.45 ? "#e5383b" : ratio > 0.2 ? "#8b5cf6" : "#3b82f6";
+      }
+      function paintHeat() {
+        if (!window.MCC_HEAT) return;
+        window.MCC_HEAT.counts().then(function (n) {
+          var items = [];
+          Object.keys(CAT).forEach(function (id) {
+            var it = CAT[id];
+            if (!it.audio) return;
+            items.push({ it: it, n: n[window.MCC_HEAT.norm(id)] || 0 });
+          });
+          items.sort(function (a, b) { return b.n - a.n; });
+          var max = Math.max(items.length ? items[0].n : 0, 1);
+          var total = items.reduce(function (s, x) { return s + x.n; }, 0);
+          $("heat").innerHTML = items.map(function (x, i) {
+            var ratio = x.n / max;
+            var hc = heatColor(ratio);
+            return '<button class="heat__row" type="button" data-play="' + esc(x.it.id) + '" style="--w:' +
+              (8 + ratio * 92).toFixed(1) + '%;--hc:' + hc + '">' +
+              '<span class="heat__rank">' + (i === 0 && x.n > 0 ? "&#128293;" : String(i + 1).padStart(2, "0")) + "</span>" +
+              '<img loading="lazy" src="' + esc(x.it.poster) + '" alt="">' +
+              '<span class="heat__mid"><b>' + esc(x.it.title) + "</b><small>" + esc(x.it.subtitle || "") + "</small></span>" +
+              '<span class="heat__n">' + x.n.toLocaleString() + "<small>plays</small></span></button>";
+          }).join("");
+          $("heatNote").textContent = total > 0 ? "● live · " + total.toLocaleString() + " plays" : "● live · the count starts now";
+          if (window.MCC_TRACK) window.MCC_TRACK("heat_view", { total: total });
+        });
+      }
+      (function () {
+        var t = $("heatPub");
+        t.checked = window.MCC_HEAT ? window.MCC_HEAT.isPublic() : true;
+        t.addEventListener("change", function () {
+          if (window.MCC_HEAT) window.MCC_HEAT.setPublic(t.checked);
+          if (window.MCC_TRACK) window.MCC_TRACK("heat_privacy", { public: t.checked });
+        });
+      })();
+      /* fresh numbers when a play lands or the room wakes back up */
+      au.addEventListener("ended", function () { setTimeout(paintHeat, 800); });
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && ROWS.length) paintHeat(); });
+
+      /* ---------- the bloom: the room answers your hand ---------- */
+      (function () {
+        var bloom = $("bloom");
+        if (!bloom || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var fade = null, raf = null, px = 0, py = 0;
+        function move(x, y) {
+          px = x; py = y;
+          if (raf) return;
+          raf = requestAnimationFrame(function () {
+            raf = null;
+            bloom.style.transform = "translate(" + px + "px," + py + "px)";
+            bloom.style.opacity = "1";
+            clearTimeout(fade);
+            fade = setTimeout(function () { bloom.style.opacity = "0"; }, 1300);
+          });
+        }
+        window.addEventListener("pointermove", function (e) { move(e.clientX, e.clientY); }, { passive: true });
+        window.addEventListener("pointerdown", function (e) { move(e.clientX, e.clientY); }, { passive: true });
+      })();
+
       /* ---------- for you: the model picks the next move ---------- */
       function renderForYou() {
         if (!window.MCC_MODEL) return;
@@ -784,6 +904,7 @@
           au.play().catch(function () {});
         });
         syncLike(it.id);
+        if (window.MCC_HEAT) { window.MCC_HEAT.bump(it.id); setTimeout(paintHeat, 900); } // the play joins the heat
         if (window.MCC_TRACK) window.MCC_TRACK("app_play", { item: it.id });
       }
       function playId(id) {

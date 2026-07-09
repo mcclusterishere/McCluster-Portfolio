@@ -372,11 +372,13 @@
     window.MCC_NP_PAUSE = function () { if (playing) playBtn.click(); };
     announceNP();
 
+    var heatBumped = false; // one play per visit feeds the chart, not every pause-toggle
     playBtn.addEventListener("click", function () {
       playing = !playing;
       if (playing) {
         audio.play().catch(function () {});
         track("song_start", { song: window.SONG.key, page: "song", at_seconds: Math.round(audio.currentTime) });
+        if (!heatBumped && window.MCC_HEAT) { heatBumped = true; window.MCC_HEAT.bump(window.SONG.key); }
       } else {
         audio.pause();
         track("song_stop", { song: window.SONG.key, page: "song", at_seconds: Math.round(audio.currentTime) });
