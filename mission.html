@@ -143,6 +143,10 @@
         <p class="mc__empty" style="margin-bottom:0.8rem">Every claim here is someone who stacked the credit and paid
           the house — the prize is now a booking you owe. Claimed → booked → done.</p>
         <div id="mcHouse"><p class="mc__empty">Loading…</p></div>
+        <h2 style="margin-top:1.4rem">Cash-outs — earned credit leaving</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem">Only EARNED credit reaches this queue (the ledger enforces it).
+          Pay = you send the dollars through their card rail, then mark it. Deny refunds the hold automatically.</p>
+        <div id="mcCashouts"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
@@ -216,7 +220,24 @@
       function wireActs(container, apply) {
         container.querySelectorAll("[data-kind]").forEach(function (b) {
           b.addEventListener("click", function () {
-            apply(b.getAttribute("data-id"), b.getAttribute("data-to")).then(loadAll);
+            var old = b.textContent;
+            b.textContent = "…";
+            apply(b.getAttribute("data-id"), b.getAttribute("data-to")).then(function (rows) {
+              // representation comes back: zero rows means the database
+              // quietly declined it — that silence gets a voice now
+              if (Array.isArray(rows) && rows.length === 0) throw new Error("the database declined it — admin policy or a stale row");
+              loadAll();
+            }).catch(function (e) {
+              b.textContent = old;
+              var row = b.closest(".mc__row");
+              if (row && !row.querySelector("[data-actfail]")) {
+                var p = document.createElement("p");
+                p.setAttribute("data-actfail", "1");
+                p.style.cssText = "color:var(--ruby-hot);font-size:0.78rem;margin-top:0.4rem";
+                p.textContent = "✗ " + String(e && e.message || e);
+                row.appendChild(p);
+              }
+            });
           });
         });
       }
@@ -383,6 +404,22 @@
         wireActs(el, function (id, to) { return A.setHouseClaim(id, to); });
       }
 
+      function paintCashouts(rows) {
+        var el = $("mcCashouts");
+        if (!el) return;
+        if (rows === null) { el.innerHTML = "<p class='mc__empty'>The queue needs one paste: docs/reserve-schema.sql.</p>"; return; }
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nobody cashing out yet.</p>"; return; }
+        el.innerHTML = rows.map(function (c) {
+          return '<div class="mc__row' + (c.status === "requested" ? " is-hot" : "") + '"><div>' +
+            "<b>" + (+c.amount).toFixed(2) + " E⤴\uFE0E → $" + (+c.amount).toFixed(2) + "</b>" +
+            "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>claimant " + esc(String(c.owner).slice(0, 8)) +
+            " · " + esc(new Date(c.at).toLocaleString()) + " · " + esc(c.status) + "</p></div>" +
+            rowActs("cashout", c.id, c.status === "requested"
+              ? [["paid", "Paid — dollars sent", "btn--ruby"], ["denied", "Deny (auto-refunds)"]] : []) + "</div>";
+        }).join("");
+        wireActs(el, function (id, to) { return A.setCashout(id, to); });
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -394,12 +431,14 @@
           A.events ? A.events().catch(function () { return null; }) : Promise.resolve(null),
           A.intake ? A.intake().catch(function () { return null; }) : Promise.resolve(null),
           A.house ? A.house().catch(function () { return null; }) : Promise.resolve(null),
+          A.cashouts ? A.cashouts().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
           paintAnalytics(r[6]);
           paintIntake(r[7]);
           paintHouse(r[8]);
+          paintCashouts(r[9]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";

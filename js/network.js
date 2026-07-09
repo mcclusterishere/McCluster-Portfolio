@@ -148,7 +148,7 @@
       });
     },
     setRequestStatus: function (id, status) {
-      return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+      return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
     },
 
     /* the Collab Room: propositions between the network's artists.
@@ -240,27 +240,31 @@
       setListing: function (id, status, note) {
         var body = { status: status };
         if (note !== undefined) body.review_note = note;
-        return authed("providers?id=eq." + id, { method: "PATCH", body: body, prefer: "return=minimal" });
+        return authed("providers?id=eq." + id, { method: "PATCH", body: body, prefer: "return=representation" });
       },
       deals: function () { return authed("deals?order=updated_at.desc&select=*"); },
       grind: function () { return authed("device_state?select=owner,model,updated_at&order=updated_at.desc"); },
       requests: function () { return authed("booking_requests?order=created_at.desc&select=*"); },
       setRequest: function (id, status) {
-        return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+        return authed("booking_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
       },
       members: function () { return authed("members?order=created_at.desc&select=*"); },
       setMember: function (id, status) {
-        return authed("members?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+        return authed("members?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
       events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid&limit=" + (limit || 1500)); },
       intake: function () { return authed("intake?order=at.desc&select=*&limit=200"); },
       house: function () { return authed("house_claims?order=at.desc&select=*,house_offers(title,price)"); },
+      cashouts: function () { return authed("cashout_requests?order=at.desc&select=*&limit=100"); },
+      setCashout: function (id, status) {
+        return authed("cashout_requests?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
+      },
       setHouseClaim: function (id, status) {
-        return authed("house_claims?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+        return authed("house_claims?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
       },
       setIntake: function (id, status) {
-        return authed("intake?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=minimal" });
+        return authed("intake?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
       },
     },
   };

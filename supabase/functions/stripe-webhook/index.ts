@@ -24,19 +24,36 @@ Deno.serve(async (req) => {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
+    const H = {
+      apikey: SB_KEY,
+      Authorization: `Bearer ${SB_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    };
+
+    // a paid deal flips itself
     const dealId = session.metadata?.deal_id;
     if (dealId) {
       const r = await fetch(`${SB_URL}/rest/v1/deals?id=eq.${dealId}`, {
-        method: "PATCH",
-        headers: {
-          apikey: SB_KEY,
-          Authorization: `Bearer ${SB_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
-        },
-        body: JSON.stringify({ status: "paid" }),
+        method: "PATCH", headers: H, body: JSON.stringify({ status: "paid" }),
       });
       if (!r.ok) console.error("deal flip failed", dealId, r.status);
+    }
+
+    // an E-Up purchase mints — dollars in the reserve first, credit second.
+    // unique (owner, ref, reason) makes a replayed webhook mint nothing twice.
+    if (session.metadata?.kind === "eup" && session.metadata?.uid) {
+      const amt = Math.round(Number(session.metadata.amount || 0) * 100) / 100;
+      if (amt > 0) {
+        const r2 = await fetch(`${SB_URL}/rest/v1/mtoken_ledger`, {
+          method: "POST", headers: H,
+          body: JSON.stringify({
+            owner: session.metadata.uid, delta: amt,
+            reason: "purchase", ref: session.id,
+          }),
+        });
+        if (!r2.ok && r2.status !== 409) console.error("mint failed", session.id, r2.status);
+      }
     }
   }
   return new Response("ok");

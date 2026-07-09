@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Equity Reserve · E-Up · McCluster</title>
+  <meta name="description" content="The Equity Reserve, in public: every E-Up credit outstanding, what's earned and redeemable, and the dollars attested behind it. Don't trust — verify.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .rv { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 9rem; max-width: 44rem; margin: 0 auto; }
+    .rv h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.6rem, 11vw, 4.6rem); }
+    .rv__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; max-width: 52ch; }
+    .rv__sub b { color: var(--cream); }
+    .rv__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7rem; margin: 1.6rem 0; }
+    .rv__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 14px; background: rgba(20,16,14,0.6); padding: 1rem 1.1rem; }
+    .rv__stat b { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+    .rv__stat small { color: var(--cream-dim); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .rv__law { border-left: 3px solid #c99d45; padding: 0.2rem 0 0.2rem 1rem; margin: 1.6rem 0; color: var(--cream-dim); line-height: 1.7; font-size: 0.9rem; }
+    .rv__law b { color: var(--cream); }
+    .rv__fine { font-size: 0.74rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.8rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="market.html">The Market</a><a href="house.html">The House</a></nav>
+  </header>
+
+  <main class="rv">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> E-Up · don't trust — verify</p>
+    <h1>The Equity<br>Reserve.</h1>
+    <p class="rv__sub"><b>1 E⤴︎ = $1, forever.</b> Nothing mints unbacked: purchases mint against dollars in,
+      work mints against the platform's collected spread, and every dollar the platform makes feeds this reserve.
+      No bank publishes its books like this. The house does.</p>
+
+    <div class="rv__grid" id="rvGrid"><div class="rv__stat"><b>…</b><small>opening the books</small></div></div>
+
+    <div class="rv__law">
+      <b>The two colors, one law:</b> credit <b>earned</b> by work — deals completed, bounties delivered,
+      services rendered — can cash out to dollars; that is the platform paying for work. Credit
+      <b>purchased or gifted</b> spends anywhere in the loop and stays in the loop. The ledger enforces
+      the line; no button can cross it.
+    </div>
+
+    <p class="rv__fine">Reserve dollars are attested by the operator from the platform's bank and Stripe balances
+      and updated with the books above. E-Up credit is closed-loop platform credit under the Equity Uprise
+      nonprofit — not a deposit, not a security, not a floating asset. Coverage means attested dollars ÷
+      earned-redeemable credit outstanding.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var S = window.MCC_SUPA;
+      fetch(S.url + "/rest/v1/rpc/reserve_stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+        body: "{}",
+      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        var g = document.getElementById("rvGrid");
+        if (!j) { g.innerHTML = '<div class="rv__stat"><b>—</b><small>the books open after one paste: docs/reserve-schema.sql</small></div>'; return; }
+        var redeemable = Math.max(0, (+j.earned_minted || 0) - (+j.redeemed_paid || 0) - (+j.pending_cashouts || 0));
+        var cover = redeemable > 0 ? ((+j.reserve_dollars || 0) / redeemable) * 100 : null;
+        function stat(n, l) { return '<div class="rv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+        g.innerHTML =
+          stat((+j.outstanding || 0).toFixed(0) + " E⤴︎", "outstanding, all colors") +
+          stat((+j.earned_minted || 0).toFixed(0) + " E⤴︎", "minted by real work") +
+          stat((+j.purchased_minted || 0).toFixed(0) + " E⤴︎", "purchased — dollars in the vault") +
+          stat((+j.granted_minted || 0).toFixed(0) + " E⤴︎", "granted — beta &amp; bonuses, never redeemable") +
+          stat("$" + (+j.redeemed_paid || 0).toFixed(0), "paid out for work, lifetime") +
+          stat("$" + (+j.reserve_dollars || 0).toFixed(0), "reserve attested" + (j.attested_at ? " · " + new Date(j.attested_at).toLocaleDateString() : "")) +
+          (cover === null ? stat("∞", "coverage — nothing owed yet") : stat(cover.toFixed(0) + "%", "coverage of redeemable"));
+      }).catch(function () {});
+      if (window.MCC_TRACK) window.MCC_TRACK("reserve_view", {});
+    })();
+  </script>
+</body>
+</html>
