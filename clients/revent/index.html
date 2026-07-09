@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Revent Space — Boston's home for community, events &amp; wellness</title>
+  <meta name="description" content="Revent Space, Dorchester: a furnished event room and a natural-light work lounge for the Greater Boston community. Pop-ups, seminars, showers, open mics — book by the window.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="../../assets/clients/revent/img/cropped-Revent_Space_Logo_PNG.png">
+  <style>
+    @font-face {
+      font-family: "Anton";
+      src: url("../../assets/fonts/anton-latin-400-normal.woff2") format("woff2");
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    :root {
+      --lime: #c3d021; --lime-deep: #98a30f; --ink: #1c2413; --ink-soft: #45503a;
+      --cream: #fdfcf7; --card: #ffffff; --wood: #c99b62;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--cream); color: var(--ink); line-height: 1.6; }
+    img { max-width: 100%; display: block; }
+    .disp { font-family: "Anton", Impact, sans-serif; font-weight: 400; text-transform: uppercase; line-height: 0.98; letter-spacing: 0.01em; }
+
+    .wrap { max-width: 68rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.4rem); }
+
+    /* header */
+    .top { position: sticky; top: 0; z-index: 50; background: rgba(253, 252, 247, 0.92); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(28, 36, 19, 0.08); }
+    .top__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.65rem clamp(1rem, 4vw, 2.4rem); max-width: 68rem; margin: 0 auto; }
+    .top__brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--ink); }
+    .top__brand img { width: 44px; height: 44px; }
+    .top__brand b { font-size: 1.02rem; letter-spacing: 0.04em; }
+    .top__nav { display: flex; align-items: center; gap: clamp(0.7rem, 2.5vw, 1.4rem); }
+    .top__nav a { color: var(--ink-soft); text-decoration: none; font-size: 0.86rem; font-weight: 600; }
+    .top__nav a:hover { color: var(--ink); }
+    .top__nav a.cta { background: var(--ink); color: var(--cream); border-radius: 100px; padding: 0.6em 1.3em; font-weight: 700; }
+    .top__nav a.cta:hover { background: var(--lime-deep); color: #fff; }
+    @media (max-width: 700px) { .top__nav a:not(.cta) { display: none; } }
+
+    /* hero */
+    .hero { position: relative; }
+    .hero__img { height: min(78vh, 40rem); overflow: hidden; }
+    .hero__img img { width: 100%; height: 100%; object-fit: cover; }
+    .hero__card { position: relative; margin: -5.5rem auto 0; max-width: 46rem; background: var(--card);
+      border-radius: 22px; box-shadow: 0 24px 70px rgba(28, 36, 19, 0.16); padding: 2rem clamp(1.2rem, 4vw, 2.6rem) 2.2rem; text-align: center; }
+    .hero__kick { color: var(--lime-deep); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    .hero__card h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); margin: 0.35rem 0 0.6rem; }
+    .hero__card h1 em { font-style: normal; color: var(--lime-deep); }
+    .hero__card p { color: var(--ink-soft); font-size: 1.05rem; max-width: 34rem; margin: 0 auto; }
+    .btnrow { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; margin-top: 1.3rem; }
+    .btn { display: inline-block; text-decoration: none; border-radius: 100px; padding: 0.9em 1.7em; font-weight: 800; font-size: 0.95rem; }
+    .btn--go { background: var(--lime); color: var(--ink); box-shadow: 0 10px 26px rgba(152, 163, 15, 0.35); }
+    .btn--go:hover { background: var(--lime-deep); color: #fff; }
+    .btn--ghost { border: 2px solid rgba(28, 36, 19, 0.2); color: var(--ink); }
+    .btn--ghost:hover { border-color: var(--ink); }
+
+    /* section scaffolding */
+    section { padding: clamp(3rem, 8vw, 5rem) 0; }
+    .kick { color: var(--lime-deep); font-weight: 800; font-size: 0.76rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    h2.disp { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0.3rem 0 0.8rem; }
+    .lead { color: var(--ink-soft); max-width: 38rem; }
+
+    /* the two rooms */
+    .rooms { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(min(21rem, 100%), 1fr)); margin-top: 2rem; }
+    .room { background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: 0 14px 44px rgba(28, 36, 19, 0.1);
+      display: flex; flex-direction: column; }
+    .room__img { aspect-ratio: 16/10; overflow: hidden; }
+    .room__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .room:hover .room__img img { transform: scale(1.04); }
+    .room__body { padding: 1.4rem 1.5rem 1.6rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .room__body h3 { font-size: 1.35rem; }
+    .room__body p { color: var(--ink-soft); font-size: 0.95rem; flex: 1; }
+    .room__facts { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.3rem 0 0.6rem; }
+    .room__fact { background: rgba(195, 208, 33, 0.16); border: 1px solid rgba(152, 163, 15, 0.35); color: var(--ink);
+      font-size: 0.74rem; font-weight: 700; border-radius: 100px; padding: 0.35em 0.9em; }
+    .room__body .btn { align-self: flex-start; }
+
+    /* included band */
+    .band { background: var(--ink); color: var(--cream); }
+    .band .kick { color: var(--lime); }
+    .band h2 { color: #fff; }
+    .inc { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.9rem; margin-top: 1.8rem; }
+    .inc div { border: 1px solid rgba(253, 252, 247, 0.16); border-radius: 14px; padding: 1rem; }
+    .inc b { display: block; font-size: 1.02rem; color: var(--lime); }
+    .inc small { color: rgba(253, 252, 247, 0.75); font-size: 0.78rem; }
+
+    /* hosts */
+    .uses { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.6rem; }
+    .use { background: var(--card); border: 1px solid rgba(28, 36, 19, 0.12); border-radius: 100px;
+      padding: 0.55em 1.2em; font-weight: 700; font-size: 0.88rem; box-shadow: 0 4px 14px rgba(28, 36, 19, 0.06); }
+
+    /* gallery */
+    .gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: 0.8rem; margin-top: 1.8rem; }
+    .gal figure { border-radius: 16px; overflow: hidden; aspect-ratio: 4/5; }
+    .gal img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .gal figure:hover img { transform: scale(1.05); }
+    .credit { margin-top: 0.8rem; color: var(--ink-soft); font-size: 0.78rem; }
+
+    /* virtual office */
+    .vo { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); margin-top: 1.8rem; }
+    .vo div { background: var(--card); border-radius: 16px; padding: 1.3rem 1.4rem; box-shadow: 0 10px 30px rgba(28, 36, 19, 0.08); }
+    .vo b { font-size: 1.05rem; }
+    .vo p { color: var(--ink-soft); font-size: 0.9rem; margin-top: 0.3rem; }
+
+    /* visit / book */
+    .visit { background: linear-gradient(160deg, rgba(195, 208, 33, 0.2), rgba(195, 208, 33, 0.05)); }
+    .visit__grid { display: grid; gap: 1.6rem; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); align-items: center; margin-top: 1.4rem; }
+    .visit__facts p { margin: 0.45rem 0; font-size: 1rem; }
+    .visit__facts b { display: inline-block; min-width: 6.4rem; color: var(--lime-deep); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .visit__map { border-radius: 18px; overflow: hidden; aspect-ratio: 16/10; }
+    .visit__map img { width: 100%; height: 100%; object-fit: cover; }
+
+    footer { padding: 2.2rem 0 3rem; border-top: 1px solid rgba(28, 36, 19, 0.1); }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+    footer p { color: var(--ink-soft); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top__in">
+      <a class="top__brand" href="#top">
+        <img src="../../assets/clients/revent/img/cropped-Revent_Space_Logo_PNG.png" alt="Revent Space logo">
+        <b>REVENT SPACE</b>
+      </a>
+      <nav class="top__nav">
+        <a href="#rooms">The Rooms</a>
+        <a href="#hosts">Events</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#office">Virtual Office</a>
+        <a class="cta" href="../../spaces.html?who=revent-space">Book Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div class="hero__img">
+        <img src="../../assets/clients/revent/img/Home.jpeg" alt="Inside Revent Space — a bright, furnished community room in Dorchester" fetchpriority="high">
+      </div>
+      <div class="wrap">
+        <div class="hero__card">
+          <p class="hero__kick">Dorchester · Boston, MA</p>
+          <h1 class="disp">RE<em>in</em>VENTING<br>Community.</h1>
+          <p>Boston's professional hub for health, wellness, and the people building something —
+            a furnished event room and a natural-light work lounge, ready when you are.</p>
+          <div class="btnrow">
+            <a class="btn btn--go" href="../../spaces.html?who=revent-space">Book the space</a>
+            <a class="btn btn--ghost" href="#rooms">See the rooms</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="rooms">
+      <div class="wrap">
+        <p class="kick">Two rooms · one address</p>
+        <h2 class="disp">Space to make your greatest impact.</h2>
+        <p class="lead">Every rental comes set — tables, chairs, sound, screen, and lighting are already in the room, so your budget goes to the moment, not the rental truck.</p>
+        <div class="rooms">
+          <article class="room">
+            <div class="room__img"><img src="../../assets/clients/revent/img/w1.jpg" alt="The event room dressed for a celebration — gold chiavari chairs and uplighting" loading="lazy"></div>
+            <div class="room__body">
+              <h3>The Event Space</h3>
+              <div class="room__facts">
+                <span class="room__fact">48 guests</span><span class="room__fact">32 seated</span>
+                <span class="room__fact">10am–midnight</span><span class="room__fact">Furnished</span>
+              </div>
+              <p>Brunches, showers, book signings, seminars, private dinners, open mics — the room dresses up or down and the house handles the setup.</p>
+              <a class="btn btn--go" href="../../spaces.html?who=revent-space">Check dates &amp; book</a>
+            </div>
+          </article>
+          <article class="room">
+            <div class="room__img"><img src="../../assets/clients/revent/img/Home-2-3.jpeg" alt="The floral backdrop wall in natural light — a favorite for photo sessions" loading="lazy"></div>
+            <div class="room__body">
+              <h3>The Work Lounge &amp; Photo Studio</h3>
+              <div class="room__facts">
+                <span class="room__fact">1,200 sq ft</span><span class="room__fact">Natural light</span>
+                <span class="room__fact">15-seat conference</span><span class="room__fact">WiFi</span>
+              </div>
+              <p>Photographers book it for the light. Founders book it for the focus. Whiteboard, grass wall, big display, and coffee-shop calm — without the coffee-shop noise.</p>
+              <a class="btn btn--go" href="../../spaces.html?who=revent-lounge">Book a session</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <p class="kick">Your rental includes</p>
+        <h2 class="disp">The room comes ready.</h2>
+        <div class="inc">
+          <div><b>Tables &amp; chairs</b><small>Set for your headcount</small></div>
+          <div><b>65&Prime; smart TV</b><small>Slides, menus, the game</small></div>
+          <div><b>Microphone</b><small>Say it to the whole room</small></div>
+          <div><b>Speakers</b><small>The soundtrack, handled</small></div>
+          <div><b>LED color lighting</b><small>The room matches your theme</small></div>
+          <div><b>WiFi</b><small>Fast, included, everywhere</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hosts">
+      <div class="wrap">
+        <p class="kick">What the room hosts</p>
+        <h2 class="disp">Bring the people.</h2>
+        <div class="uses">
+          <span class="use">Pop-up shops</span><span class="use">Seminars</span><span class="use">Brunches</span>
+          <span class="use">Book signings</span><span class="use">Baby showers</span><span class="use">Birthdays</span>
+          <span class="use">Private dinners</span><span class="use">Church services &amp; Bible study</span>
+          <span class="use">Fashion shows</span><span class="use">Open mics</span><span class="use">Networking events</span>
+          <span class="use">Photo sessions</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <div class="wrap">
+        <p class="kick">From real events in the room</p>
+        <h2 class="disp">The proof, in pictures.</h2>
+        <div class="gal">
+          <figure><img src="../../assets/clients/revent/img/22.jpg" alt="Gold sequin dessert table under a white floral installation" loading="lazy"></figure>
+          <figure><img src="../../assets/clients/revent/img/33333.jpg" alt="Styled dessert table with cake and cupcakes in natural light" loading="lazy"></figure>
+          <figure><img src="../../assets/clients/revent/img/home-2.jpeg" alt="Blush velvet tablescape with gold beaded chargers" loading="lazy"></figure>
+          <figure><img src="../../assets/clients/revent/img/Home-5.jpeg" alt="Safari-theme first birthday with balloon arch" loading="lazy"></figure>
+        </div>
+        <p class="credit">Photography from events hosted at Revent Space · select images by Davidson Photography.</p>
+      </div>
+    </section>
+
+    <section id="office">
+      <div class="wrap">
+        <p class="kick">Beyond the room</p>
+        <h2 class="disp">A business address that works as hard as you.</h2>
+        <p class="lead">Revent's virtual office membership gives your business a real Boston address and a community behind it.</p>
+        <div class="vo">
+          <div><b>Protect your home address</b><p>Your business gets 413 Neponset Ave — your home stays yours.</p></div>
+          <div><b>Little to no overhead</b><p>An address, meeting space, and event access without a lease.</p></div>
+          <div><b>Space when you need it</b><p>Host workshops, pop-ups, and client meetings in your own building.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="visit">
+      <div class="wrap">
+        <p class="kick">Come see it</p>
+        <h2 class="disp">Book by the window.</h2>
+        <div class="visit__grid">
+          <div class="visit__facts">
+            <p><b>Where</b> 413 Neponset Ave, 1st Floor · Dorchester, MA 02122</p>
+            <p><b>Hours</b> Bookable 10am to midnight, seven days</p>
+            <p><b>Phone</b> <a href="tel:16175061594" style="color:inherit">617-506-1594</a></p>
+            <p><b>Email</b> <a href="mailto:info@reventboston.com" style="color:inherit">info@reventboston.com</a></p>
+            <div class="btnrow" style="justify-content:flex-start">
+              <a class="btn btn--go" href="../../spaces.html?who=revent-space">Pick a date &amp; window</a>
+            </div>
+          </div>
+          <div class="visit__map">
+            <img src="../../assets/clients/revent/img/Home.jpeg" alt="Inside the space" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p><b>Revent Space</b> · REinVENTing community in Dorchester.</p>
+      <p>Concept rebuild prepared for Revent Space — booking demo powered by the M Network.</p>
+    </div>
+  </footer>
+</body>
+</html>
