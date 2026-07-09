@@ -54,3 +54,32 @@ show a living market without leaking a single private dollar.
 All weights live at the top of `js/mworth.js` (`DEAL_W`, and the
 constants in `appraise`). Change them there; this document is the
 contract for what each knob means.
+
+---
+
+## The staging model — M-GRIND (`js/mgrind.js`)
+
+Two models, one destiny: **M-GRIND runs now** and prices *interaction*;
+**M-WORTH** is the deep book priced on money and record. Every grind
+event leaves through the analytics pipe tagged `model: grind_v1` with
+its **device id** — that exhaust is the training set for the live
+model, and the grind score already feeds the live book as a small
+`behavior` input (capped $50).
+
+| Grind mechanic | Effect |
+|---|---|
+| Fulfilled task | **+1%** each, max **3 counted/day** (board offers 6 — you can't clear it in a day) |
+| Login streak | +0.25%/consecutive day, cap +5% |
+| Idle day | **−1%** each, floor −10%; engagement score bleeds 4%/idle day |
+| Hard clamp | net bend held to **[−10%, +8%]**, applied to the *staged* price only |
+
+Money outweighs the grind ~10× by construction: the grind bends inside
+a capped band while labor dollars are uncapped in the true book.
+
+**Devices are instruments.** Each device mints a permanent
+`mcc_device_id` and keeps its own ledger; the account is the sum of
+its devices, and training data keeps them apart.
+
+**The behavior variables in the live book** (v2): sessions (×$2, cap
+$100), read-depth (×$20, cap $60), devices (×$15, cap $45), grind
+score (×$0.05, cap $50).

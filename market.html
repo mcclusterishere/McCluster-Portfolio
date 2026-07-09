@@ -416,6 +416,7 @@
   </footer>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
@@ -1045,7 +1046,7 @@
            The inputs are RLS-locked to you, so this number physically
            cannot be computed for anyone else's account. */
         if (window.MCC_WORTH && window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
-          Promise.all([window.MCC_NET.myListing().catch(function () { return null; }), window.MCC_WORTH.mine().catch(function () { return null; })])
+          Promise.all([window.MCC_NET.myListing().catch(function () { return null; }), (window.MCC_WORTH.staged || window.MCC_WORTH.mine)().catch(function () { return null; })])
             .then(function (r) {
               var mine = r[0], w = r[1];
               if (!mine || !w) return;

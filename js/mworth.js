@@ -88,6 +88,16 @@
     var stage = 0;
     performances.forEach(function (p) { stage += decay(120, p.performed_at || p.created_at, 90); });
 
+    // v2 live-model variables: site behavior and the devices themselves.
+    // Small weights on purpose — money keeps its 10× standing.
+    var behavior = 0;
+    if (inp.behavior) {
+      behavior += Math.min(100, (inp.behavior.sessions || 0) * 2);   // showing up
+      behavior += Math.min(60, (inp.behavior.depth || 0) * 20);      // how deep they read
+      behavior += Math.min(45, (inp.behavior.devices || 0) * 15);    // instruments on the account
+      behavior += Math.min(50, (inp.behavior.grindE || 0) * 0.05);   // staging-model score feeds the live book
+    }
+
     // momentum: this week against this month
     var wk = 0, mo = 0;
     function bump(t) {
@@ -100,19 +110,19 @@
     performances.forEach(function (p) { bump(p.created_at); });
     var momentum = mo === 0 ? 0.85 : Math.min(1.25, 0.85 + (wk / mo) * 0.4 + mo * 0.01);
 
-    var worth = (seat + labor + demand + stage) * momentum;
+    var raw = seat + labor + demand + stage + behavior;
+    var worth = raw * momentum;
 
-    return {
-      worth: +worth.toFixed(2),
-      momentum: +momentum.toFixed(3),
-      breakdown: [
-        { label: "The seat — listing live & dressed", dollars: +seat.toFixed(2) },
-        { label: "Labor — money on the record", dollars: +labor.toFixed(2) },
-        { label: "Demand — who's knocking", dollars: +demand.toFixed(2) },
-        { label: "The stage — shows logged", dollars: +stage.toFixed(2) },
-        { label: "Momentum ×" + momentum.toFixed(2), dollars: +(worth - (seat + labor + demand + stage)).toFixed(2) },
-      ],
-    };
+    var rows = [
+      { label: "The seat — listing live & dressed", dollars: +seat.toFixed(2) },
+      { label: "Labor — money on the record", dollars: +labor.toFixed(2) },
+      { label: "Demand — who's knocking", dollars: +demand.toFixed(2) },
+      { label: "The stage — shows logged", dollars: +stage.toFixed(2) },
+    ];
+    if (inp.behavior) rows.push({ label: "Behavior — sessions, depth, devices", dollars: +behavior.toFixed(2) });
+    rows.push({ label: "Momentum ×" + momentum.toFixed(2), dollars: +(worth - raw).toFixed(2) });
+
+    return { worth: +worth.toFixed(2), momentum: +momentum.toFixed(3), breakdown: rows };
   }
 
   /* the owner's number: gathers the private books and appraises */
@@ -134,5 +144,21 @@
     });
   }
 
-  window.MCC_WORTH = { appraise: appraise, mine: mine, completeness: completeness };
+  /* the STAGED price: the true book bent by the grind (the staging
+     model). The bend is hard-capped in mgrind, so labor stays ~10×. */
+  function staged() {
+    return mine().then(function (w) {
+      var b = (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0;
+      var sw = +(w.worth * (1 + b / 100)).toFixed(2);
+      return {
+        worth: sw, base: w.worth, boost: b, momentum: w.momentum,
+        breakdown: w.breakdown.concat([{
+          label: "The grind — showing up (" + (b >= 0 ? "+" : "") + b + "% today)",
+          dollars: +(sw - w.worth).toFixed(2),
+        }]),
+      };
+    });
+  }
+
+  window.MCC_WORTH = { appraise: appraise, mine: mine, staged: staged, completeness: completeness };
 })();

@@ -118,6 +118,7 @@
   </main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
@@ -192,10 +193,25 @@
             window.MCC_STOCK.mount($("pfStock"), data);
             // the true number — computed from your own books, shown to you alone
             if (window.MCC_WORTH) {
+              var beh = { devices: 1 };
+              try {
+                if (window.MCC_MODEL) {
+                  var prof = window.MCC_MODEL.profile();
+                  beh.depth = { surface: 1, warm: 2, deep: 3 }[prof.depth] || 1;
+                  beh.sessions = prof.visits || 0;
+                }
+                if (window.MCC_GRIND) beh.grindE = window.MCC_GRIND.state().E || 0;
+              } catch (e) {}
               var w = window.MCC_WORTH.appraise({
                 uid: window.MCC_SUPA.uid(),
                 listing: res.mine, deals: res.rows, requests: r[0], performances: r[1],
+                behavior: beh,
               });
+              // the staging model bends the number the member watches
+              var gb = (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0;
+              var sw = +(w.worth * (1 + gb / 100)).toFixed(2);
+              w.breakdown.push({ label: "The grind — showing up (" + (gb >= 0 ? "+" : "") + gb + "% today)", dollars: +(sw - w.worth).toFixed(2) });
+              w.worth = sw;
               $("pfWorthN").textContent = "$" + w.worth.toLocaleString();
               $("pfWorthRows").innerHTML = w.breakdown.map(function (b) {
                 return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.84rem;' +
