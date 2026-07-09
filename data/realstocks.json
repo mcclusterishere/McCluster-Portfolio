@@ -1,0 +1,11 @@
+{
+  "updated": null,
+  "note": "Real markets, our record: public companies the platform has actual dealings with. Prices land via the market-sweep workflow (tools/fetch-stocks.mjs) — never typed by hand.",
+  "rows": [
+    { "sym": "SOAR.US", "label": "SOAR", "name": "Volato Group", "note": "the jet program on our Vaunt record", "price": null, "chg": null, "series": [] },
+    { "sym": "XYZ.US", "label": "XYZ", "name": "Block (Square)", "note": "the first card rail we ran", "price": null, "chg": null, "series": [] },
+    { "sym": "GOOGL.US", "label": "GOOGL", "name": "Alphabet", "note": "the analytics + YouTube pipes", "price": null, "chg": null, "series": [] },
+    { "sym": "SPOT.US", "label": "SPOT", "name": "Spotify", "note": "where the streams live", "price": null, "chg": null, "series": [] },
+    { "sym": "AAPL.US", "label": "AAPL", "name": "Apple", "note": "Apple Music, the other console", "price": null, "chg": null, "series": [] }
+  ]
+}
