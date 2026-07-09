@@ -84,7 +84,11 @@
       if (!seq.ready && seq.poster) seq.drawImg(seq.poster);
     };
     seq.draw = function (i) {
-      if (seq.drawImg(seq.frames[i])) seq.lastDrawn = i;
+      // on the half-density mobile diet some frames are deliberately absent —
+      // step down to the nearest one that exists so the film never blinks
+      var j = i;
+      while (j > 0 && !seq.frames[j]) j--;
+      if (seq.drawImg(seq.frames[j])) seq.lastDrawn = i;
     };
     seq.fallback = function () {
       var fb = document.getElementById(fallbackId);
@@ -132,13 +136,26 @@
     });
   });
 
+  // THE MOBILE DIET: small screens stream every 2nd frame. The scrub's lerp
+  // smooths a 10fps step exactly like a 20fps one, the draw() fallback holds
+  // the nearest loaded frame, and the phone downloads half the film.
+  var FRAME_STEP = window.matchMedia("(max-width: 768px)").matches ? 2 : 1;
+
   function loadSequence(seq, name, count, onProgress) {
     seq.count = count;
     return new Promise(function (resolve) {
       var loaded = 0;
       var flags = new Array(count);
+      var wanted = 0;
+      for (var w = 1; w <= count; w++) if ((w - 1) % FRAME_STEP === 0 || w === count) wanted++;
       for (var i = 1; i <= count; i++) {
         (function (i) {
+          // skipped frames count as arrived instantly — the gate math holds
+          if ((i - 1) % FRAME_STEP !== 0 && i !== count) {
+            flags[i - 1] = true;
+            while (seq.loadedMax + 1 < count && flags[seq.loadedMax + 1]) seq.loadedMax++;
+            return;
+          }
           var img = new Image();
           img.src = "assets/frames/" + name + "_" + pad4(i) + ".jpg";
           img.onload = img.onerror = function () {
@@ -149,8 +166,8 @@
               seq.ready = true;
               seq.draw(0);
             }
-            if (onProgress) onProgress(loaded / count);
-            if (loaded === count) resolve();
+            if (onProgress) onProgress(loaded / wanted);
+            if (loaded === wanted) resolve();
           };
           seq.frames[i - 1] = img;
         })(i);
