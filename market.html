@@ -116,6 +116,85 @@
       font-size: 0.8rem; color: var(--cream-dim); line-height: 1.6; }
     .cr__limits b { color: var(--cream); }
 
+    /* ============ THE FLOOR: a live exchange that doesn't sleep ============
+       Robinhood grammar: black glass, tabular numbers, green up / red down,
+       thin dividers, the chart IS the decoration. */
+    .xc { --up: #00c805; --dn: #ff5000; font-variant-numeric: tabular-nums; }
+    .xc__tape { overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(244,239,230,0.09);
+      border-bottom: 1px solid rgba(244,239,230,0.09); padding: 0.5rem 0; margin-top: 1.3rem;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+    .xc__tape-in { display: inline-block; animation: xcTape 38s linear infinite; }
+    .xc__tape span { display: inline-block; margin-right: 2.2rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; }
+    .xc__tape small { color: var(--cream-dim); font-weight: 600; margin-right: 0.45em; }
+    .xc__tape .up { color: var(--up); } .xc__tape .down { color: var(--dn); }
+    @keyframes xcTape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .xc__tape-in { animation: none; } }
+
+    .xc__index { padding: 1.5rem 0 0.4rem; }
+    .xc__index small { display: block; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; }
+    .xc__index b { display: block; font-size: clamp(2.4rem, 8vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+    .xc__index .xc__chg { font-size: 0.95rem; font-weight: 800; }
+    .xc__chg.up { color: var(--up); } .xc__chg.down { color: var(--dn); }
+    .xc__indexchart { width: 100%; height: 130px; display: block; margin-top: 0.6rem; }
+    .xc__live { display: inline-flex; align-items: center; gap: 0.45em; font-size: 0.64rem; font-weight: 800;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--up); }
+    .xc__live i { width: 7px; height: 7px; border-radius: 50%; background: var(--up); animation: xcPulse 1.6s ease-in-out infinite; }
+    @keyframes xcPulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,200,5,0.5); } 50% { opacity: 0.5; box-shadow: 0 0 0 6px rgba(0,200,5,0); } }
+
+    .xc__acct { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1rem 0 0.4rem; }
+    .xc__acct .btn { font-size: 0.78rem; }
+    .btn--xc, button.btn--xc, a.btn--xc { background: var(--up) !important; color: #04130a !important; border: 0 !important; font-weight: 800; }
+    .xc button.btn--ghost, .xc__sheet .btn--ghost, .xc__biz .btn--ghost {
+      background: rgba(16, 18, 17, 0.7) !important; color: var(--cream) !important;
+      border: 1px solid rgba(244, 239, 230, 0.28) !important; }
+    .btn--xc:hover { background: #00e005; }
+
+    .xc__list { margin-top: 0.8rem; }
+    .xc__row { display: flex; align-items: center; gap: 0.8rem; width: 100%; text-align: left;
+      background: none; border: 0; border-bottom: 1px solid rgba(244,239,230,0.07); color: var(--cream);
+      font: inherit; font-variant-numeric: tabular-nums; padding: 0.85rem 0.2rem; cursor: pointer;
+      transition: background 0.4s; }
+    .xc__row:hover { background: rgba(244,239,230,0.035); }
+    .xc__row.is-tick-up { background: rgba(0,200,5,0.09); transition: background 0.15s; }
+    .xc__row.is-tick-dn { background: rgba(255,80,0,0.09); transition: background 0.15s; }
+    .xc__id { flex: 1; min-width: 0; }
+    .xc__id b { display: block; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.02em; }
+    .xc__id small { display: block; color: var(--cream-dim); font-size: 0.74rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .xc__spark { flex: none; width: 96px; height: 34px; }
+    .xc__quote { flex: none; text-align: right; min-width: 6.6rem; }
+    .xc__quote b { display: block; font-size: 0.95rem; font-weight: 800; }
+    .xc__pill { display: inline-block; margin-top: 0.2rem; border-radius: 7px; padding: 0.18em 0.55em;
+      font-size: 0.74rem; font-weight: 800; color: #04130a; background: var(--up); min-width: 4.4rem; text-align: center; }
+    .xc__pill.down { background: var(--dn); color: #1a0700; }
+
+    /* the ticker detail sheet */
+    .xc__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.74); backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 110; }
+    .xc__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 34rem; margin: 0 auto;
+      background: #101211; border: 1px solid rgba(244,239,230,0.14); border-bottom: 0; border-radius: 22px 22px 0 0;
+      padding: 1.2rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 90dvh; overflow-y: auto;
+      font-variant-numeric: tabular-nums; }
+    body.xc-open .xc__veil { opacity: 1; pointer-events: auto; }
+    body.xc-open .xc__sheet { transform: translateY(0); }
+    .xc__sheet-x { position: absolute; top: 0.8rem; right: 0.9rem; width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; }
+    .xc__sheet small.xc__k2 { font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; }
+    .xc__sheet h2 { font-size: 1.35rem; font-weight: 800; margin-top: 0.1rem; padding-right: 2.4rem; }
+    .xc__sheet .xc__bigprice { font-size: 2rem; font-weight: 800; margin-top: 0.3rem; }
+    .xc__bigchart { width: 100%; height: 190px; display: block; margin-top: 0.7rem; }
+    .xc__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.6rem; margin-top: 1rem; }
+    .xc__stat { border: 1px solid rgba(244,239,230,0.1); border-radius: 12px; padding: 0.65rem 0.75rem; }
+    .xc__stat small { display: block; color: var(--cream-dim); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .xc__stat b { font-size: 0.98rem; font-weight: 800; }
+    .xc__deep { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.6; margin-top: 0.9rem; }
+
+    /* launch-a-business card */
+    .xc__biz { border: 1px solid rgba(0,200,5,0.35); border-radius: 16px; background: rgba(0,200,5,0.05);
+      padding: 1.2rem 1.2rem 1.3rem; margin-top: 1.1rem; }
+    .xc__biz h3 { font-size: 1.05rem; font-weight: 800; }
+    .xc__biz p { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; margin: 0.35rem 0 0.8rem; }
+
     #sheet { display: none; }
     @media print {
       body > *:not(#sheet) { display: none !important; }
@@ -140,53 +219,76 @@
     </nav>
   </header>
   <main class="mk">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> M Network &middot; one engine</p>
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> M Network &middot; the exchange</p>
     <h1>The Market.</h1>
-    <p class="mk__sub">Hiring, collaborating, booking, funding — <b>it's all the same transaction</b>,
-      so it all lives in one room. Find your people, set the terms, lock it, sign it, get it done.
-      Every percentage on the record. Nobody gets screwed again.</p>
+    <p class="mk__sub"><b>A live exchange that doesn't sleep.</b> Every person trades under their own ticker,
+      every business lists as its own — and the price moves on real work: bookings, deals, drops.
+      Invest in people. Every percentage on the record.</p>
 
     <nav class="mk__rail" aria-label="Market sections">
-      <a class="mk__jump mk__jump--glow" href="#build">&#9889; Deal builder</a>
+      <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
+      <a class="mk__jump" href="#build">&#9889; Deal builder</a>
       <a class="mk__jump" href="pay.html">$ M Pay</a>
       <a class="mk__jump" href="spaces.html">&#127968; Spaces</a>
-      <a class="mk__jump" href="#featured">Featured</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
       <a class="mk__jump" href="#yours">Your deals</a>
       <a class="mk__jump" href="#providers">Providers</a>
     </nav>
 
-    <!-- 1 · FEATURED MARKET -->
-    <section id="featured">
-      <p class="mk__k">Featured market</p>
-      <h2 class="mk__h2">What's moving right now</h2>
-      <div class="mk__feat">
-        <a class="mk__featcard" href="offer.html" data-cta="mk-feat-offer">
-          <img src="assets/img/vaunt-arrival.jpg" alt="The limited offer — the weekly content system" loading="lazy">
-          <div><small>Book work · 2 of 3 left</small><b>The Limited Offer</b></div>
-        </a>
-        <a class="mk__featcard" href="profile-zakir.html" data-cta="mk-feat-decibel">
-          <img src="assets/frames/vperf1_0001.jpg" alt="Decibel Studios — Zakir behind the board" loading="lazy">
-          <div><small>Book space · Atlanta</small><b>Decibel Studios</b></div>
-        </a>
-        <a class="mk__featcard" href="equity-uprise.html" data-cta="mk-feat-fund">
-          <img src="assets/frames/uprise_0080.jpg" alt="Equity Uprise — fund the next anthem" loading="lazy">
-          <div><small>Fund &amp; sponsor</small><b>The Next Anthem</b></div>
-        </a>
-        <a class="mk__featcard" href="deluxe-516r.html" data-cta="mk-feat-deluxe">
-          <img src="assets/frames/docket_0050.jpg" alt="The 516R Deluxe buy-back — cohort round" loading="lazy">
-          <div><small>Cohort round · open</small><b>516R Deluxe Buy-Back</b></div>
-        </a>
-        <a class="mk__featcard" href="pay.html" data-cta="mk-feat-mpay">
-          <img src="assets/frames/hero_0001.jpg" alt="M Pay — name a price, pick a provider" loading="lazy">
-          <div><small>Dead simple · new</small><b>M Pay — Name a Price</b></div>
-        </a>
-        <a class="mk__featcard" href="spaces.html" data-cta="mk-feat-spaces">
-          <img src="assets/frames/vperf1_0001.jpg" alt="Spaces — book a room, studio, or stage" loading="lazy">
-          <div><small>Book space · new</small><b>Spaces — Book The Room</b></div>
-        </a>
+    <!-- 1 · THE FLOOR: live exchange -->
+    <section id="floor" class="xc">
+      <div class="xc__tape" aria-hidden="true"><div class="xc__tape-in" id="xcTape"></div></div>
+
+      <div class="xc__index">
+        <small>M-100 &middot; the network index</small>
+        <b id="xcIndexVal">—</b>
+        <span class="xc__chg" id="xcIndexChg"></span>
+        <span style="margin-left:0.8rem" class="xc__live"><i></i> Live &middot; the floor never closes</span>
+        <canvas class="xc__indexchart" id="xcIndexChart"></canvas>
       </div>
+
+      <div class="xc__acct">
+        <a class="btn btn--xc" href="profile.html" data-cta="xc-claim">Claim your ticker — run your own account</a>
+        <button class="btn btn--ghost" id="xcBizBtn" type="button">Launch a business ticker</button>
+      </div>
+      <div class="xc__biz mk__hidden" id="xcBiz">
+        <h3>Your business, its own symbol</h3>
+        <p>You trade as you — your company trades as itself. Separate ticker, separate card, same desk.
+          File it here; it lists on the floor once it's verified.</p>
+        <input class="mk__in" id="xcBizName" type="text" placeholder="Business name — e.g. Whip Equipped">
+        <input class="mk__in" id="xcBizTick" type="text" maxlength="5" placeholder="Ticker — 2–5 letters, like WHIP" autocapitalize="characters" style="text-transform:uppercase">
+        <select class="mk__in" id="xcBizLane">
+          <option value="Stages">Venue / event space</option>
+          <option value="Studios">Studio</option>
+          <option value="Photo">Photo</option>
+          <option value="Video">Video</option>
+          <option value="Web">Web / software</option>
+          <option value="Music">Music / label</option>
+        </select>
+        <button class="btn btn--xc" id="xcBizFile" type="button" style="width:100%">File the listing</button>
+        <p class="mk__msg" id="xcBizMsg"></p>
+      </div>
+
+      <div class="xc__list" id="xcList"><p class="mk__note">Opening the floor…</p></div>
     </section>
+
+    <!-- the ticker detail sheet -->
+    <div class="xc__veil" id="xcVeil"></div>
+    <div class="xc__sheet" id="xcSheet" role="dialog" aria-modal="true" aria-label="Ticker detail">
+      <button class="xc__sheet-x" id="xcX" type="button" aria-label="Close">✕</button>
+      <small class="xc__k2" id="xcDTick">$—</small>
+      <h2 id="xcDName">—</h2>
+      <div class="xc__bigprice"><span id="xcDPrice">—</span> <span class="xc__chg" id="xcDChg"></span></div>
+      <canvas class="xc__bigchart" id="xcDChart"></canvas>
+      <div class="xc__stats" id="xcDStats"></div>
+      <div class="finale__actions" style="margin-top:1.1rem">
+        <button class="btn btn--xc" id="xcDInvest" type="button">Invest — send a deal</button>
+        <a class="btn btn--ghost" id="xcDPage" href="#">The page</a>
+        <a class="btn btn--ghost" id="xcDPay" href="#">M Pay</a>
+      </div>
+      <p class="xc__deep">The price is the work: bookings, signed deals, drops, and time on the floor move it.
+        Investing here means dealing with the human — the returns are songs, shoots, and rooms that exist because you did.</p>
+    </div>
 
     <!-- 2 · LANES -->
     <section id="lanes">
@@ -710,6 +812,223 @@
         jumps.forEach(function (j) { j.classList.toggle("is-on", j.getAttribute("href") === "#" + cur); });
       }, { passive: true });
       track("market_view", { authed: AUTHED });
+    })();
+  </script>
+  <script>
+    /* ============ THE FLOOR ENGINE: the exchange face ============ */
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var UP = "#00c805", DN = "#ff5000";
+      var ROWS = [];
+
+      function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
+      function fmt(v) { return "$" + (+v).toFixed(2); }
+
+      function drawLine(cv, series, color, fill) {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var w = cv.clientWidth || 96, h = cv.clientHeight || 34;
+        cv.width = w * dpr; cv.height = h * dpr;
+        var cx = cv.getContext("2d");
+        cx.scale(dpr, dpr);
+        var min = Infinity, max = -Infinity;
+        series.forEach(function (p) { min = Math.min(min, p.v); max = Math.max(max, p.v); });
+        if (max - min < 0.01) { max = min + 0.01; }
+        function X(i) { return (i / (series.length - 1)) * (w - 2) + 1; }
+        function Y(v) { return h - 2 - ((v - min) / (max - min)) * (h - 4); }
+        if (fill) {
+          cx.beginPath();
+          series.forEach(function (p, i) { i ? cx.lineTo(X(i), Y(p.v)) : cx.moveTo(X(i), Y(p.v)); });
+          cx.lineTo(X(series.length - 1), h); cx.lineTo(X(0), h); cx.closePath();
+          var g = cx.createLinearGradient(0, 0, 0, h);
+          g.addColorStop(0, color + "33"); g.addColorStop(1, color + "00");
+          cx.fillStyle = g; cx.fill();
+        }
+        cx.beginPath();
+        series.forEach(function (p, i) { i ? cx.lineTo(X(i), Y(p.v)) : cx.moveTo(X(i), Y(p.v)); });
+        cx.strokeStyle = color; cx.lineWidth = 1.8; cx.lineJoin = "round"; cx.lineCap = "round"; cx.stroke();
+      }
+
+      function quoteHTML(r) {
+        var up = r.chg >= 0;
+        return "<b>" + fmt(r.val) + "</b>" +
+          '<span class="xc__pill' + (up ? "" : " down") + '">' + (up ? "▲" : "▼") + " " +
+          Math.abs(r.chg).toFixed(2) + "%</span>";
+      }
+
+      function paintTape() {
+        var one = ROWS.map(function (r) {
+          return "<span><small>$" + esc(r.tick) + "</small><b class=\"" + (r.chg >= 0 ? "up" : "down") + "\">" +
+            fmt(r.val) + " " + (r.chg >= 0 ? "▲" : "▼") + Math.abs(r.chg).toFixed(2) + "%</b></span>";
+        }).join("");
+        $("xcTape").innerHTML = one + one; // doubled for the seamless loop
+      }
+
+      function paintIndex() {
+        if (!ROWS.length) return;
+        var n = ROWS[0].stock.series.length;
+        var idx = [];
+        for (var i = 0; i < n; i++) {
+          var s = 0;
+          ROWS.forEach(function (r) { s += (r.stock.series[i] || r.stock.series[r.stock.series.length - 1]).v; });
+          idx.push({ v: s / ROWS.length });
+        }
+        var last = idx[idx.length - 1].v, prev = idx[idx.length - 2] ? idx[idx.length - 2].v : last;
+        var chg = prev ? ((last - prev) / prev) * 100 : 0;
+        $("xcIndexVal").textContent = fmt(last * 10); // the index rides at 10x for the big-board feel
+        var el = $("xcIndexChg");
+        el.textContent = (chg >= 0 ? "▲ " : "▼ ") + Math.abs(chg).toFixed(2) + "% today";
+        el.className = "xc__chg " + (chg >= 0 ? "up" : "down");
+        drawLine($("xcIndexChart"), idx, chg >= 0 ? UP : DN, true);
+      }
+
+      function paintList() {
+        $("xcList").innerHTML = ROWS.map(function (r, i) {
+          return '<button class="xc__row" type="button" data-i="' + i + '">' +
+            '<span class="xc__id"><b>$' + esc(r.tick) + "</b><small>" + esc(r.p.name) +
+            " · " + esc((r.p.roles || [])[0] || "Member") + "</small></span>" +
+            '<canvas class="xc__spark" data-spark="' + i + '"></canvas>' +
+            '<span class="xc__quote" data-quote="' + i + '">' + quoteHTML(r) + "</span></button>";
+        }).join("");
+        ROWS.forEach(function (r, i) {
+          drawLine(document.querySelector('[data-spark="' + i + '"]'), r.stock.series, r.chg >= 0 ? UP : DN);
+        });
+        document.querySelectorAll(".xc__row").forEach(function (b) {
+          b.addEventListener("click", function () { openSheet(ROWS[+b.getAttribute("data-i")]); });
+        });
+      }
+
+      /* the market breathes: small real-feeling moves, deterministic per minute */
+      function jitter() {
+        if (!ROWS.length) return;
+        var slot = Math.floor(Date.now() / 2600);
+        var i = slot % ROWS.length;
+        var r = ROWS[i];
+        var h = 0;
+        var key = r.tick + slot;
+        for (var k = 0; k < key.length; k++) h = (h * 31 + key.charCodeAt(k)) >>> 0;
+        var move = ((h % 41) - 20) / 100 * 0.35; // ±0.07%-ish steps
+        r.val = Math.max(0.5, r.val * (1 + move / 100 * 8));
+        r.chg = ((r.val - r.open) / r.open) * 100;
+        r.stock.series = r.stock.series.slice(1).concat([{ v: r.val }]);
+        var q = document.querySelector('[data-quote="' + i + '"]');
+        var row = q && q.closest(".xc__row");
+        if (q) q.innerHTML = quoteHTML(r);
+        drawLine(document.querySelector('[data-spark="' + i + '"]'), r.stock.series, r.chg >= 0 ? UP : DN);
+        if (row) {
+          row.classList.add(move >= 0 ? "is-tick-up" : "is-tick-dn");
+          setTimeout(function () { row.classList.remove("is-tick-up", "is-tick-dn"); }, 550);
+        }
+        paintTape(); paintIndex();
+      }
+
+      /* ---- detail sheet ---- */
+      var current = null;
+      function openSheet(r) {
+        current = r;
+        $("xcDTick").textContent = "$" + r.tick + " · " + (r.chg >= 0 ? "up" : "down") + " today";
+        $("xcDName").textContent = r.p.name;
+        $("xcDPrice").textContent = fmt(r.val);
+        var c = $("xcDChg");
+        c.textContent = (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%";
+        c.className = "xc__chg " + (r.chg >= 0 ? "up" : "down");
+        var rate = (r.p.space && r.p.space.rate) || (r.p.terms && r.p.terms.floor) || null;
+        $("xcDStats").innerHTML =
+          '<div class="xc__stat"><small>Lane</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
+          (rate ? '<div class="xc__stat"><small>Floor rate</small><b>$' + rate + "/hr</b></div>" : "") +
+          '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
+          '<div class="xc__stat"><small>Session</small><b>14 days</b></div>';
+        $("xcDPage").href = r.p.href || r.p.profile || "providers.html";
+        $("xcDPay").href = "pay.html?to=" + encodeURIComponent(r.p.slug || r.p.id);
+        document.body.classList.add("xc-open");
+        requestAnimationFrame(function () { drawLine($("xcDChart"), r.stock.series, r.chg >= 0 ? UP : DN, true); });
+        track("xc_ticker_open", { tick: r.tick });
+      }
+      function closeSheet() { document.body.classList.remove("xc-open"); }
+      $("xcVeil").addEventListener("click", closeSheet);
+      $("xcX").addEventListener("click", closeSheet);
+      $("xcDInvest").addEventListener("click", function () {
+        if (!current) return;
+        closeSheet();
+        var who = $("pWho");
+        if (who) {
+          var slug = current.p.slug || current.p.id;
+          for (var i = 0; i < who.options.length; i++) {
+            if (who.options[i].value === slug) { who.value = slug; who.dispatchEvent(new Event("change", { bubbles: true })); break; }
+          }
+        }
+        document.getElementById("build").scrollIntoView({ behavior: "smooth" });
+        track("xc_invest_click", { tick: current.tick });
+      });
+
+      /* ---- launch a business ticker ---- */
+      $("xcBizBtn").addEventListener("click", function () {
+        $("xcBiz").classList.toggle("mk__hidden");
+      });
+      $("xcBizFile").addEventListener("click", function () {
+        var name = $("xcBizName").value.trim();
+        var tick = window.MCC_STOCK.ticker($("xcBizTick").value, name);
+        if (!name) { $("xcBizMsg").textContent = "Name the business first."; return; }
+        var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+        if (!authed) {
+          $("xcBizMsg").innerHTML = 'Claim your personal account first — <a href="profile.html" style="color:#00c805">one tap, no email needed</a> — then file the business.';
+          return;
+        }
+        $("xcBizMsg").textContent = "Filing…";
+        window.MCC_NET.createBusiness({
+          name: name, ticker: tick, roles: [$("xcBizLane").value],
+          headline: "Listed on the M exchange", terms: { entity: "business" },
+        }).then(function () {
+          $("xcBizMsg").textContent = "Filed — $" + tick + " lists on the floor once it's verified.";
+          track("xc_business_filed", { tick: tick });
+        }).catch(function (e) {
+          $("xcBizMsg").textContent = "Couldn't file: " + String(e && e.message || e);
+        });
+      });
+
+      /* ---- boot: same public floor data as M Pay's stocks tab ---- */
+      Promise.all([
+        fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
+        window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
+      ]).then(function (res) {
+        var seen = {};
+        var all = [];
+        (res[0].providers || []).forEach(function (p) { all.push(p); seen[p.id] = 1; });
+        (res[1] || []).forEach(function (c) {
+          if (seen[c.slug]) return;
+          all.push({ id: c.slug, slug: c.slug, name: c.name, roles: c.roles || [], ticker: c.ticker,
+            terms: c.terms, space: c.space, href: c.href });
+        });
+        ROWS = all.map(function (p) {
+          var slug = p.slug || p.id;
+          var stock = window.MCC_STOCK.build({
+            uid: slug,
+            listing: { status: "live", created_at: new Date(Date.now() - 14 * 864e5).toISOString(), updated_at: new Date().toISOString() },
+            marketN: Math.max(all.length, 3),
+          });
+          // every symbol gets its own level and its own day — a stable hash
+          // of the slug scales the series and bends the last move, so the
+          // floor reads like a real spread until live signals take over
+          var h = 0;
+          for (var k = 0; k < slug.length; k++) h = (h * 31 + slug.charCodeAt(k)) >>> 0;
+          var scale = 0.35 + (h % 260) / 100;           // 0.35x – 2.95x
+          var bend = (((h >> 7) % 27) - 15) / 100;      // -15%..+11% — red lives here too
+          stock.series = stock.series.map(function (pt, i) {
+            var v = pt.v * scale;
+            if (i === stock.series.length - 1) v *= (1 + bend);
+            return { d: pt.d, v: +v.toFixed(2) };
+          });
+          stock.value = stock.series[stock.series.length - 1].v;
+          var open = stock.series[stock.series.length - 2] ? stock.series[stock.series.length - 2].v : stock.value;
+          return { p: p, stock: stock, tick: tickOf(p), val: stock.value, open: open,
+            chg: open ? ((stock.value - open) / open) * 100 : 0 };
+        }).sort(function (a, b) { return b.val - a.val; });
+        paintTape(); paintIndex(); paintList();
+        setInterval(jitter, 2600);
+        track("xc_floor_view", { tickers: ROWS.length });
+      });
     })();
   </script>
 </body>

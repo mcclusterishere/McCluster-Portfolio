@@ -109,6 +109,18 @@
     },
 
     /* the members app: one record per signed-in member of the organization */
+    /* a second listing under the same owner: the business trades as its
+       own ticker, separate from the person who runs it */
+    createBusiness: function (fields) {
+      fields.owner = S.uid();
+      fields.slug = fields.slug ||
+        (fields.name || "business").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") +
+        "-" + Math.random().toString(36).slice(2, 6);
+      mirror(Object.assign({ _form: "business-listing" }, fields));
+      return authed("providers", { method: "POST", body: fields, prefer: "return=representation" })
+        .then(function (rows) { return rows && rows[0]; });
+    },
+
     myMember: function () {
       return authed("members?owner=eq." + S.uid() + "&select=*").then(function (rows) {
         return rows && rows[0] ? rows[0] : null;
