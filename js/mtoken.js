@@ -61,6 +61,40 @@
         });
       });
     },
+    /* the re-up: buy credit with a card — dollars to the reserve,
+       the webhook mints 1:1 */
+    buy: function (amt) {
+      return S.token().then(function (t) {
+        return fetch(S.url + "/functions/v1/buy-eup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+          body: JSON.stringify({ amount: +amt }),
+        });
+      }).then(function (r) { return r.json().catch(function () { return null; }); });
+    },
+    redeemable: function () {
+      return S.token().then(function (t) {
+        return fetch(S.url + "/rest/v1/rpc/my_redeemable", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+          body: "{}",
+        });
+      }).then(function (r) { return r.ok ? r.json() : 0; }).catch(function () { return 0; });
+    },
+    cashout: function (amt) {
+      return S.token().then(function (t) {
+        return fetch(S.url + "/rest/v1/rpc/request_cashout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+          body: JSON.stringify({ amt: +amt }),
+        });
+      }).then(function (r) {
+        return r.json().catch(function () { return null; }).then(function (j) {
+          if (!r.ok) throw new Error((j && (j.message || j.hint)) || "the request bounced");
+          return j;
+        });
+      });
+    },
     bankroll: function () {
       return S.token().then(function (t) {
         return fetch(S.url + "/rest/v1/rpc/claim_beta_bankroll", {
@@ -84,9 +118,14 @@
         '<button class="btn btn--ruby" id="mtkSend" type="button">Send it</button></div>' +
         '<p class="mp__msg" id="mtkMsg"></p>' +
         '<div id="mtkFaucet"></div>' +
-        '<p class="mp__note">The beta rail: 1 E⤴︎ = $1 of platform credit, minted by real work and moved person to person ' +
-        'right here — every send on the record, zero real dollars at risk. Closed loop by design; the dollar bridge ' +
-        'comes later, through the front door, with counsel.</p>';
+        '<div class="mp__linkrow" style="margin-top:0.5rem">' +
+        '<input class="mp__in" id="mtkBuyAmt" type="number" min="5" max="1000" step="1" placeholder="Re-up $" style="max-width:8rem">' +
+        '<button class="btn btn--ghost" id="mtkBuy" type="button" style="flex:1">Re-up — buy E⤴\uFE0E by card</button></div>' +
+        '<div id="mtkRedeem" style="margin-top:0.5rem"></div>' +
+        '<p class="mp__note">The peg is sacred: 1 E⤴\uFE0E = $1, backed by the Equity Reserve — every purchased credit is a real ' +
+        'dollar in the vault, every platform dollar feeds it. <b style="color:var(--cream)">Earned</b> credit (deals done, ' +
+        'bounties won, services rendered) cashes out right here; purchased and gifted credit spends anywhere in the loop ' +
+        'and stays in the loop. <a href="reserve.html" style="color:#c99d45">Watch the reserve &#8594;</a></p>';
       host.appendChild(el);
       function repaint() {
         el.querySelector("#mtkRows").innerHTML = "";
@@ -110,7 +149,37 @@
             : s;
         });
       });
+      el.querySelector("#mtkBuy").addEventListener("click", function () {
+        var amt = +el.querySelector("#mtkBuyAmt").value;
+        var m = el.querySelector("#mtkMsg");
+        if (!(amt >= 5)) { m.textContent = "Re-ups start at $5."; return; }
+        m.textContent = "Opening checkout…";
+        window.MCC_TOKEN.buy(amt).then(function (j) {
+          if (j && j.url) { location.href = j.url; return; }
+          m.textContent = (j && j.error) || "The re-up door is still being armed — deploy buy-eup.";
+        });
+      });
+      function paintRedeem() {
+        var host = el.querySelector("#mtkRedeem");
+        window.MCC_TOKEN.redeemable().then(function (can) {
+          can = +can || 0;
+          if (can < 5) { host.innerHTML = ""; return; }
+          host.innerHTML = '<div class="mp__linkrow">' +
+            '<input class="mp__in" id="mtkOutAmt" type="number" min="5" step="0.01" max="' + can + '" placeholder="Cash out $" style="max-width:8rem">' +
+            '<button class="btn btn--ghost" id="mtkOut" type="button" style="flex:1">Cash out earned — ' + can.toFixed(2) + ' redeemable</button></div>';
+          host.querySelector("#mtkOut").addEventListener("click", function () {
+            var amt = +host.querySelector("#mtkOutAmt").value;
+            var m = el.querySelector("#mtkMsg");
+            if (!(amt >= 5)) { m.textContent = "Cash-outs start at 5.00."; return; }
+            window.MCC_TOKEN.cashout(amt).then(function () {
+              m.textContent = "Requested — the desk pays it out and the record carries it.";
+              repaint();
+            }).catch(function (e) { m.textContent = String(e && e.message || e); });
+          });
+        });
+      }
       function paint() {
+        paintRedeem();
       Promise.all([window.MCC_TOKEN.balance(), window.MCC_TOKEN.ledger(6)])
         .then(function (r) {
           el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
