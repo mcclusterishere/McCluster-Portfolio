@@ -142,8 +142,12 @@ window.MCC_STRIPE = {
       method: "POST",
       headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.token() },
       body: "{}",
-    }).then(function (r) { return r.ok ? r.json() : null; })
-      .catch(function () { return null; });
+    }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (j) {
+        if (r.ok) return j;
+        return { error: (j && (j.error || j.message)) || ("net " + r.status) };
+      });
+    }).catch(function () { return null; });
   },
 
   payDeal: function (deal, rail) {

@@ -596,7 +596,7 @@
         </div>
         <label class="mk__lbl" for="pDate" id="pDateLbl">Date / window wanted</label>
         <input class="mk__in" id="pDate" type="text" placeholder="e.g. Aug 14, 6–10pm">
-        <label class="mk__lbl" for="pFee">The money ($ — what the receiving side gets, whole; blank for split-only)</label>
+        <label class="mk__lbl" for="pFee">The money (E⤴︎ — what the receiving side gets, whole; blank for split-only)</label>
         <input class="mk__in" id="pFee" type="number" min="0" placeholder="0">
         <p class="mk__note" id="pFeeQuote" style="margin:0.3rem 0 0"></p>
         <label class="mk__lbl" for="pNotes">The terms in plain words</label>
@@ -643,7 +643,7 @@
       <div class="mp__pay">
         <h1 style="position:absolute;left:-9999px">E-Up Pay</h1>
         <p class="ob-kick" style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--ruby-hot);font-weight:700;margin-bottom:0.5rem">E-UP PAY &middot; EQUITY UPRISE &times; STREET CREDIT</p>
-        <div class="mp__amt is-zero" id="mpAmt">$0</div>
+        <div class="mp__amt is-zero" id="mpAmt">0 E⤴︎</div>
         <p class="mp__hint" id="mpHint">Name your price. Then pick who it's for.</p>
         <div class="mp__pad" id="mpPad">
           <button class="mp__key" type="button" data-k="1">1</button>
@@ -903,7 +903,7 @@
       $("pFee").addEventListener("input", function () {
         var v = +this.value || 0;
         $("pFeeQuote").textContent = v
-          ? "They see one price: $" + window.MCC_STRIPE.quote(v).toFixed(2) + " — your $" + v + " arrives whole. No fee lines, ever."
+          ? "They see one price: " + window.MCC_STRIPE.quote(v).toFixed(2) + " E⤴︎ — your " + v + " E⤴︎ arrives whole. No fee lines, ever."
           : "";
       });
 
@@ -1181,7 +1181,7 @@
               "<h3>" + esc(d.title) + '<span class="cr__tag ' + tag + '">' + esc(d.status) + "</span>" +
               '<span class="cr__tag">' + esc(KIND_LABEL[d.kind] || d.kind) + "</span></h3>" +
               "<p>" + (mySide === "from" ? "you → " : "from ") + esc(other) +
-              (t.fee ? " · $" + (mySide === "from" ? (t.price || t.fee) : t.fee) : "") + (t.date ? " · " + esc(t.date) : "") + "</p>" +
+              (t.fee ? " · " + (mySide === "from" ? (t.price || t.fee) : t.fee) + " E⤴︎" : "") + (t.date ? " · " + esc(t.date) : "") + "</p>" +
               (splits ? '<table class="cr__splits">' + splits + "</table>" : "") +
               (t.notes ? "<p>" + esc(t.notes) + "</p>" : "") +
               (signedBy ? '<p style="color:#2fbf71">Signed: ' + signedBy + "</p>" : "") +
@@ -1612,7 +1612,7 @@
           : "";
         paintBook(r);
         if (r.worth) {
-          $("xcDPrice").textContent = "$" + r.worth.worth.toLocaleString();
+          $("xcDPrice").textContent = r.worth.worth.toLocaleString() + " E⤴︎";
           c.textContent = "your true worth · only you see this";
           c.className = "xc__chg";
           $("xcDStats").innerHTML = r.worth.breakdown.map(function (b) {
@@ -1995,7 +1995,7 @@
       function fmt(a) {
         var parts = a.split(".");
         parts[0] = (+parts[0]).toLocaleString("en-US");
-        return "$" + parts.join(".");
+        return parts.join(".") + " E⤴︎";
       }
       function paintAmt() {
         $("mpAmt").textContent = fmt(amt);
@@ -2214,7 +2214,7 @@
             host.appendChild(b);
             var p = document.createElement("p");
             p.className = "mp__note";
-            p.textContent = "Secure checkout — one price, exactly what you punched in. The deal marks itself paid.";
+            p.textContent = "Secure checkout — one price, exactly what you punched in (settles by card at 1 E⤴︎ = $1). The deal marks itself paid.";
             host.appendChild(p);
           } else if (rail.square) {
             var sq = rail.square + (rail.square.indexOf("?") === -1 ? "?src=mpay" : "&src=mpay");
@@ -2407,7 +2407,12 @@
               }
               railBtn.textContent = ME.stripe_acct ? "Finish setting up payouts →" : "Set up payouts — get paid by card";
               var m = body.querySelector("#dkRailMsg");
-              if (m) m.textContent = "The rail is being armed for your desk — check back soon.";
+              var why = (j && j.error) || "";
+              if (m) m.textContent =
+                /no listing/.test(why) ? "Save your listing first — the rail rides on it. Fill the form below and Save." :
+                /signed out/.test(why) ? "Your session blinked — sign in again and retap." :
+                why ? "The rail answered: " + why :
+                "The rail didn't answer — the connect-onboard function may not be deployed yet.";
             });
           });
           // back from Stripe (or a fresh visit mid-onboarding): ask once
@@ -2467,7 +2472,7 @@
           // all-in pricing: you name what YOU receive; the link carries the
           // payer's one price and your number arrives whole
           var priced = window.MCC_STRIPE.quote(a);
-          $("dkPayMsg").textContent = "Their side sees $" + priced.toFixed(2) + " — your $" + a + " arrives whole.";
+          $("dkPayMsg").textContent = "Their side sees " + priced.toFixed(2) + " E⤴︎ — your " + a + " E⤴︎ arrives whole.";
           return base + "market.html?to=" + encodeURIComponent(slug) + "&amt=" + priced +
             ($("dkFor").value.trim() ? "&for=" + encodeURIComponent($("dkFor").value.trim()) : "") + "#pay";
         }
