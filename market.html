@@ -577,10 +577,10 @@
         <input class="mk__in" id="pContact" type="text" placeholder="Name · email or phone">
         <button class="btn btn--ruby" id="pSend" type="button">Send it</button>
         <p class="mk__msg" id="pMsg"></p>
-        <p class="mk__note"><b style="color:var(--cream)">How money moves today:</b> when a deal is signed, the
-          <em style="color:var(--cream)">Pay by card</em> button opens secure Square checkout — type the exact amount,
-          put the deal name in the note, done. Both sides then mark it paid and the record carries it.
-          Card rails built into the deal itself land with Stripe Connect.</p>
+        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> when a signed deal carries the card
+          rail, <em style="color:var(--cream)">Pay by card</em> opens secure checkout — the rate, the platform fee,
+          and processing on one receipt, and the deal marks itself paid. Desks still arming their rail run the
+          payment note instead: copy it, pay outside, mark it paid — the record carries it either way.</p>
         <p class="mk__note">Signed in, this is the full engine: counters, terms lock, signatures, and a printable
           sheet. Signed out, it's a quick request straight to the provider's inbox. Either way —
           <em style="color:var(--cream)">part of every dollar spent here builds the next artist.</em></p>
@@ -752,8 +752,7 @@
       <div class="mp__check">✓</div>
       <h2 id="shDoneMsg">Sent.</h2>
       <p class="mp__note" id="shDoneSub"></p>
-      <a class="btn btn--ruby" href="https://square.link/u/MBVeuzoo?src=mpay" target="_blank" rel="noopener" data-cta="mpay-square" style="margin-top:0.8rem">Pay by card now — Square</a>
-      <p class="mp__note">Secure Square checkout — type the exact amount and put what it's for in the note. The deal record on both sides carries the receipt.</p>
+      <div id="shPayRail" style="margin-top:0.8rem"></div>
       <p class="mp__note" style="color:#2fbf71">&#127963;&#65038; Every clean deal stamps your books at the Street Credit Bureau — <a href="#scb" id="shScbLink" style="color:#2fbf71;font-weight:700">your record builds itself &#8594;</a></p>
       <div class="mp__go">
         <a class="btn btn--ghost" href="#yours">Open the desk</a>
@@ -1089,13 +1088,26 @@
             } else if (d.status === "locked" && mine) {
               acts = '<span class="cr__tag">You signed — waiting on ' + esc(other) + "</span>";
             } else if (d.status === "signed") {
-              var sq = (DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0] || {}).square
-                || "https://square.link/u/MBVeuzoo";
-              acts = '<button class="btn btn--ruby" data-act="stripe" data-i="' + i + '">Pay by card — checkout</button>' +
-                '<a class="btn btn--ghost" href="' + esc(sq) + '?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Square</a>' +
-                '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
-                '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
+              // the card button renders ONLY when it truly pays the named
+              // payee: the house, or a Stripe-verified provider. rail() is
+              // the single source of truth — no mission-fund fallbacks here.
+              var payee = DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0];
+              var rail = window.MCC_STRIPE.rail(payee);
+              acts = "";
+              if (mySide === "from" && rail.card) {
+                acts += '<button class="btn btn--ruby" data-act="stripe" data-i="' + i + '">Pay by card — checkout</button>';
+              }
+              if (rail.square) {
+                acts += '<a class="btn btn--ghost" href="' + esc(rail.square) +
+                  (rail.square.indexOf("?") === -1 ? "?src=deal" : "&src=deal") +
+                  '" target="_blank" rel="noopener" data-cta="deal-square">Square</a>';
+              }
+              acts += '<button class="btn btn--ghost" data-act="paynote" data-i="' + i + '">Copy the payment note</button>' +
+                '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid — money moved outside the app</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
+              if (mySide === "from" && !rail.card && !rail.square) {
+                acts += '<span class="cr__tag">Card checkout isn’t on this desk yet — the payment note is the rail.</span>';
+              }
             } else if (d.status === "paid") {
               acts = '<button class="btn btn--ruby" data-act="completed" data-i="' + i + '">Mark completed</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
@@ -1145,10 +1157,10 @@
               var act = b.getAttribute("data-act");
               if (act === "stripe") {
                 b.textContent = "Opening checkout…";
-                window.MCC_STRIPE.payDeal(d).then(function (went) {
+                var payeeRow = DIR.filter(function (pv) { return (pv.slug || pv.id) === d.to_slug; })[0];
+                window.MCC_STRIPE.payDeal(d, window.MCC_STRIPE.rail(payeeRow)).then(function (went) {
                   if (went) { track("deal_stripe_checkout", { amount: (d.terms && d.terms.fee) || 0 }); return; }
-                  // the rail isn't armed yet — Square keeps the register
-                  b.textContent = "Card rail arming — use Square →";
+                  b.textContent = "The rail hiccuped — copy the payment note instead";
                   setTimeout(function () { b.textContent = "Pay by card — checkout"; }, 3200);
                 });
               } else if (act === "paynote") {
@@ -1989,16 +2001,50 @@
         var title = $("shTitle").value.trim() || (KLBL[kind] + " — " + fmt(amt) + " via M Pay");
         var note = $("shNote").value.trim();
         $("shMsg").textContent = "Sending…";
-        var done = function (kindSent) {
+        var done = function (kindSent, dealRow) {
           $("shFor").classList.add("mp__hidden");
           $("shDone").classList.remove("mp__hidden");
           $("shDoneMsg").textContent = (dir === "pay" ? "Sent — " : "Requested — ") + fmt(amt) + ".";
           $("shDoneSub").textContent = kindSent === "deal"
             ? pick.name + " sees it on their desk now. Counter, lock, sign — every step stays on the record."
             : "It's in " + pick.name + "'s inbox — they answer from their desk.";
+          paintShRail(kindSent, dealRow);
           $("shTitle").value = ""; $("shNote").value = ""; $("shMsg").textContent = "";
           track(kindSent === "deal" ? "mpay_deal_sent" : "mpay_request_sent", { kind: kind, dir: dir, amount: +amt });
         };
+        /* the done-screen register: a card button only when it truly pays
+           the picked payee — the house or a Stripe-verified desk. No deal
+           row, no card. Everyone else gets the truth, not a donation link. */
+        function paintShRail(kindSent, dealRow) {
+          var host = $("shPayRail");
+          host.innerHTML = "";
+          if (dir !== "pay") return;
+          var rail = window.MCC_STRIPE.rail(pick);
+          if (kindSent === "deal" && dealRow && rail.card) {
+            var b = document.createElement("button");
+            b.className = "btn btn--ruby"; b.type = "button";
+            b.textContent = "Pay by card now — checkout";
+            b.addEventListener("click", function () {
+              b.textContent = "Opening checkout…";
+              window.MCC_STRIPE.payDeal(dealRow, rail).then(function (went) {
+                if (went) { track("mpay_stripe_checkout", { amount: +amt }); return; }
+                b.textContent = "The rail hiccuped — the deal waits on your desk";
+                setTimeout(function () { b.textContent = "Pay by card now — checkout"; }, 3200);
+              });
+            });
+            host.appendChild(b);
+            var p = document.createElement("p");
+            p.className = "mp__note";
+            p.textContent = "Secure checkout — the rate, the platform fee, and processing on one receipt. The deal marks itself paid.";
+            host.appendChild(p);
+          } else if (rail.square) {
+            var sq = rail.square + (rail.square.indexOf("?") === -1 ? "?src=mpay" : "&src=mpay");
+            host.innerHTML = '<a class="btn btn--ruby" href="' + esc(sq) + '" target="_blank" rel="noopener" data-cta="mpay-square">Pay by card now — their Square</a>' +
+              '<p class="mp__note">' + esc(pick.name) + "&rsquo;s own Square checkout — type the exact amount and put the deal name in the note.</p>";
+          } else {
+            host.innerHTML = '<p class="mp__note">' + esc(pick.name) + "&rsquo;s card rail isn&rsquo;t armed yet — the deal carries the payment note, money moves outside the app, and the record holds it.</p>";
+          }
+        }
         var fail = function (e) { $("shMsg").textContent = "Couldn't send: " + String(e && e.message || e); };
 
         if (AUTHED) {
@@ -2007,7 +2053,7 @@
             from_name: (ME && ME.name) || (window.MCC_SUPA.email() || "Me"),
             to_slug: pick.slug || pick.id, to_name: pick.name,
             terms: { splits: [], fee: +amt, date: "", notes: (dir === "request" ? "[They pay me — request] " : "") + note, history: [] },
-          }).then(function () { done("deal"); }).catch(fail);
+          }).then(function (row) { done("deal", row); }).catch(fail);
         } else {
           var contact = $("shContact").value.trim();
           if (!contact) { $("shMsg").textContent = "Your name and a way to reach you — that's all it takes."; return; }

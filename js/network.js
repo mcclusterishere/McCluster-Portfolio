@@ -57,7 +57,8 @@
       // ticker/terms/space/photo ride along when the columns exist;
       // older schemas answer the progressively smaller selects
       var base = "providers?status=eq.live&order=created_at.asc&select=";
-      return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book,terms,ticker,space,photo")
+      return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book,terms,ticker,space,photo,square,stripe_acct,charges_enabled")
+        .catch(function () { return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book,terms,ticker,space,photo"); })
         .catch(function () { return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book,terms,ticker"); })
         .catch(function () { return anon(base + "id,slug,name,headline,blurb,area,roles,badge_color,href,book"); });
     },
