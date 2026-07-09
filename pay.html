@@ -250,6 +250,7 @@
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/mtoken.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -593,6 +594,8 @@
           tool("members.html", "The organization", "Boards, programs, the donor circle") + "</div>";
         body.innerHTML = html;
         if (ME) wireDesk(body, face);
+        // the wallet: the M Token ledger rides the desk
+        if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
         // amenity chips inside the freshly-written body
         if (window.MCC_AMENITIES) {
           var data = null;

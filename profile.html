@@ -184,6 +184,9 @@
             window.MCC_NET.myRequests().catch(function () { return []; }),
             window.MCC_NET.myPerformances().catch(function () { return []; }),
             window.MCC_NET.listProviders().catch(function () { return []; }),
+            (res.mine && res.mine.slug && window.MCC_NET.listRatings
+              ? window.MCC_NET.listRatings(res.mine.slug).catch(function () { return []; })
+              : Promise.resolve([])),
           ]).then(function (r) {
             var data = window.MCC_STOCK.build({
               uid: window.MCC_SUPA.uid() || "guest",
@@ -206,7 +209,7 @@
               var w = window.MCC_WORTH.appraise({
                 uid: window.MCC_SUPA.uid(),
                 listing: res.mine, deals: res.rows, requests: r[0], performances: r[1],
-                behavior: beh,
+                behavior: beh, ratings: r[3] || [],
               });
               // the staging model bends the number the member watches
               var gb = (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0;

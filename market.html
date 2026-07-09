@@ -221,6 +221,16 @@
     .db__peep.is-on { border-color: #00c805; box-shadow: 0 0 16px rgba(0,200,5,0.35); }
     .db__peep.is-on i { border-color: #00c805; background: rgba(0,200,5,0.18); }
 
+    /* ratings: stars you can tap */
+    .rt__row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
+    .rt__row small { color: var(--cream-dim); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+    .rt__star { background: none; border: 0; font-size: 1.35rem; line-height: 1; cursor: pointer; padding: 0.1em;
+      color: rgba(244,239,230,0.3); transition: transform 0.12s, color 0.15s; }
+    .rt__star:active { transform: scale(0.8); }
+    .rt__star.is-lit { color: #f8b40a; text-shadow: 0 0 10px rgba(248,180,10,0.6); }
+    .rt__avg { font-size: 0.82rem; color: #f8b40a; font-weight: 800; }
+    .rt__avg small { color: var(--cream-dim); font-weight: 600; text-transform: none; letter-spacing: 0; }
+
     #sheet { display: none; }
     @media print {
       body > *:not(#sheet) { display: none !important; }
@@ -306,6 +316,7 @@
       <h2 id="xcDName">—</h2>
       <div class="xc__bigprice"><span id="xcDPrice">—</span> <span class="xc__chg" id="xcDChg"></span></div>
       <canvas class="xc__bigchart" id="xcDChart"></canvas>
+      <div id="xcDRep"></div>
       <div class="xc__stats" id="xcDStats"></div>
       <div class="finale__actions" style="margin-top:1.1rem">
         <button class="btn btn--xc" id="xcDInvest" type="button">Invest — send a deal</button>
@@ -752,6 +763,12 @@
             } else if (d.status === "completed") {
               acts = '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
             }
+            var rateRow = "";
+            if (mySide === "from" && (d.status === "paid" || d.status === "completed") && d.to_slug) {
+              rateRow = '<div class="rt__row"><small>Rate them — it moves their price</small>' +
+                '<span class="cr__ratestars" data-slug="' + esc(d.to_slug) + '" data-deal="' + esc(d.id) + '"></span>' +
+                '<span class="mk__msg" data-ratemsg="' + esc(d.id) + '" style="margin:0"></span></div>';
+            }
             return '<div class="cr__deal' + ((d.status === "proposed" || d.status === "countered") && mySide === "to" ? " is-hot" : "") + '">' +
               "<h3>" + esc(d.title) + '<span class="cr__tag ' + tag + '">' + esc(d.status) + "</span>" +
               '<span class="cr__tag">' + esc(KIND_LABEL[d.kind] || d.kind) + "</span></h3>" +
@@ -760,8 +777,29 @@
               (splits ? '<table class="cr__splits">' + splits + "</table>" : "") +
               (t.notes ? "<p>" + esc(t.notes) + "</p>" : "") +
               (signedBy ? '<p style="color:#2fbf71">Signed: ' + signedBy + "</p>" : "") +
+              rateRow +
               '<div class="cr__acts">' + acts + "</div></div>";
           }).join("");
+          $("crDeals").querySelectorAll(".cr__ratestars").forEach(function (host) {
+            var slug = host.getAttribute("data-slug"), dealId = host.getAttribute("data-deal");
+            var msg = $("crDeals").querySelector('[data-ratemsg="' + dealId + '"]');
+            (function () {
+              for (var i = 1; i <= 5; i++) (function (n) {
+                var b = document.createElement("button");
+                b.className = "rt__star"; b.type = "button"; b.textContent = "★";
+                b.addEventListener("click", function () {
+                  Array.prototype.forEach.call(host.children, function (c, idx) { c.classList.toggle("is-lit", idx < n); });
+                  window.MCC_NET.rate({ subject_slug: slug, role: "client", stars: n, deal_id: dealId }).then(function () {
+                    msg.textContent = "On the record — client word carries.";
+                  }).catch(function (e) {
+                    var m = String(e && e.message || e);
+                    msg.textContent = m.indexOf("404") !== -1 ? "One paste first: docs/ratings-schema.sql" : "Couldn't file it: " + m;
+                  });
+                });
+                host.appendChild(b);
+              })(i);
+            })();
+          });
           $("crDeals").querySelectorAll("[data-act]").forEach(function (b) {
             b.addEventListener("click", function () {
               var d = rows[+b.getAttribute("data-i")];
@@ -1054,6 +1092,7 @@
         $("xcDPay").href = "pay.html?to=" + encodeURIComponent(r.p.slug || r.p.id);
         document.body.classList.add("xc-open");
         requestAnimationFrame(function () { drawLine($("xcDChart"), r.stock.series, r.chg >= 0 ? UP : DN, true); });
+        paintRep(r.p.slug || r.p.id);
         track("xc_ticker_open", { tick: r.tick });
       }
       function closeSheet() { document.body.classList.remove("xc-open"); }
@@ -1097,6 +1136,57 @@
           $("xcBizMsg").textContent = "Couldn't file: " + String(e && e.message || e);
         });
       });
+
+      /* ---- ratings on the sheet: the word, out loud ---- */
+      function starRow(host, onPick) {
+        host.innerHTML = "";
+        for (var i = 1; i <= 5; i++) (function (n) {
+          var b = document.createElement("button");
+          b.className = "rt__star"; b.type = "button"; b.textContent = "★";
+          b.setAttribute("aria-label", n + " stars");
+          b.addEventListener("mouseenter", function () { light(n); });
+          b.addEventListener("click", function () { onPick(n, light); });
+          host.appendChild(b);
+        })(i);
+        function light(n) {
+          Array.prototype.forEach.call(host.children, function (c, idx) {
+            c.classList.toggle("is-lit", idx < n);
+          });
+        }
+        return light;
+      }
+      function paintRep(slug) {
+        var box = $("xcDRep");
+        box.innerHTML = "";
+        if (!window.MCC_NET.listRatings) return;
+        window.MCC_NET.listRatings(slug).then(function (rows) {
+          rows = rows || [];
+          var cl = rows.filter(function (r) { return r.role === "client"; });
+          var pr = rows.filter(function (r) { return r.role === "peer"; });
+          function avg(a) { return a.length ? (a.reduce(function (x, r) { return x + r.stars; }, 0) / a.length) : 0; }
+          var line = "";
+          if (cl.length) line += "★ " + avg(cl).toFixed(1) + " <small>· " + cl.length + " client" + (cl.length > 1 ? "s" : "") + "</small> ";
+          if (pr.length) line += (cl.length ? " · " : "") + "★ " + avg(pr).toFixed(1) + " <small>· " + pr.length + " peer" + (pr.length > 1 ? "s" : "") + "</small>";
+          var html = line ? '<div class="rt__row"><span class="rt__avg">' + line + "</span></div>" : "";
+          var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+          if (authed) {
+            html += '<div class="rt__row"><small>Rate as a peer</small><span id="xcPeerStars"></span><span class="mk__msg" id="xcPeerMsg" style="margin:0"></span></div>';
+          }
+          box.innerHTML = html;
+          if (authed) {
+            starRow($("xcPeerStars"), function (n, light) {
+              light(n);
+              window.MCC_NET.rate({ subject_slug: slug, role: "peer", stars: n }).then(function () {
+                $("xcPeerMsg").textContent = "On the record.";
+                track("rating_sent", { role: "peer", stars: n });
+              }).catch(function (e) {
+                var m = String(e && e.message || e);
+                $("xcPeerMsg").textContent = m.indexOf("404") !== -1 ? "One paste first: docs/ratings-schema.sql" : "Couldn't file it: " + m;
+              });
+            });
+          }
+        }).catch(function () {});
+      }
 
       /* ---- boot: same public floor data as M Pay's stocks tab ---- */
       Promise.all([

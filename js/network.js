@@ -219,6 +219,18 @@
       return authed("performances", { method: "POST", body: row, prefer: "return=minimal" });
     },
 
+    /* reputation: public to read; clients need the receipts to speak */
+    listRatings: function (slug) {
+      return anon("ratings?subject_slug=eq." + encodeURIComponent(slug) + "&select=role,stars,note,created_at");
+    },
+    rate: function (r) {
+      r.rater = S.uid();
+      mirror(Object.assign({ _form: "rating" }, r));
+      return authed("ratings?on_conflict=subject_slug,rater", {
+        method: "POST", body: r, prefer: "resolution=merge-duplicates,return=minimal",
+      });
+    },
+
     /* Mission Control: the admin surface. RLS (docs/admin-schema.sql) only
        answers these for the admin's own signed-in JWT — for anyone else
        every one of these comes back empty or refused. */

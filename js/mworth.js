@@ -98,6 +98,19 @@
       behavior += Math.min(50, (inp.behavior.grindE || 0) * 0.05);   // staging-model score feeds the live book
     }
 
+    // REPUTATION — the word of the people who'd know. Clients (paid
+    // through a real deal) speak ~3x louder than peers; volume matters
+    // on a square root so ten reviews beat one but can't drown labor.
+    var rep = 0;
+    if (inp.ratings && inp.ratings.length) {
+      var cl = inp.ratings.filter(function (r) { return r.role === "client"; });
+      var pr = inp.ratings.filter(function (r) { return r.role === "peer"; });
+      function avg(a) { return a.reduce(function (x, r) { return x + r.stars; }, 0) / a.length; }
+      if (cl.length) rep += (avg(cl) - 3) * 30 * Math.min(10, Math.sqrt(cl.length) * 3);
+      if (pr.length) rep += (avg(pr) - 3) * 10 * Math.min(10, Math.sqrt(pr.length) * 3);
+      rep = Math.max(-400, Math.min(400, rep));
+    }
+
     // momentum: this week against this month
     var wk = 0, mo = 0;
     function bump(t) {
@@ -110,7 +123,7 @@
     performances.forEach(function (p) { bump(p.created_at); });
     var momentum = mo === 0 ? 0.85 : Math.min(1.25, 0.85 + (wk / mo) * 0.4 + mo * 0.01);
 
-    var raw = seat + labor + demand + stage + behavior;
+    var raw = seat + labor + demand + stage + behavior + rep;
     var worth = raw * momentum;
 
     var rows = [
@@ -120,6 +133,7 @@
       { label: "The stage — shows logged", dollars: +stage.toFixed(2) },
     ];
     if (inp.behavior) rows.push({ label: "Behavior — sessions, depth, devices", dollars: +behavior.toFixed(2) });
+    if (inp.ratings && inp.ratings.length) rows.push({ label: "The word — client & peer ratings", dollars: +rep.toFixed(2) });
     rows.push({ label: "Momentum ×" + momentum.toFixed(2), dollars: +(worth - raw).toFixed(2) });
 
     return { worth: +worth.toFixed(2), momentum: +momentum.toFixed(3), breakdown: rows };
@@ -134,11 +148,15 @@
       return Promise.all([
         window.MCC_NET.myRequests().catch(function () { return []; }),
         window.MCC_NET.myPerformances().catch(function () { return []; }),
+        (res.mine && res.mine.slug && window.MCC_NET.listRatings
+          ? window.MCC_NET.listRatings(res.mine.slug).catch(function () { return []; })
+          : Promise.resolve([])),
       ]).then(function (r) {
         return appraise({
           uid: window.MCC_SUPA.uid(),
           listing: res.mine, deals: res.rows || [],
           requests: r[0] || [], performances: r[1] || [],
+          ratings: r[2] || [],
         });
       });
     });
