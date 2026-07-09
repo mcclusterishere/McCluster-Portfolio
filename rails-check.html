@@ -119,9 +119,13 @@
           else set(L.ghost, "warn", "Something still answers at /pay-de (HTTP " + r.status + ").", "delete that function — nothing on the site calls it, it can only confuse.");
         });
 
-        /* webhook: no signature → it should refuse politely, not demand a login */
+        /* webhook: no signature → it should refuse politely, not demand a
+           login. HTTP 0 means the browser couldn't knock AT ALL — this
+           door has no CORS on purpose (only Stripe's servers use it), so
+           an unreachable answer from a browser is the healthy answer. */
         fn("stripe-webhook").then(function (r) {
-          if (r.status === 401 && /authorization/i.test(r.text)) set(L.webhook, "bad", "The gateway demands a login — Stripe's servers can't give one.", "open stripe-webhook and turn JWT verification OFF.");
+          if (r.status === 0) set(L.webhook, "ok", "No browser door at all — correct: this one only opens for Stripe's servers. Final proof is a test payment flipping a deal to paid (or Stripe → your destination → Send test event → a green 200).");
+          else if (r.status === 401 && /authorization/i.test(r.text)) set(L.webhook, "bad", "The gateway demands a login — Stripe's servers can't give one.", "open stripe-webhook and turn JWT verification OFF.");
           else if (r.status === 404) set(L.webhook, "bad", "Nothing answers at /functions/v1/stripe-webhook.", "deploy it (exact lowercase name).");
           else if (r.status >= 400) set(L.webhook, "ok", "Deployed and guarding — it refused an unsigned knock, which is exactly right.");
           else set(L.webhook, "warn", "It answered HTTP " + r.status + " to an unsigned call — it should refuse those.");
