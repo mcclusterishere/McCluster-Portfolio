@@ -91,6 +91,7 @@
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
         <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
+        <button class="mc__tab" data-tab="mcHouse" type="button">The House <b id="tabNHouse"></b></button>
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
@@ -135,6 +136,13 @@
           everything that used to vanish into the inbox files here now, tagged by kind. The kind is the hook the
           back-end algorithms route on.</p>
         <div id="mcIntake"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcHouse">
+        <h2>The house — claims to deliver</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem">Every claim here is someone who stacked the credit and paid
+          the house — the prize is now a booking you owe. Claimed → booked → done.</p>
+        <div id="mcHouse"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
@@ -347,6 +355,34 @@
         wireActs(el, function (id, to) { return A.setIntake(id, to); });
       }
 
+      /* ---- THE HOUSE: claims the house owes, claimed → booked → done ---- */
+      function paintHouse(rows) {
+        var el = $("mcHouse");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The shelf needs one paste: docs/house-schema.sql — then the campaign is live.</p>";
+          return;
+        }
+        var open = (rows || []).filter(function (r) { return r.status === "claimed" || r.status === "booked"; }).length;
+        var n = document.getElementById("tabNHouse");
+        if (n) n.textContent = open || "";
+        if (!rows.length) {
+          el.innerHTML = "<p class='mc__empty'>No claims yet — the race is on. First to 1,500 ᴹ shows up here.</p>";
+          return;
+        }
+        el.innerHTML = rows.map(function (c) {
+          var o = c.house_offers || {};
+          return '<div class="mc__row' + (c.status === "claimed" ? " is-hot" : "") + '"><div>' +
+            "<b>" + esc(o.title || "offer gone") + "</b> · " + (+c.paid).toFixed(0) + " ᴹ paid" +
+            "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>claimant " + esc(String(c.owner).slice(0, 8)) +
+            " · " + esc(new Date(c.at).toLocaleString()) + " · " + esc(c.status) + "</p></div>" +
+            rowActs("house", c.id, c.status === "done" ? [] :
+              c.status === "claimed" ? [["booked", "Mark booked", "btn--ruby"], ["denied", "Deny"]] :
+              [["done", "Mark done", "btn--ruby"]]) + "</div>";
+        }).join("");
+        wireActs(el, function (id, to) { return A.setHouseClaim(id, to); });
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -357,11 +393,13 @@
           A.grind ? A.grind().catch(function () { return null; }) : Promise.resolve(null),
           A.events ? A.events().catch(function () { return null; }) : Promise.resolve(null),
           A.intake ? A.intake().catch(function () { return null; }) : Promise.resolve(null),
+          A.house ? A.house().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
           paintAnalytics(r[6]);
           paintIntake(r[7]);
+          paintHouse(r[8]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -489,7 +527,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });
