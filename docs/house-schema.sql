@@ -1,6 +1,6 @@
 -- THE HOUSE — service bounties paid for in E-Up credit.
 -- The capture engine: the house puts real services on the shelf (a music
--- video shoot, a mix, a studio day), priced in ᴹ ABOVE the free bankroll,
+-- video shoot, a mix, a studio day), priced in credit that must be EARNED,
 -- so claiming one requires working the platform — run the claim run,
 -- complete deals, get people to SEND you credit. Every path to the prize
 -- is a path deeper into the app. One claim per person per offer,
@@ -89,7 +89,7 @@ grant execute on function public.claim_house_offer(uuid) to authenticated;
 -- the winner has to EARN or BE SENT the last 500. Stock of 1: a race.
 insert into public.house_offers (title, blurb, price, stock, area, kind)
 select 'Music Video Shoot — On The House',
-       'A full music video shoot with the McCluster camera team: concept, shoot day, edit, delivered. One artist takes it. Stack 1,500 ᴹ and pay the house — the bankroll starts you at 1,000; the last 500 is yours to earn.',
+       'A full music video shoot with the McCluster camera team: concept, shoot day, edit, delivered. One artist takes it. Stack 1,500 and pay the house — every one earned on the record or staked by your people.',
        1500.00, 1, 'Atlanta', 'service'
 where not exists (select 1 from public.house_offers where title = 'Music Video Shoot — On The House');
 

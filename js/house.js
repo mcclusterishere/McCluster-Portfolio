@@ -88,7 +88,7 @@
           var short = (+o.price - bal).toFixed(0);
           act.innerHTML =
             '<p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">You hold ' + bal.toFixed(0) +
-            " E⤴︎ — " + short + " short.</b> Stack the rest: claim your bankroll on the desk, run " +
+            " E⤴︎ — " + short + " short.</b> Stack it for real: complete deals, run " +
             '<a href="backend.html" style="color:#c99d45">the claim run</a>, complete deals, or get people to send you credit.</p>' +
             '<a class="btn btn--ghost" style="width:100%;justify-content:center" href="market.html#yours">Open the desk — stack it</a>';
         }

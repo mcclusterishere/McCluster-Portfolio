@@ -46,7 +46,7 @@
       <span class="hh__free">Free music video shoot · Atlanta</span>
       <p class="hh__sub"><b>One artist gets the whole thing on the house</b> — concept, shoot day with the McCluster
         camera team, the edit, delivered. No entry fee, no raffle, no DM-to-win. You <b>earn it</b>: stack 1,500 E⤴︎
-        of E-Up credit and pay the house before anybody else does. Come to E-Up — get your re-up.</p>
+        of E-Up credit — every one earned or staked by your people, none of it handed out — and pay the house first. Come to E-Up — get your re-up.</p>
     </div>
 
     <div class="hh__steps">
@@ -54,10 +54,10 @@
         <small><a href="#" data-getapp style="color:var(--ruby-hot)">One tap, no app store</a> — the whole platform lives on your home screen.</small></div></div>
       <div class="hh__step"><div><b>Open your account — 10 seconds, no email</b>
         <small>Your name, your ticker, done. Your ticker files onto the market the moment you're in.</small></div></div>
-      <div class="hh__step"><div><b>Claim your bankroll — 1,000 E⤴︎ on the house</b>
-        <small>Every new account gets it once, on your desk. That's two-thirds of the prize, day one.</small></div></div>
-      <div class="hh__step"><div><b>Stack the last 500</b>
-        <small>Run the claim run and own your back end. Sign and complete real deals. Or get people to <b style="color:var(--cream)">send you credit</b> — anyone on the platform can pay you E⤴︎ by ticker.</small></div></div>
+      <div class="hh__step"><div><b>Earn every single one — nothing is handed out</b>
+        <small>Complete real deals (the worker earns 5%, the payer 1%). Run the claim run and own your back end. Keep your books clean — the same behavior that builds your Street Score mints your credit.</small></div></div>
+      <div class="hh__step"><div><b>Or get the city behind you</b>
+        <small>Anyone on the platform can <b style="color:var(--cream)">send you credit</b> by ticker — your supporters literally stake your shot.</small></div></div>
       <div class="hh__step"><div><b>Pay the house first</b>
         <small>1,500 E⤴︎, one tap, one winner. The claim hits the record instantly and the desk reaches out to book your shoot.</small></div></div>
     </div>
@@ -85,13 +85,13 @@
       window.MCC_HOUSE.shelf(document.getElementById("hhShelf"));
       var doorHost = document.getElementById("hhDoor");
       if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
-        doorHost.innerHTML = '<p class="mp__note" style="margin:0 0 0.6rem;color:#2fbf71">You’re in — your desk holds the bankroll button and the whole stack.</p>' +
+        doorHost.innerHTML = '<p class="mp__note" style="margin:0 0 0.6rem;color:#2fbf71">You’re in — your desk holds the wallet, the deals, and the whole grind.</p>' +
           '<a class="btn btn--ruby" style="width:100%;justify-content:center" href="market.html#yours">Open your desk →</a>';
       } else if (window.MCC_DOOR) {
         window.MCC_DOOR.mount(doorHost, {
           ticker: true,
           context: "house",
-          lede: "Name and ticker — the account opens instantly and the bankroll is one tap away on your desk.",
+          lede: "Name and ticker — the account opens instantly and the grind starts on your desk.",
           onDone: function () { location.href = "market.html#yours"; },
         });
       }
