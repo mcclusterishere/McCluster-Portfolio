@@ -806,11 +806,16 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
         if (window.MCC_TRACK) window.MCC_TRACK("market_pane", { pane: id });
       };
-      document.querySelectorAll(".mk__jump[href^='#']").forEach(function (j) {
-        j.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          window.MK_SHOW(j.getAttribute("href").slice(1));
-        });
+      /* one delegated router: ANY in-page link to a pane switches it —
+         plain hash anchors don't fire hashchange when the hash already
+         matches, which used to make "Open the desk" a dead click */
+      document.addEventListener("click", function (ev) {
+        var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="#"]') : null;
+        if (!a) return;
+        var id = (a.getAttribute("href") || "").slice(1);
+        if (PANES.indexOf(id) === -1) return;
+        ev.preventDefault();
+        window.MK_SHOW(id);
       });
       window.MK_SHOW(PANES.indexOf(location.hash.slice(1)) !== -1 ? location.hash.slice(1) : "floor");
       window.addEventListener("hashchange", function () {
@@ -1183,11 +1188,33 @@
                 $("pSend").textContent = "Send the counter";
                 window.MK_SHOW("build");
               } else if (act === "sign") {
-                var name = prompt("Sign with your full legal name — this is your signature on the record:");
-                if (!name || !name.trim()) return;
-                window.MCC_NET.signDeal(d, side(d), name.trim()).then(function () {
-                  track("collab_signed", {}); loadDeals();
+                // the signature deserves better than a browser prompt —
+                // an inline sheet, right in the deal card
+                var actsRow = b.closest(".cr__acts");
+                if (!actsRow || actsRow.querySelector(".cr__signrow")) return;
+                var row = document.createElement("div");
+                row.className = "cr__signrow";
+                row.style.cssText = "display:flex;gap:0.5rem;flex-wrap:wrap;width:100%;margin-top:0.5rem";
+                var inp = document.createElement("input");
+                inp.className = "mk__in"; inp.type = "text";
+                inp.placeholder = "Your full legal name — this is your signature on the record";
+                inp.style.cssText = "flex:1;min-width:200px;margin:0";
+                var go = document.createElement("button");
+                go.className = "btn btn--ruby"; go.type = "button"; go.textContent = "Sign the record";
+                var no = document.createElement("button");
+                no.className = "btn btn--ghost"; no.type = "button"; no.textContent = "Not yet";
+                go.addEventListener("click", function () {
+                  var name = inp.value.trim();
+                  if (!name) { inp.focus(); return; }
+                  go.textContent = "Signing…";
+                  window.MCC_NET.signDeal(d, side(d), name).then(function () {
+                    track("collab_signed", {}); loadDeals();
+                  });
                 });
+                no.addEventListener("click", function () { row.remove(); });
+                row.appendChild(inp); row.appendChild(go); row.appendChild(no);
+                actsRow.appendChild(row);
+                inp.focus();
               } else if (act === "print") {
                 printSheet(d);
               } else {
@@ -2415,6 +2442,12 @@
             } else {
               $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
             }
+          } else {
+            // a pay link naming a ticker that isn't on the floor must never
+            // die silently — open the keypad and say so
+            if (window.MK_SHOW) window.MK_SHOW("pay");
+            $("mpHint").textContent = "That ticker isn't on the floor yet — search below or pick anyone.";
+            track("mpay_paylink_miss", { to: Q.get("to") });
           }
         }
         // local rehearsal only: a staged listing so the desk can be walked

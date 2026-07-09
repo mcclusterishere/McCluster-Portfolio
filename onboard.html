@@ -58,7 +58,7 @@
     <nav class="site-head__nav">
       <a href="index.html">← Home</a>
       <a href="market.html">The Market</a>
-      <a class="head-cta" id="obHeadCta" href="market.html#yours">Start onboarding</a>
+      <a class="head-cta" id="obHeadCta" href="#obIntake">Start onboarding</a>
     </nav>
   </header>
   <main>
@@ -101,7 +101,7 @@
       </p>
     </section>
 
-    <section class="ob-sec">
+    <section class="ob-sec" id="obIntake">
       <p class="ob-kick">The intake — two minutes</p>
       <h2 class="ob-h2">Answer these and your profile builds itself</h2>
       <p class="ob-lede">Five questions. When you sign in on the next page, the form is already
@@ -232,7 +232,8 @@
         }).join("");
         $("obGo").setAttribute("href", c.go[0]);
         $("obGo").innerHTML = c.go[1];
-        $("obHeadCta").setAttribute("href", c.go[0]);
+        // the head CTA walks you to the intake on THIS page — the trip to
+        // the desk happens at the bottom, with the answers stashed
         $("obGoTop").setAttribute("href", c.go[0]);
         if (window.MCC_TRACK) window.MCC_TRACK("onboard_role", { role: role });
       }

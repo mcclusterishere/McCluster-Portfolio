@@ -46,10 +46,11 @@
     } catch (e) { return; }
     var email = "";
     try { email = JSON.parse(atob(q.access_token.split(".")[1])).email || ""; } catch (e) {}
-    // a link that lands on the profile page stays there — the signer asked
-    // for their room, so the room is where they arrive (admin included)
-    location.replace(here === "profile.html" ? "profile.html"
-      : email === "matthew@mccluster.org" ? "mission.html" : "app.html");
+    // the signer lands exactly where the link caught them — the copy on
+    // every door promises "signs you in right here", so here is where
+    // they stay (token stripped). The admin still goes to Mission Control.
+    location.replace(email === "matthew@mccluster.org" ? "mission.html"
+      : here + location.search);
   })();
 
   /* ---------- one-tap install: skip the app store ----------
