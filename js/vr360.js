@@ -67,8 +67,12 @@
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
     var TOUCH = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    // portrait phones open wider: 75° vertical in a tall window leaves a
+    // keyhole of horizontal view — ~97° restores the sense of a cabin
+    var PORTRAIT = canvas.clientHeight > canvas.clientWidth;
     var state = {
-      yaw: (opts.yaw || 0) * Math.PI / 180, pitch: (opts.pitch || 0) * Math.PI / 180, fov: 75 * Math.PI / 180,
+      yaw: (opts.yaw || 0) * Math.PI / 180, pitch: (opts.pitch || 0) * Math.PI / 180,
+      fov: (PORTRAIT ? 97 : 75) * Math.PI / 180,
       vyaw: 0, vpitch: 0, dragging: false,
       src: null, isVideo: !!opts.video, ready: false,
       gyro: false, gyawBase: null,
@@ -132,7 +136,20 @@
       if (w && h && (canvas.width !== w || canvas.height !== h)) { canvas.width = w; canvas.height = h; }
       gl.viewport(0, 0, canvas.width, canvas.height);
     }
-    function markResize() { state.needResize = true; }
+    // resizes are DEBOUNCED: portrait Safari fires a continuous resize storm
+    // while its toolbar animates, and reallocating the framebuffer on every
+    // tick of that storm was the stutter. One reallocation, once it settles.
+    var resizeT = null;
+    function markResize() {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(function () {
+        state.needResize = true;
+        // a reallocation clears the canvas — pull the next video frame
+        // immediately so the film never blinks black
+        state.newFrame = true;
+        state.lastUpload = 0;
+      }, 180);
+    }
     window.addEventListener("resize", markResize);
     window.addEventListener("orientationchange", markResize);
 

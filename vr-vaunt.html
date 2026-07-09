@@ -9,8 +9,12 @@
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    html, body { height: 100%; overflow: hidden; }
-    .vr { position: fixed; inset: 0; background: #0a0807; }
+    html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+    /* 100lvh = the LARGE viewport: sized as if Safari's bars are hidden, so
+       the stage NEVER resizes while the toolbar animates mid-drag — that
+       resize storm was the portrait-iPhone glitch. Bars simply overlap the
+       bottom edge of the film when shown, which a full-bleed 360 absorbs. */
+    .vr { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; background: #0a0807; }
     .vr__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
     .vr__canvas:active { cursor: grabbing; }
     .vr__top {
