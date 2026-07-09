@@ -116,6 +116,20 @@ window.MCC_STRIPE = {
     };
   },
 
+  /* the provider's own door: asks connect-onboard for a Stripe-hosted
+     Express onboarding link (or the account's live status). Caller must
+     be signed in — the function verifies the token against GoTrue. */
+  connectOnboard: function () {
+    var S = window.MCC_SUPA;
+    if (!S || !S.url || !S.token || !S.token()) return Promise.resolve(null);
+    return fetch(S.url + "/functions/v1/connect-onboard", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.token() },
+      body: "{}",
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  },
+
   payDeal: function (deal, rail) {
     var S = window.MCC_SUPA;
     if (!S || !S.url) return Promise.resolve(null);

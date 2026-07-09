@@ -2224,6 +2224,17 @@
             '<button class="btn btn--ghost" id="dkPayShare" type="button">Share</button></div>' +
             '<p class="mp__msg" id="dkPayMsg"></p>' +
             '<p class="mp__note">Text it, DM it, tape it to the door — it opens the Pay keypad with the amount and your name already loaded.</p></div>';
+          /* the card rail: three states — live, mid-onboarding, not started */
+          if (ME.charges_enabled === true) {
+            html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
+              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● Card rail live — buyers check out by card on your signed deals and the money lands in your bank. Your full rate arrives; the platform fee rides on the buyer&rsquo;s side.</p></div>';
+          } else {
+            html += '<div class="mp__card"><span class="mp__lblx">Get paid by card — the Stripe rail</span>' +
+              '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkRailBtn" type="button" style="flex:1">' +
+              (ME.stripe_acct ? "Finish setting up payouts →" : "Set up payouts — get paid by card") + "</button></div>" +
+              '<p class="mp__msg" id="dkRailMsg"></p>' +
+              '<p class="mp__note">Five minutes with Stripe — identity and a bank account, all on their secure page. Then every signed deal grows a card checkout and your rate lands straight in your bank.</p></div>';
+          }
           if (face === "venue") {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
@@ -2266,6 +2277,32 @@
         }
         body.innerHTML = html;
         if (ME) wireDesk(body, face);
+        /* the rail door: opens Stripe's hosted onboarding, resumes it, or
+           quietly reports the rail still being armed platform-side */
+        var railBtn = body.querySelector("#dkRailBtn");
+        if (railBtn) {
+          railBtn.addEventListener("click", function () {
+            railBtn.textContent = "Opening the Stripe door…";
+            window.MCC_STRIPE.connectOnboard().then(function (j) {
+              if (j && j.url) { track("connect_onboard_open", {}); location.href = j.url; return; }
+              if (j && j.status === "live") {
+                ME.charges_enabled = true;
+                paintYou();
+                return;
+              }
+              railBtn.textContent = ME.stripe_acct ? "Finish setting up payouts →" : "Set up payouts — get paid by card";
+              var m = body.querySelector("#dkRailMsg");
+              if (m) m.textContent = "The rail is being armed for your desk — check back soon.";
+            });
+          });
+          // back from Stripe (or a fresh visit mid-onboarding): ask once
+          // whether the account went live and stamp the desk if so
+          if (ME.stripe_acct && ME.charges_enabled !== true) {
+            window.MCC_STRIPE.connectOnboard().then(function (j) {
+              if (j && j.status === "live") { ME.charges_enabled = true; paintYou(); }
+            });
+          }
+        }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
         // amenity chips inside the freshly-written body
