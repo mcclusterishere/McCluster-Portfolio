@@ -195,6 +195,32 @@
     .xc__biz h3 { font-size: 1.05rem; font-weight: 800; }
     .xc__biz p { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; margin: 0.35rem 0 0.8rem; }
 
+    /* ---- deal builder v2: buttons, not bureaucracy ---- */
+    .db__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.6rem, 1fr)); gap: 0.55rem; margin: 0.4rem 0 1rem; }
+    .db__chip { border: 1px solid rgba(244,239,230,0.18); border-radius: 16px; background: rgba(10,8,7,0.55);
+      color: var(--cream); font: inherit; text-align: center; cursor: pointer; padding: 0.95rem 0.5rem 0.85rem;
+      transition: transform 0.12s, border-color 0.2s, background 0.2s, box-shadow 0.2s; }
+    .db__chip i { display: block; font-style: normal; font-size: 1.5rem; line-height: 1; margin-bottom: 0.4rem; }
+    .db__chip b { display: block; font-size: 0.78rem; font-weight: 800; line-height: 1.2; }
+    .db__chip small { display: block; color: var(--cream-dim); font-size: 0.62rem; margin-top: 0.2rem; }
+    .db__chip:active { transform: scale(0.94); }
+    .db__chip.is-on { border-color: var(--ruby-hot); background: linear-gradient(140deg, rgba(193,18,31,0.5), rgba(120,10,18,0.35));
+      box-shadow: 0 0 18px rgba(229,56,59,0.4), inset 0 1px 0 rgba(255,255,255,0.15); }
+    .db__who { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; padding: 0.2rem 0 0.8rem; }
+    .db__who::-webkit-scrollbar { display: none; }
+    .db__peep { flex: none; width: 6.4rem; border: 1px solid rgba(244,239,230,0.18); border-radius: 16px;
+      background: rgba(10,8,7,0.55); color: var(--cream); font: inherit; text-align: center; cursor: pointer;
+      padding: 0.85rem 0.4rem 0.75rem; transition: transform 0.12s, border-color 0.2s, box-shadow 0.2s; }
+    .db__peep:active { transform: scale(0.94); }
+    .db__peep i { display: grid; place-items: center; font-style: normal; width: 44px; height: 44px; margin: 0 auto 0.45rem;
+      border-radius: 50%; font-weight: 800; font-size: 0.85rem; background: rgba(229,56,59,0.2);
+      border: 2px solid rgba(229,56,59,0.55); }
+    .db__peep b { display: block; font-size: 0.7rem; font-weight: 800; line-height: 1.2;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .db__peep small { color: var(--cream-dim); font-size: 0.6rem; }
+    .db__peep.is-on { border-color: #00c805; box-shadow: 0 0 16px rgba(0,200,5,0.35); }
+    .db__peep.is-on i { border-color: #00c805; background: rgba(0,200,5,0.18); }
+
     #sheet { display: none; }
     @media print {
       body > *:not(#sheet) { display: none !important; }
@@ -328,18 +354,22 @@
           </div>
         </div>
 
-        <label class="mk__lbl" for="pKind">What kind of deal?</label>
-        <select class="mk__in" id="pKind">
+        <label class="mk__lbl">What's the move? Tap it.</label>
+        <div class="db__grid" id="dbKinds"></div>
+        <label class="mk__lbl">With who? Tap them.</label>
+        <div class="db__who" id="dbWho"><span class="mk__note" style="padding:0.4rem 0">Opening the directory…</span></div>
+        <label class="mk__lbl mk__hidden" for="pKind">What kind of deal?</label>
+        <select class="mk__in mk__hidden" id="pKind">
           <option value="service_booking">Book work — a service, a date, a rate</option>
           <option value="music_collab">Music collab — make something together</option>
           <option value="song_split">Song split — we already made something</option>
           <option value="work_for_hire">Work for hire — rights transfer on payment</option>
           <option value="space_booking">Book a space — room, window, rules</option>
           <option value="project_funding">Fund / sponsor a project</option>
-          <option value="custom_offer">Custom offer — name your terms</option>
+          <option value="custom_offer">Anything — hair, rides, tattoos, name it</option>
         </select>
-        <label class="mk__lbl" for="pWho">Who's it for?</label>
-        <select class="mk__in" id="pWho"><option value="">Loading the directory…</option></select>
+        <label class="mk__lbl mk__hidden" for="pWho">Who's it for?</label>
+        <select class="mk__in mk__hidden" id="pWho"><option value="">Loading the directory…</option></select>
         <div class="cr__limits mk__hidden" id="pLimits"></div>
         <label class="mk__lbl" for="pTitle">The song / the job / the project</label>
         <input class="mk__in" id="pTitle" type="text" placeholder="Name it plainly">
@@ -417,6 +447,7 @@
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/sandbox.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
@@ -815,6 +846,72 @@
         jumps.forEach(function (j) { j.classList.toggle("is-on", j.getAttribute("href") === "#" + cur); });
       }, { passive: true });
       track("market_view", { authed: AUTHED });
+    })();
+  </script>
+  <script>
+    /* ============ DEAL BUILDER V2: the chips drive the old engine ============ */
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      var KINDS = [
+        ["service_booking", "&#128188;", "Book work", "a service, a date, a rate"],
+        ["custom_offer", "&#10024;", "Anything", "hair, rides, tattoos, name it"],
+        ["music_collab", "&#127925;", "Make music", "features & sessions"],
+        ["song_split", "&#9997;&#65039;", "Split a song", "percentages on paper"],
+        ["space_booking", "&#127968;", "Book a room", "studio, stage, space"],
+        ["project_funding", "&#128640;", "Fund it", "back the movement"],
+        ["work_for_hire", "&#128230;", "Buy it outright", "rights move on payment"],
+      ];
+      var kindsEl = $("dbKinds"), whoEl = $("dbWho");
+      if (!kindsEl) return;
+      kindsEl.innerHTML = KINDS.map(function (k) {
+        return '<button class="db__chip" type="button" data-k="' + k[0] + '"><i>' + k[1] + "</i><b>" + k[2] + "</b><small>" + k[3] + "</small></button>";
+      }).join("");
+      function syncKind() {
+        var v = $("pKind").value;
+        kindsEl.querySelectorAll(".db__chip").forEach(function (c) {
+          c.classList.toggle("is-on", c.getAttribute("data-k") === v);
+        });
+      }
+      kindsEl.addEventListener("click", function (e) {
+        var c = e.target.closest(".db__chip");
+        if (!c) return;
+        $("pKind").value = c.getAttribute("data-k");
+        $("pKind").dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      $("pKind").addEventListener("change", syncKind);
+      syncKind();
+
+      /* people chips ride the directory the select already loads */
+      function paintWho() {
+        var sel = $("pWho");
+        var opts = Array.prototype.slice.call(sel.options).filter(function (o) { return o.value; });
+        if (!opts.length) return false;
+        whoEl.innerHTML = opts.map(function (o) {
+          var name = o.textContent.split("—")[0].trim();
+          var initials = name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase();
+          return '<button class="db__peep" type="button" data-v="' + o.value + '"><i>' + initials + "</i><b>" +
+            name + "</b><small>tap to pick</small></button>";
+        }).join("");
+        function syncWho() {
+          whoEl.querySelectorAll(".db__peep").forEach(function (c) {
+            c.classList.toggle("is-on", c.getAttribute("data-v") === sel.value);
+          });
+        }
+        whoEl.addEventListener("click", function (e) {
+          var c = e.target.closest(".db__peep");
+          if (!c) return;
+          sel.value = c.getAttribute("data-v");
+          sel.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        sel.addEventListener("change", syncWho);
+        syncWho();
+        return true;
+      }
+      var tries = 0;
+      var t = setInterval(function () {
+        if (paintWho() || ++tries > 40) clearInterval(t);
+      }, 500);
     })();
   </script>
   <script>

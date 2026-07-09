@@ -171,6 +171,25 @@
       });
     },
     signOut: function () { jdel("session"); return Promise.resolve(); },
+    /* the admin door: email + password, no inbox in the loop.
+       Create the user once in Supabase → Authentication → Users →
+       Add user (auto-confirm on) — then this signs in directly. */
+    signInPassword: function (emailAddr, pass) {
+      return fetch(URL_ + "/auth/v1/token?grant_type=password", {
+        method: "POST",
+        headers: { apikey: KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailAddr, password: pass }),
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok || !j.access_token) {
+            throw new Error(j.msg || j.error_description || j.error || "That key doesn't turn this lock.");
+          }
+          saveSession({ access_token: j.access_token, refresh_token: j.refresh_token || "" });
+          window.MCC_DB = sb;
+          return true;
+        });
+      });
+    },
     /* instant start: a real cloud account with no email at all.
        Requires Anonymous sign-ins ON (Supabase → Auth → Sign In / Providers).
        The visitor gets a true auth.uid(), profiles and listings save under
@@ -194,7 +213,7 @@
   };
 
   window.MCC_DB = session() ? sb : local;
-  window.MCC_AUTH = { signIn: sb.signIn, signInAnon: sb.signInAnon, signOut: sb.signOut, user: sb.user };
+  window.MCC_AUTH = { signIn: sb.signIn, signInAnon: sb.signInAnon, signInPassword: sb.signInPassword, signOut: sb.signOut, user: sb.user };
   // the low-level surface for other modules (network layer, talent app):
   // same public anon key, same RLS wall — never a secret
   window.MCC_SUPA = { url: URL_, key: KEY, token: token, uid: uid, email: email };

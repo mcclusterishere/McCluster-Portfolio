@@ -64,7 +64,12 @@
       <h2>Step in</h2>
       <input class="mc__in" id="mcEmail" type="email" placeholder="matthew@mccluster.org" autocomplete="email">
       <button class="btn btn--ruby" id="mcSignIn" type="button">Email me the key</button>
+      <p class="mc__empty" style="margin:0.7rem 0 0.4rem;text-align:center">— or skip the inbox —</p>
+      <input class="mc__in" id="mcPass" type="password" placeholder="Admin password" autocomplete="current-password">
+      <button class="btn btn--ghost" id="mcPassGo" type="button" style="width:100%">Enter with the password</button>
       <p class="mc__msg" id="mcAuthMsg"></p>
+      <p class="mc__empty" style="margin-top:0.5rem">Password setup, once: Supabase &rarr; Authentication &rarr; Users &rarr; Add user &rarr;
+        your admin email + a password, with auto-confirm on. From then on this door never touches an inbox.</p>
       <p class="mc__empty" style="margin-top:0.5rem">The emailed link may land on any page of the site — it still signs you in and brings you straight back here. Links are one-tap and expire; always use the newest email.</p>
     </section>
 
@@ -152,6 +157,15 @@
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       var A = window.MCC_NET.admin;
 
+      $("mcPassGo").addEventListener("click", function () {
+        var em = $("mcEmail").value.trim(), pw = $("mcPass").value;
+        if (!em || !pw) { $("mcAuthMsg").textContent = "Email and password, both."; return; }
+        $("mcAuthMsg").textContent = "Turning the key…";
+        window.MCC_AUTH.signInPassword(em, pw).then(function () {
+          location.reload();
+        }).catch(function (e) { $("mcAuthMsg").textContent = String(e.message || e); });
+      });
+      $("mcPass").addEventListener("keydown", function (e) { if (e.key === "Enter") $("mcPassGo").click(); });
       $("mcSignIn").addEventListener("click", function () {
         var em = $("mcEmail").value.trim();
         if (!em) { $("mcAuthMsg").textContent = "Email first."; return; }
