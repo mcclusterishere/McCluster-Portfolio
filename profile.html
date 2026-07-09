@@ -89,6 +89,15 @@
         </div>
       </section>
 
+      <section class="pf__card" id="pfWorthCard" style="display:none">
+        <h2>Your true worth <span class="ta__status">🔒 only you see this</span></h2>
+        <p style="font-size:2.2rem;font-weight:800;font-variant-numeric:tabular-nums" id="pfWorthN">—</p>
+        <div id="pfWorthRows" style="margin-top:0.5rem"></div>
+        <p class="pf__note">Priced by the M-Worth algorithm from your own books — the seat, the labor,
+          the demand, the stage, and your momentum. The floor shows the world your score in points;
+          the dollars live here, with you.</p>
+      </section>
+
       <section class="pf__card" id="pfStockCard" style="display:none">
         <h2>Your M Stock <span class="ta__status">live on your labor</span></h2>
         <div id="pfStock"></div>
@@ -114,6 +123,7 @@
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/mworth.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -180,6 +190,21 @@
             });
             $("pfStockCard").style.display = "";
             window.MCC_STOCK.mount($("pfStock"), data);
+            // the true number — computed from your own books, shown to you alone
+            if (window.MCC_WORTH) {
+              var w = window.MCC_WORTH.appraise({
+                uid: window.MCC_SUPA.uid(),
+                listing: res.mine, deals: res.rows, requests: r[0], performances: r[1],
+              });
+              $("pfWorthN").textContent = "$" + w.worth.toLocaleString();
+              $("pfWorthRows").innerHTML = w.breakdown.map(function (b) {
+                return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.84rem;' +
+                  'border-bottom:1px dashed rgba(244,239,230,0.12);padding:0.35em 0">' +
+                  "<span style=\"color:var(--cream-dim)\">" + b.label + "</span><b style=\"font-variant-numeric:tabular-nums\">$" +
+                  b.dollars.toLocaleString() + "</b></p>";
+              }).join("");
+              $("pfWorthCard").style.display = "";
+            }
           });
         }).catch(function () {});
       }

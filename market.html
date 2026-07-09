@@ -286,7 +286,8 @@
         <a class="btn btn--ghost" id="xcDPage" href="#">The page</a>
         <a class="btn btn--ghost" id="xcDPay" href="#">M Pay</a>
       </div>
-      <p class="xc__deep">The price is the work: bookings, signed deals, drops, and time on the floor move it.
+      <p class="xc__deep">The score is the work: bookings, signed deals, drops, and time on the floor move it.
+        <b style="color:var(--cream)">Dollar worth is private</b> — every member sees their own true number and nobody else's.
         Investing here means dealing with the human — the returns are songs, shoots, and rooms that exist because you did.</p>
     </div>
 
@@ -420,6 +421,7 @@
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/mworth.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -825,7 +827,8 @@
       var ROWS = [];
 
       function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
-      function fmt(v) { return "$" + (+v).toFixed(2); }
+      // the wall: the public floor speaks in points; dollars are private
+      function fmt(v) { return Math.round(+v * 10).toLocaleString() + " pts"; }
 
       function drawLine(cv, series, color, fill) {
         var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -877,7 +880,7 @@
         }
         var last = idx[idx.length - 1].v, prev = idx[idx.length - 2] ? idx[idx.length - 2].v : last;
         var chg = prev ? ((last - prev) / prev) * 100 : 0;
-        $("xcIndexVal").textContent = fmt(last * 10); // the index rides at 10x for the big-board feel
+        $("xcIndexVal").textContent = Math.round(last * 100).toLocaleString() + " pts";
         var el = $("xcIndexChg");
         el.textContent = (chg >= 0 ? "▲ " : "▼ ") + Math.abs(chg).toFixed(2) + "% today";
         el.className = "xc__chg " + (chg >= 0 ? "up" : "down");
@@ -940,6 +943,15 @@
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>$' + rate + "/hr</b></div>" : "") +
           '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
           '<div class="xc__stat"><small>Session</small><b>14 days</b></div>';
+        if (r.worth) {
+          $("xcDPrice").textContent = "$" + r.worth.worth.toLocaleString();
+          c.textContent = "your true worth · only you see this";
+          c.className = "xc__chg";
+          $("xcDStats").innerHTML = r.worth.breakdown.map(function (b) {
+            return '<div class="xc__stat"><small>' + esc(b.label) + "</small><b>$" +
+              b.dollars.toLocaleString() + "</b></div>";
+          }).join("");
+        }
         $("xcDPage").href = r.p.href || r.p.profile || "providers.html";
         $("xcDPay").href = "pay.html?to=" + encodeURIComponent(r.p.slug || r.p.id);
         document.body.classList.add("xc-open");
@@ -1028,6 +1040,24 @@
         paintTape(); paintIndex(); paintList();
         setInterval(jitter, 2600);
         track("xc_floor_view", { tickers: ROWS.length });
+
+        /* the owner's eyes only: your row shows your TRUE dollar worth.
+           The inputs are RLS-locked to you, so this number physically
+           cannot be computed for anyone else's account. */
+        if (window.MCC_WORTH && window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          Promise.all([window.MCC_NET.myListing().catch(function () { return null; }), window.MCC_WORTH.mine().catch(function () { return null; })])
+            .then(function (r) {
+              var mine = r[0], w = r[1];
+              if (!mine || !w) return;
+              var i = -1;
+              ROWS.forEach(function (row, idx) { if ((row.p.slug || row.p.id) === mine.slug) i = idx; });
+              if (i < 0) return;
+              ROWS[i].worth = w;
+              var q = document.querySelector('[data-quote="' + i + '"]');
+              if (q) q.innerHTML = "<b>$" + w.worth.toLocaleString() + "</b>" +
+                '<span class="xc__pill" style="background:rgba(244,239,230,0.16);color:var(--cream)">🔒 only you</span>';
+            });
+        }
       });
     })();
   </script>
