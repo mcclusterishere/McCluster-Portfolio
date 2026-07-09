@@ -4222,3 +4222,14 @@ html, body { overflow-x: clip; overscroll-behavior-x: none; }
   background: rgba(10, 8, 7, 0.75); animation: psmfInvite 1.2s ease-in-out infinite alternate; }
 @keyframes psmfInvite { from { opacity: 0.65; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .poll__bar.is-riding.is-score::after { animation: none; } }
+
+/* ============ NATIVE FEEL — the page is an app, not a document ============
+   No pinch zoom, no double-tap zoom, no 300ms tap delay, and no iOS
+   input-focus auto-zoom (which needs 16px+ fields to stay away). The
+   viewport meta handles Android; touch-action + the polish.js gesture
+   guard handle iOS Safari, which ignores user-scalable by design. */
+html { touch-action: pan-x pan-y; }
+a, button, input, select, textarea, summary, label, [role="button"] { touch-action: manipulation; }
+@media (pointer: coarse) {
+  input, select, textarea { font-size: max(16px, 1em); }
+}

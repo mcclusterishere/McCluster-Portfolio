@@ -22,6 +22,32 @@
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- native feel: the page never zooms ----------
+     Android obeys the viewport meta; iOS Safari ignores user-scalable
+     on purpose, so the gesture events get swallowed here. Double-tap
+     zoom dies with a short-window second-tap preventDefault — except
+     on real controls, where the tap must land. The meta is also
+     patched at runtime so any future page missing the canonical
+     viewport still gets sealed. ---------- */
+  (function () {
+    var mv = document.querySelector('meta[name="viewport"]');
+    if (mv && mv.content.indexOf("maximum-scale") === -1) {
+      mv.content += ", maximum-scale=1, user-scalable=no";
+    }
+    ["gesturestart", "gesturechange", "gestureend"].forEach(function (ev) {
+      document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+    });
+    var lastTap = 0;
+    var CONTROLS = "a,button,input,select,textarea,summary,label,[role=button],[data-k],[data-act]";
+    document.addEventListener("touchend", function (e) {
+      var now = Date.now();
+      if (now - lastTap < 300 && !(e.target.closest && e.target.closest(CONTROLS))) {
+        e.preventDefault(); // the second tap of a double-tap zoom, on dead space
+      }
+      lastTap = now;
+    }, { passive: false });
+  })();
+
   /* ---------- magic-link catcher, site-wide ----------
      Supabase falls back to the Site URL when a redirect isn't
      allow-listed, so a sign-in link can land on ANY page. This

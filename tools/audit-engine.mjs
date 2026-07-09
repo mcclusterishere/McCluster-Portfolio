@@ -54,7 +54,15 @@ for (const page of pages) {
   }
 }
 
-/* 6 · inline scripts parse too (extracted and checked as modules-ish) */
+/* 6 · native feel is law: every page carries the canonical viewport —
+   a page that re-enables pinch/double-tap zoom breaks the app illusion */
+const VIEWPORT = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">';
+for (const page of pages) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  if (!html.includes(VIEWPORT)) problems.push(`${page}: viewport meta is not the canonical no-zoom string`);
+}
+
+/* 7 · inline scripts parse too (extracted and checked as modules-ish) */
 for (const page of pages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   let i = 0;
