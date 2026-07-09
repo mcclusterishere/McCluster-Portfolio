@@ -149,7 +149,27 @@
       height: clamp(3.3rem, 7.5vh, 4rem); padding: 0; border-radius: 100px; cursor: pointer;
       -webkit-tap-highlight-color: transparent; transition: background 0.12s, transform 0.08s, border-color 0.12s; }
     .mp__key:active { background: rgba(244, 239, 230, 0.12); border-color: rgba(244, 239, 230, 0.2); transform: scale(0.96); }
-    .mp__go { display: flex; gap: 0.6rem; margin-top: clamp(0.8rem, 3vh, 1.5rem); }
+    .mp__who { max-width: 20.5rem; margin: clamp(0.8rem, 2.5vh, 1.3rem) auto 0; display: block; text-align: center; }
+    #mpWhoHit { max-width: 20.5rem; margin: 0.45rem auto 0; text-align: left; }
+    .mp__hit { display: flex; align-items: center; gap: 0.7rem; width: 100%; background: rgba(20, 16, 14, 0.6);
+      border: 1px solid rgba(244, 239, 230, 0.1); border-radius: 12px; padding: 0.6rem 0.8rem; margin-top: 0.4rem;
+      color: var(--cream); font: inherit; cursor: pointer; text-align: left; transition: border-color 0.2s; }
+    .mp__hit:active { border-color: var(--ruby-hot); }
+    .mp__hit.is-picked { border-color: #2fbf71; }
+    .mp__hit b { font-size: 0.88rem; display: block; }
+    .mp__hit small { color: var(--cream-dim); font-size: 0.7rem; }
+    .mp__hit .mph__px { margin-left: auto; text-align: right; font-variant-numeric: tabular-nums; }
+    .mp__hit .mph__px b { font-size: 0.85rem; }
+    .mp__floorbtn { display: flex; align-items: center; gap: 0.85rem; max-width: 20.5rem;
+      margin: clamp(1rem, 3vh, 1.6rem) auto 0; border: 1px solid rgba(244, 239, 230, 0.16); border-radius: 14px;
+      padding: 0.85rem 1rem; color: var(--cream); text-decoration: none; text-align: left;
+      background: rgba(20, 16, 14, 0.5); transition: border-color 0.25s; }
+    .mp__floorbtn:hover, .mp__floorbtn:active { border-color: var(--ruby-hot); }
+    .mp__floorbtn svg { flex: none; color: #2fbf71; }
+    .mp__floorbtn b { display: block; font-size: 0.9rem; letter-spacing: 0.03em; }
+    .mp__floorbtn small { color: var(--cream-dim); font-size: 0.7rem; letter-spacing: 0.06em; }
+    .mp__floorarw { margin-left: auto; color: var(--ruby-hot); }
+    .mp__go { display: flex; gap: 0.6rem; margin-top: clamp(0.8rem, 3vh, 1.5rem); max-width: 20.5rem; margin-left: auto; margin-right: auto; }
     .mp__go .btn { flex: 1; justify-content: center; padding: 1em 0; font-size: 0.8rem; text-align: center; }
     button.btn { cursor: pointer; }
     button.btn--ghost { background: none; }
@@ -639,10 +659,19 @@
           <button class="mp__key" type="button" data-k="0">0</button>
           <button class="mp__key" type="button" data-k="del" aria-label="Delete">⌫</button>
         </div>
+        <input class="mp__in mp__who" id="mpWho" type="text" placeholder="Who’s it for — name or $TICKER" autocomplete="off">
+        <div id="mpWhoHit"></div>
         <div class="mp__go">
           <button class="btn btn--ghost" id="mpRequest" type="button">Request</button>
           <button class="btn btn--ruby" id="mpSend" type="button">Pay</button>
         </div>
+        <a class="mp__floorbtn" href="#floor">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="3 17 9 10 13 13 21 5"/><polyline points="15 5 21 5 21 11"/>
+          </svg>
+          <span><b>The trading floor</b><small>every ticker · the full board · live</small></span>
+          <span class="mp__floorarw">&#8594;</span>
+        </a>
       </div>
     </section>
 
@@ -1888,6 +1917,7 @@
             chg: open ? ((stock.value - open) / open) * 100 : 0 };
         }).sort(function (a, b) { return b.val - a.val; });
         paintTape(); paintIndex(); paintList(); paintMovers();
+        window.MCC_ROWS = ROWS; // the pay pane reads prices from the same book
         setInterval(jitter, 2600);
 
         /* ---- the crowd moves the price: real plays bend the line ----
@@ -2013,7 +2043,64 @@
       function closeSheet() { document.body.classList.remove("sheet-open"); }
       $("mpVeil").addEventListener("click", closeSheet);
       $("shX").addEventListener("click", closeSheet);
-      $("shClose").addEventListener("click", function () { closeSheet(); amt = "0"; preTo = null; pick = null; paintAmt(); });
+      $("shClose").addEventListener("click", function () { closeSheet(); amt = "0"; preTo = null; pick = null; paintAmt(); if ($("mpWho")) { $("mpWho").value = ""; $("mpWhoHit").innerHTML = ""; } });
+      /* ---- the hybrid register: type a number, type a name, the stock
+         shows low key, Pay/Request go straight to the deal step ---- */
+      (function whoSearch() {
+        var box = $("mpWho"), hits = $("mpWhoHit");
+        if (!box) return;
+        function sparkSvg(series, up) {
+          if (!series || series.length < 2) return "";
+          var vals = series.slice(-20).map(function (pt) { return +pt.v || +pt || 0; });
+          var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+          var pts = vals.map(function (v, i) {
+            var x = (i / (vals.length - 1)) * 52;
+            var y = 15 - (max === min ? 7 : ((v - min) / (max - min)) * 12 + 1);
+            return x.toFixed(1) + "," + y.toFixed(1);
+          }).join(" ");
+          return '<svg width="52" height="16" viewBox="0 0 52 16" aria-hidden="true" style="flex:none">' +
+            '<polyline points="' + pts + '" fill="none" stroke="' + (up ? "#00c805" : "#ff5000") + '" stroke-width="1.4"/></svg>';
+        }
+        function paintHits(q) {
+          q = (q || "").trim().toLowerCase().replace(/^\$/, "");
+          hits.innerHTML = "";
+          if (q.length < 2) return;
+          var found = ALL.filter(function (p) {
+            if (ME && (p.slug || p.id) === ME.slug) return false;
+            return (p.name || "").toLowerCase().indexOf(q) !== -1 ||
+              String(tickOf(p)).toLowerCase().indexOf(q) !== -1 ||
+              (p.slug || p.id || "").toLowerCase().indexOf(q) !== -1;
+          }).slice(0, 3);
+          found.forEach(function (p) {
+            var slug = p.slug || p.id;
+            var row = null;
+            (window.MCC_ROWS || []).some(function (r) {
+              if ((r.p.slug || r.p.id) === slug) { row = r; return true; }
+              return false;
+            });
+            var el = document.createElement("button");
+            el.type = "button";
+            el.className = "mp__hit" + (pick && (pick.slug || pick.id) === slug ? " is-picked" : "");
+            el.innerHTML = '<span><b>' + esc(p.name) + '</b><small>$' + esc(tickOf(p)) +
+              (p.headline ? " · " + esc(p.headline) : "") + "</small></span>" +
+              (row ? sparkSvg(row.stock && row.stock.series, (row.chg || 0) >= 0) +
+                '<span class="mph__px"><b>' + Math.round(row.val).toLocaleString() + ' pts</b>' +
+                '<small style="display:block;color:' + ((row.chg || 0) >= 0 ? "#00c805" : "#ff5000") + '">' +
+                ((row.chg || 0) >= 0 ? "▲ " : "▼ ") + Math.abs(row.chg || 0).toFixed(2) + "%</small></span>" : "");
+            el.addEventListener("click", function () {
+              presetTo(slug);
+              box.value = p.name;
+              paintHits(p.name);
+              track("mpay_who_pick", { who: slug });
+            });
+            hits.appendChild(el);
+          });
+        }
+        box.addEventListener("input", function () {
+          if (pick && box.value.trim() !== pick.name) { pick = null; preTo = null; }
+          paintHits(box.value);
+        });
+      })();
       $("mpSend").addEventListener("click", function () { openSheet("pay"); });
       $("mpRequest").addEventListener("click", function () { openSheet("request"); });
 
