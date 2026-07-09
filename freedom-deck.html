@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freedom, Inc. — The Pitch Deck</title>
+  <meta name="description" content="The pitch deck for the faithandresults.com rebuild — printable, elder-first, one thought per slide.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <style>
+    @font-face { font-family: "Atkinson"; src: url("assets/fonts/elder/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); font-weight: 400; }
+    @font-face { font-family: "Atkinson"; src: url("assets/fonts/elder/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); font-weight: 700; }
+    @font-face { font-family: "BitterSlab"; src: url("assets/fonts/elder/bitter-latin-900-normal.woff2") format("woff2"); font-weight: 900; }
+    :root { --navy: #101c2c; --cream: #f7f1e3; --gold: #c99a2e; --clay: #9c3d22; --ink: #14100c; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Atkinson", Verdana, sans-serif; color: var(--ink); background: #444; }
+    .slide { width: 11in; height: 8.5in; background: var(--cream); padding: 0.75in 0.9in; position: relative;
+      page-break-after: always; overflow: hidden; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; }
+    .slide.dark { background: var(--navy); color: var(--cream); }
+    .kick { font-weight: 700; font-size: 17pt; color: var(--clay); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25in; }
+    .dark .kick { color: var(--gold); }
+    h1 { font-family: "BitterSlab", Georgia, serif; font-weight: 900; font-size: 54pt; line-height: 1.02; color: var(--navy); }
+    .dark h1 { color: var(--cream); }
+    h2 { font-family: "BitterSlab", Georgia, serif; font-weight: 900; font-size: 40pt; line-height: 1.05; color: var(--navy); margin-bottom: 0.3in; }
+    .dark h2 { color: var(--cream); }
+    p, li { font-size: 17pt; line-height: 1.6; }
+    ul { padding-left: 0.4in; }
+    li { margin-bottom: 0.14in; }
+    li::marker { color: var(--clay); font-weight: 700; }
+    .dark li::marker { color: var(--gold); }
+    strong { color: var(--navy); } .dark strong { color: var(--gold); }
+    .pg { position: absolute; bottom: 0.4in; right: 0.9in; font-size: 13pt; font-weight: 700; color: var(--clay); }
+    .dark .pg { color: var(--gold); }
+    .seals { display: flex; flex-wrap: wrap; gap: 0.18in; margin-top: 0.35in; }
+    .seal { border: 4px solid var(--gold); border-radius: 12px; padding: 0.14in 0.3in; font-weight: 700; font-size: 19pt;
+      color: var(--cream); background: rgba(201, 154, 46, 0.15); }
+    .big-x { font-family: "BitterSlab", Georgia, serif; font-weight: 900; font-size: 64pt; color: var(--clay); letter-spacing: 0.02em; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3in; margin-top: 0.2in; }
+    .card { background: #fffdf7; border: 4px solid var(--navy); border-radius: 16px; padding: 0.28in 0.3in; }
+    .card b { display: block; font-family: "BitterSlab", Georgia, serif; font-weight: 900; font-size: 20pt; color: var(--navy); margin-bottom: 0.08in; line-height: 1.15; }
+    .card p { font-size: 14.5pt; line-height: 1.45; }
+    .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3in; margin-top: 0.25in; }
+    .num { background: var(--navy); color: var(--cream); border-radius: 16px; padding: 0.32in 0.3in; }
+    .num b { font-family: "BitterSlab", Georgia, serif; font-weight: 900; font-size: 42pt; display: block; line-height: 1; }
+    .num span { font-size: 14.5pt; line-height: 1.45; display: block; margin-top: 0.14in; }
+    .cities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.14in; margin-top: 0.25in; }
+    .city { border: 3px solid var(--navy); border-radius: 10px; padding: 0.12in 0.18in; font-weight: 700; font-size: 15pt; background: #fffdf7; }
+    .city::before { content: "★ "; color: var(--gold); }
+    .foot-brand { position: absolute; bottom: 0.4in; left: 0.9in; font-size: 13pt; font-weight: 700; color: var(--navy); }
+    .dark .foot-brand { color: var(--cream); }
+    @media print { body { background: none; } .slide { margin: 0; } }
+  </style>
+</head>
+<body>
+
+  <!-- 1 · TITLE -->
+  <div class="slide dark">
+    <p class="kick">Prepared for Freedom, Inc. · faithandresults.com</p>
+    <h1>Faith, backed by results —<br>and a website that<br>finally says so.</h1>
+    <p style="margin-top:0.35in; font-size:19pt">The plan for a new faithandresults.com.</p>
+    <span class="foot-brand">McCluster — web, brand, and the machine behind it</span>
+    <span class="pg">1</span>
+  </div>
+
+  <!-- 2 · WHAT YOU'VE EARNED -->
+  <div class="slide dark">
+    <p class="kick">What you've already earned</p>
+    <h2>Credentials most firms<br>would put on a billboard.</h2>
+    <div class="seals">
+      <span class="seal">FDIC</span>
+      <span class="seal">HUD</span>
+      <span class="seal">Federal Home Loan Bank</span>
+      <span class="seal">NeighborWorks America</span>
+    </div>
+    <p style="margin-top:0.35in">Fifteen cities. Four pillars. Decades of trust.<br>
+      <strong>Today, all of it is buried in paragraphs.</strong></p>
+    <span class="pg">2</span>
+  </div>
+
+  <!-- 3 · THE TYPO -->
+  <div class="slide">
+    <p class="kick">The first thing the world reads</p>
+    <h2>Google shows your name<br>next to this word:</h2>
+    <p class="big-x">“Ecomonic”</p>
+    <p style="margin-top:0.25in">The homepage title is misspelled — on the most visible line the
+      organization owns. For a firm whose product is <strong>credibility</strong>, that one word does
+      damage every single day. <strong>It disappears on day one of the rebuild.</strong></p>
+    <span class="pg">3</span>
+  </div>
+
+  <!-- 4 · THE OTHER PROBLEMS -->
+  <div class="slide">
+    <p class="kick">What else the current site costs</p>
+    <h2>Four more doors closed.</h2>
+    <div class="grid2">
+      <div class="card"><b>It turns visitors away.</b><p>Security settings answer many legitimate visits with “Forbidden.” Shared links show up blank.</p></div>
+      <div class="card"><b>Pages named in code.</b><p>NFLC. CFLC. FCDC. Insiders understand; the HUD program officer and the pastor in Houston do not.</p></div>
+      <div class="card"><b>No way to say yes.</b><p>No “book a training.” No partner form. No newsletter. No give button. Interested people arrive — then leave.</p></div>
+      <div class="card"><b>Fifteen cities, invisible.</b><p>The most impressive fact about Freedom, Inc. is scattered across pages nobody visits.</p></div>
+    </div>
+    <span class="pg">4</span>
+  </div>
+
+  <!-- 5 · THE NEW FRONT DOOR -->
+  <div class="slide dark">
+    <p class="kick">The new front door — first screen, no scrolling</p>
+    <h1 style="font-size:60pt">Faith, backed<br>by results.</h1>
+    <p style="margin-top:0.2in; font-size:19pt">Economic development, education, housing, and sustainability —
+      delivered with faith communities in fifteen American cities.</p>
+    <div class="seals">
+      <span class="seal">FDIC</span><span class="seal">HUD</span>
+      <span class="seal">Federal Home Loan Bank</span><span class="seal">NeighborWorks</span>
+    </div>
+    <span class="pg">5</span>
+  </div>
+
+  <!-- 6 · 13 PAGES → 6 DOORS -->
+  <div class="slide">
+    <p class="kick">The architecture</p>
+    <h2>Thirteen pages become six.</h2>
+    <ul style="columns:2; column-gap:0.5in">
+      <li><strong>Home</strong> — the credential wall &amp; the one-line mission</li>
+      <li><strong>The Work</strong> — four pillars, real outcomes</li>
+      <li><strong>Collaboratives</strong> — every program in plain English</li>
+      <li><strong>Cities</strong> — fifteen cities, one clickable screen</li>
+      <li><strong>About</strong> — the principals &amp; the record, told properly</li>
+      <li><strong>Connect</strong> — partner · train · subscribe · give</li>
+    </ul>
+    <p style="margin-top:0.25in">Every acronym expanded on first touch. Every visitor finds their door.</p>
+    <span class="pg">6</span>
+  </div>
+
+  <!-- 7 · CITIES -->
+  <div class="slide">
+    <p class="kick">The screen that wins meetings</p>
+    <h2>Fifteen cities. One glance.</h2>
+    <div class="cities">
+      <span class="city">Atlanta</span><span class="city">Baltimore</span><span class="city">Bridgeport</span>
+      <span class="city">Chicago</span><span class="city">Cleveland</span><span class="city">Denver</span>
+      <span class="city">Detroit</span><span class="city">Houston</span><span class="city">Little Rock</span>
+      <span class="city">New Britain</span><span class="city">New Orleans</span><span class="city">Oakland</span>
+      <span class="city">Orlando</span><span class="city">Providence</span><span class="city">Washington, D.C.</span>
+    </div>
+    <span class="pg">7</span>
+  </div>
+
+  <!-- 8 · TYPE FOR EVERY PAIR OF EYES -->
+  <div class="slide">
+    <p class="kick">Built for every pair of eyes</p>
+    <h2>No fine print. Anywhere.</h2>
+    <p>This deck — and the whole new site — is set in <strong>Atkinson Hyperlegible</strong>, the typeface
+      created by the <strong>Braille Institute</strong> for readers with aging and low vision, with bold slab
+      headlines and deep contrast.</p>
+    <p style="margin-top:0.2in">Elders, deacons, and board members read every word without reaching for
+      their glasses. For a congregation-rooted audience, <strong>that is strategy, not decoration.</strong></p>
+    <span class="pg">8</span>
+  </div>
+
+  <!-- 9 · THE NUMBERS -->
+  <div class="slide">
+    <p class="kick">The numbers</p>
+    <h2>Same discipline. New machine.</h2>
+    <div class="nums">
+      <div class="num"><b>$800</b><span>One time — the rebuild, migration, search repair across fifteen city markets, and the typo's funeral.</span></div>
+      <div class="num"><b>$400/mo</b><span>The retainer — news &amp; events kept alive, the newsletter actually sent, quarterly impact updates.</span></div>
+      <div class="num"><b>$0/mo</b><span>Hosting &amp; software. The current hosting bill stops existing — money moves from servers to visibility.</span></div>
+    </div>
+    <span class="pg">9</span>
+  </div>
+
+  <!-- 10 · 90 DAYS + ASK -->
+  <div class="slide dark">
+    <p class="kick">The first ninety days</p>
+    <h2>Live in two weeks.<br>Growing by month three.</h2>
+    <ul>
+      <li><strong>Weeks 1–2:</strong> New site live. The misspelling is history. Every share unfurls with the credential wall.</li>
+      <li><strong>Weeks 3–4:</strong> Cities map published. Partner, training, and giving doors open. Newsletter capture begins.</li>
+      <li><strong>Months 2–3:</strong> Impact numbers published. First newsletter sent. Rankings rebuilt city by city.</li>
+    </ul>
+    <p style="margin-top:0.3in; font-size:20pt"><strong>To begin:</strong> hosting access · the outcome numbers · the leadership story.</p>
+    <span class="foot-brand">McCluster · matthew@mccluster.org</span>
+    <span class="pg">10</span>
+  </div>
+
+</body>
+</html>
