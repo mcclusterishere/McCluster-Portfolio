@@ -27,7 +27,8 @@ Deno.serve(async (req) => {
         { price_data: { currency: "usd", product_data: { name: "Platform fee" }, unit_amount: fee }, quantity: 1 },
         { price_data: { currency: "usd", product_data: { name: "Processing" }, unit_amount: proc }, quantity: 1 },
       ],
-      // provider connected? route their money straight through
+      // provider connected? their base arrives whole: full charge minus
+      // application_fee (= fee + proc) lands on the destination account
       ...(provider_acct
         ? { payment_intent_data: { application_fee_amount: fee + proc, transfer_data: { destination: provider_acct } } }
         : {}),
@@ -44,6 +45,7 @@ Deno.serve(async (req) => {
 function cors() {
   return {
     "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "authorization, content-type, apikey",
   };
 }
