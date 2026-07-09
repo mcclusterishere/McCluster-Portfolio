@@ -63,12 +63,7 @@
         The link signs you in on this device and your room is waiting.</p>
       <section class="pf__card">
         <h2>Step inside</h2>
-        <input class="pf__in" id="pfEmail" type="email" placeholder="you@yourwork.com" autocomplete="email">
-        <input class="pf__in" id="pfTicker" type="text" placeholder="Claim your ticker — 2–5 letters, like MCC" maxlength="5" autocapitalize="characters" style="text-transform:uppercase">
-        <button class="btn btn--ruby" id="pfSignIn" type="button">Sign up / sign in — email me the key</button>
-        <p class="pf__note" style="text-align:center;margin:0.6rem 0 0.2rem">— or skip the inbox entirely —</p>
-        <button class="btn btn--ghost" id="pfInstant" type="button" style="width:100%">Start instantly — no email needed</button>
-        <p class="pf__msg" id="pfMsg"></p>
+        <div id="pfDoor" style="margin:0.4rem 0 0.6rem"></div>
         <div class="pf__gets">
           <div class="pf__get"><b>Your ticker</b><small>Your own symbol — you trade on the floor like a stock, moved by real work.</small></div>
           <div class="pf__get"><b>Your deals</b><small>Propositions, splits, signatures — the full trail in the Market.</small></div>
@@ -132,6 +127,7 @@
   <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
@@ -143,32 +139,12 @@
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       function $(id) { return document.getElementById(id); }
 
-      $("pfSignIn").addEventListener("click", function () {
-        var em = $("pfEmail").value.trim();
-        if (!em) { $("pfMsg").textContent = "Drop your email first."; return; }
-        // the ticker claim waits on this device and rides into the listing
-        var tc = window.MCC_STOCK ? window.MCC_STOCK.ticker($("pfTicker").value, "") : $("pfTicker").value.toUpperCase();
-        if ($("pfTicker").value.trim()) { try { localStorage.setItem("mcc_ticker_claim", tc); } catch (e) {} }
-        $("pfMsg").textContent = "Sending the key…";
-        window.MCC_AUTH.signIn(em).then(function () {
-          $("pfMsg").textContent = "Check your email — the link signs you in right here.";
-          track("profile_signup_sent", {});
-        }).catch(function (e) { $("pfMsg").textContent = String(e.message || e); });
-      });
+      /* the one door — same component as every other sign-in on the site */
+      if (window.MCC_DOOR && $("pfDoor")) {
+        window.MCC_DOOR.mount($("pfDoor"), { ticker: true, context: "profile" });
+      }
       $("pfSignOut").addEventListener("click", function () {
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
-      });
-
-      /* instant start: real cloud account, zero email — the ticker claim
-         rides along exactly like the magic-link path */
-      $("pfInstant").addEventListener("click", function () {
-        var tc = window.MCC_STOCK ? window.MCC_STOCK.ticker($("pfTicker").value, "") : $("pfTicker").value.toUpperCase();
-        if ($("pfTicker").value.trim()) { try { localStorage.setItem("mcc_ticker_claim", tc); } catch (e) {} }
-        $("pfMsg").textContent = "Opening your room…";
-        window.MCC_AUTH.signInAnon().then(function () {
-          track("profile_instant_start", {});
-          location.reload();
-        }).catch(function (e) { $("pfMsg").textContent = String(e.message || e); });
       });
 
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {

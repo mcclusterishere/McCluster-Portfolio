@@ -59,10 +59,7 @@
     <!-- signed out -->
     <section class="mb__card" id="mbAuth">
       <h2>Step inside</h2>
-      <p class="mb__note" style="margin:0 0 0.9rem">One email, no password. The link signs you in right here.</p>
-      <input class="mb__in" id="mbEmail" type="email" placeholder="you@you.com" autocomplete="email">
-      <button class="btn btn--ruby" id="mbSignIn" type="button">Email me the key</button>
-      <p class="mb__msg" id="mbAuthMsg"></p>
+      <div id="mbDoor" style="margin-top:0.4rem"></div>
     </section>
 
     <!-- signed in -->
@@ -97,6 +94,7 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script>
@@ -142,15 +140,10 @@
         $("mbAuth").classList.toggle("mb__hidden", on);
         $("mbIn").classList.toggle("mb__hidden", !on);
       }
-      $("mbSignIn").addEventListener("click", function () {
-        var em = $("mbEmail").value.trim();
-        if (!em) { $("mbAuthMsg").textContent = "Drop your email first."; return; }
-        $("mbAuthMsg").textContent = "Sending the key…";
-        window.MCC_AUTH.signIn(em).then(function () {
-          $("mbAuthMsg").textContent = "Check your email — the link signs you in right here.";
-          track("member_signin_sent", {});
-        }).catch(function (e) { $("mbAuthMsg").textContent = String(e.message || e); });
-      });
+      /* the one door — same component as every sign-in on the site */
+      if (window.MCC_DOOR && $("mbDoor")) {
+        window.MCC_DOOR.mount($("mbDoor"), { context: "members" });
+      }
       function loadMember() {
         window.MCC_NET.myMember().then(function (m) {
           var st = $("mbStatus");

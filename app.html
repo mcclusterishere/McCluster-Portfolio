@@ -505,15 +505,8 @@
       <p class="leadov__kicker">Your account</p>
       <div id="acctOut">
         <h3 class="leadov__h">Carry it everywhere</h3>
-        <form class="leadov__form" id="acctForm" novalidate>
-          <input class="leadov__in" name="email" type="email" placeholder="Your email" autocomplete="email" required>
-          <button class="btn btn--ruby leadov__go" type="submit">Send my sign-in link</button>
-          <p class="leadov__note">No password. A link lands in your inbox, one tap signs you in, and your plays, likes and resume points follow you to every device.</p>
-        </form>
-        <div class="leadov__done" hidden>
-          <h3 class="leadov__h">Check your inbox.</h3>
-          <p class="leadov__note">The sign-in link is on the way. Open it on this device and you're in.</p>
-        </div>
+        <div id="acctDoor" style="margin-top:0.8rem"></div>
+        <p class="leadov__note">Your plays, likes and resume points follow you to every device.</p>
       </div>
       <div id="acctIn" hidden>
         <h3 class="leadov__h">Signed in</h3>
@@ -531,6 +524,7 @@
   <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/persona.js?v=__STAMP__"></script>
@@ -561,22 +555,16 @@
         $("ava").style.borderColor = u ? "var(--ruby-hot)" : "rgba(229,56,59,0.6)";
         $("ava").style.boxShadow = u ? "0 0 12px rgba(229,56,59,0.6)" : "none";
       }
-      $("ava").addEventListener("click", function () { acctRender(); $("acct").classList.add("is-open"); });
+      $("ava").addEventListener("click", function () {
+        acctRender();
+        $("acct").classList.add("is-open");
+        // the one door — same component as every sign-in on the site
+        if (window.MCC_DOOR && !$("acctDoor").children.length) {
+          window.MCC_DOOR.mount($("acctDoor"), { context: "music" });
+        }
+      });
       $("acctX").addEventListener("click", function () { $("acct").classList.remove("is-open"); });
       $("acct").addEventListener("click", function (e) { if (e.target === $("acct")) $("acct").classList.remove("is-open"); });
-      $("acctForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var em = this.email.value.trim();
-        if (!em) return;
-        var form = this;
-        window.MCC_AUTH.signIn(em).then(function () {
-          form.hidden = true;
-          form.parentNode.querySelector(".leadov__done").hidden = false;
-          if (window.MCC_TRACK) window.MCC_TRACK("auth_link_sent", {});
-        }).catch(function (err) {
-          form.querySelector(".leadov__note").textContent = "Couldn't send it: " + err.message + " — check the address and try again.";
-        });
-      });
       $("acctOutBtn").addEventListener("click", function () {
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
       });

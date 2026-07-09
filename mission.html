@@ -62,15 +62,15 @@
 
     <section class="mc__card" id="mcAuth">
       <h2>Step in</h2>
-      <input class="mc__in" id="mcEmail" type="email" placeholder="matthew@mccluster.org" autocomplete="email">
-      <button class="btn btn--ruby" id="mcSignIn" type="button">Email me the key</button>
-      <p class="mc__empty" style="margin:0.7rem 0 0.4rem;text-align:center">— or skip the inbox —</p>
-      <input class="mc__in" id="mcPass" type="password" placeholder="Admin password" autocomplete="current-password">
-      <button class="btn btn--ghost" id="mcPassGo" type="button" style="width:100%">Enter with the password</button>
-      <p class="mc__msg" id="mcAuthMsg"></p>
-      <p class="mc__empty" style="margin-top:0.5rem">Password setup, once: Supabase &rarr; Authentication &rarr; Users &rarr; Add user &rarr;
-        your admin email + a password, with auto-confirm on. From then on this door never touches an inbox.</p>
-      <p class="mc__empty" style="margin-top:0.5rem">The emailed link may land on any page of the site — it still signs you in and brings you straight back here. Links are one-tap and expire; always use the newest email.</p>
+      <div class="door" style="max-width:none">
+        <input class="door__in" id="mcEmail" type="email" placeholder="matthew@mccluster.org" autocomplete="email">
+        <input class="door__in" id="mcPass" type="password" placeholder="Admin password" autocomplete="current-password">
+        <button class="door__go" id="mcPassGo" type="button">Enter with the password</button>
+        <p class="door__or">or use the inbox</p>
+        <button class="door__alt" id="mcSignIn" type="button">Email me a sign-in link</button>
+        <p class="door__msg" id="mcAuthMsg"></p>
+        <p class="door__fine">The password door never touches an inbox. If the emailed link lands on another page of the site, it still signs you in and walks you back here.</p>
+      </div>
     </section>
 
     <div id="mcIn" class="mc__hidden">
