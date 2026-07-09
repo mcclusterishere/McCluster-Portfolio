@@ -114,6 +114,10 @@
     .vr__scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
       background: var(--ruby-hot); box-shadow: 0 0 10px rgba(229, 56, 59, 0.8); }
     .vr__time { flex: none; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--cream-dim); font-variant-numeric: tabular-nums; }
+    /* while the loading-fallback card is up, the film controls stand down —
+       the card carries its own doors (Try again / the universe), and the two
+       sets of buttons were stacking through each other. The Exit stays. */
+    .vr.is-fallback .vr__hud, .vr.is-fallback .vr__coach { display: none; }
 
     /* Vaunt brand: their orange carries the whole experience */
     .vr__badge, .vr__play { background: linear-gradient(120deg, #c93a04, #f84c0a); }
@@ -206,8 +210,10 @@
             '<button class="vr__btn" id="vrRetry" type="button">Try again</button> ' +
             '<a class="vr__btn" href="vaunt.html" style="text-decoration:none">The Vaunt universe</a></div>';
           document.querySelector(".vr").appendChild(ov);
+          document.querySelector(".vr").classList.add("is-fallback");
           document.getElementById("vrRetry").addEventListener("click", function () {
             shown = false; ov.remove();
+            document.querySelector(".vr").classList.remove("is-fallback");
             try { viewer.media.load(); viewer.media.play().catch(function () {}); } catch (e) {}
             setTimeout(check, 8000);
           });
