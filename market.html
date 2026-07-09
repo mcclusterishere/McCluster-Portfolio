@@ -400,6 +400,10 @@
         <input class="mk__in" id="pContact" type="text" placeholder="Name · email or phone">
         <button class="btn btn--ruby" id="pSend" type="button">Send it</button>
         <p class="mk__msg" id="pMsg"></p>
+        <p class="mk__note"><b style="color:var(--cream)">How money moves today:</b> when a deal is signed, the
+          <em style="color:var(--cream)">Pay by card</em> button opens secure Square checkout — type the exact amount,
+          put the deal name in the note, done. Both sides then mark it paid and the record carries it.
+          Card rails built into the deal itself land with Stripe Connect.</p>
         <p class="mk__note">Signed in, this is the full engine: counters, terms lock, signatures, and a printable
           sheet. Signed out, it's a quick request straight to the provider's inbox. Either way —
           <em style="color:var(--cream)">part of every dollar spent here builds the next artist.</em></p>
@@ -755,7 +759,8 @@
             } else if (d.status === "locked" && mine) {
               acts = '<span class="cr__tag">You signed — waiting on ' + esc(other) + "</span>";
             } else if (d.status === "signed") {
-              acts = '<button class="btn btn--ruby" data-act="paid" data-i="' + i + '">Mark paid</button>' +
+              acts = '<a class="btn btn--ruby" href="https://square.link/u/MBVeuzoo?src=deal" target="_blank" rel="noopener" data-cta="deal-square">Pay by card — Square</a>' +
+                '<button class="btn btn--ghost" data-act="paid" data-i="' + i + '">Mark paid</button>' +
                 '<button class="btn btn--ghost" data-act="print" data-i="' + i + '">Print the sheet</button>';
             } else if (d.status === "paid") {
               acts = '<button class="btn btn--ruby" data-act="completed" data-i="' + i + '">Mark completed</button>' +
