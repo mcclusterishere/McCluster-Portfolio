@@ -157,6 +157,50 @@
       }
     },
     {
+      "id": "revent-lounge",
+      "name": "Revent Work Lounge & Photo Studio",
+      "roles": [
+        "Studios"
+      ],
+      "headline": "1,200 sq ft of natural light — shoots by day, sessions all week",
+      "area": "413 Neponset Ave · Dorchester, Boston, MA",
+      "verified": "pending",
+      "badgeColor": "#45b6ff",
+      "href": "space-revent.html#lounge",
+      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Work%20Lounge%20via%20M%20Network&body=Shoot%20or%20session%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+      "blurb": "Revent's second room: 1,200 square feet of natural light built for photo sessions and focused work — with a 15-seat conference room, whiteboard, grass wall, 65″ smart display, Bluetooth speakers, LED bar uplighting, and WiFi.",
+      "photo": "assets/frames/study_0001.jpg",
+      "space": {
+        "rate": 65,
+        "unit": "hour",
+        "amenities": [
+          "natural-light",
+          "client-lounge",
+          "house-screen",
+          "furnished",
+          "capacity-rated"
+        ]
+      },
+      "terms": {
+        "avail": {
+          "days": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "slots": [
+            0,
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
       "id": "laire",
       "ticker": "LRE",
       "name": "Laire",
