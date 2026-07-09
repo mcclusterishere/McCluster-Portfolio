@@ -84,7 +84,7 @@
         '<button class="btn btn--ruby" id="mtkSend" type="button">Send it</button></div>' +
         '<p class="mp__msg" id="mtkMsg"></p>' +
         '<div id="mtkFaucet"></div>' +
-        '<p class="mp__note">The beta rail: 1 E⤴ = $1 of platform credit, minted by real work and moved person to person ' +
+        '<p class="mp__note">The beta rail: 1 E⤴︎ = $1 of platform credit, minted by real work and moved person to person ' +
         'right here — every send on the record, zero real dollars at risk. Closed loop by design; the dollar bridge ' +
         'comes later, through the front door, with counsel.</p>';
       host.appendChild(el);
@@ -113,7 +113,7 @@
       function paint() {
       Promise.all([window.MCC_TOKEN.balance(), window.MCC_TOKEN.ledger(6)])
         .then(function (r) {
-          el.querySelector("#mtkBal").textContent = r[0].toFixed(2) + " E⤴";
+          el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
           var fc = el.querySelector("#mtkFaucet");
           fc.innerHTML = "";
           if (r[0] <= 0) {
@@ -121,7 +121,7 @@
             b.className = "btn btn--ghost";
             b.type = "button";
             b.style.cssText = "width:100%;justify-content:center;margin-top:0.4rem";
-            b.textContent = "Claim your beta bankroll — 1,000 E⤴ on the house";
+            b.textContent = "Claim your beta bankroll — 1,000 E⤴︎ on the house";
             b.addEventListener("click", function () {
               b.textContent = "Opening the vault…";
               window.MCC_TOKEN.bankroll().then(function (got) {
@@ -141,7 +141,7 @@
         })
         .catch(function (e) {
           var s = String(e && e.message || e);
-          el.querySelector("#mtkBal").textContent = "0.00 E⤴";
+          el.querySelector("#mtkBal").innerHTML = '0.00 <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
           el.querySelector("#mtkRows").innerHTML = '<p class="mp__note">' +
             (s.indexOf("404") !== -1 || s.indexOf("relation") !== -1 || s.indexOf("net 4") !== -1
               ? "One paste opens the vault: docs/mtoken-schema.sql in Supabase."
