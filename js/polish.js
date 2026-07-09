@@ -236,7 +236,7 @@
     var crumb = document.createElement("a");
     crumb.className = "app-crumb";
     crumb.href = "app.html";
-    crumb.innerHTML = "&#8249; The App";
+    crumb.innerHTML = "&#8249; The Music";
     document.body.appendChild(crumb);
   })();
 

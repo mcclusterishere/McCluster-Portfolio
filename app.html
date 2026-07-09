@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>The App · McCluster</title>
-  <meta name="description" content="The McCluster streaming app: the music, the films, the experiences and the record. A player that remembers you.">
+  <title>The Music · McCluster</title>
+  <meta name="description" content="The McCluster music destination: the registered catalogue, the experiences, and the series — one room, one player that remembers you.">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -48,9 +48,60 @@
     .sp__ava img { width: 62%; }
     .sp__pills { display: flex; gap: 0.45rem; margin-top: 0.7rem; overflow-x: auto; scrollbar-width: none; }
     .sp__pills::-webkit-scrollbar { display: none; }
-    .sp__pill { flex: none; border: none; cursor: pointer; font: inherit; font-size: 0.74rem; letter-spacing: 0.02em;
-      color: var(--cream); background: rgba(244,239,230,0.09); border-radius: 100px; padding: 0.45em 1.05em; transition: background 0.2s, color 0.2s; }
-    .sp__pill.is-on { background: var(--ruby-hot); color: #fff; font-weight: 700; }
+    /* the velvet rope: three rooms, lettered like a gallery, lit when chosen */
+    .sp__pill { flex: none; cursor: pointer; font: inherit; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim);
+      background: none; border: 1px solid rgba(244, 239, 230, 0.16); border-radius: 100px; padding: 0.7em 1.5em;
+      transition: color 0.25s, border-color 0.25s, box-shadow 0.25s; }
+    .sp__pill.is-on { color: var(--cream); border-color: rgba(229, 56, 59, 0.85);
+      box-shadow: 0 0 16px rgba(229, 56, 59, 0.35), inset 0 0 12px rgba(229, 56, 59, 0.12); }
+    .sp__mast { padding: 0.6rem 0 0; font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gild); opacity: 0.9; }
+    :root { --gild: #d8ba7c; }
+
+    /* ---- the registry: the numbered catalogue, folded into the music room ---- */
+    .reg { margin: 2.4rem clamp(1rem, 4vw, 2rem) 0; }
+    .reg__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+      border-bottom: 1px solid rgba(216, 186, 124, 0.35); padding-bottom: 0.6rem; }
+    .reg__head h2 { font-family: var(--display); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .reg__head small { color: var(--gild); font-size: 0.55rem; letter-spacing: 0.26em; text-transform: uppercase; text-align: right; }
+    .reg__album { margin: 1.15rem 0 0.1rem; color: var(--gild); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; }
+    .reg__row { display: flex; align-items: baseline; gap: 0.8rem; padding: 0.75rem 0.25rem;
+      border-bottom: 1px solid rgba(244, 239, 230, 0.08); text-decoration: none; color: inherit; }
+    a.reg__row:hover { background: rgba(244, 239, 230, 0.045); }
+    .reg__row.is-vault { opacity: 0.55; }
+    .reg__no { font-variant-numeric: tabular-nums; color: var(--gild); font-size: 0.68rem; width: 1.7rem; flex: none; }
+    .reg__t { font-weight: 700; font-size: 0.92rem; flex: 1 1 40%; min-width: 0; }
+    .reg__c { color: var(--cream-dim); font-size: 0.68rem; flex: 1 1 34%; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reg__len { font-variant-numeric: tabular-nums; color: var(--cream-dim); font-size: 0.7rem; flex: none; }
+    .reg__go { color: var(--ruby-hot); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; flex: none; }
+    .reg__note { margin-top: 0.95rem; color: var(--cream-dim); font-size: 0.66rem; line-height: 1.65; }
+    .reg__paper { margin-top: 1.1rem; }
+    .reg__paper summary { cursor: pointer; color: var(--gild); font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.24em; text-transform: uppercase; padding: 0.4rem 0; list-style: none; }
+    .reg__paper summary::before { content: "+ "; }
+    .reg__paper[open] summary::before { content: "\2212\00a0"; }
+    @media (max-width: 34rem) { .reg__c { display: none; } }
+
+    /* ---- the series room: the screening wall ---- */
+    .ser { margin: 0.2rem clamp(1rem, 4vw, 2rem) 0; display: grid; gap: 1.1rem; }
+    .ser__card { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(244, 239, 230, 0.12);
+      background: var(--ink-2); }
+    .ser__card > img { width: 100%; aspect-ratio: 16 / 8.5; object-fit: cover; display: block; }
+    .ser__card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(200deg, transparent 28%, rgba(10, 8, 7, 0.95) 86%); }
+    .ser__hit { position: absolute; inset: 0; z-index: 1; }
+    .ser__in { position: absolute; left: 1.1rem; right: 1.1rem; bottom: 1rem; z-index: 2; pointer-events: none; }
+    .ser__in a { pointer-events: auto; }
+    .ser__k { color: var(--gild); font-size: 0.54rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 700; }
+    .ser__t { font-family: var(--display); font-size: clamp(1.6rem, 6.4vw, 2.4rem); text-transform: uppercase; line-height: 0.95; margin: 0.18rem 0 0.22rem; }
+    .ser__s { color: var(--cream-dim); font-size: 0.78rem; max-width: 34rem; }
+    .ser__eps { display: flex; gap: 0.5rem; margin-top: 0.7rem; flex-wrap: wrap; }
+    .ser__ep { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; color: var(--cream); text-decoration: none;
+      border: 1px solid rgba(244, 239, 230, 0.32); border-radius: 100px; padding: 0.5em 1.05em;
+      background: rgba(10, 8, 7, 0.55); backdrop-filter: blur(4px); transition: border-color 0.2s; }
+    .ser__ep:hover { border-color: var(--ruby-hot); }
+    .ser__ep b { color: var(--gild); margin-right: 0.45em; font-weight: 800; }
 
     /* ---- for you: the on-device model's next-best-action ---- */
     .sp__foryou { display: flex; align-items: center; gap: 0.7rem; margin: 0.7rem clamp(1rem, 4vw, 2rem) 0;
@@ -214,11 +265,11 @@
         <button class="sp__ava" id="ava" type="button" aria-label="Account"><img src="assets/img/m-mark.png" alt="M"></button>
       </div>
       <div class="sp__pills" id="pills" role="tablist">
-        <button class="sp__pill is-on" data-f="all" type="button">All</button>
-        <button class="sp__pill" data-f="song" type="button">Music</button>
+        <button class="sp__pill is-on" data-f="song" type="button">Music</button>
         <button class="sp__pill" data-f="experience" type="button">Experiences</button>
-        <button class="sp__pill" data-f="record" type="button">The Record</button>
+        <button class="sp__pill" data-f="series" type="button">Series</button>
       </div>
+      <p class="sp__mast">Registered works &middot; ISRC QT6KV &middot; SoundExchange &middot; numbered &amp; receipted</p>
     </header>
 
     <!-- the model's pick: next-best-action, computed on this device -->
@@ -239,7 +290,7 @@
       </span>
       <span class="sp__persona-go" aria-hidden="true">&#8594;</span>
     </a>
-    <div id="bill" data-cat="song record"></div>
+    <div id="bill" data-cat="song"></div>
 
     <!-- your listening: the analytics strip -->
     <section class="sprow" id="statsRow" data-cat="song">
@@ -248,7 +299,7 @@
     </section>
 
     <!-- the people: artist circles -->
-    <section class="sprow" data-cat="song record">
+    <section class="sprow" data-cat="song">
       <div class="sprow__t"><div><p class="sprow__k">The people behind it</p><h2>Artists</h2></div></div>
       <div class="sprow__rail" id="people">
         <a class="spa" href="hire.html"><span class="spa__ring"><img src="assets/img/vaunt-arrival.jpg" alt="Matthew McCluster"></span><b>McCluster</b><small>Artist &middot; Director</small></a>
@@ -258,16 +309,78 @@
 
     <div id="rows"></div>
 
-    <!-- the systems: every wing of the platform, one shelf -->
-    <section class="sprow" data-cat="experience">
-      <div class="sprow__t"><div><p class="sprow__k">One platform &middot; every wing</p><h2>The Systems</h2></div></div>
-      <div class="sprow__rail">
-        <a class="spc spc--wide" href="market.html"><span class="spc__art"><span class="spc__kind">The Market</span><img loading="lazy" src="assets/frames/keynote_0080.jpg" alt="The Market — providers, deals, bookings"></span><p class="spc__t">The Market</p><p class="spc__s">Providers &middot; deals &middot; bookings &middot; one engine</p></a>
-        <a class="spc spc--wide" href="vr-vaunt.html"><span class="spc__art"><span class="spc__kind">VR</span><img loading="lazy" src="assets/img/vaunt-arrival.jpg" alt=""></span><p class="spc__t">Inside the Jet</p><p class="spc__s">The 360 session &middot; stand in it</p></a>
-        <a class="spc spc--wide" href="members.html"><span class="spc__art"><span class="spc__kind">The Org</span><img loading="lazy" src="assets/frames/uprise_0080.jpg" alt=""></span><p class="spc__t">Join the Organization</p><p class="spc__s">Boards &middot; programs &middot; the donor circle</p></a>
-        <a class="spc spc--wide" href="docket-516.html"><span class="spc__art"><span class="spc__kind">Civic</span><img loading="lazy" src="assets/frames/docket_0050.jpg" alt=""></span><p class="spc__t">Docket 516</p><p class="spc__s">The public record, explained</p></a>
-        <a class="spc spc--wide" href="talent.html"><span class="spc__art"><span class="spc__kind">For talent</span><img loading="lazy" src="assets/frames/studio360_0050.jpg" alt=""></span><p class="spc__t">The Talent App</p><p class="spc__s">Your listing &middot; your inbox &middot; your rate</p></a>
-        <a class="spc spc--wide" href="onboard.html"><span class="spc__art"><span class="spc__kind">Join</span><img loading="lazy" src="assets/frames/vperf5_0001.jpg" alt=""></span><p class="spc__t">Get On the Platform</p><p class="spc__s">Artists &middot; providers &middot; spaces</p></a>
+    <!-- the registry: the full numbered catalogue, receipts included -->
+    <section class="reg" data-cat="song" id="registry">
+      <div class="reg__head"><h2>The Registry</h2><small>Every record &middot; coded &amp; filed</small></div>
+      <div id="regList"></div>
+      <p class="reg__note">Every recording is coded under the QT6KV ISRC prefix and registered with SoundExchange. Numbered, receipted, owned outright.</p>
+      <details class="reg__paper">
+        <summary>The paperwork &mdash; every identifier behind the catalogue</summary>
+        <div class="sysid__cols" style="margin-top:1rem">
+          <dl class="sysid__card" data-badges="rights-owner,nonprofit,federal">
+            <dt class="sysid__who">McCluster Corp</dt>
+            <div class="sysid__badges"></div>
+            <div class="sysid__item" data-copy="QT6KV"><dd>ISRC Prefix</dd><code>QT6KV</code></div>
+            <div class="sysid__item" data-copy="PA-DPIDA-2025101205-D"><dd>DDEX DPID</dd><code>PA-DPIDA-2025101205-D</code></div>
+            <div class="sysid__item" data-copy="2181078405"><dd>SoundExchange ID</dd><code>2181078405</code></div>
+            <div class="sysid__item" data-copy="SX1102K2V7"><dd>SoundExchange SubID</dd><code>SX1102K2V7</code></div>
+            <div class="sysid__item" data-copy="0000 0005 2872 7276"><dd>ISNI</dd><code>0000 0005 2872 7276</code></div>
+            <div class="sysid__item" data-copy="39-4466255"><dd>EIN</dd><code>39-4466255</code></div>
+            <div class="sysid__item" data-copy="CHR.0069693"><dd>Public Charity License</dd><code>CHR.0069693</code></div>
+            <div class="sysid__item" data-copy="VE2PH2KVFGQ8"><dd>UEID</dd><code>VE2PH2KVFGQ8</code></div>
+            <div class="sysid__item" data-copy="16D30"><dd>NATO CAGE</dd><code>16D30</code></div>
+            <div class="sysid__item" data-copy="US-CT.BER:3293440"><dd>ALEI</dd><code>US-CT.BER:3293440</code></div>
+            <div class="sysid__item" data-copy="0013567374"><dd>CT Filing No.</dd><code>0013567374</code></div>
+          </dl>
+          <dl class="sysid__card" data-badges="performer,creator">
+            <dt class="sysid__who">Matthew McCluster</dt>
+            <div class="sysid__badges"></div>
+            <div class="sysid__item" data-copy="0000 0005 2956 3111"><dd>ISNI</dd><code>0000 0005 2956 3111</code></div>
+            <div class="sysid__item" data-copy="SX1102K2V5"><dd>SoundExchange SubID</dd><code>SX1102K2V5</code></div>
+            <div class="sysid__item" data-copy="0009-0000-8988-8955"><dd>ORCID</dd><code>0009-0000-8988-8955</code></div>
+            <div class="sysid__item" data-copy="9761733"><dd>SSRN</dd><code>9761733</code></div>
+          </dl>
+        </div>
+        <p class="reg__note">Tap a badge for its explanation &middot; tap any identifier to copy it.</p>
+      </details>
+    </section>
+
+    <!-- the series room: long-form, watched in order -->
+    <section class="sprow" data-cat="series">
+      <div class="sprow__t"><div><p class="sprow__k">Long-form &middot; watched in order</p><h2>The Series</h2></div></div>
+      <div class="ser">
+        <div class="ser__card">
+          <a class="ser__hit" href="song-dealer-plates.html" aria-label="Whip Equipped — the series"></a>
+          <img loading="lazy" src="assets/frames/plates_0050.jpg" alt="Whip Equipped — the series">
+          <div class="ser__in">
+            <p class="ser__k">Original series &middot; Season 1</p>
+            <h3 class="ser__t">Whip Equipped</h3>
+            <p class="ser__s">Dealer plates, two mixes, one ride &mdash; the lot chronicles, scored by Zakir &amp; McCluster.</p>
+            <div class="ser__eps">
+              <a class="ser__ep" href="song-dealer-plates.html"><b>E1</b>Dealer Plates &middot; A-Side</a>
+              <a class="ser__ep" href="song-dealer-plates-b.html"><b>E2</b>The B-Side Film</a>
+            </div>
+          </div>
+        </div>
+        <div class="ser__card">
+          <a class="ser__hit" href="docket-516.html" aria-label="Docket 516 — the docu-series"></a>
+          <img loading="lazy" src="assets/frames/docket_0050.jpg" alt="Docket 516 — the docu-series">
+          <div class="ser__in">
+            <p class="ser__k">Docu-series &middot; the public record</p>
+            <h3 class="ser__t">Docket 516</h3>
+            <p class="ser__s">The evidence room, opened one exhibit at a time.</p>
+            <div class="ser__eps"><a class="ser__ep" href="docket-516.html"><b>&#9654;&#xFE0E;</b>Enter the archive</a></div>
+          </div>
+        </div>
+        <div class="ser__card">
+          <a class="ser__hit" href="heal-the-3.html" aria-label="Heal the 3 — in production"></a>
+          <img loading="lazy" src="assets/img/heal-the-3/cover.png" alt="Heal the 3 — in production">
+          <div class="ser__in">
+            <p class="ser__k">In production &middot; McCluster &times; VVS Mad&egrave;</p>
+            <h3 class="ser__t">Heal the 3</h3>
+            <p class="ser__s">Two sides, two songs, one line held. The next chapter.</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -369,6 +482,7 @@
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/persona.js?v=__STAMP__"></script>
+  <script src="js/entities.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -420,11 +534,11 @@
       function card(it, wide) {
         var playable = !!it.audio;
         var kind = KIND_LABEL[it.kind] || (it.kind || "").replace(/^./, function (c) { return c.toUpperCase(); });
-        var page = it.page ? it.page + (it.page.indexOf("?") === -1 ? "?from=app" : "&from=app") : "#";
+        var art = '<span class="spc__art">' + (kind ? '<span class="spc__kind">' + esc(kind) + "</span>" : "") +
+          '<img loading="lazy" src="' + esc(it.poster) + '" alt="' + esc(it.title) + ' — cover art"></span>';
+        var page = it.page ? it.page + (it.page.indexOf("?") === -1 ? "?from=app" : "&from=app") : "";
         return '<div class="spc' + (wide ? " spc--wide" : "") + '">' +
-          '<a href="' + esc(page) + '" aria-label="' + esc(it.title) + '">' +
-            '<span class="spc__art">' + (kind ? '<span class="spc__kind">' + esc(kind) + "</span>" : "") +
-            '<img loading="lazy" src="' + esc(it.poster) + '" alt="' + esc(it.title) + ' — cover art"></span></a>' +
+          (page ? '<a href="' + esc(page) + '" aria-label="' + esc(it.title) + '">' + art + "</a>" : art) +
           (playable ? '<button class="spc__play" type="button" data-play="' + esc(it.id) + '" aria-label="Play ' + esc(it.title) + '"><svg viewBox="0 0 24 24"><path d="' + PLAY + '"/></svg></button>' : "") +
           '<p class="spc__t">' + esc(it.title) + '</p><p class="spc__s">' + esc(it.subtitle || "") + "</p></div>";
       }
@@ -498,7 +612,7 @@
             '<div class="sp__bill-a"><a class="sp__cta sp__cta--play" href="' + esc(b.page) + '">&#9654;&#xFE0E; Enter the world</a>' +
             '<a class="sp__cta sp__cta--ghost" href="mailto:matthew@mccluster.org?subject=Heal%20the%203%20%E2%80%94%20notify%20me">Notify me</a></div></div></div>';
         }
-        renderRows("all");
+        applyFilter(HASH2F[location.hash] || "song");
         renderRecent();
         renderPersona();
         renderStats();
@@ -517,27 +631,93 @@
             if (!rst.playing) au.pause();
           }
         } catch (e) {}
-        if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "spotify" });
+        if (window.MCC_TRACK) window.MCC_TRACK("app_view", { skin: "music-house" });
       });
 
-      $("pills").addEventListener("click", function (e) {
-        var p = e.target.closest(".sp__pill");
-        if (!p) return;
-        this.querySelectorAll(".sp__pill").forEach(function (x) { x.classList.remove("is-on"); });
-        p.classList.add("is-on");
-        var f = p.getAttribute("data-f");
+      /* ---------- the registry: the numbered catalogue, folded in ---------- */
+      fetch("data/catalogue.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (data) {
+        var tracks = data.tracks || [];
+        if (!tracks.length) return;
+        var html = "", album = null;
+        tracks.forEach(function (t) {
+          if (t.album && t.album !== album) {
+            album = t.album;
+            html += '<p class="reg__album">' + esc(album) + (album === "Here" ? " &mdash; the album" : "") + "</p>";
+          }
+          var linkable = t.page && t.page.indexOf("song-") === 0;
+          var inner = '<span class="reg__no">' + esc(t.no) + "</span>" +
+            '<span class="reg__t">' + esc(t.title) + "</span>" +
+            '<span class="reg__c">' + esc(t.credit) + "</span>" +
+            '<span class="reg__len">' + esc(t.length === "soon" ? "" : t.length || "") + "</span>" +
+            '<span class="reg__go">' + (t.available ? "Enter &#8594;" : linkable ? "Preview &#8594;" : "In the vault") + "</span>";
+          html += linkable
+            ? '<a class="reg__row" href="' + esc(t.page) + '" data-cta="reg-' + esc(t.slug) + '">' + inner + "</a>"
+            : '<div class="reg__row is-vault">' + inner + "</div>";
+        });
+        $("regList").innerHTML = html;
+        $("regList").querySelectorAll("a[data-cta]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "app" });
+          });
+        });
+      }).catch(function () {});
+
+      /* the paperwork: earned badges over the identifiers, tap-to-copy */
+      document.querySelectorAll(".sysid__card[data-badges]").forEach(function (cardEl) {
+        var slot = cardEl.querySelector(".sysid__badges");
+        if (!slot || !window.MCC_ENTITIES) return;
+        slot.innerHTML = cardEl.getAttribute("data-badges").split(",").map(function (k) {
+          var en = window.MCC_ENTITIES[k.trim()];
+          if (!en) return "";
+          return '<a class="sysid__badge" href="badge-explainer.html?entity=' + encodeURIComponent(k.trim()) + '" title="' + esc(en.badge + " — " + en.desc) + '">' +
+            '<span class="mbadge" style="--badge-c:' + en.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
+            "<b>" + esc(en.badge) + "</b>" +
+            '<span class="sysid__tip">' + esc(en.desc) + " <em>Tap for the full explanation &#8594;</em></span></a>";
+        }).join("");
+      });
+      document.querySelectorAll(".sysid__item").forEach(function (el) {
+        el.addEventListener("click", function () {
+          var v = el.getAttribute("data-copy") || "";
+          if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+          navigator.clipboard.writeText(v).then(function () {
+            el.classList.add("is-copied");
+            var code = el.querySelector("code");
+            var orig = code.textContent;
+            code.textContent = "copied";
+            setTimeout(function () { code.textContent = orig; el.classList.remove("is-copied"); }, 900);
+          }).catch(function () {});
+        });
+      });
+
+      /* three rooms, one door each: everything outside the picked room leaves,
+         what's left steps to the forefront. #music / #experiences / #series deep-link. */
+      var HASH2F = { "#music": "song", "#experiences": "experience", "#series": "series" };
+      var F2HASH = { song: "#music", experience: "#experiences", series: "#series" };
+      function applyFilter(f) {
+        if (!F2HASH[f]) f = "song";
+        document.querySelectorAll(".sp__pill").forEach(function (x) {
+          x.classList.toggle("is-on", x.getAttribute("data-f") === f);
+        });
         renderRows(f);
-        // focus mode: everything outside the picked category leaves the room,
-        // what's left steps to the forefront
         document.querySelectorAll("[data-cat]").forEach(function (el) {
-          var on = f === "all" || (el.getAttribute("data-cat") || "").split(" ").indexOf(f) !== -1;
+          var on = (el.getAttribute("data-cat") || "").split(" ").indexOf(f) !== -1;
           el.classList.toggle("is-catoff", !on);
           el.classList.remove("sp-focus");
-          if (on && f !== "all") { void el.offsetWidth; el.classList.add("sp-focus"); }
+          if (on) { void el.offsetWidth; el.classList.add("sp-focus"); }
         });
         var rows = $("rows");
         rows.classList.remove("sp-focus"); void rows.offsetWidth; rows.classList.add("sp-focus");
+      }
+      $("pills").addEventListener("click", function (e) {
+        var p = e.target.closest(".sp__pill");
+        if (!p) return;
+        var f = p.getAttribute("data-f");
+        applyFilter(f);
+        try { history.replaceState(null, "", F2HASH[f] || "#music"); } catch (err) {}
         if (window.MCC_TRACK) window.MCC_TRACK("app_filter", { pick: f });
+      });
+      window.addEventListener("hashchange", function () {
+        if (HASH2F[location.hash]) applyFilter(HASH2F[location.hash]);
       });
 
       /* ---------- for you: the model picks the next move ---------- */
@@ -619,7 +799,7 @@
       function announceNP() {
         var it = nowId && CAT[nowId];
         window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
-          detail: { title: it ? it.title : "The App", href: "#np", playing: !!nowId && !au.paused },
+          detail: { title: it ? it.title : "The Music", href: "#np", playing: !!nowId && !au.paused },
         }));
       }
       window.MCC_NP_PLAY = function () {
@@ -702,8 +882,8 @@
         ov.innerHTML =
           '<div class="sp__door-in">' +
           '<img src="assets/img/m-mark.png" alt="McCluster">' +
-          "<b>The App</b>" +
-          "<p>The music, the films, the record — a player that remembers you, on your device only.</p>" +
+          "<b>The Music</b>" +
+          "<p>The registered catalogue, the experiences, the series — numbered, receipted, and played in a room that remembers you.</p>" +
           '<button class="btn btn--ruby" type="button" data-door="sound">&#9654;&#xFE0E; Tap in — enter with sound</button>' +
           '<button class="btn btn--ghost" type="button" data-door="quiet">Enter quiet</button></div>';
         ov.addEventListener("click", function (ev) {

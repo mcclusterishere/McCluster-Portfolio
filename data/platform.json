@@ -63,7 +63,7 @@
           "kind": "song",
           "title": "Money or the Power",
           "subtitle": "From the vault",
-          "page": "catalogue.html",
+          "page": "",
           "audio": "assets/audio/money-or-the-power.mp3",
           "poster": "assets/frames/moneyglitch_0050.jpg"
         }
@@ -86,6 +86,14 @@
     {
       "title": "Experiences",
       "items": [
+        {
+          "id": "dealer-plates-film",
+          "kind": "experience",
+          "title": "Dealer Plates — The Film",
+          "subtitle": "The B-side ride, scene by scene",
+          "page": "song-dealer-plates-b.html",
+          "poster": "assets/frames/plates_0050.jpg"
+        },
         {
           "id": "vr-vaunt",
           "kind": "experience",
@@ -117,35 +125,6 @@
           "subtitle": "The civic poll",
           "page": "song-please-set-me-free.html",
           "poster": "assets/frames/citations_0050.jpg"
-        }
-      ]
-    },
-    {
-      "title": "The Record",
-      "items": [
-        {
-          "id": "docket-516",
-          "kind": "record",
-          "title": "Docket 516",
-          "subtitle": "The evidence room",
-          "page": "docket-516.html",
-          "poster": "assets/frames/docket_0050.jpg"
-        },
-        {
-          "id": "equity-uprise",
-          "kind": "record",
-          "title": "Equity Uprise",
-          "subtitle": "The movement",
-          "page": "equity-uprise.html",
-          "poster": "assets/frames/equity_0050.jpg"
-        },
-        {
-          "id": "resume",
-          "kind": "record",
-          "title": "The Résumé",
-          "subtitle": "Receipts and proclamations",
-          "page": "resume.html",
-          "poster": "assets/frames/keynote_0080.jpg"
         }
       ]
     }
