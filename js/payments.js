@@ -85,3 +85,35 @@ window.PAYMENTS = {
     link: "",
   },
 };
+
+/* ============================================================
+   The Stripe rail — the platform's own card checkout.
+   The publishable key is public by design (it can only create
+   tokens, never move money). The SECRET key lives only in the
+   Supabase edge-function vault — never in this repo, never in
+   a browser. payDeal() asks the pay-deal function for a Checkout
+   session and walks the buyer there; while the function isn't
+   deployed yet it resolves null and the Square door keeps the
+   register — no dead buttons either way.
+   ============================================================ */
+window.STRIPE_PK = "pk_test_51TrMvCLaNrHsnVOb2T9QPoPsBdCDxzFuE1CLft3NzTK7Z93MYDTTIRFKDYFZMlIvVEviDBJsFF92X4BV5Bi9LzPa00bp46W0w7";
+window.MCC_STRIPE = {
+  payDeal: function (deal) {
+    var S = window.MCC_SUPA;
+    if (!S || !S.url) return Promise.resolve(null);
+    return fetch(S.url + "/functions/v1/pay-deal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+      body: JSON.stringify({
+        deal_id: deal.id,
+        amount: (deal.terms && deal.terms.fee) || 0,
+        title: deal.title || deal.kind || "M Network deal",
+      }),
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (j && j.url) { location.href = j.url; return true; }
+        return null;
+      })
+      .catch(function () { return null; });
+  },
+};
