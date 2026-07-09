@@ -3840,6 +3840,9 @@ body.has-appbar { padding-bottom: calc(var(--appbar-h) + env(safe-area-inset-bot
 .appbar__tab:active { transform: scale(0.92); }
 .appbar__tab:hover, .appbar__tab.is-active { color: var(--ruby-hot); }
 .appbar__tab.is-active svg { filter: drop-shadow(0 0 6px rgba(229, 56, 59, 0.7)); }
+/* Spaces answers in its own color — bright sky blue rides with the red */
+.appbar__tab[data-appnav="spaces"]:hover, .appbar__tab[data-appnav="spaces"].is-active { color: #45b6ff; }
+.appbar__tab[data-appnav="spaces"].is-active svg { filter: drop-shadow(0 0 6px rgba(69, 182, 255, 0.75)); }
 
 /* clear the bar: lift bottom-anchored immersive content + page chrome above it */
 .antiabout { bottom: calc(clamp(2rem, 7vh, 4rem) + var(--appbar-h)); }
