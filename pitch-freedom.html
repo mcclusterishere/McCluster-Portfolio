@@ -4,21 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>The Freedom, Inc. Plan — a new faithandresults.com</title>
-  <meta name="description" content="The plan for a new faithandresults.com: what the current site costs the mission, and the site that puts FDIC, HUD, and NeighborWorks credentials on the front door. Set in type built for every pair of eyes.">
+  <meta name="description" content="The plan for a new faithandresults.com: the FDIC, HUD, Federal Home Loan Bank and NeighborWorks record on the front door, 100,000+ served through Homes Saved By Faith, and the Shiloh story told properly. Set in type built for every pair of eyes.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bitter:wght@800;900&display=swap" rel="stylesheet">
   <style>
-    /* ============================================================
-       ELDER-FIRST. No fine print exists on this page.
-       - Body: Atkinson Hyperlegible — built by the Braille Institute
-         for low-vision readers. Nothing smaller than 1.1rem at a
-         20px base (= 22px minimum on screen).
-       - Headlines: Bitter, weights 800–900 only. No thin strokes.
-       - Contrast: near-black on warm cream — WCAG AAA.
-       ============================================================ */
+    /* ELDER-FIRST. No fine print exists on this page. Atkinson Hyperlegible
+       body (Braille Institute), Bitter 800-900 headlines, WCAG AAA contrast. */
     :root { --navy: #101c2c; --ink: #14100c; --cream: #f7f1e3; --gold: #b8860b; --clay: #9c3d22; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { font-size: 20px; }
@@ -33,7 +27,13 @@
     p { margin-bottom: 1rem; max-width: 46rem; }
     strong { font-weight: 700; color: var(--navy); }
 
-    /* the mock hero: what the NEW site's first screen feels like */
+    /* the photography: full-bleed bands that hold a warm navy until art lands */
+    .band { border-radius: 20px; overflow: hidden; margin: 1.6rem 0; min-height: 15rem;
+      background: linear-gradient(140deg, var(--navy), #1d3350); background-size: cover; background-position: center;
+      display: flex; align-items: flex-end; }
+    .band figcaption { width: 100%; background: linear-gradient(180deg, transparent, rgba(16,28,44,0.92));
+      color: var(--cream); font-weight: 700; font-size: 1.1rem; padding: 3rem 1.4rem 1.1rem; }
+
     .mock { background: var(--navy); color: var(--cream); border-radius: 20px; padding: 2.6rem 2rem 2.4rem; margin: 1.6rem 0 0; }
     .mock .kick { color: var(--gold); }
     .mock h3 { font-family: "Bitter", Georgia, serif; font-weight: 900; font-size: clamp(2.2rem, 7.5vw, 3.6rem); line-height: 1.05; margin: 0.5rem 0 1.2rem; }
@@ -42,7 +42,6 @@
     .seal { border: 3px solid var(--gold); border-radius: 12px; padding: 0.7rem 1.2rem; font-weight: 700;
       font-size: 1.15rem; color: var(--cream); background: rgba(184, 134, 11, 0.15); }
 
-    /* problem cards — big, one thought each */
     .cards { display: grid; gap: 1rem; margin-top: 1.4rem; }
     .card { background: #fffdf7; border: 3px solid var(--navy); border-radius: 16px; padding: 1.5rem 1.5rem 1.4rem; }
     .card b { display: block; font-family: "Bitter", Georgia, serif; font-weight: 800; font-size: 1.45rem;
@@ -50,7 +49,6 @@
     .card p { font-size: 1.1rem; margin: 0; }
     .card .fix { display: block; margin-top: 0.8rem; font-weight: 700; color: var(--clay); font-size: 1.1rem; }
 
-    /* the numbers */
     .nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: 1rem; margin-top: 1.4rem; }
     .num { background: var(--navy); color: var(--cream); border-radius: 16px; padding: 1.6rem 1.5rem; }
     .num b { font-family: "Bitter", Georgia, serif; font-weight: 900; font-size: 2.6rem; display: block; line-height: 1; }
@@ -63,23 +61,44 @@
     .cta { display: inline-block; background: var(--clay); color: var(--cream); text-decoration: none;
       font-weight: 700; font-size: 1.25rem; border-radius: 100px; padding: 1em 2.2em; margin-top: 1.6rem; }
     footer { text-align: center; padding: 2rem 1rem 3rem; font-size: 1.05rem; color: var(--navy); font-weight: 700; }
+
+    /* THE WALK-THROUGH: the page pitches itself. Elder-first — one big
+       thought per screen, two big buttons, nothing small. */
+    .walk { position: fixed; inset: 0; z-index: 200; background: rgba(16,28,44,0.97); color: var(--cream);
+      display: none; align-items: center; justify-content: center; padding: 1.4rem; }
+    .walk.on { display: flex; }
+    .walk__card { max-width: 34rem; text-align: center; }
+    .walk__card .kick { color: var(--gold); }
+    .walk__card h3 { font-family: "Bitter", Georgia, serif; font-weight: 900; font-size: clamp(2rem, 8vw, 3.2rem);
+      line-height: 1.08; margin: 0.6rem 0 1rem; }
+    .walk__card p { font-size: 1.25rem; line-height: 1.7; }
+    .walk__row { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-top: 1.8rem; }
+    .walk__next { background: var(--gold); color: var(--navy); border: 0; font: inherit; font-weight: 700;
+      font-size: 1.3rem; border-radius: 100px; padding: 0.9em 2.4em; cursor: pointer; }
+    .walk__skip { background: none; color: var(--cream); border: 3px solid rgba(247,241,227,0.4); font: inherit;
+      font-weight: 700; font-size: 1.1rem; border-radius: 100px; padding: 0.8em 1.8em; cursor: pointer; }
+    .walk__dots { margin-top: 1.4rem; font-size: 1.2rem; letter-spacing: 0.4em; color: rgba(247,241,227,0.5); }
+    .walk__dots b { color: var(--gold); }
   </style>
 </head>
 <body>
   <main>
-    <p class="kick">The plan · prepared for Freedom, Inc.</p>
+    <p class="kick">The plan · prepared for Freedom, Inc. · Rev. Carl McCluster &amp; the board</p>
     <h1>Faith, backed by results — and a website that finally says so.</h1>
-    <p>Freedom, Inc. has consulted for the <strong>FDIC, HUD, and the Federal Home Loan Bank</strong>, and
-      trains for <strong>NeighborWorks America</strong> — credentials most firms would put on a billboard.
-      Today they sit buried in paragraphs on a site that turns visitors away at the door. Here is the plan
-      to fix all of it.</p>
+    <p>Freedom, Inc. works with the <strong>FDIC, HUD, and the Federal Home Loan Bank</strong>, trains with
+      <strong>NeighborWorks America</strong>, and has carried <strong>more than 100,000 families</strong> through
+      Homes Saved By Faith. The pastor behind it led <strong>the first African-American church in Connecticut to
+      run energy self-sufficient on solar</strong>. Credentials most firms would put on a billboard — today they
+      sit buried in paragraphs on a site that turns visitors away at the door. Here is the plan to fix all of it.</p>
+
+    <figure class="band" data-frbg="assets/img/fr-worship.jpg"><figcaption>The mission, alive — the sanctuary the whole work grows from.</figcaption></figure>
 
     <!-- the mock: what the new front door looks like -->
     <div class="mock">
       <p class="kick">The new front door — first screen, no scrolling needed</p>
       <h3>Faith, backed<br>by results.</h3>
-      <p>Economic development, education, housing, and sustainability — delivered with faith communities
-        in fifteen American cities.</p>
+      <p>Housing, economic development, education, and sustainability — delivered with faith communities
+        across America. More than 100,000 served.</p>
       <div class="seals">
         <span class="seal">FDIC</span>
         <span class="seal">HUD</span>
@@ -87,6 +106,18 @@
         <span class="seal">NeighborWorks America</span>
       </div>
     </div>
+
+    <h2>The story the new site tells first</h2>
+    <p><strong>Rev. Carl McCluster</strong> — thirty years the Senior Pastor of Shiloh Baptist Church at
+      477 Broad Street, Bridgeport; a former U.S. Air Force Academy cadet; Colorado College, political economy;
+      Master of Divinity from the Samuel DeWitt Proctor School of Theology at Virginia Union. President of the
+      Faith Community Development Corporation chartered by Shiloh, and managing director of
+      <strong>F.R.E.E.D.O.M.</strong> — Faith Restoration Empowerment &amp; Economic Development Outreach
+      Ministries — the national network this site represents. That account, with the numbers beside it,
+      belongs on the front page, not in a buried tab.</p>
+
+    <figure class="band" data-frbg="assets/img/fr-solar.jpg"><figcaption>First in Connecticut — a Black church running energy self-sufficient on solar, with PosiGen and the Connecticut Green Bank.</figcaption></figure>
+    <figure class="band" data-frbg="assets/img/fr-home.jpg"><figcaption>Homes Saved By Faith — more than 100,000 families carried through foreclosure prevention and into ownership.</figcaption></figure>
 
     <h2>What the current site costs the mission</h2>
     <div class="cards">
@@ -106,11 +137,13 @@
         <p>The site's only invitation is a phone number. No “book a training.” No partner form.
           No newsletter. No donation button. Interested people arrive, and then leave.</p>
         <span class="fix">The fix: one Connect page with four clear doors — partner, train, subscribe, give.</span></div>
-      <div class="card"><b>Fifteen cities, invisible.</b>
-        <p>The national footprint — the single most impressive fact about Freedom, Inc. — is scattered
+      <div class="card"><b>The footprint, invisible.</b>
+        <p>The national network — the single most impressive fact about Freedom, Inc. — is scattered
           across separate pages nobody visits.</p>
-        <span class="fix">The fix: one map. Fifteen cities. Every one clickable. That screen wins meetings.</span></div>
+        <span class="fix">The fix: one map, every affiliate city clickable. That screen wins meetings.</span></div>
     </div>
+
+    <figure class="band" data-frbg="assets/img/fr-class.jpg"><figcaption>Financial Freedom — credit, budgeting, and the path to yes, taught where the trust already lives.</figcaption></figure>
 
     <h2>Built for every pair of eyes</h2>
     <p>This page you are reading is set the way the whole new site will be set: in
@@ -122,7 +155,7 @@
 
     <h2>The numbers</h2>
     <div class="nums">
-      <div class="num"><b>$800</b><span>One-time: the full rebuild, the typo's funeral, migration, and search-engine repair across all fifteen city markets.</span></div>
+      <div class="num"><b>$800</b><span>One-time: the full rebuild, the typo's funeral, migration, and search-engine repair across every affiliate market.</span></div>
       <div class="num"><b>$400/mo</b><span>The retainer: news and events kept alive, the newsletter actually sent, quarterly impact updates published.</span></div>
       <div class="num"><b>$0/mo</b><span>Hosting and software. The current hosting bill stops existing. The money moves from servers to visibility.</span></div>
     </div>
@@ -130,7 +163,7 @@
     <h2>The first ninety days</h2>
     <ul>
       <li><strong>Weeks 1–2:</strong> New site live. The misspelling is history. Every share unfurls with the credential wall.</li>
-      <li><strong>Weeks 3–4:</strong> The cities map published. Partner, training, and giving doors open. Newsletter capture begins.</li>
+      <li><strong>Weeks 3–4:</strong> The affiliate map published. Partner, training, and giving doors open. Newsletter capture begins.</li>
       <li><strong>Months 2–3:</strong> Impact numbers gathered from each pillar and published. First newsletter to the list. Search rankings rebuilt city by city.</li>
     </ul>
 
@@ -138,11 +171,69 @@
     <ul>
       <li>Current hosting and domain access — one sitting, we move it together.</li>
       <li>The real outcome numbers: people trained, homes saved, dollars moved.</li>
-      <li>Leadership photos and the story of Shiloh and the South End, told properly.</li>
+      <li>Leadership photos and the story of Shiloh and the South End, told properly — the real
+        sanctuary, the real solar roof, the real families, shot or restored to this quality.</li>
     </ul>
 
     <a class="cta" href="mailto:matthew@mccluster.org?subject=Freedom%2C%20Inc.%20%E2%80%94%20let%27s%20begin">Let's begin →</a>
   </main>
   <footer>Prepared by McCluster — web, brand, and the machine behind it.</footer>
+
+  <!-- THE WALK-THROUGH: the page pitches itself, one thought per screen -->
+  <div class="walk" id="frWalk" role="dialog" aria-modal="true" aria-label="The walk-through">
+    <div class="walk__card">
+      <p class="kick" id="fwKick"></p>
+      <h3 id="fwHead"></h3>
+      <p id="fwBody"></p>
+      <div class="walk__row">
+        <button class="walk__next" id="fwNext" type="button">Next →</button>
+        <button class="walk__skip" id="fwSkip" type="button">Read it myself</button>
+      </div>
+      <p class="walk__dots" id="fwDots"></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      /* the art lands when it exists; the navy holds the frame until then */
+      document.querySelectorAll("[data-frbg]").forEach(function (el) {
+        var im = new Image();
+        im.onload = function () { el.style.backgroundImage = "url(" + el.getAttribute("data-frbg") + ")"; };
+        im.src = el.getAttribute("data-frbg");
+      });
+
+      /* the walk-through: auto-plays once per device; ?walk=1 replays */
+      var STEPS = [
+        ["Welcome", "Pastor — this page was built for you.", "Five short screens walk you through the plan for the new faithandresults.com. Tap Next, or read the whole page yourself at any time."],
+        ["The record", "The work already speaks.", "FDIC. HUD. The Federal Home Loan Bank. NeighborWorks America. More than 100,000 families through Homes Saved By Faith — and the first African-American church in Connecticut running on its own solar. The new site leads with that record."],
+        ["The problem", "The current site hides it.", "A misspelling in the first line Google shows. Doors that answer “Forbidden.” Pages named in code. No way for a partner to say yes. Every day it stays up, it costs the mission."],
+        ["The build", "Six clear pages. Every eye welcome.", "The credential wall on the front door, the affiliate map, one Connect page with four doors — partner, train, subscribe, give — all set in type built for elders and boards to read without glasses."],
+        ["The terms", "$800 once. $400 a month. $0 hosting.", "The rebuild, the retainer that keeps it alive, and a hosting bill that stops existing. Ninety days from yes to a site that wins meetings on its own."],
+      ];
+      var walk = document.getElementById("frWalk"), i = 0;
+      var seen = false;
+      try { seen = !!localStorage.getItem("fr_walk_done"); } catch (e) {}
+      var force = /[?&]walk=1/.test(location.search);
+      function paint() {
+        var s = STEPS[i];
+        document.getElementById("fwKick").textContent = s[0] + " · " + (i + 1) + " of " + STEPS.length;
+        document.getElementById("fwHead").textContent = s[1];
+        document.getElementById("fwBody").textContent = s[2];
+        document.getElementById("fwNext").textContent = i === STEPS.length - 1 ? "See the plan →" : "Next →";
+        document.getElementById("fwDots").innerHTML = STEPS.map(function (_, k) { return k === i ? "<b>●</b>" : "○"; }).join(" ");
+      }
+      function close() {
+        walk.classList.remove("on");
+        try { localStorage.setItem("fr_walk_done", "1"); } catch (e) {}
+      }
+      document.getElementById("fwNext").addEventListener("click", function () {
+        if (i >= STEPS.length - 1) return close();
+        i++; paint();
+      });
+      document.getElementById("fwSkip").addEventListener("click", close);
+      if (!seen || force) { paint(); walk.classList.add("on"); }
+    })();
+  </script>
 </body>
 </html>
