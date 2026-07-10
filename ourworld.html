@@ -328,6 +328,7 @@
           lng = city.lng + (((h >>> 3) % 100) / 100 - 0.5) * 0.03;
           lat = city.lat + (((h >>> 9) % 100) / 100 - 0.5) * 0.024;
         }
+        SPOTS.push({ slug: slug, name: p.name || slug, lng: lng, lat: lat });
         var color = p.badgeColor || "#d8ba7c";
         var el = document.createElement("div"); el.className = "ow-mk ow-face" + (mine ? " mine" : "");
         el.style.borderColor = color;
@@ -407,7 +408,84 @@
       }
 
       var last = 0;
+      /* ---------- THE RUNS: the game inside the world ----------
+         A contract glows at one member's spot. Pull up, the clock starts,
+         deliver to the drop before it dies. Perfect runs build a streak;
+         a bust resets it. Run score is the game's own tape (not E⤴︎) —
+         every finish files an event, so the desk's Pulse sees the floor
+         being driven. */
+      var SPOTS = [];
+      var RUNS = (function () {
+        var st = J("mcc_ow_runs", { score: 0, streak: 0, done: 0 });
+        var mkA = null, mkB = null, A = null, B = null, active = false, deadline = 0, par = 0;
+        function save() { try { localStorage.setItem("mcc_ow_runs", JSON.stringify(st)); } catch (e) {} }
+        function dist(a, b) {
+          var dy = (a.lat - b.lat) * 111320, dx = (a.lng - b.lng) * 111320 * Math.cos(a.lat * Math.PI / 180);
+          return Math.hypot(dx, dy);
+        }
+        function glow(txt, c) {
+          var el = document.createElement("div");
+          el.className = "ow-mk"; el.innerHTML = '<div class="ow-trait" style="color:' + c + ';background:' + c + '22;border-color:' + c + '">' + txt + "</div>";
+          return el;
+        }
+        function contract() {
+          if (SPOTS.length < 2 || !player) return;
+          for (var t = 0; t < 24; t++) {
+            var a = SPOTS[Math.floor(Math.random() * SPOTS.length)];
+            var b = SPOTS[Math.floor(Math.random() * SPOTS.length)];
+            if (a.slug === b.slug) continue;
+            var d = dist(a, b);
+            if (d < 500 || d > 3200 || dist(player, a) > 4000) continue;
+            A = a; B = b; active = false;
+            if (mkA) mkA.remove(); if (mkB) mkB.remove();
+            mkA = mk(glow("R", "#c99d45"), a.lng, a.lat); mkB = null;
+            return;
+          }
+        }
+        function tick() {
+          if (!player || !SPOTS.length) return;
+          if (!A) { contract(); return; }
+          if (!active) {
+            if (dist(player, A) < 55) {
+              active = true;
+              par = Math.round(dist(A, B) / 9 * 1.35);
+              deadline = Date.now() + par * 1000;
+              if (mkA) { mkA.remove(); mkA = null; }
+              mkB = mk(glow("★", "#00c805"), B.lng, B.lat);
+              toast("<b>RUN:</b> deliver to <b>" + esc(B.name) + "</b> — " + par + "s on the clock");
+              track("ow_run_start", { to: B.slug });
+            }
+            return;
+          }
+          var left = Math.ceil((deadline - Date.now()) / 1000);
+          if (left <= 0) {
+            st.streak = 0; save(); active = false;
+            toast("<b style='color:#e5383b'>RUN BUSTED.</b> The clock died — the streak goes with it.");
+            track("ow_run_bust", {}); if (mkB) { mkB.remove(); mkB = null; }
+            A = null; setTimeout(contract, 2500); return;
+          }
+          if (dist(player, B) < 55) {
+            var pay = 100 + left * 2; st.streak++; st.done++;
+            if (st.streak >= 3) pay = Math.round(pay * 1.5);
+            st.score += pay; save(); active = false;
+            toast("<b style='color:#00c805'>DELIVERED.</b> +" + pay + " run score" +
+              (st.streak >= 3 ? " · <b>ON FIRE ×" + st.streak + "</b>" : " · streak ×" + st.streak));
+            track("ow_run_done", { to: B.slug, pay: pay, streak: st.streak });
+            if (mkB) { mkB.remove(); mkB = null; }
+            A = null; setTimeout(contract, 2500);
+          }
+        }
+        function hud() {
+          if (!A) return "";
+          if (!active) return " · <b style='color:#c99d45'>RUN waiting</b> — hit the gold R";
+          return " · <b style='color:#00c805'>→ " + esc(B.name) + " · " + Math.max(0, Math.ceil((deadline - Date.now()) / 1000)) + "s</b>";
+        }
+        function score() { return st.score ? " · " + st.score.toLocaleString() + " run score" : ""; }
+        return { tick: tick, hud: hud, score: score };
+      })();
+
       function loop(now) {
+        RUNS.tick();
         var dt = Math.min(48, now - last || 16); last = now;
         if (entered && ready && map) {
           var thr = 0, steer = 0;
@@ -426,12 +504,14 @@
           player.lng += Math.sin(hr) * mvd / Math.max(0.4, Math.cos(player.lat * Math.PI / 180));
           player.lat = Math.max(41.06, Math.min(41.89, player.lat));
           player.lng = Math.max(-73.44, Math.min(-72.46, player.lng));
-          map.jumpTo({ center: [player.lng, player.lat], bearing: player.h });
+          // speed is FELT: the camera drops and leans as you push it
+          map.jumpTo({ center: [player.lng, player.lat], bearing: player.h,
+            pitch: 55 + Math.min(8, (Math.abs(speed) / maxSp) * 8) });
           $("owCar").style.transform = "rotate(90deg)";   // fixed up; the map turns
           collect();
           var city = nearestCity(player.lng, player.lat);
           if (city !== curCity) { curCity = city; showPlace(city); }
-          $("owHint").innerHTML = "<b>" + esc(curCity ? curCity.name : "Connecticut") + "</b> · drive to a glowing point" + (MP.count() ? " · " + MP.count() + " live" : "");
+          $("owHint").innerHTML = "<b>" + esc(curCity ? curCity.name : "Connecticut") + "</b>" + RUNS.hud() + RUNS.score() + (MP.count() ? " · " + MP.count() + " live" : "");
           try { localStorage.setItem("mcc_ow_pos", JSON.stringify(player)); } catch (e) {}
           MP.tick();
         }
