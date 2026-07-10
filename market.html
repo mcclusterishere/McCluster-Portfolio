@@ -1466,11 +1466,12 @@
         .then(function (r) { return r.json(); })
         .catch(function () { return null; });
       window.MCC_REALBOOK.then(function (b) {
-        if (!b || !b.updated) return;
-        REAL = (b.rows || []).filter(function (x) { return !x.dark && x.price != null; })
+        if (!b) return;
+        REAL = (b.rows || []).filter(function (x) { return !x.dark && (x.price != null || x.portal); })
           .map(function (x) {
-            return { real: true, tick: x.label, name: x.name, note: x.note || "",
-              val: +x.price, chg: +x.chg || 0,
+            return { real: true, portal: !!x.portal, tick: x.label, name: x.name, note: x.note || "",
+              href: x.href || "", logo: x.logo || "",
+              val: x.price != null ? +x.price : null, chg: +x.chg || 0,
               series: (x.series || []).map(function (v) { return { v: +v }; }) };
           });
         if (REAL.length && ROWS.length) paintList();
@@ -1540,6 +1541,13 @@
       function paintList() {
         /* the real companies lead the tape — actual dollars, marked so */
         var realHtml = REAL.map(function (r, i) {
+          if (r.portal) {
+            return '<button class="xc__row" type="button" data-r="' + i + '">' +
+              '<span class="xc__id"><b>$' + esc(r.tick) +
+              '<span class="xc__unclaimed" style="color:#c99d45;border-color:rgba(201,157,69,0.5)">affiliate</span>' +
+              "</b><small>" + esc(r.name) + " · portal</small></span>" +
+              '<span class="xc__quote"><span class="xc__pill">portal &#8599;</span></span></button>';
+          }
           var up = r.chg >= 0;
           return '<button class="xc__row" type="button" data-r="' + i + '">' +
             '<span class="xc__id"><b>$' + esc(r.tick) +
@@ -1672,6 +1680,24 @@
         /* a real company: real dollars, no invented book, no fake prints —
            the sheet strips to what's true (dark-not-fake, always) */
         $("xcSheet").classList.toggle("xc--real", !!r.real);
+        if (r.real && r.portal) {
+          /* an affiliate portal — no stock, no fake price. A real door out
+             to the brand's own portal, marked honestly as unclaimed. */
+          current = null;
+          $("xcDTick").textContent = "$" + r.tick + " · affiliate · unclaimed";
+          $("xcDName").innerHTML = esc(r.name);
+          $("xcDPrice").textContent = "—";
+          var pc = $("xcDChg"); pc.textContent = "portal"; pc.className = "xc__chg";
+          $("xcDStats").innerHTML =
+            '<div class="xc__stat"><small>What it is</small><b>' + esc(r.note || "an affiliate brand on our record") + "</b></div>" +
+            '<div class="xc__stat"><small>Status</small><b>unclaimed affiliate — not a security</b></div>' +
+            '<div class="xc__stat"><small>Access</small><b><a href="' + esc(r.href) +
+            '" target="_blank" rel="noopener" style="color:#c99d45" data-cta="real-portal-' + esc(r.tick) +
+            '">Enter the portal &#8599;</a></b></div>';
+          document.body.classList.add("xc-open");
+          track("xc_real_open", { tick: r.tick, portal: true });
+          return;
+        }
         if (r.real) {
           current = null;
           $("xcDTick").textContent = "$" + r.tick + " · real market · our record";

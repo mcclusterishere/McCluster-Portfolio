@@ -25,6 +25,8 @@ async function history(sym) {
 
 let hits = 0;
 for (const row of book.rows) {
+  // affiliate portals carry no exchange symbol — they're a link, not a quote
+  if (row.portal || !row.sym) continue;
   try {
     const closes = await history(row.sym);
     const last = closes[closes.length - 1];
