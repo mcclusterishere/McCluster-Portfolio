@@ -543,6 +543,29 @@
       "terms": {
         "notes": "Unclaimed café space — give me the real name/photos and I'll dress it fully."
       }
+    },
+    {
+      "id": "orange-hair-braiding",
+      "slug": "orange-hair-braiding",
+      "name": "Orange Hair Braiding",
+      "ticker": "ORNG",
+      "headline": "Braiding salon — West Haven · book with Aminata",
+      "blurb": "Aminata's braiding salon in West Haven, CT — box braids, knotless, curls, the whole book. Real work, real chair. Call 203-931-7402 or book right here once she claims it.",
+      "area": "West Haven, CT",
+      "roles": [
+        "Photo"
+      ],
+      "badgeColor": "#ea580c",
+      "profile": "page.html?who=orange-hair-braiding",
+      "href": "page.html?who=orange-hair-braiding",
+      "claimed": false,
+      "terms": {
+        "notes": "Unclaimed salon — a landing page + bookings without paying for hosting. Aminata claims it to run it.",
+        "rate": 0,
+        "links": {
+          "ig": "https://instagram.com/orangehairbraiding"
+        }
+      }
     }
   ]
 }
