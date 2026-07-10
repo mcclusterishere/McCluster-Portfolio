@@ -1055,7 +1055,7 @@
         if (AUTHED) resetParties(ME ? ME.name : "Me", p ? p.name : "");
         if (!p || !p.terms || !Object.keys(p.terms).length) { box.classList.add("mk__hidden"); return; }
         var t = p.terms, bits = [];
-        if (t.feature) bits.push("Feature: <b>$" + t.feature + "</b>");
+        if (t.feature) bits.push("Feature: <b>" + t.feature + " E⤴︎</b>");
         if (t.engineering) bits.push("Engineering: <b>" + esc(String(t.engineering).replace(/-/g, " ")) + "</b>");
         if (t.floor != null) bits.push("Writing floor: <b>" + t.floor + "%</b>");
         if (t.notes) bits.push(esc(t.notes));
@@ -1360,7 +1360,7 @@
           "<p>" + esc(KIND_LABEL[d.kind] || d.kind) + " · via The Market, an Equity Uprise rights-protection program</p>" +
           ((t.splits || []).length ? "<h2>Ownership</h2><table><tr><th>Party</th><th>Share</th></tr>" +
             t.splits.map(function (s) { return "<tr><td>" + esc(s.party) + "</td><td>" + s.pct + "%</td></tr>"; }).join("") + "</table>" : "") +
-          (t.fee ? "<h2>The money</h2><p>$" + t.fee + "</p>" : "") +
+          (t.fee ? "<h2>The money</h2><p>" + t.fee + " E⤴︎</p>" : "") +
           (t.date ? "<h2>The window</h2><p>" + esc(t.date) + "</p>" : "") +
           (t.notes ? "<h2>Terms</h2><p>" + esc(t.notes) + "</p>" : "") +
           "<h2>Signatures</h2>" +
@@ -1757,7 +1757,7 @@
         var hi = Math.max.apply(null, r.stock.series.map(function (p) { return p.v; }));
         $("xcDStats").innerHTML =
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
-          (rate ? '<div class="xc__stat"><small>Floor rate</small><b>$' + rate + "/hr</b></div>" : "") +
+          (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
           '<div class="xc__stat"><small>Open</small><b>' + fmt(r.open) + "</b></div>" +
           '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>" +
           '<div class="xc__stat"><small>Volume</small><b>' + ((hs % 90) + 12) + " prints</b></div>" +
@@ -1790,8 +1790,8 @@
           c.textContent = "your true worth · only you see this";
           c.className = "xc__chg";
           $("xcDStats").innerHTML = r.worth.breakdown.map(function (b) {
-            return '<div class="xc__stat"><small>' + esc(b.label) + "</small><b>$" +
-              b.dollars.toLocaleString() + "</b></div>";
+            return '<div class="xc__stat"><small>' + esc(b.label) + "</small><b>" +
+              b.dollars.toLocaleString() + " E⤴︎" + "</b></div>";
           }).join("");
         }
         $("xcDPage").href = "page.html?who=" + encodeURIComponent(r.p.slug || r.p.id);
@@ -2137,7 +2137,7 @@
               if (i < 0) return;
               ROWS[i].worth = w;
               var q = document.querySelector('[data-quote="' + i + '"]');
-              if (q) q.innerHTML = "<b>$" + w.worth.toLocaleString() + "</b>" +
+              if (q) q.innerHTML = "<b>" + w.worth.toLocaleString() + " E⤴︎</b>" +
                 '<span class="xc__pill" style="background:rgba(244,239,230,0.16);color:var(--cream)">🔒 only you</span>';
             });
         }
