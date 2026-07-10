@@ -142,6 +142,7 @@
   <script src="js/guide.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -340,6 +341,26 @@
       /* ---------- engine ---------- */
       var cv = $("mcCv"), cx = cv.getContext("2d");
       var W = 1600, H = 1140;
+
+      /* the GTA skin: a hand-painted aerial map is the world floor, a
+         top-down sprite is the whip. Both load async; until they land
+         the procedural fallback below still renders a playable city. */
+      var mapImg = new Image(); var mapReady = false;
+      mapImg.onload = function () { mapReady = true; };
+      mapImg.src = "assets/img/mcity-map.jpg";
+      var carImg = new Image(); var carReady = false;
+      carImg.onload = function () { carReady = true; };
+      carImg.src = "assets/img/mcity-car.png";
+      var CAR_FACE = Math.PI;  // sprite nose points left (-x); rotate to heading
+      function hexA(h, a) {
+        var n = parseInt(h.slice(1), 16);
+        return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+      }
+      /* the loading screen: GTA key art behind the entry door */
+      (function () { var d = $("mcDoor"); if (d) {
+        d.style.backgroundImage = "linear-gradient(rgba(8,6,5,0.72),rgba(8,6,5,0.92)), url(assets/img/mcity-loading.jpg)";
+        d.style.backgroundSize = "cover"; d.style.backgroundPosition = "center";
+      } })();
       var STREETS = [[60, 430, 1540, 430], [60, 760, 1540, 760], [60, 120, 1540, 120], [60, 1060, 1540, 1060],
         [430, 60, 430, 1080], [820, 60, 820, 1080], [1200, 60, 1200, 1080]];
       var player = J("mcc_mcity_pos", { x: 430, y: 430 });
@@ -367,9 +388,97 @@
           c: ["#4a7fb5", "#6b7280", "#7c5c3e", "#3f6212"][n % 4] });
       }
 
+      /* ---------- MEMBER SPACES: every profile becomes a building ----------
+         The real floor directory (seed + cloud) drops each member into the
+         city as their own lot, placed deterministically so it never shuffles,
+         with their profile photo standing at the door as their character.
+         Tapping a lot opens their space; the signed-in player's lot wears a
+         gold ring and their own face rides the whip. New signups just appear. */
+      var LOTS = [], LOTW = 104, LOTH = 78, nearLot = null;
+      var faceCache = {};   // slug -> {img, ok}
+      var PLAYER = null;    // the signed-in member's own face
+      function shash(s) { var h = 2166136261; s = String(s || ""); for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; } return h; }
+      function loadFace(slug, url) {
+        if (!url || faceCache[slug]) return;
+        var im = new Image(), rec = { img: im, ok: false };
+        im.onload = function () { rec.ok = true; };
+        try { im.crossOrigin = "anonymous"; } catch (e) {}
+        im.src = url; faceCache[slug] = rec;
+      }
+      function rectHits(x, y, w, h, pad) {
+        for (var i = 0; i < D.length; i++) { var b = D[i];
+          if (x < b.x + b.w + pad && x + w > b.x - pad && y < b.y + b.h + pad && y + h > b.y - pad) return true; }
+        return false;
+      }
+      function lotHits(x, y) {
+        for (var i = 0; i < LOTS.length; i++) { var l = LOTS[i];
+          if (x < l.x + l.w + 24 && x + LOTW > l.x - 24 && y < l.y + l.h + 24 && y + LOTH > l.y - 24) return true; }
+        return false;
+      }
+      var CELLS = [];
+      for (var qy = 175; qy <= 1000; qy += 118) for (var qx = 120; qx <= 1470; qx += 132) {
+        if (!rectHits(qx, qy, LOTW, LOTH, 26)) CELLS.push({ x: qx, y: qy });
+      }
+      function placeLot(slug) {
+        if (!CELLS.length) return { x: 120, y: 175 };
+        var idx = shash(slug) % CELLS.length;
+        for (var t = 0; t < CELLS.length; t++) { var c = CELLS[(idx + t) % CELLS.length]; if (!lotHits(c.x, c.y)) return c; }
+        return CELLS[idx];
+      }
+      var ROLE_COLOR = { Photo: "#e5383b", Video: "#ff7a00", Web: "#45b6ff", Studios: "#c99d45", Stages: "#a3e635", Music: "#f472b6", Merch: "#2aa8a0", Programs: "#8b5cf6", "Civic / Community": "#2f9e62" };
+      function memberColor(p) { if (p.badgeColor) return p.badgeColor; return ROLE_COLOR[(p.roles || [])[0]] || "#d8ba7c"; }
+      function addLot(p, mine) {
+        var slug = p.slug || p.id; if (!slug) return;
+        var ex = null; LOTS.forEach(function (l) { if (l.slug === slug) ex = l; });
+        if (ex) { if (mine) ex.mine = true; return; }
+        var pos = placeLot(slug);
+        LOTS.push({ slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(),
+          roles: p.roles || [], color: memberColor(p), href: p.href || p.profile || ("page.html?who=" + slug),
+          photo: p.photo || null, blurb: p.blurb || p.headline || "", mine: !!mine,
+          x: pos.x, y: pos.y, w: LOTW, h: LOTH });
+        if (p.photo) loadFace(slug, p.photo);
+      }
+      function buildCity() {
+        if (!window.MCC_FLOOR) return;
+        MCC_FLOOR.load().then(function (floor) {
+          (floor.providers || []).forEach(function (p) { addLot(p, false); });
+          var u = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
+          if (u && window.MCC_SUPA) {
+            window.MCC_SUPA.token().then(function (t) {
+              return fetch(window.MCC_SUPA.url + "/rest/v1/providers?owner=eq." + window.MCC_SUPA.uid() +
+                "&select=slug,name,ticker,roles,photo,badge_color,headline&limit=1",
+                { headers: { apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t } });
+            }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+              var me = rows && rows[0]; if (!me) return;
+              me.badgeColor = me.badge_color;
+              addLot(me, true);
+              PLAYER = { slug: me.slug, photo: me.photo };
+              if (me.photo) loadFace(me.slug, me.photo);
+            }).catch(function () {});
+          }
+        }).catch(function () {});
+      }
+      /* draw a member's face clipped to a disc — the photo IS their character;
+         a coloured initial disc stands in until (or if) the photo loads */
+      function drawToken(x, y, r, slug, color, initial) {
+        cx.save();
+        var rec = faceCache[slug];
+        if (rec && rec.ok && rec.img.naturalWidth) {
+          cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.closePath(); cx.clip();
+          var iw = rec.img.naturalWidth, ih = rec.img.naturalHeight, s = Math.max(2 * r / iw, 2 * r / ih);
+          try { cx.drawImage(rec.img, x - iw * s / 2, y - ih * s / 2, iw * s, ih * s); } catch (e) {}
+        } else {
+          cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.fillStyle = "#1a1512"; cx.fill();
+          cx.fillStyle = color; cx.font = "800 " + Math.round(r * 1.1) + "px system-ui";
+          cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText(initial, x, y + 1); cx.textBaseline = "alphabetic";
+        }
+        cx.restore();
+        cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.lineWidth = 2.5; cx.strokeStyle = color; cx.stroke();
+      }
+
       addEventListener("keydown", function (e) {
         keys[e.key.toLowerCase()] = true;
-        if (e.key === "Enter" && nearDoor && entered) openDistrict(nearDoor);
+        if (e.key === "Enter" && entered) { if (nearDoor) openDistrict(nearDoor); else if (nearLot) openLot(nearLot); }
       });
       addEventListener("keyup", function (e) { keys[e.key.toLowerCase()] = false; });
       cv.addEventListener("pointerdown", function (e) {
@@ -378,11 +487,16 @@
         target = { x: (e.clientX - r.left) * dpr / scale + offX, y: (e.clientY - r.top) * dpr / scale + offY };
       });
       cv.addEventListener("pointerup", function (e) {
-        if (!entered || !nearDoor) return;
+        if (!entered) return;
         var r = cv.getBoundingClientRect();
         var wx = (e.clientX - r.left) * dpr / scale + offX, wy = (e.clientY - r.top) * dpr / scale + offY;
-        var b = nearDoor, doorX = b.x + b.w / 2, doorY = b.y + b.h + 10;
-        if (Math.hypot(wx - doorX, wy - doorY) < 80) { target = null; openDistrict(b); }
+        if (nearDoor) {
+          var b = nearDoor, doorX = b.x + b.w / 2, doorY = b.y + b.h + 10;
+          if (Math.hypot(wx - doorX, wy - doorY) < 80) { target = null; openDistrict(b); return; }
+        }
+        if (nearLot && Math.hypot(wx - (nearLot.x + nearLot.w / 2), wy - (nearLot.y - 3)) < 80) {
+          target = null; openLot(nearLot);
+        }
       });
 
       /* the stick */
@@ -441,6 +555,10 @@
           var doorX = b.x + b.w / 2, doorY = b.y + b.h + 16;
           if (Math.hypot(player.x - doorX, player.y - doorY) < 46) nearDoor = b;
         });
+        nearLot = null;
+        if (!nearDoor) LOTS.forEach(function (l) {
+          if (Math.hypot(player.x - (l.x + l.w / 2), player.y - (l.y - 3)) < 42) nearLot = l;
+        });
         NPC.forEach(function (c) {
           c.t += c.sp * dt * c.dir;
           if (c.t > 1 || c.t < 0) { c.dir *= -1; c.t = Math.max(0, Math.min(1, c.t)); }
@@ -450,7 +568,9 @@
           $("mcHint").innerHTML = nearDoor
             ? (nearDoor.unlock(w) ? "<b>" + esc(nearDoor.name) + "</b> · tap the door / press Enter"
               : "🔒 <b>" + esc(nearDoor.name) + "</b> · tap to see the key")
-            : "<b>" + esc(rankOf(rep(w))) + "</b> in the city · find a lit door";
+            : nearLot
+              ? "<b>" + esc(nearLot.name) + "</b>" + (nearLot.mine ? " · your space" : "") + " · tap to enter"
+              : "<b>" + esc(rankOf(rep(w))) + "</b> in the city · find a lit door";
         }
         try { localStorage.setItem("mcc_mcity_pos", JSON.stringify(player)); } catch (e) {}
       }
@@ -471,12 +591,22 @@
         offX = Math.max(0, Math.min(W - cv.width / scale, offX));
         offY = Math.max(0, Math.min(H - cv.height / scale, offY));
         cx.setTransform(scale, 0, 0, scale, -offX * scale, -offY * scale);
-        cx.fillStyle = GROUND; cx.fillRect(offX, offY, cv.width / scale, cv.height / scale);
-        cx.strokeStyle = ROAD; cx.lineWidth = 48; cx.lineCap = "round";
-        STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
-        cx.strokeStyle = "rgba(244,239,230,0.13)"; cx.lineWidth = 2; cx.setLineDash([14, 18]);
-        STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
-        cx.setLineDash([]);
+        var visW = cv.width / scale, visH = cv.height / scale;
+        if (mapReady) {
+          // paint only the visible slice of the big map — cheap at any resolution
+          var mx = mapImg.width / W, my = mapImg.height / H;
+          cx.drawImage(mapImg, offX * mx, offY * my, visW * mx, visH * my, offX, offY, visW, visH);
+          // day/night colour grade laid over the painted city
+          cx.fillStyle = NIGHT ? "rgba(8,10,26,0.44)" : "rgba(24,12,6,0.12)";
+          cx.fillRect(offX, offY, visW, visH);
+        } else {
+          cx.fillStyle = GROUND; cx.fillRect(offX, offY, visW, visH);
+          cx.strokeStyle = ROAD; cx.lineWidth = 48; cx.lineCap = "round";
+          STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
+          cx.strokeStyle = "rgba(244,239,230,0.13)"; cx.lineWidth = 2; cx.setLineDash([14, 18]);
+          STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
+          cx.setLineDash([]);
+        }
         // traffic
         NPC.forEach(function (c) {
           var x = c.s[0] + (c.s[2] - c.s[0]) * c.t, y = c.s[1] + (c.s[3] - c.s[1]) * c.t;
@@ -489,13 +619,16 @@
         var w = WORLD;
         D.forEach(function (b) {
           var open = b.unlock(w);
-          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
-          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.28)";
-          cx.lineWidth = 3;
+          // over the painted map, districts are translucent neon mission-zones
+          // (a solid block would bury the art); on the fallback they're lit blocks
+          if (mapReady) cx.fillStyle = open ? hexA(b.c, 0.13) : "rgba(6,5,4,0.52)";
+          else cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
+          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.3)";
+          cx.lineWidth = mapReady ? 3.5 : 3;
           cx.beginPath(); cx.roundRect(b.x, b.y, b.w, b.h, 14); cx.fill(); cx.stroke();
-          if (open && NIGHT) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
-          // night windows: the city sleeps lit, locked or not
-          if (NIGHT) {
+          if (open && (NIGHT || mapReady)) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
+          // night windows only on the procedural fallback — the map paints its own
+          if (NIGHT && !mapReady) {
             for (var wi = b.x + 14; wi < b.x + b.w - 14; wi += 22) {
               for (var wj = b.y + 26; wj < b.y + b.h - 18; wj += 20) {
                 if (((wi * 7 + wj * 13) | 0) % 3 === 0) {
@@ -528,17 +661,49 @@
             }
           }
         });
+        // member spaces: every profile is a building with a face at the door
+        LOTS.forEach(function (l) {
+          if (mapReady) cx.fillStyle = hexA(l.color, 0.17); else cx.fillStyle = "#241d18";
+          cx.beginPath(); cx.roundRect(l.x, l.y, l.w, l.h, 11); cx.fill();
+          if (l.mine) { cx.save(); cx.shadowColor = "#c99d45"; cx.shadowBlur = 20; cx.strokeStyle = "#c99d45"; cx.lineWidth = 3.5; cx.stroke(); cx.restore(); }
+          cx.strokeStyle = l.color; cx.lineWidth = 2.2; cx.stroke();
+          cx.fillStyle = mapReady ? "rgba(9,7,6,0.72)" : "#15100d";
+          cx.fillRect(l.x, l.y + l.h - 17, l.w, 17);
+          cx.fillStyle = "#f4efe6"; cx.font = "800 9px system-ui"; cx.textAlign = "center";
+          cx.fillText((l.mine ? "★ " : "$") + (l.ticker || l.name.slice(0, 9)).toUpperCase(), l.x + l.w / 2, l.y + l.h - 5);
+          drawToken(l.x + l.w / 2, l.y - 3, 15, l.slug, l.color, (l.name[0] || "?").toUpperCase());
+        });
+
         // the whip: rotates into its heading, glows at speed
+        // a soft ground shadow reads on the painted street either way
         cx.save();
         cx.translate(player.x, player.y);
         cx.rotate(heading);
-        cx.fillStyle = "#e5383b";
-        cx.shadowColor = "#e5383b"; cx.shadowBlur = 12 + speed * 40;
-        cx.beginPath(); cx.roundRect(-14, -8, 28, 16, 6); cx.fill();
-        cx.shadowBlur = 0;
-        cx.fillStyle = "#0a0807"; cx.fillRect(2, -6, 7, 12); // windshield
-        if (NIGHT) { cx.fillStyle = "rgba(255,240,180,0.9)"; cx.fillRect(12, -6, 3, 4); cx.fillRect(12, 2, 3, 4); }
+        cx.fillStyle = "rgba(0,0,0,0.45)";
+        cx.beginPath(); cx.ellipse(0, 0, 20, 12, 0, 0, 7); cx.fill();
         cx.restore();
+        cx.save();
+        cx.translate(player.x, player.y);
+        if (carReady) {
+          cx.rotate(heading + CAR_FACE);
+          var cs = 46;
+          cx.shadowColor = "#e5383b"; cx.shadowBlur = 8 + speed * 34;
+          cx.drawImage(carImg, -cs / 2, -cs / 2, cs, cs);
+          cx.shadowBlur = 0;
+        } else {
+          cx.rotate(heading);
+          cx.fillStyle = "#e5383b";
+          cx.shadowColor = "#e5383b"; cx.shadowBlur = 12 + speed * 40;
+          cx.beginPath(); cx.roundRect(-14, -8, 28, 16, 6); cx.fill();
+          cx.shadowBlur = 0;
+          cx.fillStyle = "#0a0807"; cx.fillRect(2, -6, 7, 12); // windshield
+          if (NIGHT) { cx.fillStyle = "rgba(255,240,180,0.9)"; cx.fillRect(12, -6, 3, 4); cx.fillRect(12, 2, 3, 4); }
+        }
+        cx.restore();
+        // the player's own face rides the whip — you drive as your character
+        if (PLAYER && faceCache[PLAYER.slug] && faceCache[PLAYER.slug].ok) {
+          drawToken(player.x, player.y, 9, PLAYER.slug, "#c99d45", "★");
+        }
         cx.setTransform(1, 0, 0, 1, 0, 0);
         cx.fillStyle = "#f4efe6"; cx.font = "800 " + 10 * dpr + "px system-ui"; cx.textAlign = "center";
         requestAnimationFrame(draw);
@@ -628,6 +793,32 @@
         document.body.classList.add("mc-open");
         track("mcity_district", { d: b.id, open: open });
       }
+      /* ---------- the member space sheet ---------- */
+      function openLot(l) {
+        $("mcSheet").style.setProperty("--dc", l.color);
+        $("shK").textContent = (l.roles || []).join(" · ") || "A space in M City";
+        $("shK").style.color = l.color;
+        $("shName").textContent = l.name;
+        $("shDesc").textContent = l.blurb || "Their own corner of the city.";
+        var av = l.photo
+          ? '<img src="' + esc(l.photo) + '" alt="" style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid ' + l.color + ';vertical-align:middle;margin-right:0.6rem" onerror="this.remove()">'
+          : "";
+        $("shArc").innerHTML = av + (l.ticker ? '<b style="font-size:1rem;color:' + l.color + '">$' + esc(l.ticker) + "</b>" : (l.mine ? "★ your space" : ""));
+        $("shMs").innerHTML =
+          '<a class="mc__m" href="' + esc(l.href) + '" style="--dc:' + l.color + '"><span class="mc__m-ic">→</span>' +
+          '<span class="mc__m-mid"><b>Enter their space</b><small>Their page, their hustle, their record.</small></span>' +
+          '<span class="mc__m-go">open</span></a>' +
+          (l.ticker && !l.mine ? '<a class="mc__m" href="market.html?to=' + esc(l.ticker) + '" style="--dc:' + l.color + '"><span class="mc__m-ic">$</span>' +
+            "<span class=\"mc__m-mid\"><b>Move on " + esc(l.name) + "</b><small>Open the keypad loaded with their ticker.</small></span>" +
+            '<span class="mc__m-go">deal &#8594;</span></a>' : "") +
+          (l.mine ? '<a class="mc__m" href="market.html#yours" style="--dc:' + l.color + '"><span class="mc__m-ic">★</span>' +
+            "<span class=\"mc__m-mid\"><b>Run your desk</b><small>Dress your space — the card the city sees.</small></span>" +
+            '<span class="mc__m-go">go &#8594;</span></a>' : "");
+        $("shLock").innerHTML = ""; $("shProof").innerHTML = "";
+        document.body.classList.add("mc-open");
+        track("mcity_space", { slug: l.slug, mine: !!l.mine });
+      }
+
       $("mcVeil").addEventListener("click", function () { document.body.classList.remove("mc-open"); });
       $("mcX").addEventListener("click", function () { document.body.classList.remove("mc-open"); });
 
@@ -643,6 +834,8 @@
         $("mcBadge").textContent = Object.keys(have).length + "/" + (D.length + 1);
       }
       refreshHUD();
+      buildCity();                       // drop every member's space into the city
+      setTimeout(buildCity, 1800);       // catch the player's own face once auth settles
       setInterval(refreshHUD, 4000);
       document.addEventListener("visibilitychange", function () { if (!document.hidden) refreshHUD(); });
 
