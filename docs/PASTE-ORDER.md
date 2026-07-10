@@ -45,6 +45,7 @@ matter what ran before.
 | 27 | **`hardening-schema.sql`** | **SEAL #1 — re-asserts every safe function** | all |
 | 28 | **`score-schema.sql`** | **SEAL #2 — the score engine + my_card()** | all |
 | 29 | **`game-tape.sql`** | **THE GAME TAPE — price starts at $0, every interaction earns; resets the tape** | 28 |
+| 30 | `signals-board.sql` | board_signals() — real Spotify/YouTube/plays numbers on every ticker sheet | 26d |
 
 ## The law of the ladder
 
