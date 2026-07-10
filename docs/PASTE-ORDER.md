@@ -44,6 +44,7 @@ matter what ran before.
 | 26c | `rescale-schema.sql` | THE GREAT RESCALE — reset to zero (earned/purchased survive), bankroll retired, the 1,000 E⤴ Trap | all of 1–26 |
 | 27 | **`hardening-schema.sql`** | **SEAL #1 — re-asserts every safe function** | all |
 | 28 | **`score-schema.sql`** | **SEAL #2 — the score engine + my_card()** | all |
+| 29 | **`game-tape.sql`** | **THE GAME TAPE — price starts at $0, every interaction earns; resets the tape** | 28 |
 
 ## The law of the ladder
 

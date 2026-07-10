@@ -271,15 +271,16 @@
       /* ---------- boot the real map ---------- */
       var map = null, ready = false;
       var player = J("mcc_ow_pos", { lng: -73.1894, lat: 41.1792, h: 0 });
-      var speed = 0, keys = {}, stick = { x: 0, y: 0 }, entered = false, curCity = null;
+      var keys = {}, stick = { x: 0, y: 0, m: 0 }, entered = false, curCity = null;
 
       try {
         map = new maplibregl.Map({
           container: "owMap",
           style: "https://tiles.openfreemap.org/styles/dark",
-          center: [player.lng, player.lat], zoom: 15, pitch: 55, bearing: 0,
+          center: [player.lng, player.lat], zoom: 16.1, pitch: 55, bearing: 0,
           maxBounds: [[-73.45, 41.05], [-72.45, 41.90]],
           attributionControl: { compact: true }, dragRotate: false, pitchWithRotate: false,
+          dragPan: false, scrollZoom: false, doubleClickZoom: false, touchZoomRotate: false, keyboard: false,
         });
         map.on("load", function () { ready = true; addMarkers(); });
         map.on("error", function (e) { if (!ready) fail(); });
@@ -335,7 +336,7 @@
         if (p.photo) el.style.backgroundImage = "url(" + p.photo + ")"; else el.textContent = (p.name || slug).slice(0, 1).toUpperCase();
         var info = { slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(), roles: p.roles || [], color: color,
           href: p.href || p.profile || ("page.html?who=" + slug), photo: p.photo || null, blurb: p.blurb || p.headline || "",
-          mine: !!mine, char: CHARACTERS[slug] || null, addr: (pin && pin.addr) || (p.area || "") };
+          mine: !!mine, char: CHARACTERS[slug] || null, addr: (pin && pin.addr) || (p.area || ""), lng: lng, lat: lat };
         el.addEventListener("click", function () { openSpace(info); });
         markerEls[slug] = mk(el, lng, lat);
       }
@@ -364,9 +365,12 @@
         $("owArc").innerHTML = '<div style="margin-top:0.6rem">' + av + (l.ticker ? '<b style="font-size:1rem;color:' + l.color + '">$' + esc(l.ticker) + "</b>" : (l.mine ? "★ your space" : "")) + "</div>" +
           (l.char ? '<img src="' + l.char + '" alt="" style="width:100%;margin-top:0.7rem;border-radius:14px;border:1px solid ' + l.color + '" onerror="this.remove()">' : "");
         $("owMs").innerHTML =
+          (entered && l.lng != null ? '<button class="ow-m" type="button" data-nav="1" style="--dc:' + l.color + ';background:none;width:100%;text-align:left;font:inherit;cursor:pointer"><span class="ow-m-ic">◎</span><span class="ow-m-mid"><b>Pull up out front</b><small>The whip drives itself to their block.</small></span><span class="ow-m-go">drive &#8594;</span></button>' : "") +
           '<a class="ow-m" href="' + esc(l.href) + '" style="--dc:' + l.color + '"><span class="ow-m-ic">→</span><span class="ow-m-mid"><b>Enter their space</b><small>Their page, their hustle, their record.</small></span><span class="ow-m-go">open</span></a>' +
           (l.ticker && !l.mine ? '<a class="ow-m" href="market.html?to=' + esc(l.ticker) + '" style="--dc:' + l.color + '"><span class="ow-m-ic">$</span><span class="ow-m-mid"><b>Move on ' + esc(l.name) + '</b><small>The keypad, loaded with their ticker.</small></span><span class="ow-m-go">deal &#8594;</span></a>' : "") +
           (l.mine ? '<a class="ow-m" href="market.html#yours" style="--dc:' + l.color + '"><span class="ow-m-ic">★</span><span class="ow-m-mid"><b>Run your desk</b></span><span class="ow-m-go">go &#8594;</span></a>' : "");
+        var nv = $("owMs").querySelector("[data-nav]");
+        if (nv) nv.addEventListener("click", function () { document.body.classList.remove("ow-open"); NAV.go(l.lng, l.lat, l.name); });
         document.body.classList.add("ow-open"); track("ow_space", { slug: l.slug, mine: !!l.mine });
       }
       $("owVeil").addEventListener("click", function () { document.body.classList.remove("ow-open"); });
@@ -380,8 +384,8 @@
         if (!el) return;
         el.addEventListener("pointerdown", function (e) { on = true; var r = el.getBoundingClientRect(); cxp = r.left + r.width / 2; cyp = r.top + r.height / 2; el.setPointerCapture(e.pointerId); mv(e); });
         el.addEventListener("pointermove", mv);
-        el.addEventListener("pointerup", function () { on = false; stick.x = 0; stick.y = 0; nub.style.transform = "translate(-50%,-50%)"; });
-        function mv(e) { if (!on) return; var dx = e.clientX - cxp, dy = e.clientY - cyp, d = Math.hypot(dx, dy), m = Math.min(d, 38); if (d > 4) { stick.x = dx / d; stick.y = dy / d; } else { stick.x = 0; stick.y = 0; } nub.style.transform = "translate(calc(-50% + " + (d ? dx / d * m : 0) + "px), calc(-50% + " + (d ? dy / d * m : 0) + "px))"; }
+        el.addEventListener("pointerup", function () { on = false; stick.x = 0; stick.y = 0; stick.m = 0; nub.style.transform = "translate(-50%,-50%)"; });
+        function mv(e) { if (!on) return; var dx = e.clientX - cxp, dy = e.clientY - cyp, d = Math.hypot(dx, dy), m = Math.min(d, 38); if (d > 4) { stick.x = dx / d; stick.y = dy / d; stick.m = m / 38; } else { stick.x = 0; stick.y = 0; stick.m = 0; } nub.style.transform = "translate(calc(-50% + " + (d ? dx / d * m : 0) + "px), calc(-50% + " + (d ? dy / d * m : 0) + "px))"; }
       })();
 
       function collect() {
@@ -423,9 +427,11 @@
           var dy = (a.lat - b.lat) * 111320, dx = (a.lng - b.lng) * 111320 * Math.cos(a.lat * Math.PI / 180);
           return Math.hypot(dx, dy);
         }
-        function glow(txt, c) {
+        function glow(txt, c, spot, label) {
           var el = document.createElement("div");
-          el.className = "ow-mk"; el.innerHTML = '<div class="ow-trait" style="color:' + c + ';background:' + c + '22;border-color:' + c + '">' + txt + "</div>";
+          el.className = "ow-mk"; el.style.cursor = "pointer";
+          el.innerHTML = '<div class="ow-trait" style="color:' + c + ';background:' + c + '22;border-color:' + c + '">' + txt + "</div>";
+          if (spot) el.addEventListener("click", function (ev) { ev.stopPropagation(); NAV.go(spot.lng, spot.lat, label || spot.name); });
           return el;
         }
         function contract() {
@@ -438,7 +444,7 @@
             if (d < 500 || d > 3200 || dist(player, a) > 4000) continue;
             A = a; B = b; active = false;
             if (mkA) mkA.remove(); if (mkB) mkB.remove();
-            mkA = mk(glow("R", "#c99d45"), a.lng, a.lat); mkB = null;
+            mkA = mk(glow("R", "#c99d45", a, "The run — " + a.name), a.lng, a.lat); mkB = null;
             return;
           }
         }
@@ -448,10 +454,10 @@
           if (!active) {
             if (dist(player, A) < 55) {
               active = true;
-              par = Math.round(dist(A, B) / 9 * 1.35);
+              par = Math.round(dist(A, B) / 14) + 10;   // tuned to driving 2.0's real m/s
               deadline = Date.now() + par * 1000;
               if (mkA) { mkA.remove(); mkA = null; }
-              mkB = mk(glow("★", "#00c805"), B.lng, B.lat);
+              mkB = mk(glow("★", "#00c805", B, "The drop — " + B.name), B.lng, B.lat);
               toast("<b>RUN:</b> deliver to <b>" + esc(B.name) + "</b> — " + par + "s on the clock");
               track("ow_run_start", { to: B.slug });
             }
@@ -484,34 +490,98 @@
         return { tick: tick, hud: hud, score: score };
       })();
 
+      /* ---------- driving 2.0: point where you want to go ----------
+         The tank controls are gone. The pad (and WASD) is a COMPASS:
+         push toward where you want to go on screen and the whip arcs
+         there — it pivots when slow, sweeps wide when fast, and lifts
+         off the gas by itself into hard turns. Tap any street and a
+         pin drops: the whip drives itself there and eases to a stop.
+         Touching the pad always takes the wheel back. The camera is a
+         chase cam — it trails the heading and breathes with speed
+         instead of snapping the world around on every touch. */
+      function angTo(a, b) { var d = (b - a) % 360; if (d > 180) d -= 360; if (d < -180) d += 360; return d; }
+      function mDist(a, b) {
+        var dy = (a.lat - b.lat) * 111320, dx = (a.lng - b.lng) * 111320 * Math.cos(a.lat * Math.PI / 180);
+        return Math.hypot(dx, dy);
+      }
+      function mBearing(a, b) {
+        var dx = (b.lng - a.lng) * Math.cos(a.lat * Math.PI / 180), dy = b.lat - a.lat;
+        return Math.atan2(dx, dy) * 180 / Math.PI;
+      }
+      var NAV = (function () {
+        var tgt = null, pin = null;
+        function go(lng, lat, label) {
+          tgt = { lng: lng, lat: lat };
+          if (pin) pin.remove();
+          var el = document.createElement("div");
+          el.className = "ow-mk";
+          el.innerHTML = '<div class="ow-trait" style="color:#c99d45;background:rgba(201,157,69,0.15);border-color:#c99d45">◎</div>';
+          pin = mk(el, lng, lat);
+          toast("◎ <b>" + esc(label || "Pinned") + "</b> — the whip drives itself. Touch the pad to take the wheel.");
+          track("ow_nav", {});
+        }
+        function clear(arrived) {
+          if (!tgt) return;
+          tgt = null; if (pin) { pin.remove(); pin = null; }
+          if (arrived) toast("<b style='color:#00c805'>PULLED UP.</b> You're on the block.");
+        }
+        function hud() { return tgt ? " · <b style='color:#c99d45'>◎ " + Math.round(mDist(player, tgt)) + "m</b>" : ""; }
+        return { go: go, clear: clear, hud: hud, get: function () { return tgt; } };
+      })();
+      if (map) map.on("click", function (e) {
+        if (!entered) return;
+        var t = e.originalEvent && e.originalEvent.target;
+        if (t && String(t.className || "").indexOf("maplibregl-canvas") === -1) return; // markers keep their own doors
+        NAV.go(e.lngLat.lng, e.lngLat.lat, "That block");
+      });
+
+      var vel = 0, camH = player.h || 0;
       function loop(now) {
         RUNS.tick();
         var dt = Math.min(48, now - last || 16); last = now;
         if (entered && ready && map) {
-          var thr = 0, steer = 0;
-          if (keys.w || keys.arrowup) thr += 1;
-          if (keys.s || keys.arrowdown) thr -= 1;
-          if (keys.a || keys.arrowleft) steer -= 1;
-          if (keys.d || keys.arrowright) steer += 1;
-          if (stick.x || stick.y) { thr = -stick.y; steer = stick.x; }
-          var maxSp = 0.30 + (TSTATE.hustle / 100) * 0.14;
-          speed += ((thr ? maxSp * (thr > 0 ? 1 : -0.6) : 0) - speed) * Math.min(1, dt / 150);
-          player.h = (player.h + steer * (0.16 * Math.min(1.4, Math.abs(speed) / maxSp + 0.2)) * dt) % 360;
-          var hr = player.h * Math.PI / 180;
-          var stepBase = 0.0000019 * dt;              // degrees per ms, tuned to feel like driving
-          var mvd = speed * stepBase * 100;
-          player.lat += Math.cos(hr) * mvd;
-          player.lng += Math.sin(hr) * mvd / Math.max(0.4, Math.cos(player.lat * Math.PI / 180));
-          player.lat = Math.max(41.06, Math.min(41.89, player.lat));
-          player.lng = Math.max(-73.44, Math.min(-72.46, player.lng));
-          // speed is FELT: the camera drops and leans as you push it
-          map.jumpTo({ center: [player.lng, player.lat], bearing: player.h,
-            pitch: 55 + Math.min(8, (Math.abs(speed) / maxSp) * 8) });
-          $("owCar").style.transform = "rotate(90deg)";   // fixed up; the map turns
+          var top = 26 + (TSTATE.hustle / 100) * 14;    // 26–40 m/s: HUSTLE is horsepower
+          // the compass: keys and pad point SCREEN directions
+          var ix = 0, iy = 0;
+          if (keys.w || keys.arrowup) iy -= 1;
+          if (keys.s || keys.arrowdown) iy += 1;
+          if (keys.a || keys.arrowleft) ix -= 1;
+          if (keys.d || keys.arrowright) ix += 1;
+          if (stick.m) { ix = stick.x * stick.m; iy = stick.y * stick.m; }
+          var aim = null, want = 0, nav = NAV.get();
+          if (ix || iy) {
+            NAV.clear();                                 // hands on the wheel beat the pin
+            aim = camH + Math.atan2(ix, -iy) * 180 / Math.PI;
+            want = Math.min(1, Math.hypot(ix, iy));
+          } else if (nav) {
+            var dm = mDist(player, nav);
+            if (dm < 16) NAV.clear(true);
+            else { aim = mBearing(player, nav); want = Math.min(1, dm / 130); } // eases to a stop
+          }
+          if (aim != null) {
+            var diff = angTo(player.h, aim);
+            var rate = (120 + 140 * (1 - Math.min(1, vel / top))) * dt / 1000; // pivots slow, arcs fast
+            player.h = (player.h + Math.max(-rate, Math.min(rate, diff)) + 360) % 360;
+            want *= Math.max(0.3, Math.cos(Math.min(Math.abs(diff), 120) * Math.PI / 360)); // lifts into hard turns
+          }
+          vel += (want * top - vel) * Math.min(1, dt / (want ? 320 : 200));
+          if (vel > 0.2) {
+            var hr = player.h * Math.PI / 180, step = vel * dt / 1000; // meters this frame
+            player.lat += Math.cos(hr) * step / 111320;
+            player.lng += Math.sin(hr) * step / (111320 * Math.max(0.25, Math.cos(player.lat * Math.PI / 180)));
+            player.lat = Math.max(41.06, Math.min(41.89, player.lat));
+            player.lng = Math.max(-73.44, Math.min(-72.46, player.lng));
+          } else if (!want) vel = 0;
+          // the chase cam: trails the whip, breathes with speed
+          camH += angTo(camH, player.h) * Math.min(1, dt / 430);
+          var f = Math.min(1, vel / top);
+          map.jumpTo({ center: [player.lng, player.lat], bearing: camH,
+            pitch: 50 + f * 12, zoom: 16.1 - f * 1.0 });
+          $("owCar").style.transform = "rotate(" + (90 + angTo(camH, player.h)) + "deg)"; // the whip leans into the lag
           collect();
           var city = nearestCity(player.lng, player.lat);
           if (city !== curCity) { curCity = city; showPlace(city); }
-          $("owHint").innerHTML = "<b>" + esc(curCity ? curCity.name : "Connecticut") + "</b>" + RUNS.hud() + RUNS.score() + (MP.count() ? " · " + MP.count() + " live" : "");
+          $("owHint").innerHTML = "<b>" + esc(curCity ? curCity.name : "Connecticut") + "</b>" + NAV.hud() + RUNS.hud() + RUNS.score() + (MP.count() ? " · " + MP.count() + " live" : "");
           try { localStorage.setItem("mcc_ow_pos", JSON.stringify(player)); } catch (e) {}
           MP.tick();
         }
@@ -566,8 +636,8 @@
       var touch = matchMedia("(hover: none)").matches;
       $("owDoor").style.backgroundImage = "linear-gradient(rgba(6,8,15,0.66),rgba(6,8,15,0.9)), url(assets/img/mcity-loading.jpg)";
       $("owCtl").innerHTML = touch
-        ? "<span><b>Left thumb</b> · drive</span><span><b>Tap a point</b> · open it</span>"
-        : "<span><b>W/S</b> · gas &amp; brake</span><span><b>A/D</b> · steer</span><span><b>Click a point</b> · open it</span>";
+        ? "<span><b>Push the pad</b> · go that way</span><span><b>Tap the street</b> · auto-drive</span><span><b>Tap a face</b> · open it</span>"
+        : "<span><b>W/A/S/D</b> · point the whip</span><span><b>Click the street</b> · auto-drive</span><span><b>Click a point</b> · open it</span>";
       paintTraits();
 
       /* ---------- where do you want to go? the city picker ----------
@@ -597,9 +667,9 @@
       $("owEnter").addEventListener("click", function () {
         if (!pickedCity) return;
         // spawn in the chosen city
-        player.lng = pickedCity.lng; player.lat = pickedCity.lat; player.h = 0;
+        player.lng = pickedCity.lng; player.lat = pickedCity.lat; player.h = 0; camH = 0; vel = 0;
         curCity = pickedCity;
-        if (map && ready) { try { map.jumpTo({ center: [player.lng, player.lat], bearing: 0, zoom: 15 }); } catch (e) {} }
+        if (map && ready) { try { map.jumpTo({ center: [player.lng, player.lat], bearing: 0, zoom: 16.1 }); } catch (e) {} }
         showPlace(pickedCity);
         entered = true; $("owCar").classList.remove("hidden");
         $("owDoor").classList.add("is-gone"); setTimeout(function () { $("owDoor").remove(); }, 600);
