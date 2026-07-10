@@ -340,6 +340,26 @@
       /* ---------- engine ---------- */
       var cv = $("mcCv"), cx = cv.getContext("2d");
       var W = 1600, H = 1140;
+
+      /* the GTA skin: a hand-painted aerial map is the world floor, a
+         top-down sprite is the whip. Both load async; until they land
+         the procedural fallback below still renders a playable city. */
+      var mapImg = new Image(); var mapReady = false;
+      mapImg.onload = function () { mapReady = true; };
+      mapImg.src = "assets/img/mcity-map.png";
+      var carImg = new Image(); var carReady = false;
+      carImg.onload = function () { carReady = true; };
+      carImg.src = "assets/img/mcity-car.png";
+      var CAR_FACE = Math.PI / 2;  // sprite drawn nose-up; rotate to heading
+      function hexA(h, a) {
+        var n = parseInt(h.slice(1), 16);
+        return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+      }
+      /* the loading screen: GTA key art behind the entry door */
+      (function () { var d = $("mcDoor"); if (d) {
+        d.style.backgroundImage = "linear-gradient(rgba(8,6,5,0.72),rgba(8,6,5,0.92)), url(assets/img/mcity-loading.png)";
+        d.style.backgroundSize = "cover"; d.style.backgroundPosition = "center";
+      } })();
       var STREETS = [[60, 430, 1540, 430], [60, 760, 1540, 760], [60, 120, 1540, 120], [60, 1060, 1540, 1060],
         [430, 60, 430, 1080], [820, 60, 820, 1080], [1200, 60, 1200, 1080]];
       var player = J("mcc_mcity_pos", { x: 430, y: 430 });
@@ -471,12 +491,22 @@
         offX = Math.max(0, Math.min(W - cv.width / scale, offX));
         offY = Math.max(0, Math.min(H - cv.height / scale, offY));
         cx.setTransform(scale, 0, 0, scale, -offX * scale, -offY * scale);
-        cx.fillStyle = GROUND; cx.fillRect(offX, offY, cv.width / scale, cv.height / scale);
-        cx.strokeStyle = ROAD; cx.lineWidth = 48; cx.lineCap = "round";
-        STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
-        cx.strokeStyle = "rgba(244,239,230,0.13)"; cx.lineWidth = 2; cx.setLineDash([14, 18]);
-        STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
-        cx.setLineDash([]);
+        var visW = cv.width / scale, visH = cv.height / scale;
+        if (mapReady) {
+          // paint only the visible slice of the big map — cheap at any resolution
+          var mx = mapImg.width / W, my = mapImg.height / H;
+          cx.drawImage(mapImg, offX * mx, offY * my, visW * mx, visH * my, offX, offY, visW, visH);
+          // day/night colour grade laid over the painted city
+          cx.fillStyle = NIGHT ? "rgba(8,10,26,0.44)" : "rgba(24,12,6,0.12)";
+          cx.fillRect(offX, offY, visW, visH);
+        } else {
+          cx.fillStyle = GROUND; cx.fillRect(offX, offY, visW, visH);
+          cx.strokeStyle = ROAD; cx.lineWidth = 48; cx.lineCap = "round";
+          STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
+          cx.strokeStyle = "rgba(244,239,230,0.13)"; cx.lineWidth = 2; cx.setLineDash([14, 18]);
+          STREETS.forEach(function (s) { cx.beginPath(); cx.moveTo(s[0], s[1]); cx.lineTo(s[2], s[3]); cx.stroke(); });
+          cx.setLineDash([]);
+        }
         // traffic
         NPC.forEach(function (c) {
           var x = c.s[0] + (c.s[2] - c.s[0]) * c.t, y = c.s[1] + (c.s[3] - c.s[1]) * c.t;
@@ -489,13 +519,16 @@
         var w = WORLD;
         D.forEach(function (b) {
           var open = b.unlock(w);
-          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
-          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.28)";
-          cx.lineWidth = 3;
+          // over the painted map, districts are translucent neon mission-zones
+          // (a solid block would bury the art); on the fallback they're lit blocks
+          if (mapReady) cx.fillStyle = open ? hexA(b.c, 0.13) : "rgba(6,5,4,0.52)";
+          else cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
+          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.3)";
+          cx.lineWidth = mapReady ? 3.5 : 3;
           cx.beginPath(); cx.roundRect(b.x, b.y, b.w, b.h, 14); cx.fill(); cx.stroke();
-          if (open && NIGHT) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
-          // night windows: the city sleeps lit, locked or not
-          if (NIGHT) {
+          if (open && (NIGHT || mapReady)) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
+          // night windows only on the procedural fallback — the map paints its own
+          if (NIGHT && !mapReady) {
             for (var wi = b.x + 14; wi < b.x + b.w - 14; wi += 22) {
               for (var wj = b.y + 26; wj < b.y + b.h - 18; wj += 20) {
                 if (((wi * 7 + wj * 13) | 0) % 3 === 0) {
@@ -529,15 +562,30 @@
           }
         });
         // the whip: rotates into its heading, glows at speed
+        // a soft ground shadow reads on the painted street either way
         cx.save();
         cx.translate(player.x, player.y);
         cx.rotate(heading);
-        cx.fillStyle = "#e5383b";
-        cx.shadowColor = "#e5383b"; cx.shadowBlur = 12 + speed * 40;
-        cx.beginPath(); cx.roundRect(-14, -8, 28, 16, 6); cx.fill();
-        cx.shadowBlur = 0;
-        cx.fillStyle = "#0a0807"; cx.fillRect(2, -6, 7, 12); // windshield
-        if (NIGHT) { cx.fillStyle = "rgba(255,240,180,0.9)"; cx.fillRect(12, -6, 3, 4); cx.fillRect(12, 2, 3, 4); }
+        cx.fillStyle = "rgba(0,0,0,0.45)";
+        cx.beginPath(); cx.ellipse(0, 0, 20, 12, 0, 0, 7); cx.fill();
+        cx.restore();
+        cx.save();
+        cx.translate(player.x, player.y);
+        if (carReady) {
+          cx.rotate(heading + CAR_FACE);
+          var cs = 46;
+          cx.shadowColor = "#e5383b"; cx.shadowBlur = 8 + speed * 34;
+          cx.drawImage(carImg, -cs / 2, -cs / 2, cs, cs);
+          cx.shadowBlur = 0;
+        } else {
+          cx.rotate(heading);
+          cx.fillStyle = "#e5383b";
+          cx.shadowColor = "#e5383b"; cx.shadowBlur = 12 + speed * 40;
+          cx.beginPath(); cx.roundRect(-14, -8, 28, 16, 6); cx.fill();
+          cx.shadowBlur = 0;
+          cx.fillStyle = "#0a0807"; cx.fillRect(2, -6, 7, 12); // windshield
+          if (NIGHT) { cx.fillStyle = "rgba(255,240,180,0.9)"; cx.fillRect(12, -6, 3, 4); cx.fillRect(12, 2, 3, 4); }
+        }
         cx.restore();
         cx.setTransform(1, 0, 0, 1, 0, 0);
         cx.fillStyle = "#f4efe6"; cx.font = "800 " + 10 * dpr + "px system-ui"; cx.textAlign = "center";
