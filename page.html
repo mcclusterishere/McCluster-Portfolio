@@ -233,6 +233,7 @@
   <script src="js/guide.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/distribution.js?v=__STAMP__"></script>
   <script src="js/floorcache.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script src="js/social.js?v=__STAMP__"></script>
@@ -281,6 +282,20 @@
         $("pgLinks").innerHTML = links.map(function (l) {
           return '<a class="pg__link" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label || l.href) + "</a>";
         }).join("");
+        /* the multicolored seals: any credential the desk has verified
+           rides right under the ticker, in its own color */
+        if (window.MCC_DIST && MCC_DIST.badgesFor) {
+          MCC_DIST.badgesFor(P.slug || P.id).then(function (seals) {
+            if (!seals.length) return;
+            $("pgTick").innerHTML += '<span style="display:flex;flex-wrap:wrap;gap:0.35rem;justify-content:center;margin-top:0.45rem">' +
+              seals.map(function (s) {
+                var c = esc(s.color || "#d8ba7c");
+                return '<span style="border:1px solid ' + c + ';border-radius:100px;padding:0.3em 0.9em;font-size:0.66rem;' +
+                  'font-weight:800;letter-spacing:0.06em;color:' + c + ';background:rgba(255,255,255,0.04)">&#10003; ' +
+                  esc(s.label || s.id) + "</span>";
+              }).join("") + "</span>";
+          });
+        }
         window.MCC_SOCIAL.followers(P.slug || P.id).then(function (n) {
           $("pgCount").innerHTML = "<b>" + n.toLocaleString() + "</b> supporter" + (n === 1 ? "" : "s");
         });

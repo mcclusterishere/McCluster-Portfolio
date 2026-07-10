@@ -129,10 +129,21 @@
       return fetch(S().url + "/rest/v1/rpc/my_badges", { method: "POST", headers: { apikey: S().key, Authorization: "Bearer " + t, "Content-Type": "application/json" }, body: "{}" });
     }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
   }
+  // the verified seals on any listing — public, no sign-in needed
+  function badgesFor(slug) {
+    if (!S() || !S().url) return Promise.resolve([]);
+    return fetch(S().url + "/rest/v1/rpc/badges_for", { method: "POST",
+      headers: { apikey: S().key, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_slug: slug }) })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (j) { return Array.isArray(j) ? j : []; })
+      .catch(function () { return []; });
+  }
 
   window.MCC_DIST = {
     registry: registry, mine: mine, connect: connect, disconnect: disconnect,
     fileReport: fileReport, parseCsv: parseCsv, readFile: readFile,
     badges: badges, saveIdentifier: saveIdentifier, applyBadge: applyBadge, myBadges: myBadges,
+    badgesFor: badgesFor,
   };
 })();

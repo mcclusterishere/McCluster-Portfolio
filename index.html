@@ -9,6 +9,20 @@
   <meta name="keywords" content="McCluster, Matthew McCluster, McCluster Corp, Equity Uprise, Whip Equipped, creative director Connecticut, Bridgeport, Acworth Georgia, civic fellowship, Docket 516">
   <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <script>
+    /* MEMBER OF THE MONTH — the landing takeover. When data/motm.json names
+       a member, the whole app's front door becomes their fan page until the
+       next name goes in. ?stay=1 (and the motm page's own "full site" link)
+       always reaches this original landing. */
+    (function () {
+      try {
+        if (/[?&]stay=1/.test(location.search)) return;
+        fetch("data/motm.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (m) {
+          if (m && m.slug) location.replace("motm.html?who=" + encodeURIComponent(m.slug));
+        }).catch(function () {});
+      } catch (e) {}
+    })();
+  </script>
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0a0807">
   <meta name="mobile-web-app-capable" content="yes">
