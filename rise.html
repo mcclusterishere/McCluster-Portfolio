@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>What Makes You Rise? · Equity Uprise</title>
+  <meta name="description" content="Not a quiz. A city with talent, rooms, money and unfinished work — enter it, make decisions under pressure, and walk out with your E⤴ Card: who you are when systems form around you.">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .rz { min-height: 100dvh; display: grid; place-items: center; padding: clamp(4rem, 8vh, 6rem) 1.1rem 8rem; }
+    .rz__stage { width: 100%; max-width: 30rem; }
+    .rz__k { color: #c99d45; font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; }
+    .rz h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 4rem); margin-top: 0.3rem; }
+    .rz__lede { color: var(--cream-dim); line-height: 1.75; font-size: 1.06rem; margin-top: 0.9rem; }
+    .rz__lede b { color: var(--cream); }
+    .rz__step { animation: rzIn 0.5s cubic-bezier(0.2,0.9,0.2,1); }
+    @keyframes rzIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    .rz__chips { display: grid; gap: 0.6rem; margin-top: 1.3rem; }
+    .rz__chip { text-align: left; font: inherit; color: var(--cream); background: rgba(20,16,14,0.8);
+      border: 1.5px solid rgba(244,239,230,0.22); border-radius: 15px; padding: 0.95rem 1.05rem; cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.12s; }
+    .rz__chip b { display: block; font-size: 1.02rem; font-weight: 800; }
+    .rz__chip small { display: block; color: var(--cream-dim); font-size: 0.8rem; line-height: 1.5; margin-top: 0.25rem; }
+    .rz__chip:active { transform: scale(0.98); }
+    .rz__chips:not(.is-touched) .rz__chip { animation: rzGlow 2.8s ease-in-out infinite; }
+    .rz__chips:not(.is-touched) .rz__chip:nth-child(2) { animation-delay: 0.4s; }
+    .rz__chips:not(.is-touched) .rz__chip:nth-child(3) { animation-delay: 0.8s; }
+    .rz__chips:not(.is-touched) .rz__chip:nth-child(4) { animation-delay: 1.2s; }
+    .rz__chips:not(.is-touched) .rz__chip:nth-child(5) { animation-delay: 1.6s; }
+    @keyframes rzGlow { 0%, 100% { border-color: rgba(244,239,230,0.22); box-shadow: none; }
+      50% { border-color: rgba(201,157,69,0.75); box-shadow: 0 0 16px rgba(201,157,69,0.25); } }
+    @media (prefers-reduced-motion: reduce) { .rz__chips .rz__chip { animation: none !important; } }
+    .rz__echo { min-height: 2.4em; color: #d8ba7c; font-size: 0.9rem; line-height: 1.6; margin-top: 1rem; font-style: italic; }
+    .rz__forming { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.7rem; min-height: 1.6em; }
+    .rz__gain { border: 1px solid rgba(0,200,5,0.5); color: #00c805; border-radius: 100px; font-size: 0.62rem;
+      font-weight: 800; letter-spacing: 0.08em; padding: 0.2em 0.65em; animation: rzIn 0.4s; }
+    .rz__meta { color: rgba(244,239,230,0.45); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.6rem; }
+    .rz__card { border: 1.5px solid rgba(201,157,69,0.6); border-radius: 20px; background: rgba(18,14,11,0.92);
+      padding: 1.4rem 1.3rem; margin-top: 1.1rem; box-shadow: 0 0 44px rgba(201,157,69,0.18); }
+    .rz__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.7rem; line-height: 1; color: #e8c877; }
+    .rz__card .sub { color: var(--cream-dim); font-size: 0.92rem; line-height: 1.65; margin-top: 0.6rem; }
+    .rz__card .sub b { color: var(--cream); }
+    .rz__vals { margin-top: 1rem; display: grid; gap: 0.4rem; }
+    .rz__val { display: flex; align-items: center; gap: 0.6rem; }
+    .rz__val small { flex: none; width: 6.4rem; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; }
+    .rz__val span { flex: 1; height: 7px; border-radius: 5px; background: rgba(244,239,230,0.08); overflow: hidden; }
+    .rz__val i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7a5a17, #e8c877); transition: width 1s cubic-bezier(0.2,0.9,0.2,1); }
+    .rz__val b { flex: none; width: 2rem; text-align: right; font-size: 0.76rem; font-variant-numeric: tabular-nums; }
+    .rz__block { border-top: 1px solid rgba(244,239,230,0.12); margin-top: 0.95rem; padding-top: 0.85rem; }
+    .rz__block small { color: #c99d45; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 800; }
+    .rz__block p { color: var(--cream-dim); font-size: 0.88rem; line-height: 1.6; margin-top: 0.3rem; }
+    .rz__block p b { color: var(--cream); }
+    .rz__cta { margin-top: 1.2rem; display: grid; gap: 0.55rem; }
+    .rz__door { margin-top: 1rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <main class="rz"><div class="rz__stage" id="rzStage"></div></main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      /* THE MEASUREMENT: eight operational values — the axes real deals
+         turn on — and eight Chaser archetypes scored by decisions, never
+         by agree/disagree sliders. The card is drafted in the open. */
+      var VKEYS = ["own", "control", "proof", "equity", "reach", "speed", "trust", "resilience"];
+      var VLABEL = { own: "Ownership", control: "Control", proof: "Proof", equity: "Equity",
+        reach: "Reach", speed: "Speed", trust: "Trust", resilience: "Resilience" };
+      var V = {}, A = {};
+      VKEYS.forEach(function (k) { V[k] = 0; });
+      ["signal", "infra", "capital", "culture", "justice", "access", "proof", "command"].forEach(function (k) { A[k] = 0; });
+
+      var ARCH = {
+        signal:  { n: "The Signal Chaser", line: "You detect the overlooked story and turn information into attention.",
+          strength: "You move public focus — the block hears about it because you said it.", blind: "You can chase the loud thing past the important thing.",
+          roles: "strategist · documentarian · public communicator", collab: "a builder and a closer", move: "Publish one piece that names a problem only you noticed." },
+        infra:   { n: "The Infrastructure Chaser", line: "You look for the part everyone depends on, then own or redesign it.",
+          strength: "You turn scattered people and assets into an operating structure.", blind: "You may build rails before proving the smallest transaction.",
+          roles: "platform architect · producer · operations director", collab: "a visible storyteller and a closer", move: "Launch one paid transaction between three verified people." },
+        capital: { n: "The Capital Chaser", line: "You find, structure, and deploy the money.",
+          strength: "You see the deal inside the situation everyone else calls a problem.", blind: "You can price things the mission needed given away.",
+          roles: "dealmaker · fundraiser · revenue strategist", collab: "a culture-carrier and a proof-keeper", move: "Structure one split deal where everyone's cut is on paper." },
+        culture: { n: "The Culture Chaser", line: "You turn ideas into music, images, rituals and identity.",
+          strength: "People feel what you make before they understand it.", blind: "The work can outrun the paperwork that protects it.",
+          roles: "artist · creative director · performer", collab: "an operator and a capital-mover", move: "Rack one record and put your identifiers in the locker." },
+        justice: { n: "The Justice Chaser", line: "You answer unequal power with pressure, policy and receipts.",
+          strength: "You hold the line others quietly walk away from.", blind: "Every fight looks winnable — some cost more than the win.",
+          roles: "organizer · policy researcher · advocate", collab: "a signal-carrier and a proof-keeper", move: "File one civic card and put one issue on the record." },
+        access:  { n: "The Access Chaser", line: "You connect people to rooms, tools and entry points.",
+          strength: "You know every door in the city and who it opens for.", blind: "You can give away access the system needed to price.",
+          roles: "venue operator · community liaison · coordinator", collab: "an infrastructure-builder and a storyteller", move: "Put one under-used room on the floor as a bookable space." },
+        proof:   { n: "The Proof Chaser", line: "You document the work, verify the claims, keep the receipts.",
+          strength: "When it's disputed, you're the one holding the record.", blind: "You can archive the movement instead of moving it.",
+          roles: "photographer · archivist · analyst", collab: "a commander and a culture-carrier", move: "Verify your identity and stamp your first seal." },
+        command: { n: "The Command Chaser", line: "You coordinate people under time pressure and decide when it's unclear.",
+          strength: "Deadlines organize themselves around you.", blind: "You can carry weight the team should have shared.",
+          roles: "producer · director · campaign manager", collab: "a proof-keeper and a capital-mover", move: "Send one real deal — terms, date, rate — on the record." },
+      };
+
+      /* ENTRY POINTS: where you enter is data — it maps to real roles */
+      var ENTRIES = [
+        ["create", "Create", "You have the record, the vision, the footage — and no infrastructure.", { culture: 2 }, ["Music"]],
+        ["space", "Open a Space", "You control a room the city needs — studio, sanctuary, stage, office. It sits quiet.", { access: 2, infra: 1 }, ["Studios"]],
+        ["organize", "Organize", "You're building a movement — campaign, nonprofit, fellowship, public information.", { justice: 2, signal: 1 }, []],
+        ["operate", "Operate", "You execute — camera, code, edit, logistics. You need clients, contracts, proof.", { command: 2, proof: 1 }, ["Photo"]],
+        ["institution", "Represent an Institution", "You hold resources — business, church, office, brand — and need trust you can't manufacture.", { capital: 2 }, []],
+      ];
+
+      /* THE SCENARIOS: fictionalized from real case files. Every choice
+         costs something; there is no virtuous answer. */
+      var SCENES = [
+        { k: "The first crisis", t: "A neighborhood meeting is in 72 hours.",
+          d: "Residents are angry. The institution has data but no trust. A local artist has a song that explains the issue better than the official report. You have <b>1,500 E⤴︎</b>.",
+          c: [
+            ["Commission the artist", "The song carries what the report can't.", { reach: 2, trust: 2, speed: 1 }, { culture: 2, signal: 1 },
+              "The artist accepts. The record moves faster than the press release ever did."],
+            ["Build the resident-feedback page", "Let the block speak on the record.", { proof: 2, trust: 1, equity: 1 }, { infra: 2, proof: 1 },
+              "Slow first day. Then screenshots of it start circulating — people trust a thing that listens."],
+            ["Rent the hall and pack it", "Face to face, tonight, no filter.", { speed: 2, reach: 1, trust: 1 }, { access: 2, command: 1 },
+              "The room fills. So does the parking lot. You now owe the block follow-through."],
+            ["Hold the money, recruit volunteers", "People before product.", { resilience: 2, equity: 2 }, { justice: 2, access: 1 },
+              "Twelve people show up to help. Two of them will still be here in a year — that's the asset."]] },
+        { k: "The first hire", t: "One seat on the team. Four hands raised.",
+          d: "The work is bigger than you now. Who do you bring in first?",
+          c: [
+            ["The documented operator", "Costs real money. Delivers every time. Receipts for days.", { proof: 2, control: 1 }, { proof: 2, command: 1 },
+              "The invoice stings. The deliverable lands early. You sleep."],
+            ["The hungry unknown", "Works for a split of what it becomes.", { equity: 2, own: 1 }, { culture: 1, capital: 1 },
+              "They outwork everyone. Now the split you promised is worth something — paper it."],
+            ["The connected elder", "Knows every room in the city and who holds each key.", { trust: 2, reach: 1 }, { access: 2, signal: 1 },
+              "One phone call opens a door you'd been emailing for months."],
+            ["The engineer", "Wants to automate it so it runs without you.", { own: 2, resilience: 1 }, { infra: 2 },
+              "Two weeks of silence. Then the thing that took your whole Saturday takes four minutes."]] },
+        { k: "The tradeoff", t: "A brand offers 25,000 E⤴︎ to fund the campaign.",
+          d: "They want <b>final approval over the message</b>. The work gets bigger or it stays yours — pick.",
+          c: [
+            ["Take the money", "Capital, reach, production value — now.", { speed: 2, reach: 2 }, { capital: 2, signal: 1 },
+              "The check clears. The first note from their team arrives an hour later."],
+            ["Take it with a firewall", "Money yes — editorial control stays here, in writing.", { control: 2, proof: 1, own: 1 }, { command: 1, proof: 1, capital: 1 },
+              "Legal goes quiet for nine days. Then they sign it. Slower — but it's still your voice."],
+            ["Reject it, crowdfund", "Smaller and sovereign.", { own: 2, trust: 2 }, { justice: 1, culture: 1, access: 1 },
+              "Four hundred small names on the wall. Every one of them shares it like it's theirs — it is."],
+            ["Convert them to a partner", "Not a sponsor — shared ownership, shared risk.", { own: 1, equity: 2, resilience: 1 }, { infra: 1, capital: 2 },
+              "The negotiation takes a month. What comes out isn't a campaign anymore — it's a company."]] },
+        { k: "The public test", t: "The work went viral. The client won't pay the last invoice.",
+          d: "They're claiming the reach was 'the real payment.' Everyone is watching what you do next.",
+          c: [
+            ["Publish the receipts", "The contract, the thread, the timeline — in public.", { proof: 2, reach: 2 }, { proof: 2, signal: 2 },
+              "It gets ugly for a week. Nobody in this city stiffs you again."],
+            ["Lawyer up, stay quiet", "Documentation does the shouting.", { control: 2, proof: 1 }, { command: 2, proof: 1 },
+              "Months, not weeks. The settlement includes the words 'shall not disparage' — and full payment."],
+            ["Renegotiate for equity", "Skip the cash — take a piece of what the work built.", { equity: 2, own: 2 }, { capital: 2, infra: 1 },
+              "Risky. Three years from now this is either a story or a stake."],
+            ["Absorb it, build the system", "Eat this one — and build the rail so it can never happen again.", { resilience: 2, trust: 1, own: 1 }, { infra: 2, access: 1 },
+              "The loss becomes the deposit-up-front policy that protects every member after you."]] },
+      ];
+
+      var stage = $("rzStage"), step = -1, entry = null, echoes = [];
+
+      function gains(v) {
+        return Object.keys(v).sort(function (a, b) { return v[b] - v[a]; }).slice(0, 3)
+          .map(function (k) { return '<span class="rz__gain">+' + VLABEL[k] + "</span>"; }).join("");
+      }
+      function paintIntro() {
+        stage.innerHTML = '<div class="rz__step"><p class="rz__k">Equity Uprise · the signal</p>' +
+          "<h1>What makes<br>you rise?</h1>" +
+          '<p class="rz__lede">You made it this far. Most people scroll — a few notice the <b>system underneath</b>.<br><br>' +
+          "A city has talent. Buildings. Money. Stories. Problems. What it doesn't have is <b>coordination</b>.<br><br>" +
+          "This is not a quiz. You're about to make decisions under pressure, and every one of them drafts your card — in the open.</p>" +
+          '<div class="finale__actions" style="margin-top:1.4rem"><button class="btn btn--ruby" id="rzGo" style="font-size:1.1rem;padding:1rem 2.4rem">RISE &#8599;</button></div></div>';
+        $("rzGo").addEventListener("click", function () { track("rise_start", {}); step = 0; paintEntry(); });
+      }
+      function paintEntry() {
+        stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The network is forming · select your entry point</p>' +
+          "<h1 style=\"font-size:clamp(1.8rem,7vw,2.6rem)\">Where do you enter?</h1>" +
+          '<div class="rz__chips" id="rzChips">' + ENTRIES.map(function (e, i) {
+            return '<button class="rz__chip" data-i="' + i + '"><b>' + e[1] + "</b><small>" + e[2] + "</small></button>";
+          }).join("") + "</div></div>";
+        wire(function (i) {
+          entry = ENTRIES[i];
+          Object.keys(entry[3]).forEach(function (k) { A[k] += entry[3][k]; });
+          track("quiz_answer", { game: "rise", q: "entry", pick: entry[0] });
+          step = 1; paintScene(0);
+        });
+      }
+      function paintScene(si) {
+        var s = SCENES[si];
+        stage.innerHTML = '<div class="rz__step"><p class="rz__meta">Mission ' + (si + 1) + " of " + SCENES.length + " · " + s.k + "</p>" +
+          "<h1 style=\"font-size:clamp(1.6rem,6.4vw,2.3rem)\">" + s.t + "</h1>" +
+          '<p class="rz__lede" style="font-size:0.98rem">' + s.d + "</p>" +
+          '<div class="rz__chips" id="rzChips">' + s.c.map(function (c, i) {
+            return '<button class="rz__chip" data-i="' + i + '"><b>' + c[0] + "</b><small>" + c[1] + "</small></button>";
+          }).join("") + '</div><p class="rz__echo" id="rzEcho"></p><div class="rz__forming" id="rzForm"></div></div>';
+        wire(function (i) {
+          var c = s.c[i];
+          Object.keys(c[2]).forEach(function (k) { V[k] += c[2][k]; });
+          Object.keys(c[3]).forEach(function (k) { A[k] += c[3][k]; });
+          echoes.push(c[4]);
+          track("quiz_answer", { game: "rise", q: s.k, pick: c[0] });
+          $("rzEcho").textContent = c[4];
+          $("rzForm").innerHTML = '<span style="color:rgba(244,239,230,0.4);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:800;margin-right:0.2rem">Your card is forming</span>' + gains(c[2]);
+          document.querySelectorAll(".rz__chip").forEach(function (b) { b.disabled = true; b.style.opacity = b.getAttribute("data-i") == i ? "1" : "0.3"; });
+          setTimeout(function () { si + 1 < SCENES.length ? paintScene(si + 1) : paintCard(); }, 2100);
+        });
+      }
+      function wire(fn) {
+        var box = $("rzChips");
+        box.addEventListener("click", function (e) {
+          var b = e.target.closest(".rz__chip"); if (!b || b.disabled) return;
+          box.classList.add("is-touched");
+          fn(+b.getAttribute("data-i"));
+        }, { once: false });
+      }
+      function paintCard() {
+        var order = Object.keys(A).sort(function (a, b) { return A[b] - A[a]; });
+        var p1 = ARCH[order[0]], p2 = ARCH[order[1]];
+        var vmax = Math.max.apply(null, VKEYS.map(function (k) { return V[k]; })) || 1;
+        var card = { entry: entry[0], arch: [order[0], order[1]], v: {}, at: new Date().toISOString() };
+        VKEYS.forEach(function (k) { card.v[k] = Math.round(40 + (V[k] / vmax) * 58); });
+        try {
+          localStorage.setItem("mcc_rise", JSON.stringify(card));
+          var ob = JSON.parse(localStorage.getItem("mcc_onboard") || "{}");
+          ob.rise = card; if (!ob.roles || !ob.roles.length) ob.roles = entry[4];
+          localStorage.setItem("mcc_onboard", JSON.stringify(ob));
+        } catch (e) {}
+        track("rise_done", { arch: card.arch.join("+"), entry: entry[0] });
+        var sorted = VKEYS.slice().sort(function (a, b) { return card.v[b] - card.v[a]; });
+        stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The pattern formed · your E⤴ Card</p>' +
+          '<div class="rz__card"><p class="rz__k">' + p1.n.replace("The ", "").replace(" Chaser", "") + " × " + p2.n.replace("The ", "").replace(" Chaser", "") + '</p>' +
+          "<h2>" + p1.n.replace(" Chaser", "") + "&ndash;" + p2.n.replace("The ", "") + "</h2>" +
+          '<p class="sub">' + p1.line + " <b>" + p2.line + "</b></p>" +
+          '<div class="rz__vals">' + sorted.map(function (k) {
+            return '<div class="rz__val"><small>' + VLABEL[k] + '</small><span><i data-w="' + card.v[k] + '"></i></span><b>' + card.v[k] + "</b></div>";
+          }).join("") + "</div>" +
+          '<div class="rz__block"><small>Strength</small><p>' + p1.strength + '</p></div>' +
+          '<div class="rz__block"><small>Blind spot</small><p>' + p1.blind + '</p></div>' +
+          '<div class="rz__block"><small>Natural roles</small><p>' + p1.roles + '</p></div>' +
+          '<div class="rz__block"><small>Your equity needs</small><p>You rise fastest next to <b>' + p1.collab + "</b>.</p></div>" +
+          '<div class="rz__block"><small>Recommended first move</small><p><b>' + p1.move + "</b></p></div></div>" +
+          '<div class="rz__cta">' +
+          '<div class="rz__door" id="rzDoor"></div>' +
+          '<a class="btn btn--ghost" href="market.html#providers" data-cta="rise-collab" style="justify-content:center">See who you should build with &#8594;</a>' +
+          '<a class="btn btn--ghost" href="mymission.html" style="justify-content:center;opacity:0.8">Your missions are waiting &#8594;</a></div>' +
+          '<p class="rz__lede" style="font-size:0.78rem;margin-top:1rem;color:rgba(244,239,230,0.45)">Your Equity Uprise profile has already begun — the entry point, the values, the archetype all carry into your card. And the card is earned, not answered: from here, what you actually do on the record moves it.</p></div>';
+        requestAnimationFrame(function () {
+          document.querySelectorAll(".rz__val i").forEach(function (i) { i.style.width = i.getAttribute("data-w") + "%"; });
+        });
+        if (window.MCC_DOOR && window.MCC_DOOR.mount) {
+          window.MCC_DOOR.mount($("rzDoor"), { lede: "Claim this card — it becomes your desk, your ticker, your record.", ticker: true, context: "rise",
+            onDone: function () { location.href = "market.html#yours"; } });
+        } else {
+          $("rzDoor").innerHTML = '<a class="btn btn--ruby" href="welcome.html" style="justify-content:center;width:100%">Claim this card &#8599;</a>';
+        }
+      }
+      paintIntro();
+      track("rise_view", {});
+    })();
+  </script>
+</body>
+</html>
