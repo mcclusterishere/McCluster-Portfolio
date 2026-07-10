@@ -1,0 +1,69 @@
+{
+  "note": "The distribution registry. Every industry a member can onboard has its own set of platforms they distribute/earn through. Each carries a deep link to that platform's earnings/bank/reports page and whether it exports a CSV earnings report. 'reports' is the best-known reports/bank URL. Extend freely — the flow is dynamic per industry. An 'Other' option is always offered in the UI for anything not listed.",
+  "industries": [
+    { "id": "music",   "name": "Music",              "verb": "distribute", "unit": "releases",  "blurb": "Streaming & download distributors that pay out on your catalog." },
+    { "id": "video",   "name": "Video / Film",       "verb": "publish",    "unit": "channels",  "blurb": "Video networks, MCNs and OTT platforms that pay on views." },
+    { "id": "podcast", "name": "Podcast / Audio",    "verb": "host",       "unit": "shows",     "blurb": "Podcast hosts & networks that pay on downloads and ads." },
+    { "id": "writing", "name": "Writing / Publishing","verb": "publish",   "unit": "titles",    "blurb": "Book, newsletter and article platforms that pay royalties." },
+    { "id": "art",     "name": "Visual Art / Design","verb": "sell",       "unit": "shops",     "blurb": "Print-on-demand, stock and marketplace platforms." },
+    { "id": "software","name": "Apps / Software",    "verb": "ship",       "unit": "apps",      "blurb": "App stores and marketplaces that pay out on sales." },
+    { "id": "creator", "name": "Creator / Social",   "verb": "monetize",   "unit": "accounts",  "blurb": "Platforms that pay creators directly (ads, tips, funds)." }
+  ],
+  "distributors": [
+    { "id": "distrokid",    "name": "DistroKid",           "industry": "music", "reports": "https://distrokid.com/bank/",                     "csv": true,  "color": "#1aab8a" },
+    { "id": "tunecore",     "name": "TuneCore",            "industry": "music", "reports": "https://www.tunecore.com/login",                  "csv": true,  "color": "#00b3a4" },
+    { "id": "cdbaby",       "name": "CD Baby",             "industry": "music", "reports": "https://members.cdbaby.com/",                     "csv": true,  "color": "#e94b3c" },
+    { "id": "unitedmasters","name": "UnitedMasters",       "industry": "music", "reports": "https://unitedmasters.com/login",                "csv": true,  "color": "#111111" },
+    { "id": "symphonic",    "name": "Symphonic Distribution","industry": "music","reports": "https://portal.symphonicdistribution.com/",     "csv": true,  "color": "#ff5a3c" },
+    { "id": "awal",         "name": "AWAL",               "industry": "music", "reports": "https://dashboard.awal.com/",                     "csv": true,  "color": "#0a0a0a" },
+    { "id": "stem",         "name": "Stem",               "industry": "music", "reports": "https://app.stem.is/",                            "csv": true,  "color": "#5b5bd6" },
+    { "id": "amuse",        "name": "Amuse",              "industry": "music", "reports": "https://artist.amuse.io/",                        "csv": true,  "color": "#ff4081" },
+    { "id": "ditto",        "name": "Ditto Music",        "industry": "music", "reports": "https://dittomusic.com/en/login",                 "csv": true,  "color": "#111f3d" },
+    { "id": "routenote",    "name": "RouteNote",          "industry": "music", "reports": "https://routenote.com/login",                     "csv": true,  "color": "#2b8cff" },
+    { "id": "onerpm",       "name": "ONErpm",             "industry": "music", "reports": "https://onerpm.com/login",                        "csv": true,  "color": "#00c2a8" },
+    { "id": "empire",       "name": "EMPIRE",             "industry": "music", "reports": "https://empi.re/",                                "csv": false, "color": "#111111" },
+    { "id": "believe",      "name": "Believe (Backstage)","industry": "music", "reports": "https://backstage.believedigital.com/",           "csv": true,  "color": "#ff2d55" },
+    { "id": "theorchard",   "name": "The Orchard",        "industry": "music", "reports": "https://www.theorchard.com/login/",               "csv": true,  "color": "#00a3e0" },
+    { "id": "vydia",        "name": "Vydia",              "industry": "music", "reports": "https://vydia.com/login",                         "csv": true,  "color": "#6c2bd9" },
+    { "id": "toolost",      "name": "Too Lost",           "industry": "music", "reports": "https://app.toolost.com/",                        "csv": true,  "color": "#111111" },
+    { "id": "repost",       "name": "Repost by SoundCloud","industry": "music","reports": "https://repost.soundcloud.com/",                 "csv": true,  "color": "#ff5500" },
+    { "id": "venice",       "name": "Venice Music",       "industry": "music", "reports": "https://app.venice.music/",                       "csv": true,  "color": "#0f62fe" },
+    { "id": "level",        "name": "LANDR / Level",      "industry": "music", "reports": "https://www.landr.com/en/dashboard/",             "csv": true,  "color": "#ff375f" },
+    { "id": "spinnup",      "name": "Spinnup",            "industry": "music", "reports": "https://artists.spinnup.com/",                    "csv": true,  "color": "#111111" },
+    { "id": "imusician",    "name": "iMusician",          "industry": "music", "reports": "https://imusician.pro/en/login",                  "csv": true,  "color": "#00b2ff" },
+    { "id": "boomplay",     "name": "Boomplay for Artists","industry": "music","reports": "https://artist.boomplay.com/",                   "csv": false, "color": "#f8c200" },
+    { "id": "audiomack",    "name": "Audiomack (Monetization)","industry": "music","reports": "https://audiomack.com/artist/dashboard",     "csv": false, "color": "#ffa200" },
+
+    { "id": "youtube",      "name": "YouTube (AdSense)",   "industry": "video", "reports": "https://studio.youtube.com/",                    "csv": true,  "color": "#ff0000" },
+    { "id": "vimeo",        "name": "Vimeo OTT",           "industry": "video", "reports": "https://vhx.tv/admin",                           "csv": true,  "color": "#1ab7ea" },
+    { "id": "patreon-v",    "name": "Patreon",             "industry": "video", "reports": "https://www.patreon.com/dashboard/earnings",     "csv": true,  "color": "#ff424d" },
+    { "id": "nebula",       "name": "Nebula",              "industry": "video", "reports": "https://creators.nebula.tv/",                    "csv": false, "color": "#3d5afe" },
+
+    { "id": "spotify-pod",  "name": "Spotify for Podcasters","industry":"podcast","reports": "https://podcasters.spotify.com/",             "csv": true,  "color": "#1db954" },
+    { "id": "acast",        "name": "Acast",               "industry": "podcast","reports": "https://www.acast.com/sign-in",                 "csv": true,  "color": "#611f69" },
+    { "id": "megaphone",    "name": "Megaphone",           "industry": "podcast","reports": "https://cms.megaphone.fm/",                     "csv": true,  "color": "#ff6b00" },
+    { "id": "buzzsprout",   "name": "Buzzsprout",          "industry": "podcast","reports": "https://www.buzzsprout.com/",                   "csv": true,  "color": "#e6224a" },
+
+    { "id": "amazonkdp",    "name": "Amazon KDP",          "industry": "writing","reports": "https://kdp.amazon.com/en_US/reports-new",      "csv": true,  "color": "#ff9900" },
+    { "id": "substack",     "name": "Substack",            "industry": "writing","reports": "https://substack.com/dashboard",               "csv": true,  "color": "#ff6719" },
+    { "id": "medium",       "name": "Medium Partner",      "industry": "writing","reports": "https://medium.com/me/partner/dashboard",       "csv": false, "color": "#000000" },
+    { "id": "gumroad-w",    "name": "Gumroad",             "industry": "writing","reports": "https://app.gumroad.com/dashboard",            "csv": true,  "color": "#ff90e8" },
+
+    { "id": "etsy",         "name": "Etsy",                "industry": "art",   "reports": "https://www.etsy.com/your/account/payments",      "csv": true,  "color": "#f56400" },
+    { "id": "redbubble",    "name": "Redbubble",           "industry": "art",   "reports": "https://www.redbubble.com/portfolio/sales",       "csv": true,  "color": "#e41321" },
+    { "id": "printful",     "name": "Printful",            "industry": "art",   "reports": "https://www.printful.com/dashboard",              "csv": true,  "color": "#0d1c2e" },
+    { "id": "shutterstock", "name": "Shutterstock Contributor","industry":"art","reports": "https://submit.shutterstock.com/earnings",       "csv": true,  "color": "#e03a3c" },
+    { "id": "adobestock",   "name": "Adobe Stock",         "industry": "art",   "reports": "https://contributor.stock.adobe.com/",            "csv": true,  "color": "#fa0f00" },
+
+    { "id": "appstore",     "name": "Apple App Store",     "industry": "software","reports": "https://appstoreconnect.apple.com/",           "csv": true,  "color": "#0a0a0a" },
+    { "id": "googleplay",   "name": "Google Play Console", "industry": "software","reports": "https://play.google.com/console/",             "csv": true,  "color": "#01875f" },
+    { "id": "stripe-sw",    "name": "Stripe",              "industry": "software","reports": "https://dashboard.stripe.com/payments",         "csv": true,  "color": "#635bff" },
+    { "id": "gumroad-sw",   "name": "Gumroad",             "industry": "software","reports": "https://app.gumroad.com/dashboard",           "csv": true,  "color": "#ff90e8" },
+
+    { "id": "tiktok-fund",  "name": "TikTok Creator",      "industry": "creator","reports": "https://www.tiktok.com/creator-center/",        "csv": false, "color": "#000000" },
+    { "id": "meta-payouts", "name": "Meta (IG/FB) Payouts","industry": "creator","reports": "https://business.facebook.com/creatorstudio/",  "csv": true,  "color": "#1877f2" },
+    { "id": "twitch",       "name": "Twitch",              "industry": "creator","reports": "https://dashboard.twitch.tv/",                  "csv": true,  "color": "#9146ff" },
+    { "id": "patreon-c",    "name": "Patreon",             "industry": "creator","reports": "https://www.patreon.com/dashboard/earnings",    "csv": true,  "color": "#ff424d" },
+    { "id": "kofi",         "name": "Ko-fi",               "industry": "creator","reports": "https://ko-fi.com/manage/payments",             "csv": true,  "color": "#ff5e5b" }
+  ]
+}
