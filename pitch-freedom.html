@@ -79,6 +79,22 @@
       font-weight: 700; font-size: 1.1rem; border-radius: 100px; padding: 0.8em 1.8em; cursor: pointer; }
     .walk__dots { margin-top: 1.4rem; font-size: 1.2rem; letter-spacing: 0.4em; color: rgba(247,241,227,0.5); }
     .walk__dots b { color: var(--gold); }
+
+    /* the snap: every step lands with weight, the button breathes,
+       and the live-space door glows until it is tapped */
+    @keyframes fwIn { from { opacity: 0; transform: translateY(22px) scale(0.97); } to { opacity: 1; transform: none; } }
+    .walk__card.is-in { animation: fwIn 0.45s cubic-bezier(0.2, 0.9, 0.2, 1); }
+    @keyframes fwPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.65); }
+      55% { box-shadow: 0 0 0 16px rgba(184, 134, 11, 0); } }
+    .walk__next { animation: fwPulse 1.6s ease-out infinite; transition: transform 0.12s; }
+    .walk__next:active { transform: scale(0.94); }
+    @keyframes fwKick { from { opacity: 0; letter-spacing: 0.4em; } to { opacity: 1; letter-spacing: 0.08em; } }
+    .walk__card.is-in .kick { animation: fwKick 0.5s ease-out; }
+    @keyframes ctaGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(156, 61, 34, 0.55); transform: scale(1); }
+      50% { box-shadow: 0 0 0 18px rgba(156, 61, 34, 0); transform: scale(1.03); } }
+    .cta.is-hot { animation: ctaGlow 1.5s ease-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .walk__card.is-in, .walk__next, .walk__card.is-in .kick, .cta.is-hot { animation: none; } }
   </style>
 </head>
 <body>
@@ -224,8 +240,12 @@
       var seen = false;
       try { seen = !!localStorage.getItem("fr_walk_done"); } catch (e) {}
       var force = /[?&]walk=1/.test(location.search);
+      var card = document.querySelector(".walk__card");
       function paint() {
         var s = STEPS[i];
+        card.classList.remove("is-in");
+        void card.offsetWidth; // restart the entrance every step
+        card.classList.add("is-in");
         document.getElementById("fwKick").textContent = s[0] + " · " + (i + 1) + " of " + STEPS.length;
         document.getElementById("fwHead").textContent = s[1];
         document.getElementById("fwBody").textContent = s[2];
@@ -237,7 +257,11 @@
         try { localStorage.setItem("fr_walk_done", "1"); } catch (e) {}
         if (toLive) {
           var cta = document.querySelector('a[href^="spaces.html?who=shiloh-church"]');
-          if (cta) cta.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (cta) {
+            cta.scrollIntoView({ behavior: "smooth", block: "center" });
+            cta.classList.add("is-hot"); // glows until tapped
+            cta.addEventListener("click", function () { cta.classList.remove("is-hot"); }, { once: true });
+          }
         }
       }
       document.getElementById("fwNext").addEventListener("click", function () {
