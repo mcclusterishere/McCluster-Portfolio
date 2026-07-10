@@ -378,6 +378,26 @@
     document.body.classList.add("has-appbar");
   }
 
+  /* ---------- the command door: the workstation is never far ----------
+     One floating chip on every page: members land in THEIR Mission
+     Control; the desk's own email lands in the full command room. */
+  (function () {
+    var here = location.pathname.split("/").pop() || "index.html";
+    if (here === "mission.html" || here === "mymission.html" || here === "index.html") return;
+    var email = "";
+    try { email = (JSON.parse(localStorage.getItem("mccdb_session") || "null") || {}).access_token ? (window.MCC_SUPA && window.MCC_SUPA.email && window.MCC_SUPA.email()) || "" : ""; } catch (e) {}
+    var c = document.createElement("a");
+    c.href = email === "matthew@mccluster.org" ? "mission.html" : "mymission.html";
+    c.setAttribute("aria-label", "Your command room");
+    c.style.cssText = "position:fixed;right:0.9rem;bottom:calc(5.4rem + env(safe-area-inset-bottom));z-index:60;" +
+      "display:flex;align-items:center;gap:0.35rem;background:rgba(12,9,8,0.88);backdrop-filter:blur(8px);" +
+      "border:1px solid rgba(201,157,69,0.55);border-radius:100px;padding:0.5rem 0.9rem;text-decoration:none;" +
+      "color:#c99d45;font-size:0.66rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;" +
+      "box-shadow:0 6px 22px rgba(0,0,0,0.45)";
+    c.innerHTML = "&#9670; Command";
+    document.body.appendChild(c);
+  })();
+
   /* ---------- the way back: every room has a door out ----------
      A floating back button on every page but home — real history when
      there is one, the front door when there isn't. ---------- */
