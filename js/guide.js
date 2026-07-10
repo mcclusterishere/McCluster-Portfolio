@@ -12,12 +12,21 @@
 
   var css = document.createElement("style");
   css.textContent =
-    ".gd__fab{position:fixed;right:.9rem;bottom:calc(1rem + env(safe-area-inset-bottom));z-index:230;" +
-    "width:3.1rem;height:3.1rem;border-radius:50%;border:1px solid rgba(244,239,230,.25);cursor:pointer;" +
-    "background:radial-gradient(circle at 30% 30%,#2a1d18,#14100e);color:#f4efe6;font-size:1.3rem;" +
-    "box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 0 1px rgba(193,18,31,.25);display:grid;place-items:center}" +
-    "body.has-appbar .gd__fab{bottom:calc(var(--appbar-h,4.5rem) + 1.2rem + env(safe-area-inset-bottom))}" +
+    ".gd__fab{position:fixed;right:.9rem;top:calc(.7rem + env(safe-area-inset-top));z-index:236;" +
+    "width:3.2rem;height:3.2rem;border-radius:50%;border:0;cursor:pointer;padding:0;" +
+    "background:radial-gradient(circle at 32% 28%,#e5383b,#c1121f 55%,#7c0c15);" +
+    "display:grid;place-items:center;animation:gdglow 2.4s ease-in-out infinite}" +
+    ".gd__fab img{width:1.7rem;height:1.7rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}" +
+    "@keyframes gdglow{0%,100%{box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 0 rgba(229,56,59,.55)}" +
+    "50%{box-shadow:0 4px 22px rgba(0,0,0,.5),0 0 0 9px rgba(229,56,59,0)}}" +
     "body.mp-finding .gd__fab{display:none}" +
+    ".gd__nudge{position:fixed;right:4.4rem;top:calc(1.1rem + env(safe-area-inset-top));z-index:236;" +
+    "max-width:12rem;background:#14100e;color:#f4efe6;border:1px solid rgba(229,56,59,.4);" +
+    "border-radius:12px;padding:.55rem .75rem;font-size:.8rem;line-height:1.35;" +
+    "box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transform:translateX(8px);pointer-events:none;" +
+    "transition:opacity .35s,transform .35s}" +
+    ".gd__nudge.is-on{opacity:1;transform:translateX(0)}" +
+    ".gd__nudge b{color:#e5383b}" +
     ".gd__panel{position:fixed;right:.6rem;left:.6rem;bottom:calc(.6rem + env(safe-area-inset-bottom));z-index:235;" +
     "max-width:26rem;margin-left:auto;height:min(70dvh,34rem);display:none;flex-direction:column;overflow:hidden;" +
     "background:#120d0c;border:1px solid rgba(244,239,230,.18);border-radius:18px;box-shadow:0 18px 60px rgba(0,0,0,.65)}" +
@@ -47,7 +56,32 @@
   fab.className = "gd__fab";
   fab.type = "button";
   fab.setAttribute("aria-label", "Talk to the Guide");
-  fab.textContent = "✦";
+  fab.innerHTML = '<img src="assets/img/m-mark.png" alt="Ask the Guide">';
+
+  // the coaching nudge — a little bubble that pokes the user to tap the M
+  var nudge = document.createElement("div");
+  nudge.className = "gd__nudge";
+  nudge.setAttribute("role", "status");
+  var TIPS = [
+    "New here? Tap the <b>M</b> — I'll show you around.",
+    "Stuck? Ask me how to earn your first E⤴.",
+    "Wanna get paid? Tap me — I'll walk you to the floor.",
+    "Ask me how <b>the Trap</b> pays 5 E⤴.",
+    "Curious how the plug pays for life? Tap the <b>M</b>.",
+  ];
+  var tipI = 0, nudgeTimer = null;
+  function poke() {
+    if (document.body.classList.contains("gd-open")) return;
+    nudge.innerHTML = TIPS[tipI % TIPS.length];
+    tipI++;
+    nudge.classList.add("is-on");
+    setTimeout(function () { nudge.classList.remove("is-on"); }, 5200);
+  }
+  function startNudges() {
+    if (localStorage.getItem("mcc_guide_opened") === "1") return; // they found it — stop nagging
+    setTimeout(poke, 3500);
+    nudgeTimer = setInterval(poke, 22000);
+  }
 
   var panel = document.createElement("div");
   panel.className = "gd__panel";
@@ -61,7 +95,9 @@
     '<button type="button" class="gd__btn" data-gd="send" aria-label="Send">➤</button></div>';
 
   document.body.appendChild(fab);
+  document.body.appendChild(nudge);
   document.body.appendChild(panel);
+  startNudges();
 
   var body = panel.querySelector('[data-gd="body"]');
   var input = panel.querySelector('[data-gd="in"]');
@@ -116,7 +152,7 @@
     }).then(function (rows) {
       body.innerHTML = "";
       if (!rows || !rows.length) {
-        bubble("I'm the Guide — I know every corner of this platform. Ask me how E⤴ works, how to run the Gauntlet, how the plug pays, how to climb the civic ladder… or just tell me what you're trying to do.", "ai");
+        bubble("I'm the Guide — I know every corner of this platform. Ask me how E⤴ works, how to run the Trap, how the plug pays, how to climb the civic ladder… or just tell me what you're trying to do.", "ai");
         return;
       }
       rows.forEach(function (m) { bubble(m.body, m.role === "guide" ? "ai" : "me"); });
@@ -136,19 +172,35 @@
     var wait = bubble("…", "ai", true);
     if (window.MCC_TRACK) window.MCC_TRACK("guide_msg", { page: location.pathname.split("/").pop() || "index.html" });
     S.token().then(function (t) {
+      if (!t) return { status: 0, j: { error: "you're signed out — open your account first" } };
       return fetch(S.url + "/functions/v1/the-guide", {
         method: "POST",
         headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
         body: JSON.stringify({ say: say }),
-      }).then(function (r) { return r.json().catch(function () { return null; }); });
-    }).then(function (j) {
+      }).then(function (r) {
+        return r.text().then(function (txt) {
+          var j = null; try { j = JSON.parse(txt); } catch (e) { /* non-JSON */ }
+          return { status: r.status, j: j, txt: txt };
+        });
+      });
+    }).then(function (res) {
       wait.remove();
-      var reply = (j && j.reply) || (j && j.error ? "The line dropped: " + j.error : "The line dropped — try that again.");
+      var j = res.j;
+      var reply;
+      if (j && j.reply) {
+        reply = j.reply;
+      } else if (res.status === 404) {
+        reply = "The Guide isn't wired up yet — the-guide function needs deploying. (404)";
+      } else if (j && (j.error || j.message)) {
+        reply = "The line dropped: " + (j.error || j.message) + (res.status ? " (" + res.status + ")" : "");
+      } else {
+        reply = "The line dropped (" + (res.status || "no response") + "). " + String(res.txt || "").slice(0, 140);
+      }
       bubble(reply, "ai");
       if ((voiceOn || spoken) && j && j.reply) speak(reply);
-    }).catch(function () {
+    }).catch(function (e) {
       wait.remove();
-      bubble("The line dropped — try that again.", "ai");
+      bubble("The line dropped — couldn't reach the Guide. " + String(e && e.message || e).slice(0, 100), "ai");
     }).then(function () { busy = false; });
   }
 
@@ -175,6 +227,9 @@
 
   fab.addEventListener("click", function () {
     document.body.classList.add("gd-open");
+    nudge.classList.remove("is-on");
+    if (nudgeTimer) { clearInterval(nudgeTimer); nudgeTimer = null; }
+    localStorage.setItem("mcc_guide_opened", "1");
     restore();
     if (window.MCC_TRACK) window.MCC_TRACK("guide_open", { page: location.pathname.split("/").pop() || "index.html" });
   });

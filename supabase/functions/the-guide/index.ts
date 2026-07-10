@@ -23,7 +23,7 @@ const CHARTER =
   "- E⤴ credit: platform credit pegged 1 E⤴ = $1. It is NOT cryptocurrency — no blockchain, no speculation. " +
   "EARNED credit (from completed deals, bounties, services) can be cashed out, but every cash-out is " +
   "reviewed and approved by the desk. GRANTED and PURCHASED credit spends inside the platform only.\n" +
-  "- The Gauntlet: onboarding missions in the member's Mission Control (mymission.html) pay up to 5 E⤴ total, hard cap.\n" +
+  "- The Trap: onboarding missions in the member's Mission Control (mymission.html) pay up to 5 E⤴ total, hard cap.\n" +
   "- Hustles: music, beats/production, photo, video, web, studios, stages — members list theirs and take deals on the floor (market.html).\n" +
   "- The rack: members upload their own music on their desk; fans back tracks directly on their page — no distributor in between.\n" +
   "- The plug: every member has a share link. 3 real signups earn 1 E⤴, plus a lifetime 1% share of what their people earn here.\n" +
