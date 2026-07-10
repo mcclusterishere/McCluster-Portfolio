@@ -38,11 +38,38 @@
   .card:active:not(:disabled) { transform: scale(0.95); }
   .skip { background: none !important; color: rgba(244,239,230,0.6) !important; box-shadow: none !important;
     border: 1px solid rgba(244,239,230,0.25) !important; font-size: 0.85rem !important; }
+  /* the world map: the campaign path, Mario-style */
+  .wmap { display: flex; flex-wrap: wrap; gap: 0.55rem; justify-content: center; margin: 1rem auto 0.4rem; max-width: 23rem; }
+  .node { pointer-events: auto; width: 6.4rem; border: 1px solid rgba(201,157,69,0.5); border-radius: 14px;
+    background: rgba(18,14,11,0.95); color: #f4efe6; font: inherit; padding: 0.75rem 0.5rem; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s; }
+  .node b { display: block; font-size: 0.74rem; color: #e8c877; }
+  .node small { display: block; color: rgba(244,239,230,0.55); font-size: 0.6rem; margin-top: 0.2rem; }
+  .node .stars { display: block; margin-top: 0.35rem; font-size: 0.8rem; letter-spacing: 0.1em; color: #e8c877; }
+  .node.is-next { box-shadow: 0 0 22px rgba(201,157,69,0.5); animation: nodePulse 1.8s ease-in-out infinite; }
+  .node:disabled { opacity: 0.35; cursor: not-allowed; }
+  .node:active:not(:disabled) { transform: scale(0.95); }
+  @keyframes nodePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  /* live chat: the block talks */
+  #chatlog { position: fixed; left: 0.7rem; top: 5.4rem; z-index: 6; pointer-events: none; max-width: 70vw; }
+  #chatlog div { color: #f4efe6; font-size: 0.74rem; line-height: 1.5; text-shadow: 0 1px 3px #000;
+    opacity: 0.95; transition: opacity 1s; }
+  #chatlog b { color: #e8c877; }
+  #chatbar { position: fixed; left: 0.7rem; bottom: calc(0.9rem + env(safe-area-inset-bottom)); z-index: 7;
+    display: none; gap: 0.4rem; width: min(78vw, 22rem); }
+  #chatbar input { flex: 1; font: inherit; font-size: 16px; color: #f4efe6; background: rgba(16,12,10,0.95);
+    border: 1px solid rgba(201,157,69,0.5); border-radius: 100px; padding: 0.5em 1em; outline: none; }
+  #chatbtn { position: fixed; left: 0.7rem; bottom: calc(0.9rem + env(safe-area-inset-bottom)); z-index: 7;
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(201,157,69,0.55);
+    background: rgba(16,12,10,0.9); color: #e8c877; font-size: 1.1rem; cursor: pointer; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="ui"></div>
+<div id="chatlog"></div>
+<button id="chatbtn" type="button" aria-label="Chat" style="display:none">💬</button>
+<div id="chatbar"><input id="chatin" maxlength="90" placeholder="say it to the block…"></div>
 <div id="dev"></div>
 <script type="module">
 import { STR, SHIFTS } from "./strings.js";
@@ -295,6 +322,46 @@ function openSpot(minD, fromX, fromY) {
   }
   return { x: W / 2, y: W / 2 };
 }
+/* real members own real buildings: every slab on the map is somebody's
+   spot, wears their name, and packages move door to door */
+function assignBuildings() {
+  BLOCKS.forEach((b, i) => { b.m = MEMBERS[i % MEMBERS.length]; });
+}
+function doorOf(member) {
+  const b = BLOCKS.find((x) => x.m && x.m.slug === member.slug);
+  if (!b) return openSpot(300, P ? P.x : 0, P ? P.y : 0);
+  return { x: b.x + b.w / 2, y: b.y + b.h + 44 };
+}
+
+/* ---------- THE CAMPAIGN: eight nights, three stars each ----------
+   Mario energy on Bridgeport asphalt: a world map, a path of missions,
+   stars for style — complete it, take no damage, beat the clock. */
+const CAMPAIGN = [
+  { id: "m1", name: "First Light", type: "deliver", n: 2, patrols: 2, par: 120 },
+  { id: "m2", name: "Ghost",       type: "ghost",   n: 2, patrols: 3, par: 150 },
+  { id: "m3", name: "The 9:07",    type: "timed",   n: 3, patrols: 3, limit: 170 },
+  { id: "m4", name: "Repo Night",  type: "repo",    n: 3, patrols: 4, par: 130 },
+  { id: "m5", name: "Heat Wave",   type: "deliver", n: 3, patrols: 5, par: 180 },
+  { id: "m6", name: "The Convoy",  type: "boss",    n: 1, patrols: 3, par: 200 },
+  { id: "m7", name: "Blackout",    type: "ghost",   n: 3, patrols: 5, par: 240 },
+  { id: "m8", name: "The Exchange Run", type: "timed", n: 4, patrols: 6, limit: 250 },
+];
+const GOALS = {
+  deliver: (c) => "Run " + c.n + " packages door to door.",
+  ghost:   (c) => "Run " + c.n + " packages — 3★ means NO cone ever sees you.",
+  timed:   (c) => c.n + " drops before the clock dies. " + c.limit + "s.",
+  repo:    (c) => "Knock out " + c.n + " crew cars. The turret earns tonight.",
+  boss:    () => "The armored convoy is moving. End the van — its front is plated, so flank.",
+};
+let CAMP = { stars: {} };
+try { CAMP = JSON.parse(localStorage.getItem("nr_camp")) || { stars: {} }; } catch (e) {}
+function campSave() { try { localStorage.setItem("nr_camp", JSON.stringify(CAMP)); } catch (e) {} }
+function unlockedCount() {
+  let n = 1;
+  for (const m of CAMPAIGN) { if (CAMP.stars[m.id]) n++; else break; }
+  return Math.min(n, CAMPAIGN.length);
+}
+let MS = null; // the live mission: {i, cfg, t0, dmg, seen, kills, failed}
 
 /* ---------- state ---------- */
 let mode = "title";
@@ -302,40 +369,55 @@ let P, patrols, bullets, smokes, spikesArr, parts, skids, floats, contracts, shi
 let shake = 0, hitPause = 0, spotted = false;
 best = +(localStorage.getItem("nr_best") || 0);
 
-function newGame() {
+function resetCore() {
   P = { x: W / 2, y: W / 2 + 120, h: -Math.PI / 2, vel: 0, hp: T.whip.hp, hpMax: T.whip.hp,
     nitroAt: -9e9, nitroUntil: 0, hurtAt: -9e9, fireAt: 0, turret: -Math.PI / 2,
     speedMul: 1, dmgMul: 1, nitroCdMul: 1, smokes: 2, spikes: 2, carrying: null };
   patrols = []; bullets = []; smokes = []; spikesArr = []; parts = []; skids = []; floats = []; contracts = [];
   shift = 0; rep = 0; streak = 0; tNow = 0; spotted = false;
-  file("nr_boot", {});
-  nextShift();
+  assignBuildings();
 }
-function nextShift() {
-  shift++;
-  rng = mulberry32(20260710 + shift * 7);
-  smokes.length = 0; spikesArr.length = 0; bullets.length = 0;
-  // the crews on the street tonight
+function spawnPatrols(n, withVan) {
   patrols.length = 0;
-  const n = Math.min(T.shift.cap, T.shift.patrols + (shift - 1) * T.shift.per);
   for (let i = 0; i < n; i++) {
-    const van = shift >= 3 && i === 0;
+    const van = withVan && i === 0;
     const a = openSpot(600, P.x, P.y);
     const route = [a];
     for (let k = 0; k < 3; k++) route.push(openSpot(300, route[k].x, route[k].y));
     patrols.push({ x: a.x, y: a.y, h: 0, van, hp: van ? T.van.hp : T.patrol.hp,
       route, wp: 1, sus: 0, chase: false, lastSeen: -9e9, stunUntil: 0, bumpAt: -9e9, hitAt: -9e9 });
   }
-  // three contracts, three real members each end — pick your route
+}
+function doorContracts(n) {
   contracts.length = 0;
-  const used = [];
-  for (let i = 0; i < T.contract.per; i++) {
-    let a = MEMBERS[Math.floor(rng() * MEMBERS.length)], b = MEMBERS[Math.floor(rng() * MEMBERS.length)];
-    while (b.slug === a.slug) b = MEMBERS[Math.floor(rng() * MEMBERS.length)];
-    used.push(a, b);
-    const pu = openSpot(420, P.x, P.y), dr = openSpot(500, pu.x, pu.y);
-    contracts.push({ from: a, to: b, x: pu.x, y: pu.y, dx: dr.x, dy: dr.y, state: "waiting" });
+  const bs = BLOCKS.filter((b) => b.m);
+  for (let i = 0; i < n; i++) {
+    let A = bs[Math.floor(rng() * bs.length)], B = bs[Math.floor(rng() * bs.length)];
+    while (B === A) B = bs[Math.floor(rng() * bs.length)];
+    contracts.push({ from: A.m, to: B.m,
+      x: A.x + A.w / 2, y: A.y + A.h + 44,
+      dx: B.x + B.w / 2, dy: B.y + B.h + 44, state: "waiting" });
   }
+}
+function newGame(mi) {
+  resetCore();
+  file("nr_boot", { mission: mi });
+  if (mi === "free") { MS = null; nextShift(); return; }
+  const cfg = CAMPAIGN[mi];
+  MS = { i: mi, cfg, t0: 0, dmg: false, seen: false, kills: 0, vanDead: false };
+  rng = mulberry32(4471 + mi * 13);
+  spawnPatrols(cfg.patrols, cfg.type === "boss");
+  if (cfg.type === "blackout" || cfg.id === "m7") { P.smokes = 4; }
+  if (cfg.type === "repo" || cfg.type === "boss") contracts.length = 0;
+  else doorContracts(cfg.n);
+  if (cfg.limit) MS.deadline = cfg.limit * 1000;
+}
+function nextShift() {
+  shift++;
+  rng = mulberry32(20260710 + shift * 7);
+  smokes.length = 0; spikesArr.length = 0; bullets.length = 0;
+  spawnPatrols(Math.min(T.shift.cap, T.shift.patrols + (shift - 1) * T.shift.per), shift >= 3);
+  doorContracts(T.contract.per);
 }
 function hotPay(c) {
   let n = 0;
@@ -425,6 +507,7 @@ function update(dt, cmds) {
           rep += pay; payF(f.x, f.y, pay);
           sparks(f.x, f.y, "#ff7a00", 18); hitPause = T.juice.hitPauseMs; shake = T.juice.shake;
           file("nr_knockout", { van: f.van });
+          if (MS) { MS.kills++; if (f.van) MS.vanDead = true; }
           patrols.splice(j, 1);
         }
         break;
@@ -450,6 +533,7 @@ function update(dt, cmds) {
     else f.sus = Math.max(0, f.sus - dt / T.patrol.coolMs);
     if (f.sus >= 1 && !f.chase) {
       f.chase = true;
+      if (MS) MS.seen = true;
       floats.push({ x: f.x, y: f.y - 40, txt: "!", c: "#e5383b", at: tNow, big: true });
       toastF(STR.spotted, "#e5383b");
       for (let j = 0; j < patrols.length; j++)   // the block talks
@@ -479,6 +563,7 @@ function update(dt, cmds) {
     // contact while chasing: the bump
     if (f.chase && dP < 46 && tNow - f.bumpAt > T.patrol.bumpCd) {
       f.bumpAt = tNow; P.hurtAt = tNow;
+      if (MS) MS.dmg = true;
       P.hp -= T.patrol.dmg;
       if (streak) streak = 0;
       shake = T.juice.shake; sparks(P.x, P.y, "#e5383b", 10);
@@ -505,7 +590,20 @@ function update(dt, cmds) {
       sparks(P.x, P.y, "#00c805", 16); shake = T.juice.shake * 0.7;
     }
   }
-  if (contracts.every((c) => c.state === "done") && mode === "play") {
+  /* mission clock + completion — every type has a terminal state */
+  if (MS) {
+    MS.t0 += dt;
+    const cfg = MS.cfg;
+    let won = false;
+    if ((cfg.type === "deliver" || cfg.type === "ghost" || cfg.type === "timed") &&
+        contracts.length && contracts.every((c) => c.state === "done")) won = true;
+    if (cfg.type === "repo" && MS.kills >= cfg.n) won = true;
+    if (cfg.type === "boss" && MS.vanDead) won = true;
+    if (won && mode === "play") { missionWin(); return; }
+    if (MS.deadline && MS.t0 > MS.deadline && mode === "play") {
+      mode = "map"; toastF("OUT OF TIME", "#e5383b"); paintPanel("result", { stars: 0, failed: true }); return;
+    }
+  } else if (contracts.every((c) => c.state === "done") && mode === "play") {
     file("nr_shift", { shift, rep });
     mode = "shop"; openShop();
   }
@@ -521,10 +619,20 @@ function update(dt, cmds) {
   shake *= 0.88;
 }
 function die() {
-  mode = "dead";
   if (rep > best) { best = rep; localStorage.setItem("nr_best", String(rep)); }
   file("nr_out", { shift, rep });
-  paintPanel("dead");
+  if (MS) { mode = "map"; paintPanel("result", { stars: 0, failed: true }); }
+  else { mode = "dead"; paintPanel("dead"); }
+}
+function missionWin() {
+  const cfg = MS.cfg, secs = MS.t0 / 1000;
+  let stars = 1;
+  if (!MS.dmg) stars++;
+  if (cfg.type === "ghost" ? !MS.seen : cfg.limit ? MS.t0 < cfg.limit * 750 : secs < cfg.par) stars++;
+  CAMP.stars[cfg.id] = Math.max(CAMP.stars[cfg.id] || 0, stars);
+  campSave();
+  file("nr_mission", { id: cfg.id, stars, rep });
+  mode = "map"; paintPanel("result", { stars });
 }
 
 /* ---------- render ---------- */
@@ -567,6 +675,14 @@ function render() {
     ctx.fillStyle = "#12100d"; ctx.fillRect(b.x, b.y, b.w, b.h);
     ctx.strokeStyle = "rgba(201,157,69,0.32)"; ctx.lineWidth = 2; ctx.strokeRect(b.x, b.y, b.w, b.h);
     ctx.fillStyle = "rgba(244,239,230,0.05)"; ctx.fillRect(b.x + 8, b.y + 8, b.w - 16, 10);
+    if (b.m) {  // a real member's building: their sign on the roof, their door on the street
+      ctx.textAlign = "center";
+      ctx.font = "900 16px system-ui"; ctx.fillStyle = "#e8c877";
+      ctx.fillText("$" + b.m.tick, b.x + b.w / 2, b.y + b.h / 2);
+      ctx.font = "700 10px system-ui"; ctx.fillStyle = "rgba(244,239,230,0.6)";
+      ctx.fillText(String(b.m.name).slice(0, 24), b.x + b.w / 2, b.y + b.h / 2 + 15);
+      ctx.fillStyle = "rgba(201,157,69,0.8)"; ctx.fillRect(b.x + b.w / 2 - 4, b.y + b.h - 2, 8, 14);
+    }
   }
   for (let i = 0; i < CARS.length; i++) {
     const c = CARS[i];
@@ -618,6 +734,16 @@ function render() {
       ctx.fillStyle = "rgba(244,239,230,0.25)"; ctx.fillRect(f.x - 16, f.y - 38, 32, 5);
       ctx.fillStyle = "#ff7a00"; ctx.fillRect(f.x - 16, f.y - 38, 32 * f.sus, 5);
     }
+  }
+
+  // live peers: everybody running the block right now, ghosted gold
+  for (const id in PEERS) {
+    const q = PEERS[id];
+    ctx.globalAlpha = 0.55;
+    drawSprite("whip", q.x, q.y, 88, (q.h || 0) + Math.PI / 2);
+    ctx.globalAlpha = 1;
+    ctx.font = "700 11px system-ui"; ctx.textAlign = "center"; ctx.fillStyle = "#e8c877";
+    ctx.fillText(q.n || "runner", q.x, q.y - 36);
   }
 
   // bullets
@@ -715,7 +841,17 @@ function hud() {
   ctx.fillStyle = P.carrying ? "#00c805" : "#e8c877";
   ctx.fillText(P.carrying
     ? STR.carrying + " → " + P.carrying.to.name + " ($" + P.carrying.to.tick + ")"
-    : left + " packages on the board — " + STR.pickup, vw / 2, 30);
+    : (contracts.length ? left + " packages on the board — " + STR.pickup : ""), vw / 2, 30);
+  if (MS) {  // the mission line: name, goal progress, the clock
+    const gl = MS.cfg.type === "repo" ? MS.kills + "/" + MS.cfg.n + " knocked out"
+      : MS.cfg.type === "boss" ? (MS.vanDead ? "van down" : "find the van — flank the plating")
+      : contracts.filter((c) => c.state === "done").length + "/" + MS.cfg.n + " delivered";
+    const tl = MS.deadline ? " · " + Math.max(0, Math.ceil((MS.deadline - MS.t0) / 1000)) + "s left"
+      : " · " + Math.floor(MS.t0 / 1000) + "s";
+    ctx.font = "800 11px system-ui";
+    ctx.fillStyle = MS.deadline && MS.deadline - MS.t0 < 30000 ? "#e5383b" : "#e8c877";
+    ctx.fillText((MS.i + 1) + ". " + MS.cfg.name + " — " + gl + tl, vw / 2, 48);
+  }
 }
 function touchHud() {
   for (const k of ["L", "R"]) {
@@ -745,22 +881,63 @@ function storyCard(i) {
   return '<div class="story"><b>$' + s.tick + " · " + s.from + "</b><p>" + s.line + "</p>" +
     "<small>" + (uid() ? STR.filed : STR.filedAnon) + "</small></div>";
 }
-function paintPanel(kind) {
+function starStr(n) { return "★★★".slice(0, n) + "☆☆☆".slice(0, 3 - n); }
+function chrome(show) {
+  document.getElementById("chatbtn").style.display = show ? "" : "none";
+  document.getElementById("chatbar").style.display = "none";
+}
+function paintPanel(kind, x) {
+  chrome(kind === "none");
   if (kind === "none") { ui.innerHTML = ""; return; }
-  if (kind === "title") {
-    ui.innerHTML = '<div class="panel"><div><h1>' + STR.title + '</h1>' +
-      '<p class="sub">' + STR.chapter + " · " + STR.subtitle + "</p>" +
-      storyCard(1) +
-      '<p class="hint">' + (isTouch ? STR.touchHint : STR.keysHint) + '</p>' +
-      '<button id="go">' + STR.tapToStart + "</button></div></div>";
-    document.getElementById("go").addEventListener("click", () => { newGame(); mode = "play"; paintPanel("none"); });
+  if (kind === "map") {
+    const un = unlockedCount();
+    ui.innerHTML = '<div class="panel"><div><h1 style="font-size:2.3rem">' + STR.title + "</h1>" +
+      '<p class="sub">' + STR.chapter + " — the campaign</p>" +
+      '<div class="wmap">' + CAMPAIGN.map((m, i) => {
+        const got = CAMP.stars[m.id] || 0, locked = i >= un;
+        return '<button class="node' + (!locked && !got ? " is-next" : "") + '" data-m="' + i + '"' + (locked ? " disabled" : "") + "><b>" +
+          (locked ? "🔒 " : "") + (i + 1) + ". " + m.name + "</b><small>" + m.type.toUpperCase() + '</small><span class="stars">' + starStr(got) + "</span></button>";
+      }).join("") +
+      '<button class="node" data-m="free"><b>∞ FREE RUN</b><small>endless shifts · the re-up shop</small><span class="stars">' + STR.best + " " + best + "</span></button></div>" +
+      '<p class="hint">' + (isTouch ? STR.touchHint : STR.keysHint) + "</p></div></div>";
+    ui.querySelectorAll("[data-m]").forEach((b) => b.addEventListener("click", () => {
+      const v = b.getAttribute("data-m");
+      if (v === "free") { newGame("free"); mode = "play"; paintPanel("none"); }
+      else paintPanel("brief", +v);
+    }));
+  }
+  if (kind === "brief") {
+    const cfg = CAMPAIGN[x];
+    ui.innerHTML = '<div class="panel"><div><h1 style="font-size:1.9rem">' + (x + 1) + ". " + cfg.name + "</h1>" +
+      storyCard(x + 1) +
+      '<p class="hint" style="color:#e8c877;font-weight:800">' + GOALS[cfg.type](cfg) + "</p>" +
+      '<button id="go">' + STR.tapToStart + "</button><br>" +
+      '<button id="back" class="skip">← the map</button></div></div>';
+    document.getElementById("go").addEventListener("click", () => { newGame(x); mode = "play"; paintPanel("none"); });
+    document.getElementById("back").addEventListener("click", () => paintPanel("map"));
+  }
+  if (kind === "result") {
+    const stars = x.stars || 0;
+    ui.innerHTML = '<div class="panel"><div><h1 style="font-size:2rem">' + (x.failed ? STR.clockedOut : STR.shiftDone) + "</h1>" +
+      '<p class="sub" style="font-size:1.7rem;letter-spacing:0.35em;color:#e8c877">' + starStr(stars) + "</p>" +
+      '<p class="sub">' + STR.rep + " " + rep + "</p>" +
+      '<p class="hint">' + (uid() ? STR.filed : STR.filedAnon) + "</p>" +
+      '<button id="go">' + (x.failed ? STR.runAgain : STR.next) + "</button><br>" +
+      '<button id="back" class="skip">← the map</button></div></div>';
+    document.getElementById("go").addEventListener("click", () => {
+      if (x.failed) { const i = MS ? MS.i : 0; newGame(i); mode = "play"; paintPanel("none"); }
+      else paintPanel("brief", Math.min((MS ? MS.i : 0) + 1, CAMPAIGN.length - 1));
+    });
+    document.getElementById("back").addEventListener("click", () => paintPanel("map"));
   }
   if (kind === "dead") {
     ui.innerHTML = '<div class="panel"><div><h1>' + STR.clockedOut + '</h1>' +
       '<p class="sub">' + STR.rep + " " + rep + " · " + STR.shift + " " + shift +
       (rep >= best && rep > 0 ? " · " + STR.newBest : "") + "</p>" +
-      '<button id="go">' + STR.runAgain + "</button></div></div>";
-    document.getElementById("go").addEventListener("click", () => { newGame(); mode = "play"; paintPanel("none"); });
+      '<button id="go">' + STR.runAgain + "</button><br>" +
+      '<button id="back" class="skip">← the map</button></div></div>';
+    document.getElementById("go").addEventListener("click", () => { newGame("free"); mode = "play"; paintPanel("none"); });
+    document.getElementById("back").addEventListener("click", () => paintPanel("map"));
   }
 }
 function openShop() {
@@ -792,8 +969,11 @@ addEventListener("focus", () => { paused = false; last = performance.now(); });
 const dev = new URLSearchParams(location.search).has("dev");
 if (dev) {
   document.getElementById("dev").style.display = "block";
+  window.__BOwarp = function (x, y) { if (P) { P.x = x; P.y = y; } };
   window.__BO = function () {
     return { mode, rep, shift, streak, spotted, hp: P ? P.hp : null,
+      mission: MS ? { i: MS.i, kills: MS.kills, dmg: MS.dmg, seen: MS.seen, t: Math.round(MS.t0 / 1000) } : null,
+      stars: CAMP.stars,
       x: P ? P.x : null, y: P ? P.y : null, nitroAt: P ? P.nitroAt : null,
       smokesLeft: P ? P.smokes : null, spikesLeft: P ? P.spikes : null,
       carrying: P && P.carrying ? P.carrying.to.slug : null,
@@ -809,6 +989,7 @@ function frame(now) {
   while (acc >= STEP) { if (mode === "play") update(STEP, cmds); acc -= STEP; }
   nitroPress = false; smokePress = false; spikePress = false; // latches consumed
   render();
+  MP.tick();
   if (dev) {
     frames++;
     if (now - fpsAt >= 500) {
@@ -818,8 +999,76 @@ function frame(now) {
     }
   }
 }
+/* ---------- the block is LIVE: peers + chat over Realtime ---------- */
+const PEERS = {};
+const MP = (function () {
+  let ws = null, hb = 0, live = false, t0 = 0;
+  const myId = Math.random().toString(36).slice(2, 9);
+  let myName = "RUNNER-" + myId.slice(0, 4).toUpperCase();
+  const u = uid();
+  if (u) fetch(SB_URL + "/rest/v1/providers?owner=eq." + u + "&select=name&limit=1",
+    { headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY } })
+    .then((r) => (r.ok ? r.json() : [])).then((rows) => {
+      if (rows && rows[0] && rows[0].name) myName = String(rows[0].name).slice(0, 16);
+    }).catch(() => {});
+  function connect() {
+    if (ws) return;
+    try { ws = new WebSocket(SB_URL.replace(/^http/, "ws") + "/realtime/v1/websocket?apikey=" + encodeURIComponent(SB_KEY) + "&vsn=1.0.0"); } catch (e) { return; }
+    ws.onopen = () => {
+      try { ws.send(JSON.stringify({ topic: "realtime:nightruns", event: "phx_join", payload: { config: { broadcast: { self: false } } }, ref: "1" })); } catch (e) {}
+      live = true;
+      hb = setInterval(() => { try { ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" })); } catch (e) {} }, 25000);
+    };
+    ws.onmessage = (ev) => {
+      try {
+        const m = JSON.parse(ev.data);
+        if (m.event !== "broadcast" || !m.payload) return;
+        const d = m.payload.payload;
+        if (!d || d.id === myId) return;
+        if (m.payload.event === "pos") { d.t = Date.now(); PEERS[d.id] = d; }
+        if (m.payload.event === "msg") chatLine(d.n, d.msg);
+      } catch (e) {}
+    };
+    ws.onclose = () => { clearInterval(hb); live = false; ws = null; };
+    ws.onerror = () => { try { ws.close(); } catch (e) {} };
+  }
+  function send(event, payload) {
+    try { ws.send(JSON.stringify({ topic: "realtime:nightruns", event: "broadcast", payload: { type: "broadcast", event, payload }, ref: null })); } catch (e) {}
+  }
+  function tick() {
+    if (!live || mode !== "play" || !P) return;
+    const now = Date.now();
+    if (now - t0 > 200) { t0 = now; send("pos", { id: myId, x: Math.round(P.x), y: Math.round(P.y), h: +P.h.toFixed(2), n: myName }); }
+    for (const id in PEERS) if (now - PEERS[id].t > 6000) delete PEERS[id];
+  }
+  function say(msg) {
+    msg = String(msg || "").slice(0, 90).trim(); if (!msg) return;
+    send("msg", { id: myId, n: myName, msg });
+    chatLine(myName, msg);
+    file("nr_chat", {});
+  }
+  return { connect, tick, say };
+})();
+const chatlog = document.getElementById("chatlog"), chatbtn = document.getElementById("chatbtn"),
+  chatbar = document.getElementById("chatbar"), chatin = document.getElementById("chatin");
+function chatLine(n, msg) {
+  const d = document.createElement("div");
+  const b = document.createElement("b"); b.textContent = String(n || "runner");
+  d.appendChild(b); d.appendChild(document.createTextNode(": " + String(msg || "")));
+  chatlog.appendChild(d);
+  while (chatlog.children.length > 6) chatlog.removeChild(chatlog.firstChild);
+  setTimeout(() => { d.style.opacity = "0"; setTimeout(() => d.remove(), 1100); }, 9000);
+}
+chatbtn.addEventListener("click", () => { chatbtn.style.display = "none"; chatbar.style.display = "flex"; chatin.focus(); });
+chatin.addEventListener("keydown", (e) => {
+  e.stopPropagation();   // typing never drives the whip
+  if (e.key === "Enter") { MP.say(chatin.value); chatin.value = ""; chatbar.style.display = "none"; chatbtn.style.display = ""; }
+  if (e.key === "Escape") { chatbar.style.display = "none"; chatbtn.style.display = ""; }
+});
+MP.connect();
+
 resize();
-paintPanel("title");
+paintPanel("map");
 requestAnimationFrame(frame);
 </script>
 </body>
