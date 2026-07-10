@@ -334,6 +334,78 @@
         }
       },
       "photo": "assets/img/rahndrx-hero.jpg"
+    },
+    {
+      "id": "ocho-gr8",
+      "slug": "ocho-gr8",
+      "name": "Ocho Gr8",
+      "ticker": "OCHO",
+      "headline": "The voice of Only Us · radio, studio, the whole sound",
+      "blurb": "Bridgeport artist and radio host behind Only Us Radio and Only Us Studios. UnitedMasters recording artist, sample man, connector. Equity Uprise approved Chaser — named by the City of Bridgeport on Equity Uprise Human Rights Day.",
+      "area": "Bridgeport, CT",
+      "roles": [
+        "Music"
+      ],
+      "badgeColor": "#2563eb",
+      "profile": "profile-ocho.html",
+      "href": "profile-ocho.html",
+      "photo": "assets/img/ocho-hero.jpg",
+      "claimed": false,
+      "approved": true,
+      "terms": {
+        "notes": "Unclaimed — Ocho claims it to run Only Us and the music floor. A gift.",
+        "links": {
+          "ig": "https://instagram.com/ocho_gr8",
+          "music": "https://unitedmasters.com/ocho-gr8"
+        }
+      }
+    },
+    {
+      "id": "only-us-radio",
+      "slug": "only-us-radio",
+      "name": "Only Us Radio",
+      "ticker": "OUSR",
+      "headline": "The frequency for the artists nobody else plays",
+      "blurb": "Ocho Gr8's station and show — spins, interviews, and a platform for the culture the algorithm skips. Bridgeport's own.",
+      "area": "Bridgeport, CT",
+      "roles": [
+        "Music"
+      ],
+      "badgeColor": "#3b82f6",
+      "profile": "profile-ocho.html",
+      "href": "profile-ocho.html",
+      "claimed": false,
+      "terms": {
+        "notes": "Only Us Radio — Ocho's business on the floor, unclaimed."
+      }
+    },
+    {
+      "id": "only-us-studios",
+      "slug": "only-us-studios",
+      "name": "Only Us Studios",
+      "ticker": "OUST",
+      "headline": "Where it gets cut — record, mix, shoot",
+      "blurb": "The room artists book to record, mix, and shoot. Ocho's space, bookable on Equity Uprise.",
+      "area": "Bridgeport, CT",
+      "roles": [
+        "Studios"
+      ],
+      "badgeColor": "#7dd3fc",
+      "profile": "profile-ocho.html",
+      "href": "profile-ocho.html",
+      "claimed": false,
+      "space": {
+        "rate": 45,
+        "unit": "hour",
+        "amenities": [
+          "recording",
+          "mixing",
+          "video"
+        ]
+      },
+      "terms": {
+        "notes": "Only Us Studios — Ocho's space, unclaimed."
+      }
     }
   ]
 }
