@@ -425,7 +425,28 @@
 
       function paintDoors() {
         var slug = P.slug || P.id;
-        $("pgDoors").innerHTML =
+        /* the profile pitches its own owner: an unclaimed page IS the deck.
+           whoever this page belongs to sees exactly what claiming buys them. */
+        var pitch = "";
+        if (P.claimed === false) {
+          var isSpace = (P.roles || []).some(function (r) { return r === "Stages" || r === "Studios"; });
+          pitch = '<div style="border:1px solid rgba(201,157,69,0.45);border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:1rem;background:rgba(201,157,69,0.06)">' +
+            '<p style="font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.4rem">Is this you? This page is already yours</p>' +
+            '<p style="font-size:0.9rem;color:var(--cream-dim);line-height:1.6">We built <b style="color:var(--cream)">' + esc(P.name) + '</b> a working storefront — free. Claim it and it turns on:</p>' +
+            '<ul style="margin:0.6rem 0 0.8rem 1.1rem;font-size:0.86rem;color:var(--cream-dim);line-height:1.7">' +
+            (isSpace
+              ? '<li><b style="color:var(--cream)">Bookings straight to you</b> — your calendar, your rates, card payments built in.</li>' +
+                '<li><b style="color:var(--cream)">No hosting bill, ever</b> — this page replaces the $200–300/mo website.</li>' +
+                '<li><b style="color:var(--cream)">You keep 100% of your rate</b> — you never eat a processing fee.</li>'
+              : '<li><b style="color:var(--cream)">Get booked & paid by card</b> — you keep 100% of your rate, never a processing fee.</li>' +
+                '<li><b style="color:var(--cream)">Your music & your fans in one place</b> — plays counted, fan book exportable, yours.</li>' +
+                '<li><b style="color:var(--cream)">The Trap pays you 5 E⤴ just for setting up</b> — and your ticker starts climbing.</li>') +
+            '</ul>' +
+            '<a class="btn btn--ruby" href="market.html#yours" data-cta="pitch-claim-' + esc(slug) + '" style="font-size:0.78rem;padding:0.8em 1.6em">Claim this page — it takes one tap</a>' +
+            '</div>';
+          track("pitch_shown", { slug: slug });
+        }
+        $("pgDoors").innerHTML = pitch +
           '<a class="btn btn--ruby" href="market.html?to=' + encodeURIComponent(slug) + '#pay">Pay / book</a>' +
           '<a class="btn btn--ghost" href="market.html?with=' + encodeURIComponent(slug) + '&kind=service_booking#build">Send a deal</a>' +
           '<a class="btn btn--ghost" href="market.html#floor">$' + esc(window.MCC_STOCK.ticker(P.ticker, P.name)) + " on the floor</a>" +
