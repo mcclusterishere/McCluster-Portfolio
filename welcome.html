@@ -41,7 +41,11 @@
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); box-shadow: 0 8px 26px rgba(229,56,59,0.35); }
     .wl__skip { display: block; width: 100%; background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.78rem;
       color: rgba(244,239,230,0.5); text-decoration: underline; padding: 0.7em; margin-top: 0.2rem; }
-    .wl__back { background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.78rem; color: rgba(244,239,230,0.5);
+    .wl__back { border: 1px solid rgba(244,239,230,0.35); border-radius: 100px; background: rgba(10,8,7,0.55);
+      cursor: pointer; font: inherit; font-size: 0.92rem; font-weight: 700; color: var(--cream);
+      padding: 0.85em 1.6em; display: inline-flex; align-items: center; gap: 0.4em;
+      -webkit-tap-highlight-color: transparent; }
+    .wl__back--old { background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.78rem; color: rgba(244,239,230,0.5);
       padding: 0.3em 0; margin-top: 0.6rem; }
     .wl__msg { min-height: 1.2em; color: var(--cream); font-size: 0.85rem; margin-top: 0.5rem; }
   </style>
@@ -249,8 +253,8 @@
         });
       }
       function card(html) {
-        var back = at > 0 ? '<button class="wl__back" type="button" data-back>&#8592; back</button>' : "";
-        stage.innerHTML = '<div class="wl__card">' + html + "</div>" + back;
+        stage.innerHTML = '<div class="wl__card">' + html + "</div>" +
+          (at > 0 ? '<div style="text-align:center;margin-top:0.9rem"><button class="wl__back" type="button" data-back>&#8592; Fix the last answer</button></div>' : "");
         dots(); window.scrollTo(0, 0);
       }
       function goBtn(label) { return '<button class="wl__go" type="button" data-next>' + (label || "Next") + '</button>'; }
