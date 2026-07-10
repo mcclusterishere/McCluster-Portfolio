@@ -2,7 +2,8 @@
 
 One sentence: **the buyer sees exactly one number; the seller names
 what they want to receive and it arrives whole; the platform's
-9.5% is built into the price and carved out behind the curtain.**
+10% is built into the price and carved out behind the curtain —
+1% of which is the mandatory draw into the equity pool.**
 
 ## Why all-in pricing (not fee lines)
 
@@ -14,11 +15,16 @@ the invoice price IS the price. Economically nothing moved — the
 same 9.5% spread exists — it just lives inside the number instead
 of underneath it.
 
-## The math (RATE = 0.095 everywhere)
+## The math (RATE = 0.10 everywhere)
 
-- Seller asks **N** → buyer's one price **P = N × 1.095** (rounded to cents).
+The rate moved from 9.5% to 10% to fund the equity pool: the buyer
+carries **+0.5%**, the house gives up **−0.5%** of its own margin, and
+together those fund the **1% equity draw** on every transaction. Nobody
+takes a full-point hit; the pool is real money, withheld at the source.
+
+- Seller asks **N** → buyer's one price **P = N × 1.10** (rounded to cents).
 - Buyer-initiated (keypad "Pay"): the punched number IS **P**;
-  the seller receives **N = P ÷ 1.095**.
+  the seller receives **N = P ÷ 1.10**.
 - Single source of truth in code: `MCC_STRIPE.quote(net)` and
   `MCC_STRIPE.net(price)` in `js/payments.js`; `RATE` in
   `supabase/functions/pay-deal` (one line item at `P`,

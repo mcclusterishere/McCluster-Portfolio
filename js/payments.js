@@ -108,9 +108,10 @@ window.MCC_STRIPE = {
      back end. Institutions (counties included) can't pay surcharges,
      and a receipt with fee lines reads like one. So: the seller names
      what they want to RECEIVE (net); the platform grosses it up into
-     the only price the buyer ever sees. RATE = 8% platform + 1.5%
-     processing, baked in, never itemized to the buyer. */
-  RATE: 0.095,
+     the only price the buyer ever sees. RATE = 10% all-in: 1% funds
+     the equity pool, the rest covers processing + the platform,
+     baked in, never itemized to the buyer. */
+  RATE: 0.10,
   quote: function (net) {           // seller's ask → the buyer's one price
     net = Math.max(0, +net || 0);
     return Math.round(net * (1 + window.MCC_STRIPE.RATE) * 100) / 100;

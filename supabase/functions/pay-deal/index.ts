@@ -7,7 +7,12 @@
 import Stripe from "npm:stripe@14";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SK")!);
-const RATE = 0.095; // 8% platform + 1.5% processing, baked into the price
+// All-in rate baked into the buyer's one price. Raised from 9.5% to 10%
+// to fund the equity pool: the buyer carries half a point more, the house
+// gives up half a point of its own margin, and together that funds the
+// mandatory 1% draw every transaction makes into the pool. Processing and
+// the platform's margin come out of the remaining ~9%.
+const RATE = 0.10;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
