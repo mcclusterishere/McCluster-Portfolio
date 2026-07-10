@@ -1,0 +1,48 @@
+{
+  "note": "THE MULTICOLORED BADGE SYSTEM — the formal, canonical registry of M-Verified seals. A badge is WHO YOU ARE on the network (an entity type), earned by presenting the required identifiers for your category of work. Each seal is one color, one tier, one set of required identifiers, and the categories of work that earn it. This is the source of truth shared by js/entities.js (rendering), verify.html (application), identifiers.html (education), and docs/badges-schema.sql (holding). NOT the per-space amenities (those are what a space offers, not who a member is).",
+  "version": 1,
+  "seals": [
+    {
+      "id": "performer", "label": "Performer / Artist", "badge": "M-Verified · Performer",
+      "color": "#8b5cf6", "tier": "creator",
+      "desc": "Featured artists and session performers with registered credits.",
+      "required": ["isni", "isrc_prefix"], "optional": ["ipi", "pro", "dpid"],
+      "categories": ["music"]
+    },
+    {
+      "id": "rights-owner", "label": "Label / Rights Owner", "badge": "M-Verified · Rights Owner",
+      "color": "#d4a017", "tier": "business",
+      "desc": "Labels and catalogs that own recordings and collect on them.",
+      "required": ["ein", "isrc_prefix", "dpid"], "optional": ["isni", "state_filing"],
+      "categories": ["music"]
+    },
+    {
+      "id": "creator", "label": "Creator / Independent", "badge": "M-Verified · Creator",
+      "color": "#2aa8a0", "tier": "creator",
+      "desc": "Independent creators, authors, builders and media pros building a verified record.",
+      "required": ["isni"], "optional": ["orcid", "ein", "youtube_channel"],
+      "categories": ["video", "podcast", "writing", "art", "software", "creator", "photo", "web"]
+    },
+    {
+      "id": "venue", "label": "Studio & Venue Partner", "badge": "M-Verified · Venue",
+      "color": "#e5383b", "tier": "org",
+      "desc": "Recording studios, photo studios, and event spaces that host the network's bookings.",
+      "required": ["ein", "state_filing", "insurance"], "optional": ["alei", "ueid"],
+      "categories": ["studios", "stages"]
+    },
+    {
+      "id": "nonprofit", "label": "Nonprofit / Charity", "badge": "M-Verified · Nonprofit",
+      "color": "#2f9e62", "tier": "org",
+      "desc": "Registered charities and community organizations in good standing.",
+      "required": ["ein", "charity", "state_filing"], "optional": ["ueid"],
+      "categories": ["programs"]
+    },
+    {
+      "id": "federal", "label": "Government-Ready Contractor", "badge": "M-Verified · Federal-Ready",
+      "color": "#4a7fb5", "tier": "org",
+      "desc": "Organizations cleared for federal and defense work.",
+      "required": ["ueid", "cage", "ein", "state_filing"], "optional": ["alei"],
+      "categories": ["programs", "software", "studios"]
+    }
+  ]
+}

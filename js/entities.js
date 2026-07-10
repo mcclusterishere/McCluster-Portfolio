@@ -124,6 +124,7 @@ window.MCC_IDENTIFIERS = {
 window.MCC_ENTITIES = {
   "venue": {
     label: "Studio & Venue Partner",
+    tier: "org", categories: ["studios", "stages"],
     badge: "M-Verified · Venue",
     color: "#e5383b",
     desc: "Recording studios, photo studios, and event spaces that host the network's bookings.",
@@ -132,6 +133,7 @@ window.MCC_ENTITIES = {
   },
   "rights-owner": {
     label: "Label / Rights Owner",
+    tier: "business", categories: ["music"],
     badge: "M-Verified · Rights Owner",
     color: "#d4a017",
     desc: "Labels and catalogs that own recordings and collect on them.",
@@ -140,6 +142,7 @@ window.MCC_ENTITIES = {
   },
   "performer": {
     label: "Performer / Artist",
+    tier: "creator", categories: ["music"],
     badge: "M-Verified · Performer",
     color: "#8b5cf6",
     desc: "Featured artists and session performers with registered credits.",
@@ -148,6 +151,7 @@ window.MCC_ENTITIES = {
   },
   "nonprofit": {
     label: "Nonprofit / Charity",
+    tier: "org", categories: ["programs"],
     badge: "M-Verified · Nonprofit",
     color: "#2f9e62",
     desc: "Registered charities and community organizations in good standing.",
@@ -156,6 +160,7 @@ window.MCC_ENTITIES = {
   },
   "federal": {
     label: "Government-Ready Contractor",
+    tier: "org", categories: ["programs", "software", "studios"],
     badge: "M-Verified · Federal-Ready",
     color: "#4a7fb5",
     desc: "Organizations cleared for federal and defense work.",
@@ -164,6 +169,7 @@ window.MCC_ENTITIES = {
   },
   "creator": {
     label: "Creator / Academic",
+    tier: "creator", categories: ["video", "podcast", "writing", "art", "software", "creator", "photo", "web"],
     badge: "M-Verified · Creator",
     color: "#2aa8a0",
     desc: "Independent creators, researchers, and authors building a verified record.",
