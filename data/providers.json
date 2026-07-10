@@ -566,6 +566,43 @@
           "ig": "https://instagram.com/orangehairbraiding"
         }
       }
+    },
+    {
+      "id": "privi-stonecrest",
+      "slug": "privi-stonecrest",
+      "name": "Priví Stonecrest",
+      "ticker": "PRIVI",
+      "headline": "The 143,000 sq-ft lifestyle destination — East Metro Atlanta's premier location",
+      "blurb": "Vaughn & Cassandra Irons' transformation of Stonecrest Mall's former Sears into Atlanta's east-side hotspot: SeaQuest, the Priví Art Gallery, Event Center, Exposure Hub co-working, 101 TKO Radio, Picasso's Splat Room, axe throwing, golf sims, escape rooms, The Lion's Cage MMA — with a 50,000 sq-ft chef-driven food hall on the way. A premier Equity Uprise partner location.",
+      "area": "Stonecrest, GA · East Metro Atlanta",
+      "roles": [
+        "Stages"
+      ],
+      "badgeColor": "#b45309",
+      "premier": true,
+      "profile": "page.html?who=privi-stonecrest",
+      "href": "page.html?who=privi-stonecrest",
+      "claimed": false,
+      "space": {
+        "rate": null,
+        "unit": "event",
+        "amenities": [
+          "event-center",
+          "art-gallery",
+          "food-hall",
+          "co-working",
+          "radio-studio",
+          "aquarium",
+          "gaming",
+          "fitness"
+        ]
+      },
+      "terms": {
+        "notes": "Premier partner location — brand collab with Stonecrest Resorts. Immersive 3D walkthrough coming from the Saturday shoot.",
+        "links": {
+          "web": "https://www.privistonecrest.com"
+        }
+      }
     }
   ]
 }
