@@ -1,5 +1,5 @@
 /* ============================================================
-   MCC_NET — M Network's data layer.
+   MCC_NET — Equity Uprise's data layer.
    Providers, booking requests, and the SMS list, over the same
    Supabase REST surface as everything else (MCC_SUPA from
    backend.js). RLS is the wall: anonymously you can read live
@@ -79,7 +79,7 @@
     /* the text list the platform owns — consent line stored verbatim */
     smsOptIn: function (phone, source) {
       var consent =
-        "I agree to receive occasional text messages from McCluster / M Network " +
+        "I agree to receive occasional text messages from McCluster / Equity Uprise " +
         "about bookings, drops, and events. Msg & data rates may apply. Reply STOP to opt out.";
       mirror({ _form: "sms-optin", phone: phone, source: source || "" });
       return anon("sms_optins", {

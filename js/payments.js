@@ -178,7 +178,7 @@ window.MCC_STRIPE = {
       deal_id: deal.id,
       amount: net,                                              // the seller's money
       price: (deal.terms && deal.terms.price) || window.MCC_STRIPE.quote(net), // the buyer's one number
-      title: deal.title || deal.kind || "M Network deal",
+      title: deal.title || deal.kind || "Equity Uprise deal",
     };
     if (rail && rail.acct) body.provider_acct = rail.acct;
     return fetch(S.url + "/functions/v1/pay-deal", {

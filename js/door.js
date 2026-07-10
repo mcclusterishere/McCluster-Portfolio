@@ -101,7 +101,7 @@
     agreeBox.type = "checkbox";
     agreeBox.style.cssText = "flex:none;width:1.15rem;height:1.15rem;margin-top:0.1rem;accent-color:#e5383b";
     var agreeTxt = el("span", null);
-    agreeTxt.innerHTML = 'I\u2019m joining M Network Association and signing ' +
+    agreeTxt.innerHTML = 'I\u2019m joining Equity Uprise and signing ' +
       '<a href="agreement.html" target="_blank" rel="noopener" style="color:var(--ruby-hot,#e5383b)">the Member Agreement</a>.';
     agreeRow.appendChild(agreeBox);
     agreeRow.appendChild(agreeTxt);

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>The Market · M Network · McCluster</title>
+  <title>The Market · Equity Uprise · McCluster</title>
   <meta name="description" content="One market for everything: book work, make music, book space, fund a project. Verified providers, a deal builder with splits and signatures, and every deal you're in — one engine, one page.">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -853,7 +853,7 @@
 
   <footer class="site-foot">
     <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
-    <p class="site-foot__note">&copy; 2026 Matthew McCluster &middot; The Market &middot; M Network, powered by Equity Uprise.</p>
+    <p class="site-foot__note">&copy; 2026 Matthew McCluster &middot; The Market &middot; Equity Uprise.</p>
   </footer>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
@@ -2716,7 +2716,7 @@
           var refShareB = body.querySelector("#dkRefShare");
           if (refShareB) refShareB.addEventListener("click", function () {
             track("ref_share", {});
-            if (navigator.share) navigator.share({ title: "Get on the floor", text: "Claim your ticker on M Network — my link puts you in:", url: refIn.value }).catch(function () {});
+            if (navigator.share) navigator.share({ title: "Get on the floor", text: "Claim your ticker on Equity Uprise — my link puts you in:", url: refIn.value }).catch(function () {});
             else if (refMsg) refMsg.textContent = "Copy it instead — this browser doesn't share.";
           });
           window.MCC_SUPA.token().then(function (t) {

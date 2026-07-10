@@ -37,7 +37,7 @@ self.addEventListener("message", function (e) {
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data ? e.data.json() : {}; } catch (err) {}
-  e.waitUntil(self.registration.showNotification(d.title || "M Network", {
+  e.waitUntil(self.registration.showNotification(d.title || "Equity Uprise", {
     body: d.body || "",
     icon: "./assets/img/icon-192.png",
     badge: "./assets/img/icon-192.png",
