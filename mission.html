@@ -188,7 +188,15 @@
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcSms">
-        <h2>The text list</h2>
+        <h2>Push — speak to every pocket</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem" id="pushCount">Counting the armed devices…</p>
+        <input class="mc__in" id="pushTitle" type="text" maxlength="80" placeholder="Title — e.g. The shelf just restocked">
+        <input class="mc__in" id="pushBody" type="text" maxlength="240" placeholder="The word — one or two sentences">
+        <input class="mc__in" id="pushUrl" type="text" placeholder="Where a tap lands (optional) — e.g. house.html">
+        <input class="mc__in" id="pushTo" type="text" placeholder="One member's ticker (optional — empty speaks to everyone)">
+        <button class="btn btn--ruby" id="pushGo" type="button">Send the word</button>
+        <p class="mc__msg" id="pushMsg"></p>
+        <h2 style="margin-top:1.4rem">The text list</h2>
         <div id="mcSms"><p class="mc__empty">Loading…</p></div>
       </section>
 
@@ -623,6 +631,30 @@
           });
         });
       }
+
+      /* ---- THE HORN: push notifications, straight from the desk ---- */
+      (function wireHorn() {
+        var go = $("pushGo");
+        if (!go) return;
+        if (A.pushSubs) A.pushSubs().then(function (rows) {
+          $("pushCount").textContent = (rows || []).length + " device(s) armed for push. " +
+            "Members arm theirs with one tap on the desk — 🔔 Notifications.";
+        }).catch(function () {
+          $("pushCount").textContent = "The horn needs one paste (docs/push-schema.sql) and one deploy (push-send).";
+        });
+        go.addEventListener("click", function () {
+          var title = $("pushTitle").value.trim(), body = $("pushBody").value.trim();
+          if (!title && !body) { $("pushMsg").textContent = "Say something first."; return; }
+          go.disabled = true;
+          $("pushMsg").textContent = "Speaking…";
+          A.pushSend(title, body, $("pushUrl").value.trim(), $("pushTo").value.trim()).then(function (j) {
+            go.disabled = false;
+            if (j && j.error) { $("pushMsg").textContent = "The horn answered: " + j.error; return; }
+            $("pushMsg").textContent = "Sent to " + (j ? j.sent : 0) + " device(s)" +
+              (j && j.gone ? " · " + j.gone + " dead ear(s) pruned" : "") + ".";
+          });
+        });
+      })();
 
       function loadAll() {
         Promise.all([
