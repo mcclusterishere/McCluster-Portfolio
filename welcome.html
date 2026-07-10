@@ -107,104 +107,123 @@
         if (r.indexOf("Programs") !== -1 && r.indexOf("Music") === -1 && r.indexOf("Beats") === -1) return "civic";
         return "creative";
       }
-      function goalsFor() { var p = persona(); return p === "space" ? GOALS_SPACE : p === "civic" ? GOALS_CIVIC : GOALS; }
+      // MULTI-PATH: the questionnaire is additive. Every path you claim
+      // stacks its own question step, so the load grows with the paths.
+      function flags() {
+        var r = A.roles;
+        return {
+          creative: r.some(function (x) { return ["Music", "Beats", "Photo", "Video", "Web", "Brand"].indexOf(x) !== -1; }),
+          space: r.some(function (x) { return ["Studios", "Stages"].indexOf(x) !== -1; }),
+          civic: r.indexOf("Programs") !== -1,
+        };
+      }
+      function goalsFor() {
+        var out = [], seen = {}, f = flags();
+        function add(list) { list.forEach(function (g) { if (!seen[g[0]]) { seen[g[0]] = 1; out.push(g); } }); }
+        if (f.creative) add(GOALS);
+        if (f.space) add(GOALS_SPACE);
+        if (f.civic) add(GOALS_CIVIC);
+        if (!out.length) add(GOALS);
+        return out;
+      }
 
-      var steps = [
-        function s0() {
-          card('<h2>Welcome, Chaser.</h2>' +
-            '<p><b>You just joined a private member association</b> — a floor where artists, operators, and the people ' +
-            'who back them deal directly: real deals, real records, your own ticker moved by real work. The next ' +
-            'few taps dress your profile and show you exactly how you get paid. Quick, then the floor is yours.</p>' + goBtn("Walk me in"));
-        },
-        function s1() {
-          card('<h2>Claim what you are.</h2><p>Pick <b>everything</b> that fits — you get one profile with many badges, ' +
-            'and each one you claim unlocks its own tools. You can add more later.</p>' +
-            chiprow(ROLES, A.roles, true) + goBtn());
-          wireChips(A.roles, true);
-        },
-        function s2() {
-          card('<h2>The card the floor sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
-            '<span class="wl__lbl">Your one-liner</span>' +
-            '<input class="wl__in" id="wlHead" type="text" placeholder="e.g. CT artist — Leader by Voice" value="' + esc(A.headline) + '">' +
-            '<span class="wl__lbl">Where you work</span>' +
-            '<input class="wl__in" id="wlArea" type="text" placeholder="e.g. Connecticut · travels" value="' + esc(A.area) + '">' +
-            '<span class="wl__lbl">Your rate in E⤴︎ — per job or hour (optional)</span>' +
-            '<input class="wl__in" id="wlRate" type="number" min="0" placeholder="e.g. 500" value="' + esc(A.rate) + '">' +
-            '<span class="wl__lbl">The pitch (optional)</span>' +
-            '<textarea class="wl__in" id="wlBlurb" placeholder="Your sound, your style, what working with you feels like">' + escT(A.blurb) + '</textarea>' + goBtn());
-        },
-        function s3() {
-          var p = persona();
-          if (p === "space") {
-            card('<h2>About your space.</h2><p>This <b>is</b> your listing — the room people book. No music questions here; ' +
-              'you just rent it out and get paid.</p>' +
-              '<span class="wl__lbl">What kind of space</span>' +
-              '<input class="wl__in" id="wlSpaceType" type="text" placeholder="e.g. Sanctuary & event hall / recording studio" value="' + esc(A.spaceType) + '">' +
-              '<span class="wl__lbl">How many it holds</span>' +
-              '<input class="wl__in" id="wlCap" type="number" min="0" placeholder="capacity — e.g. 150" value="' + esc(A.capacity) + '">' +
-              '<span class="wl__lbl">What’s inside — tap all you’ve got</span>' +
-              chiprow(AMENITIES, A.amen, true) + goBtn());
-            wireChips(A.amen, true);
-            return;
-          }
-          if (p === "civic") {
-            card('<h2>Your civic lane.</h2><p>The Uprise gives you a real seat. Tell us where you plug in — you can file your ' +
-              'full civic card later.</p>' +
-              '<span class="wl__lbl">What you care about most</span>' +
-              '<input class="wl__in" id="wlIssue" type="text" placeholder="e.g. housing, youth, environmental justice" value="' + esc(A.issue) + '">' +
-              '<span class="wl__lbl">Your district / city</span>' +
-              '<input class="wl__in" id="wlDistrict" type="text" placeholder="e.g. Bridgeport, District 130" value="' + esc(A.district) + '">' +
-              '<span class="wl__lbl">Registered to vote?</span>' +
-              chiprow([["yes", "Yes"], ["no", "Not yet"]], A.reg ? [A.reg] : [], false) + goBtn());
-            stage.querySelectorAll(".wl__chip").forEach(function (bn) {
-              bn.addEventListener("click", function () {
-                A.reg = bn.getAttribute("data-c");
-                stage.querySelectorAll(".wl__chip").forEach(function (x) { x.classList.remove("is-on"); });
-                bn.classList.add("is-on");
-              });
-            });
-            return;
-          }
-          card('<h2>Drop your links.</h2><p>Where your people already are. These light up your profile and let fans ' +
-            'find your music, your feed, your world — right from your card.</p>' +
-            '<span class="wl__lbl">Instagram / socials</span>' +
-            '<input class="wl__in" id="wlIg" type="text" placeholder="@yourhandle or a link" value="' + esc(A.ig) + '">' +
-            '<span class="wl__lbl">Music / portfolio — Spotify, reel, site</span>' +
-            '<input class="wl__in" id="wlMusic" type="text" placeholder="Link to your work" value="' + esc(A.music) + '">' +
-            '<span class="wl__lbl">Website / Linktree (optional)</span>' +
-            '<input class="wl__in" id="wlWeb" type="text" placeholder="linktr.ee/you or your site" value="' + esc(A.web) + '">' + goBtn());
-        },
-        function s4() {
-          card('<h2>What are you here for?</h2><p>This tunes what the floor shows you first.</p>' +
-            chiprow(goalsFor(), A.goals, true) + goBtn());
-          wireChips(A.goals, true);
-        },
-        function s5() {
-          card('<h2>How you get paid.</h2>' +
-            '<p class="wl__big">You keep 100%.</p>' +
-            '<p>Name your rate. When someone books you, <b>they pay one price and you receive your full rate — whole.</b> ' +
-            'The platform\'s cut is baked into the buyer\'s number on the back end, so <b>you never eat a processing fee. Ever.</b> ' +
-            'Not on a booking, not on a beat, not on a drop.</p>' +
-            '<div class="wl__ex"><b>E⤴︎ credit — earned, then cashed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
-            'Finish a deal and you earn credit on top of your pay. Credit you <b>earned by work cashes out</b>; credit you buy or get gifted spends on the floor. Nothing is fake — nothing mints unbacked.</small></div>' +
-            '<div class="wl__ex"><b>The equity pool — a stake for building the house</b><small>Every real deal draws 1% into a pool, and you accrue a stake that grows the more you move. It\'s a membership benefit, not a bill — it never comes out of your rate.</small></div>' +
-            goBtn("Almost done →"));
-        },
-        function s6() {
-          card('<h2>The game pays you to show up.</h2>' +
-            '<p>Equity Uprise runs like a city, and it rewards real moves — not clout, <b>action</b>.</p>' +
-            '<div class="wl__ex"><b>The Trap — up to 5 E⤴︎ just for setting up</b><small>Ten first moves in your Mission Control ' +
-            '(claim your card, drop a track, sign your first deal, bring a friend). Finish them and the house pays you up to 5 E⤴︎ — that\'s $5 for learning the floor.</small></div>' +
-            '<div class="wl__ex"><b>Badges & M City — level up your profile</b><small>Clear missions in the open world, earn badges that ' +
-            'light up your card and unlock archetypes. Your daily value goes up when you play.</small></div>' +
-            '<div class="wl__ex"><b>The Plug — get paid for life</b><small>Every Chaser has a share link. Bring 3 real signups and earn 1 E⤴︎ — ' +
-            'plus a <b>lifetime 1%</b> of everything the people you bring ever earn here. Build your team, eat forever.</small></div>' +
-            goBtn("Save my card & open the floor") +
-            '<button class="wl__skip" type="button" data-tour>…or take the guided tour first</button>' +
-            '<p class="wl__msg" id="wlMsg"></p>');
-        },
-      ];
-      var STEPS = steps.length, at = 0;
+      function sWelcome() {
+        card('<h2>Welcome, Chaser.</h2>' +
+          '<p><b>You just joined a private member association</b> — a floor where artists, operators, and the people ' +
+          'who back them deal directly: real deals, real records, your own ticker moved by real work. The next ' +
+          'few taps dress your profile and show you exactly how you get paid. Quick, then the floor is yours.</p>' + goBtn("Walk me in"));
+      }
+      function sClaim() {
+        card('<h2>Claim what you are.</h2><p>Pick <b>everything</b> that fits — <b>each path adds a few of its own questions</b>, ' +
+          'and each unlocks its own tools. One profile, many badges.</p>' +
+          chiprow(ROLES, A.roles, true) + goBtn());
+        wireChips(A.roles, true);
+      }
+      function sCard() {
+        card('<h2>The card the floor sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
+          '<span class="wl__lbl">Your one-liner</span>' +
+          '<input class="wl__in" id="wlHead" type="text" placeholder="e.g. CT artist — Leader by Voice" value="' + esc(A.headline) + '">' +
+          '<span class="wl__lbl">Where you work</span>' +
+          '<input class="wl__in" id="wlArea" type="text" placeholder="e.g. Connecticut · travels" value="' + esc(A.area) + '">' +
+          '<span class="wl__lbl">Your rate in E⤴︎ — per job or hour (optional)</span>' +
+          '<input class="wl__in" id="wlRate" type="number" min="0" placeholder="e.g. 500" value="' + esc(A.rate) + '">' +
+          '<span class="wl__lbl">The pitch (optional)</span>' +
+          '<textarea class="wl__in" id="wlBlurb" placeholder="Your sound, your style, what working with you feels like">' + escT(A.blurb) + '</textarea>' + goBtn());
+      }
+      function sLinks() {
+        card('<h2>Drop your links.</h2><p>Where your people already are — these light up your profile.</p>' +
+          '<span class="wl__lbl">Instagram / socials</span>' +
+          '<input class="wl__in" id="wlIg" type="text" placeholder="@yourhandle or a link" value="' + esc(A.ig) + '">' +
+          '<span class="wl__lbl">Music / portfolio — Spotify, reel, site</span>' +
+          '<input class="wl__in" id="wlMusic" type="text" placeholder="Link to your work" value="' + esc(A.music) + '">' +
+          '<span class="wl__lbl">Website / Linktree (optional)</span>' +
+          '<input class="wl__in" id="wlWeb" type="text" placeholder="linktr.ee/you or your site" value="' + esc(A.web) + '">' + goBtn());
+      }
+      function sSpace() {
+        card('<h2>About your space.</h2><p>The room people book — tell us what it is and what’s inside.</p>' +
+          '<span class="wl__lbl">What kind of space</span>' +
+          '<input class="wl__in" id="wlSpaceType" type="text" placeholder="e.g. Sanctuary & event hall / studio" value="' + esc(A.spaceType) + '">' +
+          '<span class="wl__lbl">How many it holds</span>' +
+          '<input class="wl__in" id="wlCap" type="number" min="0" placeholder="capacity — e.g. 150" value="' + esc(A.capacity) + '">' +
+          '<span class="wl__lbl">What’s inside — tap all you’ve got</span>' +
+          chiprow(AMENITIES, A.amen, true) + goBtn());
+        wireChips(A.amen, true);
+      }
+      function sCivic() {
+        card('<h2>Your civic lane.</h2><p>The Uprise gives you a real seat — you can file your full civic card later.</p>' +
+          '<span class="wl__lbl">What you care about most</span>' +
+          '<input class="wl__in" id="wlIssue" type="text" placeholder="e.g. housing, youth, environmental justice" value="' + esc(A.issue) + '">' +
+          '<span class="wl__lbl">Your district / city</span>' +
+          '<input class="wl__in" id="wlDistrict" type="text" placeholder="e.g. Bridgeport, District 130" value="' + esc(A.district) + '">' +
+          '<span class="wl__lbl">Registered to vote?</span>' +
+          chiprow([["yes", "Yes"], ["no", "Not yet"]], A.reg ? [A.reg] : [], false) + goBtn());
+        stage.querySelectorAll(".wl__chip").forEach(function (bn) {
+          bn.addEventListener("click", function () {
+            A.reg = bn.getAttribute("data-c");
+            stage.querySelectorAll(".wl__chip").forEach(function (x) { x.classList.remove("is-on"); });
+            bn.classList.add("is-on");
+          });
+        });
+      }
+      function sGoals() {
+        card('<h2>What are you here for?</h2><p>This tunes what the floor shows you first.</p>' +
+          chiprow(goalsFor(), A.goals, true) + goBtn());
+        wireChips(A.goals, true);
+      }
+      function sMoney() {
+        card('<h2>How you get paid.</h2>' +
+          '<p class="wl__big">You keep 100%.</p>' +
+          '<p>Name your rate. When someone books you, <b>they pay one price and you receive your full rate — whole.</b> ' +
+          'The platform\'s cut is baked into the buyer\'s number on the back end, so <b>you never eat a processing fee. Ever.</b> ' +
+          'Not on a booking, not on a beat, not on a drop.</p>' +
+          '<div class="wl__ex"><b>E⤴︎ credit — earned, then cashed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
+          'Finish a deal and you earn credit on top of your pay. Credit you <b>earned by work cashes out</b>; credit you buy or get gifted spends on the floor. Nothing is fake — nothing mints unbacked.</small></div>' +
+          '<div class="wl__ex"><b>The equity pool — a stake for building the house</b><small>Every real deal draws 1% into a pool, and you accrue a stake that grows the more you move. It\'s a membership benefit, not a bill — it never comes out of your rate.</small></div>' +
+          goBtn("Almost done →"));
+      }
+      function sGame() {
+        card('<h2>The game pays you to show up.</h2>' +
+          '<p>Equity Uprise runs like a city, and it rewards real moves — not clout, <b>action</b>.</p>' +
+          '<div class="wl__ex"><b>The Trap — up to 5 E⤴︎ just for setting up</b><small>Ten first moves in your Mission Control ' +
+          '(claim your card, drop a track, sign your first deal, bring a friend). Finish them and the house pays you up to 5 E⤴︎ — that\'s $5 for learning the floor.</small></div>' +
+          '<div class="wl__ex"><b>Badges & M City — level up your profile</b><small>Clear missions in the open world, earn badges that ' +
+          'light up your card and unlock archetypes. Your daily value goes up when you play.</small></div>' +
+          '<div class="wl__ex"><b>The Plug — get paid for life</b><small>Every Chaser has a share link. Bring 3 real signups and earn 1 E⤴︎ — ' +
+          'plus a <b>lifetime 1%</b> of everything the people you bring ever earn here. Build your team, eat forever.</small></div>' +
+          goBtn("Save my card & open the floor") +
+          '<button class="wl__skip" type="button" data-tour>…or take the guided tour first</button>' +
+          '<p class="wl__msg" id="wlMsg"></p>');
+      }
+      function buildSteps() {
+        var f = flags(), s = [sWelcome, sClaim, sCard];
+        if (f.creative) s.push(sLinks);
+        if (f.space) s.push(sSpace);
+        if (f.civic) s.push(sCivic);
+        s.push(sGoals, sMoney, sGame);
+        return s;
+      }
+      var steps = buildSteps(), STEPS = steps.length, at = 0;
+      function refresh() { steps = buildSteps(); STEPS = steps.length; }
 
       function dots() {
         $("wlDots").innerHTML = "";
@@ -278,6 +297,8 @@
         });
       }
       function paint() {
+        refresh();
+        if (at >= STEPS) at = STEPS - 1;
         steps[at]();
         var nx = stage.querySelector("[data-next]");
         if (nx) nx.addEventListener("click", function () {
