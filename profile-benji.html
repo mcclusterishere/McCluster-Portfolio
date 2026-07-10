@@ -91,11 +91,12 @@
 <body class="hb has-appbar">
 
   <header class="hb-hero">
-    <!-- Featured portrait rides the Higgsfield render. Save the PNG into
-         assets/hitman/benji.png and swap this src to make it repo-permanent. -->
+    <!-- Featured portrait: the repo-permanent copy (fetched from the
+         manifest by the production Action) with the live Higgsfield CDN
+         render as an immediate fallback, then the crest below both. -->
     <img class="hb-hero__bg" alt="Hitman Benji — masked operator"
-      src="https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_095555_1b2388f3-08e0-4418-884a-7d30c003a2b6.png"
-      onerror="this.style.display='none'">
+      src="assets/img/benji-hero.png"
+      onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_124647_95f38818-13a4-4126-a29c-119a8bf59b99.png';}else{this.style.display='none';}">
     <div class="hb-hero__crest" aria-hidden="true">
       <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="100" cy="100" r="94" stroke="#c1121f" stroke-width="2" opacity="0.7"/>

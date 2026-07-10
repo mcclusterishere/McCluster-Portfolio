@@ -53,6 +53,11 @@
   <!-- the command deck floats in orbit: a live starfield with the earth
        turning slowly below — canvas-drawn, zero assets, still under
        reduced-motion. The whole cockpit rides above it. -->
+  <!-- a photoreal earth glows up from the bottom of the window, behind
+       the canvas limb — faded into the dark so the deck stays readable. -->
+  <img aria-hidden="true" alt="" src="assets/img/mission-earth.png"
+    onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_124706_183b784d-a0a8-4dd8-a485-e2bb6907914b.png';}else{this.style.display='none';}"
+    style="position:fixed;left:0;right:0;bottom:0;z-index:-3;width:100%;max-height:62vh;object-fit:cover;object-position:center bottom;opacity:0.5;-webkit-mask-image:linear-gradient(180deg,transparent,#000 48%);mask-image:linear-gradient(180deg,transparent,#000 48%)">
   <canvas id="mcSpace" aria-hidden="true"
     style="position:fixed;inset:0;z-index:-2;width:100%;height:100%"></canvas>
   <div aria-hidden="true" style="position:fixed;inset:0;z-index:-1;background:
