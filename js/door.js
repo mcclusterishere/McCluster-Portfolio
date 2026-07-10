@@ -132,7 +132,12 @@
     function finish(how) {
       bank();
       track("door_open", { how: how, context: ctx });
-      if (opts.onDone) opts.onDone(); else location.reload();
+      // every new member owes themselves the walk-in; explicit flows
+      // (mid-payment) keep moving and the desk banner catches them later
+      if (how === "instant") { try { localStorage.setItem("mcc_welcome_pending", "1"); } catch (e4) {} }
+      if (opts.onDone) opts.onDone();
+      else if (how === "instant") location.href = "welcome.html";
+      else location.reload();
     }
 
     var instant = el("button", "door__go", "Start instantly — no email needed");

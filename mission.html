@@ -510,7 +510,7 @@
             return '<div class="mc__row' + (d.status === "locked" ? " is-hot" : "") + '"><h3>' + esc(d.title) +
               '<span class="mc__tag">' + esc(d.status) + '</span><span class="mc__tag">' + esc(d.kind) + "</span></h3>" +
               "<p>" + esc(d.from_name || "?") + " → " + esc(d.to_name || d.to_slug) +
-              (t.fee ? " · fee $" + t.fee : "") + "</p>" +
+              (t.fee ? " · fee " + t.fee + " E⤴︎" : "") + "</p>" +
               "<p>" + (t.splits || []).map(function (s) { return esc(s.party) + " " + s.pct + "%"; }).join(" · ") + "</p>" +
               ((d.signatures || []).length ? '<p style="color:#2fbf71">Signed: ' +
                 d.signatures.map(function (s) { return esc(s.name); }).join(" · ") + "</p>" : "") +
