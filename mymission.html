@@ -63,6 +63,21 @@
     .mm__arc b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; }
     .mm__arc span { flex: none; font-size: 0.7rem; font-weight: 800; color: #c99d45; font-variant-numeric: tabular-nums; }
     .mm__pts { color: #c99d45; font-weight: 800; font-variant-numeric: tabular-nums; }
+    /* the hustle filter: pick which checklist you're looking at */
+    .mm__filts { display: flex; gap: 0.45rem; overflow-x: auto; padding: 0.9rem 0.15rem 0.4rem; scrollbar-width: none; }
+    .mm__filts::-webkit-scrollbar { display: none; }
+    .mm__filt { flex: none; font: inherit; font-weight: 800; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--fc, #c99d45); background: rgba(12,9,8,0.7); border: 2px solid var(--fc, #c99d45); border-radius: 100px;
+      padding: 0.55em 1em; cursor: pointer; transition: transform 0.15s, box-shadow 0.2s, background 0.2s, color 0.2s;
+      animation: mmFlt 2.6s ease-in-out infinite; }
+    .mm__filt:nth-child(2n) { animation-delay: 0.65s; }
+    .mm__filt:nth-child(3n) { animation-delay: 1.3s; }
+    .mm__filt i { font-style: normal; opacity: 0.8; font-size: 0.85em; margin-left: 0.4em; }
+    .mm__filt:active { transform: scale(0.94); }
+    .mm__filt.is-on { background: var(--fc, #c99d45); color: #0a0807; box-shadow: 0 0 22px var(--fc, #c99d45); animation: none; }
+    @keyframes mmFlt { 0%, 100% { box-shadow: 0 0 0 rgba(0,0,0,0); } 50% { box-shadow: 0 0 15px var(--fc, #c99d45); } }
+    @media (prefers-reduced-motion: reduce) { .mm__filt { animation: none; } }
+    .mm__arcwrap.is-hid { display: none; }
   </style>
 </head>
 <body class="songpage">
@@ -121,6 +136,8 @@
         ["community", "The Community", "assets/img/mc-community.jpg", 200],
         ["scholar",   "The Scholar",   "assets/img/mc-scholar.jpg",   120],
       ];
+      var ARC_C = { walkin: "#45b6ff", identity: "#d8ba7c", craft: "#e5383b",
+        business: "#00c805", community: "#f472b6", scholar: "#2aa8a0" };
       var GAUNTLET = [
         ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained.", "walkin"],
         ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you.", "walkin"],
@@ -204,17 +221,27 @@
           "<h2>Do literally everything. 100,000 points.</h2>" +
           '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 975 * 100) + '%"></i></div>' +
           (minted > 0 ? '<p class="mm__msg">💰 +' + pts(minted) + " pts (" + minted.toFixed(2) + " E⤴︎) just landed for what you've already done.</p>" : "") +
+          /* the filter row: pick the hustle, see only its checklist */
+          '<div class="mm__filts" id="mmFilts">' +
+          '<button class="mm__filt" type="button" data-f="all" style="--fc:#c99d45">⚡ All hustles</button>' +
+          ARCS.map(function (arc) {
+            var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
+            var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
+            return '<button class="mm__filt" type="button" data-f="' + arc[0] + '" style="--fc:' + ARC_C[arc[0]] + '">' +
+              arc[1] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
+          }).join("") + "</div>" +
           ARCS.map(function (arc) {
             var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
             var got = mine2.reduce(function (a, mi) { return a + (done.indexOf(mi[0]) !== -1 ? mi[1] : 0); }, 0);
-            return '<div class="mm__arc" data-mmbg="' + arc[2] + '"><div><b>' + arc[1] + "</b>" +
+            return '<div class="mm__arcwrap" data-arcw="' + arc[0] + '">' +
+              '<div class="mm__arc" data-mmbg="' + arc[2] + '"><div><b>' + arc[1] + "</b>" +
               "<span>" + pts(got) + " / " + pts(arc[3]) + " pts</span></div></div>" +
               mine2.map(function (mi) {
                 var hit = done.indexOf(mi[0]) !== -1;
                 return '<a class="mm__mi' + (hit ? " is-done" : "") + '" href="' + mi[3] + '">' +
                   "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" + mi[4] + "</small></span>" +
                   '<span class="amt">' + (hit ? "✓ " + pts(mi[1]) + " pts" : "+" + pts(mi[1]) + " pts") + "</span></a>";
-              }).join("");
+              }).join("") + "</div>";
           }).join("") +
           '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move. ' +
           "Points are the score of the granted economy: they spend on the floor as E⤴︎ and never cash out — like a credit union, " +
@@ -265,6 +292,29 @@
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
+        /* the hustle filter: one tap scopes the checklist; the pick
+           survives the visit so the room reopens on your lane */
+        (function () {
+          var bar = $("mmFilts");
+          if (!bar) return;
+          function apply(f) {
+            bar.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-f") === f); });
+            host.querySelectorAll(".mm__arcwrap").forEach(function (w) {
+              w.classList.toggle("is-hid", f !== "all" && w.getAttribute("data-arcw") !== f);
+            });
+          }
+          var saved = "all";
+          try { saved = localStorage.getItem("mcc_mm_arc") || "all"; } catch (e) {}
+          if (!bar.querySelector('[data-f="' + saved + '"]')) saved = "all";
+          apply(saved);
+          bar.addEventListener("click", function (e) {
+            var b = e.target.closest(".mm__filt"); if (!b) return;
+            var f = b.getAttribute("data-f");
+            apply(f);
+            try { localStorage.setItem("mcc_mm_arc", f); } catch (e2) {}
+            track("mm_filter", { arc: f });
+          });
+        })();
         /* the art: each room wears its generated scene the moment the
            asset exists — the gradient holds the frame until then */
         host.querySelectorAll("[data-mmbg]").forEach(function (el) {
