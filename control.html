@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Control Room · Steer the Ship · M Network</title>
+  <meta name="description" content="The second way equity rises: govern the platform. Propose how the app is built, vote on what ships, and take a real position in your city. The floor decides; the desk builds.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .ct { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 9rem; max-width: 46rem; margin: 0 auto; }
+    .ct h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 4.2rem); }
+    .ct__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; max-width: 56ch; }
+    .ct__sub b { color: var(--cream); }
+    .ct__routes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin: 1.4rem 0; }
+    @media (max-width: 30rem) { .ct__routes { grid-template-columns: 1fr; } }
+    .ct__route { border: 1px solid rgba(244,239,230,0.14); border-radius: 14px; padding: 1rem 1.05rem; }
+    .ct__route b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; }
+    .ct__route.is-money b { color: #2fbf71; } .ct__route.is-control b { color: #8ab4f8; }
+    .ct__route small { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.5; display: block; margin-top: 0.3rem; }
+    .ct__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6);
+      padding: 1.1rem 1.05rem 1.2rem; margin-top: 1.2rem; }
+    .ct__k { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: #8ab4f8; font-weight: 800; }
+    .ct__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.7rem 0; }
+    .ct__chip { border: 1px solid rgba(244,239,230,0.3); border-radius: 100px; background: none; color: var(--cream-dim);
+      font: inherit; font-size: 0.74rem; padding: 0.5em 1.1em; cursor: pointer; }
+    .ct__chip.is-on { border-color: #8ab4f8; color: #fff; background: rgba(138,180,248,0.22); }
+    .ct__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.25); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: max(16px, 0.95rem); padding: 0.75em 1em; margin: 0 0 0.55rem; }
+    textarea.ct__in { min-height: 5rem; resize: vertical; }
+    .ct__msg { color: #8ab4f8; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
+    .ct__prop { border: 1px solid rgba(244,239,230,0.13); border-radius: 14px; padding: 0.9rem 1rem; margin-top: 0.7rem; }
+    .ct__prop h3 { font-size: 0.95rem; }
+    .ct__prop p { color: var(--cream-dim); font-size: 0.82rem; line-height: 1.55; margin-top: 0.3rem; }
+    .ct__tag { display: inline-block; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase;
+      border: 1px solid rgba(138,180,248,0.5); color: #8ab4f8; border-radius: 100px; padding: 0.3em 0.8em; margin-right: 0.4em; }
+    .ct__tag.city { border-color: rgba(47,158,98,0.5); color: #2f9e62; }
+    .ct__tag.policy { border-color: rgba(201,157,69,0.5); color: #c99d45; }
+    .ct__tag.st { border-color: rgba(244,239,230,0.3); color: var(--cream-dim); }
+    .ct__vote { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.7rem; }
+    .ct__vbtn { border: 1px solid rgba(244,239,230,0.25); border-radius: 100px; background: none; color: var(--cream);
+      font: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.4em 1em; cursor: pointer; }
+    .ct__vbtn.up.is-on { border-color: #2fbf71; color: #2fbf71; background: rgba(47,191,113,0.15); }
+    .ct__vbtn.down.is-on { border-color: var(--ruby-hot); color: var(--ruby-hot); background: rgba(229,56,59,0.15); }
+    .ct__score { font-variant-numeric: tabular-nums; font-weight: 800; margin-left: auto; }
+    .ct__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="civic.html">Civic HQ</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="ct">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Two routes, one uprise</p>
+    <h1>The Control<br>Room.</h1>
+    <p class="ct__sub">Your equity rises two ways. Run the <b>money route</b> — sell your work, stack real deals. Or run
+      the <b>control route</b> — steer how this whole thing is built and take a real position in your city. Run one.
+      Run both. Either way you rise.</p>
+
+    <div class="ct__routes">
+      <a class="ct__route is-money" href="market.html#yours" style="text-decoration:none">
+        <b>The money route ↗</b><small>Services, deals, the rack, the plug. You provide; the floor pays. Every deal mints.</small></a>
+      <div class="ct__route is-control">
+        <b>The control route</b><small>Propose how the app grows, vote on what ships, take a civic position. The floor decides; the desk builds.</small></div>
+    </div>
+
+    <section class="ct__card">
+      <p class="ct__k">File a proposal</p>
+      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.3rem;margin-bottom:0.4rem">Bring it to the floor.</h2>
+      <div id="ctFileHost"><p class="ct__sub" style="margin-top:0.2rem">Checking your seat…</p></div>
+    </section>
+
+    <section class="ct__card">
+      <p class="ct__k">The board — what the floor is deciding</p>
+      <div class="ct__chips" id="ctFilter">
+        <button class="ct__chip is-on" data-f="all" type="button">Everything</button>
+        <button class="ct__chip" data-f="app" type="button">The app</button>
+        <button class="ct__chip" data-f="city" type="button">My city</button>
+        <button class="ct__chip" data-f="policy" type="button">Policy</button>
+      </div>
+      <div id="ctBoard"><p class="ct__sub" style="margin-top:0.2rem">Reading the room…</p></div>
+    </section>
+
+    <p class="ct__fine">One member, one vote per proposal — earned standing orders the queue but never overrides a head
+      count. Tallies are public; who voted is private. Approved app proposals become build orders on the desk;
+      city and policy proposals route into the Civic HQ. The control route is real: keep showing up and the desk
+      hands you the keys.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var S = window.MCC_SUPA;
+      var AUTHED = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+      var filter = "all", BOARD = [];
+
+      function rpc(fn, body) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/" + fn, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + (t || S.key) },
+            body: JSON.stringify(body || {}),
+          }).then(function (r) { return r.ok ? r.json() : null; });
+        });
+      }
+
+      /* ---- the filer ---- */
+      function mountFiler() {
+        var host = $("ctFileHost");
+        if (!AUTHED) {
+          host.innerHTML = '<p class="ct__sub" style="margin-top:0.2rem">The floor votes with a face. Open your account and take your seat.</p><div id="ctDoor" style="margin-top:0.8rem"></div>';
+          if (window.MCC_DOOR) window.MCC_DOOR.mount($("ctDoor"), { ticker: true, context: "control", onDone: function () { location.reload(); } });
+          return;
+        }
+        var kind = "app";
+        host.innerHTML =
+          '<div class="ct__chips" id="ctKind">' +
+          '<button class="ct__chip is-on" data-k="app" type="button">How the app is built</button>' +
+          '<button class="ct__chip" data-k="city" type="button">Something in my city</button>' +
+          '<button class="ct__chip" data-k="policy" type="button">A stance on policy</button></div>' +
+          '<input class="ct__in" id="ctTitle" type="text" maxlength="120" placeholder="The proposal, in one line — e.g. Add a producer leaderboard">' +
+          '<textarea class="ct__in" id="ctBody" maxlength="2000" placeholder="Make the case (optional) — what changes, and why it helps the floor."></textarea>' +
+          '<button class="btn btn--ruby" id="ctFile" type="button" style="width:100%;justify-content:center">Bring it to the floor</button>' +
+          '<p class="ct__msg" id="ctFileMsg"></p>';
+        host.querySelector("#ctKind").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-k]"); if (!b) return;
+          kind = b.getAttribute("data-k");
+          host.querySelectorAll("[data-k]").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+        });
+        $("ctFile").addEventListener("click", function () {
+          var title = ($("ctTitle").value || "").trim();
+          if (title.length < 4) { $("ctFileMsg").textContent = "Give it a real title first."; return; }
+          $("ctFileMsg").textContent = "Bringing it up…";
+          window.MCC_NET.myListing().catch(function () { return null; }).then(function (mine) {
+            return S.token().then(function (t) {
+              return fetch(S.url + "/rest/v1/proposals", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t, Prefer: "return=minimal" },
+                body: JSON.stringify({ kind: kind, title: title, body: ($("ctBody").value || "").trim(), slug: (mine && mine.ticker) || "" }),
+              });
+            });
+          }).then(function (r) {
+            if (r && (r.ok || r.status === 201)) {
+              $("ctFileMsg").textContent = "On the floor — the room votes now.";
+              $("ctTitle").value = ""; $("ctBody").value = "";
+              track("proposal_filed", { kind: kind });
+              loadBoard();
+            } else {
+              $("ctFileMsg").textContent = "The room isn't armed yet — one paste: docs/control-schema.sql.";
+            }
+          }).catch(function () { $("ctFileMsg").textContent = "It didn't take — retap."; });
+        });
+      }
+
+      /* ---- the board ---- */
+      function paintBoard() {
+        var host = $("ctBoard");
+        var rows = BOARD.filter(function (p) { return filter === "all" || p.kind === filter; });
+        if (!rows.length) {
+          host.innerHTML = '<p class="ct__sub" style="margin-top:0.2rem">' +
+            (BOARD.length ? "Nothing in that lane yet — file the first one." :
+              "The board is empty. Be the first to bring something to the floor.") + "</p>";
+          return;
+        }
+        host.innerHTML = rows.map(function (p) {
+          var score = (+p.ups || 0) - (+p.downs || 0);
+          var kc = p.kind === "city" ? "city" : p.kind === "policy" ? "policy" : "";
+          return '<div class="ct__prop"><span class="ct__tag ' + kc + '">' +
+            (p.kind === "app" ? "The app" : p.kind === "city" ? "My city" : "Policy") + "</span>" +
+            (p.status !== "open" ? '<span class="ct__tag st">' + esc(p.status) + "</span>" : "") +
+            "<h3>" + esc(p.title) + "</h3>" +
+            (p.body ? "<p>" + esc(p.body) + "</p>" : "") +
+            (p.note ? '<p style="color:#8ab4f8">The desk: ' + esc(p.note) + "</p>" : "") +
+            '<p style="font-size:0.68rem;color:var(--cream-dim);margin-top:0.3rem">by ' + esc(p.proposer) + " · " + esc(new Date(p.at).toLocaleDateString()) + "</p>" +
+            '<div class="ct__vote">' +
+            '<button class="ct__vbtn up' + (+p.my_vote === 1 ? " is-on" : "") + '" type="button" data-v="' + p.id + ':1">▲ ' + (+p.ups || 0) + "</button>" +
+            '<button class="ct__vbtn down' + (+p.my_vote === -1 ? " is-on" : "") + '" type="button" data-v="' + p.id + ':-1">▼ ' + (+p.downs || 0) + "</button>" +
+            '<span class="ct__score" style="color:' + (score >= 0 ? "#2fbf71" : "#ff5000") + '">' + (score >= 0 ? "+" : "") + score + "</span></div></div>";
+        }).join("");
+        host.querySelectorAll("[data-v]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (!AUTHED) { $("ctBoard").scrollIntoView(); return; }
+            var kv = b.getAttribute("data-v").split(":");
+            var pid = kv[0], dir = +kv[1];
+            var row = BOARD.filter(function (x) { return x.id === pid; })[0];
+            var next = (row && +row.my_vote === dir) ? 0 : dir; // tapping your own vote pulls it
+            rpc("cast_vote", { prop: pid, direction: next }).then(function () {
+              track("proposal_vote", { dir: next });
+              loadBoard();
+            });
+          });
+        });
+      }
+      function loadBoard() {
+        rpc("proposal_board").then(function (rows) {
+          BOARD = rows || [];
+          paintBoard();
+        }).catch(function () { $("ctBoard").innerHTML = '<p class="ct__sub">The room arms after one paste: docs/control-schema.sql.</p>'; });
+      }
+      $("ctFilter").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-f]"); if (!b) return;
+        filter = b.getAttribute("data-f");
+        $("ctFilter").querySelectorAll("[data-f]").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+        paintBoard();
+      });
+
+      mountFiler();
+      loadBoard();
+      track("control_view", {});
+    })();
+  </script>
+</body>
+</html>
