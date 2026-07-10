@@ -52,13 +52,16 @@ jobs:
           # the model — far heavier than a phone should download. Cap at
           # 2048px wide and re-encode as JPG (these have no transparency),
           # then drop the source PNG. The game references the .jpg names.
-          for n in ourworld-map char-mccluster char-ocho char-rahndrx; do
+          # NOTE: eu-favicon stays PNG on purpose — it carries alpha (transparent).
+          for n in ourworld-map char-mccluster char-ocho char-rahndrx \
+                   space-only-us space-shiloh space-coffee-cam space-privi \
+                   space-decibel space-revent-space space-revent-lounge; do
             f="assets/img/${n}.png"
             [ -f "$f" ] || continue
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \
               && rm -f "$f" && echo "converted $n -> jpg"
           done
-          ls -la assets/img/ourworld-map.jpg assets/img/char-*.jpg 2>/dev/null || true
+          ls -la assets/img/ourworld-map.jpg assets/img/char-*.jpg assets/img/space-*.jpg 2>/dev/null || true
 
       - name: Extract scroll-scrub frame sequences
         run: |

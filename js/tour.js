@@ -157,11 +157,18 @@
       veil.style.top = "50%"; veil.style.left = "50%";
       veil.style.width = "0px"; veil.style.height = "0px";
     }
-    var below = r ? r.bottom + pad * 2 + 12 : innerHeight / 2 - 110;
-    var cardH = 210;
-    var top = r ? (below + cardH < innerHeight ? below : Math.max(12, r.top - pad - cardH - 12)) : below;
+    // measure the card as actually rendered (innerHTML is already set) so a
+    // long step on a tall screen (iPad) can never be pushed off the viewport
+    var cardH = card.offsetHeight || 210;
+    var cardW = card.offsetWidth || 330;
+    var below = r ? r.bottom + pad * 2 + 12 : (innerHeight / 2 - cardH / 2);
+    // prefer below the spotlight; if it won't fit, go above; then hard-clamp
+    var top = r ? (below + cardH < innerHeight - 12 ? below : (r.top - pad - cardH - 12)) : below;
+    top = Math.max(12, Math.min(innerHeight - cardH - 12, top));
+    var left = r ? r.left : (innerWidth / 2 - cardW / 2);
+    left = Math.max(12, Math.min(innerWidth - cardW - 12, left));
     card.style.top = top + "px";
-    card.style.left = Math.max(12, Math.min(innerWidth - 342, r ? r.left : innerWidth / 2 - 165)) + "px";
+    card.style.left = left + "px";
   }
 
   function paint() {

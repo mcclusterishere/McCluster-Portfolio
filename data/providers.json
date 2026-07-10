@@ -1,608 +1,612 @@
 {
-  "note": "The provider directory behind the Hire tab. Every listing is M-Verified before it appears; intake runs through interview.html (talent) and list-your-space.html (venues).",
-  "categories": [
+ "note": "The provider directory behind the Hire tab. Every listing is M-Verified before it appears; intake runs through interview.html (talent) and list-your-space.html (venues).",
+ "categories": [
+  "Photo",
+  "Video",
+  "Web",
+  "Studios",
+  "Stages",
+  "Merch"
+ ],
+ "providers": [
+  {
+   "id": "mccluster",
+   "ticker": "MCC",
+   "name": "Matthew McCluster",
+   "roles": [
     "Photo",
     "Video",
-    "Web",
-    "Studios",
-    "Stages",
-    "Merch"
-  ],
-  "providers": [
-    {
-      "id": "mccluster",
-      "ticker": "MCC",
-      "name": "Matthew McCluster",
-      "roles": [
-        "Photo",
-        "Video",
-        "Web"
-      ],
-      "headline": "Creative director · the builder of this site",
-      "area": "Connecticut · Georgia · travels",
-      "verified": "performer",
-      "badgeColor": "#8b5cf6",
-      "href": "profile-mccluster.html",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k.",
-      "terms": {
-        "feature": 1000,
-        "floor": 50,
-        "notes": "The Artist Offer: $1,000 for a feature — and the thousand comes with 50% of the songwriting, 50% of the publishing, 50% of everything. Signed in the Market before the song drops."
-      },
-      "profile": "profile-mccluster.html",
-      "music": {
-        "src": "assets/audio/antisocial.mp3",
-        "title": "Antisocial"
-      },
-      "square": "https://square.link/u/MBVeuzoo",
-      "tracks": [
-        "antisocial",
-        "vaunt",
-        "who-did-the-shoot",
-        "got-wifi",
-        "dealer-plates",
-        "dealer-plates-b",
-        "money-or-the-power"
-      ],
-      "claimed": true
-    },
-    {
-      "id": "equity-uprise",
-      "ticker": "EU",
-      "name": "Equity Uprise",
-      "roles": [
-        "Programs"
-      ],
-      "entity": "program",
-      "headline": "The civic fellowship — equity, then we rise",
-      "area": "Bridgeport, CT · on the public record",
-      "verified": "nonprofit",
-      "badgeColor": "#2f9e62",
-      "href": "equity-uprise.html",
-      "tracks": [
-        "environmental-injustice"
-      ],
-      "claimed": true,
-      "book": "mailto:matthew@mccluster.org?subject=Equity%20Uprise%20%E2%80%94%20get%20involved"
-    },
-    {
-      "id": "decibel-studios",
-      "ticker": "DCB",
-      "name": "Decibel Studios",
-      "roles": [
-        "Studios"
-      ],
-      "headline": "Zakir's boutique recording room",
-      "area": "Green Industrial Way · Atlanta, GA",
-      "verified": "studio",
-      "badgeColor": "#f8b40a",
-      "href": "profile-zakir.html",
-      "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
-      "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
-      "profile": "profile-zakir.html",
-      "photo": "assets/frames/vperf1_0001.jpg",
-      "space": {
-        "rate": 45,
-        "unit": "hour",
-        "amenities": [
-          "engineer",
-          "iso-booth",
-          "mic-locker",
-          "console",
-          "tuned-room",
-          "mix-master"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            0,
-            1,
-            2
-          ]
-        }
-      },
-      "music": {
-        "src": "assets/audio/vaunt.mp3",
-        "title": "Vaunt (Acoustic) — Zakir on the six-string"
-      },
-      "claimed": false
-    },
-    {
-      "id": "k-cohiba",
-      "ticker": "KCHB",
-      "name": "K-Cohiba",
-      "roles": [
-        "Music"
-      ],
-      "headline": "Boston artist — the catalogue lands as he claims it",
-      "area": "Boston, MA · onboarding — final rates being confirmed with the team",
-      "verified": "pending",
-      "badgeColor": "#4a7fb5",
-      "href": "claim.html?who=k-cohiba",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "Boston artist joining the network. His songs load through his own desk, his shows book through the team, and his ticker trades on the market.",
-      "photo": "assets/frames/uprise_0080.jpg",
-      "space": {
-        "rate": 95,
-        "unit": "hour",
-        "amenities": [
-          "house-audio",
-          "lighting-grid",
-          "green-room",
-          "capacity-rated"
-        ]
-      },
-      "claimed": false
-    },
-    {
-      "id": "revent-space",
-      "ticker": "RVNT",
-      "name": "Revent Space",
-      "roles": [
-        "Stages"
-      ],
-      "headline": "Dorchester's community event room — furnished, lit, ready by 10am",
-      "area": "413 Neponset Ave · Dorchester, Boston, MA",
-      "verified": "pending",
-      "badgeColor": "#45b6ff",
-      "href": "space-revent.html",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "A community-first event room in Dorchester: 32 seated at tables, up to 48 for a mixer, with the 65″ smart display, mic, speakers, and LED color lighting already in the room. Pop-ups, seminars, brunches, showers, open mics — bookable 10am to midnight.",
-      "photo": "assets/clients/revent/img/w1.jpg",
-      "space": {
-        "rate": 185,
-        "unit": "hour",
-        "amenities": [
-          "house-audio",
-          "lighting-grid",
-          "capacity-rated",
-          "house-screen",
-          "furnished"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            1,
-            2,
-            3
-          ]
-        }
-      },
-      "claimed": false
-    },
-    {
-      "id": "revent-lounge",
-      "name": "Revent Work Lounge & Photo Studio",
-      "roles": [
-        "Studios"
-      ],
-      "headline": "1,200 sq ft of natural light — shoots by day, sessions all week",
-      "area": "413 Neponset Ave · Dorchester, Boston, MA",
-      "verified": "pending",
-      "badgeColor": "#45b6ff",
-      "href": "space-revent.html#lounge",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Work%20Lounge%20via%20M%20Network&body=Shoot%20or%20session%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
-      "blurb": "Revent's second room: 1,200 square feet of natural light built for photo sessions and focused work — with a 15-seat conference room, whiteboard, grass wall, 65″ smart display, Bluetooth speakers, LED bar uplighting, and WiFi.",
-      "photo": "assets/clients/revent/img/Home.jpeg",
-      "space": {
-        "rate": 65,
-        "unit": "hour",
-        "amenities": [
-          "natural-light",
-          "client-lounge",
-          "house-screen",
-          "furnished",
-          "capacity-rated"
-        ]
-      },
-      "terms": {
-        "avail": {
-          "days": [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "slots": [
-            0,
-            1,
-            2
-          ]
-        }
-      },
-      "claimed": false
-    },
-    {
-      "id": "laire",
-      "ticker": "LRE",
-      "name": "Laire",
-      "roles": [
-        "Video",
-        "Photo"
-      ],
-      "headline": "Cameraman · M Network",
-      "area": "Onboarding — claiming this profile now",
-      "verified": "pending",
-      "badgeColor": "#8b5cf6",
-      "href": "onboard.html?role=provider",
-      "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile.",
-      "claimed": false
-    },
-    {
-      "id": "mccluster-pullup",
-      "ticker": "PLUP",
-      "name": "The Pull-Up · McCluster mobile",
-      "roles": [
-        "Video",
-        "Photo"
-      ],
-      "headline": "The engineer comes to you — recording, shoot, edit, on site",
-      "area": "Books by zone · exact locations never published",
-      "verified": "performer",
-      "badgeColor": "#2fbf71",
-      "href": "hire.html",
-      "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
-      "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
-      "profile": "hire.html",
-      "claimed": false
-    },
-    {
-      "id": "hitman-benji",
-      "slug": "hitman-benji",
-      "name": "Hitman Benji",
-      "ticker": "BENJI",
-      "headline": "The masked operator · platform lore legend",
-      "blurb": "Never a face, always the work. Visuals, sound, and direction delivered masked. Two lines on the floor — the operator and the brand. Put him on a job; it goes on the record.",
-      "area": "Everywhere · masked",
-      "roles": [
-        "Video",
-        "Music",
-        "Web"
-      ],
-      "badgeColor": "#c1121f",
-      "profile": "profile-benji.html",
-      "href": "profile-benji.html",
-      "claimed": false,
-      "lore": true,
-      "terms": {
-        "floor": 50,
-        "feature": 500,
-        "notes": "Book the operator on the floor. Signed, masked, delivered — the desk runs this line until Benji claims it."
-      }
-    },
-    {
-      "id": "hitman-gear",
-      "slug": "hitman-gear",
-      "name": "Hitman Gear",
-      "ticker": "GEAR",
-      "headline": "Masked streetwear for operators",
-      "blurb": "Tactical black, crimson insignia, no traceable logos. The apparel line the whole gang wears — masks, vests, and the no-face hoodie. The storefront on the floor is open.",
-      "area": "Hitman Gear · the brand",
-      "roles": [
-        "Merch"
-      ],
-      "badgeColor": "#e5383b",
-      "profile": "profile-benji.html",
-      "href": "profile-benji.html",
-      "claimed": false,
-      "lore": true,
-      "terms": {
-        "floor": 45,
-        "notes": "The gear drop — masks from $45, vests, hoodies. Cop it on the floor."
-      }
-    },
-    {
-      "id": "rahndrx",
-      "slug": "rahndrx",
-      "name": "Rahndrx",
-      "ticker": "RAHN",
-      "headline": "Leader by Voice · CT artist, founder of BREDE",
-      "blurb": "\"It's way bigger than me.\" Connecticut artist and founder of BREDE — music made to move people to move. Be the difference you want to see in the world.",
-      "area": "Connecticut",
-      "roles": [
-        "Music"
-      ],
-      "badgeColor": "#7c3aed",
-      "profile": "profile-rahndrx.html",
-      "href": "profile-rahndrx.html",
-      "claimed": false,
-      "terms": {
-        "notes": "Unclaimed artist profile — Rahndrx claims it to go live and route his plays here.",
-        "links": {
-          "ig": "https://instagram.com/rahndrx",
-          "music": "https://linktr.ee/rahndrx",
-          "web": "https://linktr.ee/rahndrx"
-        }
-      },
-      "photo": "assets/img/rahndrx-hero.jpg",
-      "approved": true
-    },
-    {
-      "id": "ocho-gr8",
-      "slug": "ocho-gr8",
-      "name": "Ocho Gr8",
-      "ticker": "OCHO",
-      "headline": "The voice of Only Us · radio, studio, the whole sound",
-      "blurb": "Bridgeport artist and radio host behind Only Us Radio and Only Us Studios. UnitedMasters recording artist, sample man, connector. Equity Uprise approved Chaser — named by the City of Bridgeport on Equity Uprise Human Rights Day.",
-      "area": "Bridgeport, CT",
-      "roles": [
-        "Music"
-      ],
-      "badgeColor": "#2563eb",
-      "profile": "profile-ocho.html",
-      "href": "profile-ocho.html",
-      "photo": "assets/img/ocho-hero.jpg",
-      "claimed": false,
-      "approved": true,
-      "terms": {
-        "notes": "Unclaimed — Ocho claims it to run Only Us and the music floor. A gift.",
-        "links": {
-          "ig": "https://instagram.com/ocho_gr8",
-          "music": "https://unitedmasters.com/ocho-gr8"
-        }
-      }
-    },
-    {
-      "id": "only-us-radio",
-      "slug": "only-us-radio",
-      "name": "Only Us Radio",
-      "ticker": "OUSR",
-      "headline": "The frequency for the artists nobody else plays",
-      "blurb": "Ocho Gr8's station and show — spins, interviews, and a platform for the culture the algorithm skips. Bridgeport's own.",
-      "area": "Bridgeport, CT",
-      "roles": [
-        "Music"
-      ],
-      "badgeColor": "#3b82f6",
-      "profile": "profile-ocho.html",
-      "href": "profile-ocho.html",
-      "claimed": false,
-      "terms": {
-        "notes": "Only Us Radio — Ocho's business on the floor, unclaimed."
-      }
-    },
-    {
-      "id": "only-us-studios",
-      "slug": "only-us-studios",
-      "name": "Only Us Studios",
-      "ticker": "OUST",
-      "headline": "Where it gets cut — record, mix, shoot",
-      "blurb": "The room artists book to record, mix, and shoot. Ocho's space, bookable on Equity Uprise.",
-      "area": "Bridgeport, CT",
-      "roles": [
-        "Studios"
-      ],
-      "badgeColor": "#7dd3fc",
-      "profile": "profile-ocho.html",
-      "href": "profile-ocho.html",
-      "claimed": false,
-      "space": {
-        "rate": 45,
-        "unit": "hour",
-        "amenities": [
-          "recording",
-          "mixing",
-          "video"
-        ]
-      },
-      "terms": {
-        "notes": "Only Us Studios — Ocho's space, unclaimed."
-      }
-    },
-    {
-      "id": "raheem",
-      "slug": "raheem",
-      "name": "Raheem",
-      "ticker": "RHEEM",
-      "headline": "Artist · on the record with the Uprise",
-      "blurb": "Collaborator on 'Upset' with McCluster and Rahndrx — the first record released free under Equity Uprise. His profile's waiting; claim it to lock the split.",
-      "area": "Connecticut",
-      "roles": [
-        "Music"
-      ],
-      "badgeColor": "#0ea5a4",
-      "profile": "page.html?who=raheem",
-      "href": "page.html?who=raheem",
-      "claimed": false,
-      "terms": {
-        "notes": "Unclaimed — Raheem claims it to accept his split on 'Upset'."
-      }
-    },
-    {
-      "id": "daniel-cano",
-      "slug": "daniel-cano",
-      "name": "Daniel Cano",
-      "ticker": "CANO",
-      "headline": "Digital creator, DJ & civic leader — half of Sena Daniel Cano",
-      "blurb": "Multi-hyphenate out of Atlanta & Orange County. Board comms chair, Equity Uprise fellow named in the Georgia Governor's Youth Innovation & Civic Leadership proclamation — and one half of the plant-based band Sena Daniel Cano (with Papa Sena), 20K monthly Spotify listeners. Book him for your next event.",
-      "area": "Atlanta · Orange County",
-      "roles": [
-        "Music",
-        "Programs"
-      ],
-      "badgeColor": "#16a34a",
-      "profile": "page.html?who=daniel-cano",
-      "href": "page.html?who=daniel-cano",
-      "claimed": false,
-      "civic": true,
-      "terms": {
-        "notes": "Unclaimed dual-type — Artist + Civic. Daniel claims it, then files his civic card to climb the ladder.",
-        "links": {
-          "ig": "https://instagram.com/kidcano",
-          "music": "https://linktr.ee/kidcano",
-          "web": "https://linktr.ee/kidcano"
-        }
-      }
-    },
-    {
-      "id": "sena-daniel-cano",
-      "slug": "sena-daniel-cano",
-      "name": "Sena Daniel Cano",
-      "ticker": "SENA",
-      "headline": "Your fav plant-based spice bois — Papa Sena × Kidcano",
-      "blurb": "The band: Papa Sena × Daniel Cano. 20,000 monthly Spotify listeners, on 25K playlists, 500K+ plays. Music videos, the whole run.",
-      "area": "Atlanta",
-      "roles": [
-        "Music"
-      ],
-      "badgeColor": "#22c55e",
-      "profile": "page.html?who=sena-daniel-cano",
-      "href": "page.html?who=sena-daniel-cano",
-      "claimed": false,
-      "terms": {
-        "notes": "The band's unclaimed profile — Daniel or Papa Sena claims it.",
-        "links": {
-          "ig": "https://instagram.com/senadanielcano",
-          "music": "https://linktr.ee/Senadanielcano"
-        }
-      }
-    },
-    {
-      "id": "shiloh-church",
-      "slug": "shiloh-church",
-      "name": "Shiloh Baptist Church",
-      "ticker": "SBC",
-      "headline": "A sanctuary & event hall for the community — Bridgeport",
-      "blurb": "Shiloh Baptist Church of Bridgeport. The sanctuary and hall are available to book for services, rehearsals, recordings, and community events — piano, screens, sound, seating.",
-      "area": "Bridgeport, CT",
-      "roles": [
-        "Stages"
-      ],
-      "badgeColor": "#6366f1",
-      "profile": "page.html?who=shiloh-church",
-      "href": "page.html?who=shiloh-church",
-      "claimed": false,
-      "space": {
-        "rate": 75,
-        "unit": "hour",
-        "amenities": [
-          "seating",
-          "piano",
-          "sound",
-          "screens",
-          "parking"
-        ]
-      },
-      "terms": {
-        "notes": "Unclaimed — the church claims it to manage bookings.",
-        "links": {
-          "web": "https://www.shilohchurchbpt.org"
-        }
-      }
-    },
-    {
-      "id": "coffee-cam",
-      "slug": "coffee-cam",
-      "name": "The Coffee Cam",
-      "ticker": "CAFE",
-      "headline": "A storefront café & creative space — book it for shoots, sessions & pop-ups",
-      "blurb": "The coffee shop from the shoots — a real storefront café and creative room. Book it by the hour for content shoots, acoustic sessions, interviews, and pop-up events. Rename/claim to run your own bookings.",
-      "area": "Bridgeport, CT",
-      "roles": [
-        "Stages"
-      ],
-      "badgeColor": "#a16207",
-      "profile": "page.html?who=coffee-cam",
-      "href": "page.html?who=coffee-cam",
-      "claimed": false,
-      "space": {
-        "rate": 60,
-        "unit": "hour",
-        "amenities": [
-          "counter",
-          "seating",
-          "storefront-light",
-          "wifi",
-          "coffee-bar"
-        ]
-      },
-      "terms": {
-        "notes": "Unclaimed café space — give me the real name/photos and I'll dress it fully."
-      }
-    },
-    {
-      "id": "orange-hair-braiding",
-      "slug": "orange-hair-braiding",
-      "name": "Orange Hair Braiding",
-      "ticker": "ORNG",
-      "headline": "Braiding salon — West Haven · book with Aminata",
-      "blurb": "Aminata's braiding salon in West Haven, CT — box braids, knotless, curls, the whole book. Real work, real chair. Call 203-931-7402 or book right here once she claims it.",
-      "area": "West Haven, CT",
-      "roles": [
-        "Photo"
-      ],
-      "badgeColor": "#ea580c",
-      "profile": "page.html?who=orange-hair-braiding",
-      "href": "page.html?who=orange-hair-braiding",
-      "claimed": false,
-      "terms": {
-        "notes": "Unclaimed salon — a landing page + bookings without paying for hosting. Aminata claims it to run it.",
-        "rate": 0,
-        "links": {
-          "ig": "https://instagram.com/orangehairbraiding"
-        }
-      }
-    },
-    {
-      "id": "privi-stonecrest",
-      "slug": "privi-stonecrest",
-      "name": "Priví Stonecrest",
-      "ticker": "PRIVI",
-      "headline": "The 143,000 sq-ft lifestyle destination — East Metro Atlanta's premier location",
-      "blurb": "Vaughn & Cassandra Irons' transformation of Stonecrest Mall's former Sears into Atlanta's east-side hotspot: SeaQuest, the Priví Art Gallery, Event Center, Exposure Hub co-working, 101 TKO Radio, Picasso's Splat Room, axe throwing, golf sims, escape rooms, The Lion's Cage MMA — with a 50,000 sq-ft chef-driven food hall on the way. A premier Equity Uprise partner location.",
-      "area": "Stonecrest, GA · East Metro Atlanta",
-      "roles": [
-        "Stages"
-      ],
-      "badgeColor": "#b45309",
-      "premier": true,
-      "profile": "page.html?who=privi-stonecrest",
-      "href": "page.html?who=privi-stonecrest",
-      "claimed": false,
-      "space": {
-        "rate": null,
-        "unit": "event",
-        "amenities": [
-          "event-center",
-          "art-gallery",
-          "food-hall",
-          "co-working",
-          "radio-studio",
-          "aquarium",
-          "gaming",
-          "fitness"
-        ]
-      },
-      "terms": {
-        "notes": "Premier partner location — brand collab with Stonecrest Resorts. Immersive 3D walkthrough coming from the Saturday shoot.",
-        "links": {
-          "web": "https://www.privistonecrest.com"
-        }
-      }
+    "Web"
+   ],
+   "headline": "Creative director · the builder of this site",
+   "area": "Connecticut · Georgia · travels",
+   "verified": "performer",
+   "badgeColor": "#8b5cf6",
+   "href": "profile-mccluster.html",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20via%20the%20directory&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
+   "blurb": "Sony A7R V kit, cinematic edits, and sites like the one you're on. Photography, videography, and web builds from $10k.",
+   "terms": {
+    "feature": 1000,
+    "floor": 50,
+    "notes": "The Artist Offer: $1,000 for a feature — and the thousand comes with 50% of the songwriting, 50% of the publishing, 50% of everything. Signed in the Market before the song drops."
+   },
+   "profile": "profile-mccluster.html",
+   "music": {
+    "src": "assets/audio/antisocial.mp3",
+    "title": "Antisocial"
+   },
+   "square": "https://square.link/u/MBVeuzoo",
+   "tracks": [
+    "antisocial",
+    "vaunt",
+    "who-did-the-shoot",
+    "got-wifi",
+    "dealer-plates",
+    "dealer-plates-b",
+    "money-or-the-power"
+   ],
+   "claimed": true
+  },
+  {
+   "id": "equity-uprise",
+   "ticker": "EU",
+   "name": "Equity Uprise",
+   "roles": [
+    "Programs"
+   ],
+   "entity": "program",
+   "headline": "The civic fellowship — equity, then we rise",
+   "area": "Bridgeport, CT · on the public record",
+   "verified": "nonprofit",
+   "badgeColor": "#2f9e62",
+   "href": "equity-uprise.html",
+   "tracks": [
+    "environmental-injustice"
+   ],
+   "claimed": true,
+   "book": "mailto:matthew@mccluster.org?subject=Equity%20Uprise%20%E2%80%94%20get%20involved"
+  },
+  {
+   "id": "decibel-studios",
+   "ticker": "DCB",
+   "name": "Decibel Studios",
+   "roles": [
+    "Studios"
+   ],
+   "headline": "Zakir's boutique recording room",
+   "area": "Green Industrial Way · Atlanta, GA",
+   "verified": "studio",
+   "badgeColor": "#f8b40a",
+   "href": "profile-zakir.html",
+   "book": "mailto:Prodbyzakir@gmail.com?subject=Session%20%E2%80%94%20Decibel%20Studios%20via%20the%20M%20Network&body=What%20I%27m%20working%20on%3A%0ADate%20%2F%20time%3A%0AHours%20needed%3A%0A",
+   "blurb": "A boutique recording studio dedicated to bringing artists' musical vision to life. Zakir behind the board — writer, BMI, the six-string on the Vaunt EP.",
+   "profile": "profile-zakir.html",
+   "photo": "assets/img/space-decibel.jpg",
+   "space": {
+    "rate": 45,
+    "unit": "hour",
+    "amenities": [
+     "engineer",
+     "iso-booth",
+     "mic-locker",
+     "console",
+     "tuned-room",
+     "mix-master"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      0,
+      1,
+      2
+     ]
     }
-  ]
+   },
+   "music": {
+    "src": "assets/audio/vaunt.mp3",
+    "title": "Vaunt (Acoustic) — Zakir on the six-string"
+   },
+   "claimed": false
+  },
+  {
+   "id": "k-cohiba",
+   "ticker": "KCHB",
+   "name": "K-Cohiba",
+   "roles": [
+    "Music"
+   ],
+   "headline": "Boston artist — the catalogue lands as he claims it",
+   "area": "Boston, MA · onboarding — final rates being confirmed with the team",
+   "verified": "pending",
+   "badgeColor": "#4a7fb5",
+   "href": "claim.html?who=k-cohiba",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20K-Cohiba%27s%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "Boston artist joining the network. His songs load through his own desk, his shows book through the team, and his ticker trades on the market.",
+   "photo": "assets/frames/uprise_0080.jpg",
+   "space": {
+    "rate": 95,
+    "unit": "hour",
+    "amenities": [
+     "house-audio",
+     "lighting-grid",
+     "green-room",
+     "capacity-rated"
+    ]
+   },
+   "claimed": false
+  },
+  {
+   "id": "revent-space",
+   "ticker": "RVNT",
+   "name": "Revent Space",
+   "roles": [
+    "Stages"
+   ],
+   "headline": "Dorchester's community event room — furnished, lit, ready by 10am",
+   "area": "413 Neponset Ave · Dorchester, Boston, MA",
+   "verified": "pending",
+   "badgeColor": "#45b6ff",
+   "href": "space-revent.html",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Space%20via%20M%20Network&body=Type%20of%20event%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "A community-first event room in Dorchester: 32 seated at tables, up to 48 for a mixer, with the 65″ smart display, mic, speakers, and LED color lighting already in the room. Pop-ups, seminars, brunches, showers, open mics — bookable 10am to midnight.",
+   "photo": "assets/img/space-revent-space.jpg",
+   "space": {
+    "rate": 185,
+    "unit": "hour",
+    "amenities": [
+     "house-audio",
+     "lighting-grid",
+     "capacity-rated",
+     "house-screen",
+     "furnished"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      1,
+      2,
+      3
+     ]
+    }
+   },
+   "claimed": false
+  },
+  {
+   "id": "revent-lounge",
+   "name": "Revent Work Lounge & Photo Studio",
+   "roles": [
+    "Studios"
+   ],
+   "headline": "1,200 sq ft of natural light — shoots by day, sessions all week",
+   "area": "413 Neponset Ave · Dorchester, Boston, MA",
+   "verified": "pending",
+   "badgeColor": "#45b6ff",
+   "href": "space-revent.html#lounge",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Revent%20Work%20Lounge%20via%20M%20Network&body=Shoot%20or%20session%3A%0ADate%20%2F%20window%3A%0AHeadcount%3A%0A",
+   "blurb": "Revent's second room: 1,200 square feet of natural light built for photo sessions and focused work — with a 15-seat conference room, whiteboard, grass wall, 65″ smart display, Bluetooth speakers, LED bar uplighting, and WiFi.",
+   "photo": "assets/img/space-revent-lounge.jpg",
+   "space": {
+    "rate": 65,
+    "unit": "hour",
+    "amenities": [
+     "natural-light",
+     "client-lounge",
+     "house-screen",
+     "furnished",
+     "capacity-rated"
+    ]
+   },
+   "terms": {
+    "avail": {
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "slots": [
+      0,
+      1,
+      2
+     ]
+    }
+   },
+   "claimed": false
+  },
+  {
+   "id": "laire",
+   "ticker": "LRE",
+   "name": "Laire",
+   "roles": [
+    "Video",
+    "Photo"
+   ],
+   "headline": "Cameraman · M Network",
+   "area": "Onboarding — claiming this profile now",
+   "verified": "pending",
+   "badgeColor": "#8b5cf6",
+   "href": "onboard.html?role=provider",
+   "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
+   "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile.",
+   "claimed": false
+  },
+  {
+   "id": "mccluster-pullup",
+   "ticker": "PLUP",
+   "name": "The Pull-Up · McCluster mobile",
+   "roles": [
+    "Video",
+    "Photo"
+   ],
+   "headline": "The engineer comes to you — recording, shoot, edit, on site",
+   "area": "Books by zone · exact locations never published",
+   "verified": "performer",
+   "badgeColor": "#2fbf71",
+   "href": "hire.html",
+   "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
+   "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
+   "profile": "hire.html",
+   "claimed": false
+  },
+  {
+   "id": "hitman-benji",
+   "slug": "hitman-benji",
+   "name": "Hitman Benji",
+   "ticker": "BENJI",
+   "headline": "The masked operator · platform lore legend",
+   "blurb": "Never a face, always the work. Visuals, sound, and direction delivered masked. Two lines on the floor — the operator and the brand. Put him on a job; it goes on the record.",
+   "area": "Everywhere · masked",
+   "roles": [
+    "Video",
+    "Music",
+    "Web"
+   ],
+   "badgeColor": "#c1121f",
+   "profile": "profile-benji.html",
+   "href": "profile-benji.html",
+   "claimed": false,
+   "lore": true,
+   "terms": {
+    "floor": 50,
+    "feature": 500,
+    "notes": "Book the operator on the floor. Signed, masked, delivered — the desk runs this line until Benji claims it."
+   }
+  },
+  {
+   "id": "hitman-gear",
+   "slug": "hitman-gear",
+   "name": "Hitman Gear",
+   "ticker": "GEAR",
+   "headline": "Masked streetwear for operators",
+   "blurb": "Tactical black, crimson insignia, no traceable logos. The apparel line the whole gang wears — masks, vests, and the no-face hoodie. The storefront on the floor is open.",
+   "area": "Hitman Gear · the brand",
+   "roles": [
+    "Merch"
+   ],
+   "badgeColor": "#e5383b",
+   "profile": "profile-benji.html",
+   "href": "profile-benji.html",
+   "claimed": false,
+   "lore": true,
+   "terms": {
+    "floor": 45,
+    "notes": "The gear drop — masks from $45, vests, hoodies. Cop it on the floor."
+   }
+  },
+  {
+   "id": "rahndrx",
+   "slug": "rahndrx",
+   "name": "Rahndrx",
+   "ticker": "RAHN",
+   "headline": "Leader by Voice · CT artist, founder of BREDE",
+   "blurb": "\"It's way bigger than me.\" Connecticut artist and founder of BREDE — music made to move people to move. Be the difference you want to see in the world.",
+   "area": "Connecticut",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#7c3aed",
+   "profile": "profile-rahndrx.html",
+   "href": "profile-rahndrx.html",
+   "claimed": false,
+   "terms": {
+    "notes": "Unclaimed artist profile — Rahndrx claims it to go live and route his plays here.",
+    "links": {
+     "ig": "https://instagram.com/rahndrx",
+     "music": "https://linktr.ee/rahndrx",
+     "web": "https://linktr.ee/rahndrx"
+    }
+   },
+   "photo": "assets/img/rahndrx-hero.jpg",
+   "approved": true
+  },
+  {
+   "id": "ocho-gr8",
+   "slug": "ocho-gr8",
+   "name": "Ocho Gr8",
+   "ticker": "OCHO",
+   "headline": "The voice of Only Us · radio, studio, the whole sound",
+   "blurb": "Bridgeport artist and radio host behind Only Us Radio and Only Us Studios. UnitedMasters recording artist, sample man, connector. Equity Uprise approved Chaser — named by the City of Bridgeport on Equity Uprise Human Rights Day.",
+   "area": "Bridgeport, CT",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#2563eb",
+   "profile": "profile-ocho.html",
+   "href": "profile-ocho.html",
+   "photo": "assets/img/ocho-hero.jpg",
+   "claimed": false,
+   "approved": true,
+   "terms": {
+    "notes": "Unclaimed — Ocho claims it to run Only Us and the music floor. A gift.",
+    "links": {
+     "ig": "https://instagram.com/ocho_gr8",
+     "music": "https://unitedmasters.com/ocho-gr8"
+    }
+   }
+  },
+  {
+   "id": "only-us-radio",
+   "slug": "only-us-radio",
+   "name": "Only Us Radio",
+   "ticker": "OUSR",
+   "headline": "The frequency for the artists nobody else plays",
+   "blurb": "Ocho Gr8's station and show — spins, interviews, and a platform for the culture the algorithm skips. Bridgeport's own.",
+   "area": "Bridgeport, CT",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#3b82f6",
+   "profile": "profile-ocho.html",
+   "href": "profile-ocho.html",
+   "claimed": false,
+   "terms": {
+    "notes": "Only Us Radio — Ocho's business on the floor, unclaimed."
+   }
+  },
+  {
+   "id": "only-us-studios",
+   "slug": "only-us-studios",
+   "name": "Only Us Studios",
+   "ticker": "OUST",
+   "headline": "Where it gets cut — record, mix, shoot",
+   "blurb": "The room artists book to record, mix, and shoot. Ocho's space, bookable on Equity Uprise.",
+   "area": "Bridgeport, CT",
+   "roles": [
+    "Studios"
+   ],
+   "badgeColor": "#7dd3fc",
+   "profile": "profile-ocho.html",
+   "href": "profile-ocho.html",
+   "claimed": false,
+   "space": {
+    "rate": 45,
+    "unit": "hour",
+    "amenities": [
+     "recording",
+     "mixing",
+     "video"
+    ]
+   },
+   "terms": {
+    "notes": "Only Us Studios — Ocho's space, unclaimed."
+   },
+   "photo": "assets/img/space-only-us.jpg"
+  },
+  {
+   "id": "raheem",
+   "slug": "raheem",
+   "name": "Raheem",
+   "ticker": "RHEEM",
+   "headline": "Artist · on the record with the Uprise",
+   "blurb": "Collaborator on 'Upset' with McCluster and Rahndrx — the first record released free under Equity Uprise. His profile's waiting; claim it to lock the split.",
+   "area": "Connecticut",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#0ea5a4",
+   "profile": "page.html?who=raheem",
+   "href": "page.html?who=raheem",
+   "claimed": false,
+   "terms": {
+    "notes": "Unclaimed — Raheem claims it to accept his split on 'Upset'."
+   }
+  },
+  {
+   "id": "daniel-cano",
+   "slug": "daniel-cano",
+   "name": "Daniel Cano",
+   "ticker": "CANO",
+   "headline": "Digital creator, DJ & civic leader — half of Sena Daniel Cano",
+   "blurb": "Multi-hyphenate out of Atlanta & Orange County. Board comms chair, Equity Uprise fellow named in the Georgia Governor's Youth Innovation & Civic Leadership proclamation — and one half of the plant-based band Sena Daniel Cano (with Papa Sena), 20K monthly Spotify listeners. Book him for your next event.",
+   "area": "Atlanta · Orange County",
+   "roles": [
+    "Music",
+    "Programs"
+   ],
+   "badgeColor": "#16a34a",
+   "profile": "page.html?who=daniel-cano",
+   "href": "page.html?who=daniel-cano",
+   "claimed": false,
+   "civic": true,
+   "terms": {
+    "notes": "Unclaimed dual-type — Artist + Civic. Daniel claims it, then files his civic card to climb the ladder.",
+    "links": {
+     "ig": "https://instagram.com/kidcano",
+     "music": "https://linktr.ee/kidcano",
+     "web": "https://linktr.ee/kidcano"
+    }
+   }
+  },
+  {
+   "id": "sena-daniel-cano",
+   "slug": "sena-daniel-cano",
+   "name": "Sena Daniel Cano",
+   "ticker": "SENA",
+   "headline": "Your fav plant-based spice bois — Papa Sena × Kidcano",
+   "blurb": "The band: Papa Sena × Daniel Cano. 20,000 monthly Spotify listeners, on 25K playlists, 500K+ plays. Music videos, the whole run.",
+   "area": "Atlanta",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#22c55e",
+   "profile": "page.html?who=sena-daniel-cano",
+   "href": "page.html?who=sena-daniel-cano",
+   "claimed": false,
+   "terms": {
+    "notes": "The band's unclaimed profile — Daniel or Papa Sena claims it.",
+    "links": {
+     "ig": "https://instagram.com/senadanielcano",
+     "music": "https://linktr.ee/Senadanielcano"
+    }
+   }
+  },
+  {
+   "id": "shiloh-church",
+   "slug": "shiloh-church",
+   "name": "Shiloh Baptist Church",
+   "ticker": "SBC",
+   "headline": "A sanctuary & event hall for the community — Bridgeport",
+   "blurb": "Shiloh Baptist Church of Bridgeport. The sanctuary and hall are available to book for services, rehearsals, recordings, and community events — piano, screens, sound, seating.",
+   "area": "Bridgeport, CT",
+   "roles": [
+    "Stages"
+   ],
+   "badgeColor": "#6366f1",
+   "profile": "page.html?who=shiloh-church",
+   "href": "page.html?who=shiloh-church",
+   "claimed": false,
+   "space": {
+    "rate": 75,
+    "unit": "hour",
+    "amenities": [
+     "seating",
+     "piano",
+     "sound",
+     "screens",
+     "parking"
+    ]
+   },
+   "terms": {
+    "notes": "Unclaimed — the church claims it to manage bookings.",
+    "links": {
+     "web": "https://www.shilohchurchbpt.org"
+    }
+   },
+   "photo": "assets/img/space-shiloh.jpg"
+  },
+  {
+   "id": "coffee-cam",
+   "slug": "coffee-cam",
+   "name": "The Coffee Cam",
+   "ticker": "CAFE",
+   "headline": "A storefront café & creative space — book it for shoots, sessions & pop-ups",
+   "blurb": "The coffee shop from the shoots — a real storefront café and creative room. Book it by the hour for content shoots, acoustic sessions, interviews, and pop-up events. Rename/claim to run your own bookings.",
+   "area": "Bridgeport, CT",
+   "roles": [
+    "Stages"
+   ],
+   "badgeColor": "#a16207",
+   "profile": "page.html?who=coffee-cam",
+   "href": "page.html?who=coffee-cam",
+   "claimed": false,
+   "space": {
+    "rate": 60,
+    "unit": "hour",
+    "amenities": [
+     "counter",
+     "seating",
+     "storefront-light",
+     "wifi",
+     "coffee-bar"
+    ]
+   },
+   "terms": {
+    "notes": "Unclaimed café space — give me the real name/photos and I'll dress it fully."
+   },
+   "photo": "assets/img/space-coffee-cam.jpg"
+  },
+  {
+   "id": "orange-hair-braiding",
+   "slug": "orange-hair-braiding",
+   "name": "Orange Hair Braiding",
+   "ticker": "ORNG",
+   "headline": "Braiding salon — West Haven · book with Aminata",
+   "blurb": "Aminata's braiding salon in West Haven, CT — box braids, knotless, curls, the whole book. Real work, real chair. Call 203-931-7402 or book right here once she claims it.",
+   "area": "West Haven, CT",
+   "roles": [
+    "Photo"
+   ],
+   "badgeColor": "#ea580c",
+   "profile": "page.html?who=orange-hair-braiding",
+   "href": "page.html?who=orange-hair-braiding",
+   "claimed": false,
+   "terms": {
+    "notes": "Unclaimed salon — a landing page + bookings without paying for hosting. Aminata claims it to run it.",
+    "rate": 0,
+    "links": {
+     "ig": "https://instagram.com/orangehairbraiding"
+    }
+   }
+  },
+  {
+   "id": "privi-stonecrest",
+   "slug": "privi-stonecrest",
+   "name": "Priví Stonecrest",
+   "ticker": "PRIVI",
+   "headline": "The 143,000 sq-ft lifestyle destination — East Metro Atlanta's premier location",
+   "blurb": "Vaughn & Cassandra Irons' transformation of Stonecrest Mall's former Sears into Atlanta's east-side hotspot: SeaQuest, the Priví Art Gallery, Event Center, Exposure Hub co-working, 101 TKO Radio, Picasso's Splat Room, axe throwing, golf sims, escape rooms, The Lion's Cage MMA — with a 50,000 sq-ft chef-driven food hall on the way. A premier Equity Uprise partner location.",
+   "area": "Stonecrest, GA · East Metro Atlanta",
+   "roles": [
+    "Stages"
+   ],
+   "badgeColor": "#b45309",
+   "premier": true,
+   "profile": "page.html?who=privi-stonecrest",
+   "href": "page.html?who=privi-stonecrest",
+   "claimed": false,
+   "space": {
+    "rate": null,
+    "unit": "event",
+    "amenities": [
+     "event-center",
+     "art-gallery",
+     "food-hall",
+     "co-working",
+     "radio-studio",
+     "aquarium",
+     "gaming",
+     "fitness"
+    ]
+   },
+   "terms": {
+    "notes": "Premier partner location — brand collab with Stonecrest Resorts. Immersive 3D walkthrough coming from the Saturday shoot.",
+    "links": {
+     "web": "https://www.privistonecrest.com"
+    }
+   },
+   "photo": "assets/img/space-privi.jpg"
+  }
+ ]
 }
