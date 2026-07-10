@@ -249,13 +249,13 @@
     /* the distro: members upload tracks; fans back the artist directly.
        The bucket streams publicly; the row on the rack carries the ask. */
     tracksFresh: function () {
-      return anon("tracks?order=at.desc&select=id,owner,slug,title,path,price,at&limit=24");
+      return anon("rack?order=at.desc&select=id,owner,slug,title,path,price,at&limit=24");
     },
     tracksBySlug: function (slug) {
-      return anon("tracks?slug=eq." + encodeURIComponent(slug) + "&order=at.desc&select=id,slug,title,path,price,at&limit=40");
+      return anon("rack?slug=eq." + encodeURIComponent(slug) + "&order=at.desc&select=id,slug,title,path,price,at&limit=40");
     },
     myTracks: function () {
-      return authed("tracks?owner=eq." + S.uid() + "&order=at.desc&select=*");
+      return authed("rack?owner=eq." + S.uid() + "&order=at.desc&select=*");
     },
     trackUrl: function (path) {
       return S.url + "/storage/v1/object/public/tracks/" + path;
@@ -273,14 +273,14 @@
             body: file,
           }).then(function (r) {
             if (!r.ok) throw new Error("vault " + r.status);
-            return authed("tracks", { method: "POST", prefer: "return=representation",
+            return authed("rack", { method: "POST", prefer: "return=representation",
               body: { slug: mine.slug, title: title, path: path, price: +price || 0, kind: file.type || "" } });
           }).then(function (rows) { return rows && rows[0]; });
         });
       });
     },
     trackKill: function (id) {
-      return authed("tracks?id=eq." + id, { method: "DELETE", prefer: "return=representation" });
+      return authed("rack?id=eq." + id, { method: "DELETE", prefer: "return=representation" });
     },
 
     /* mission proofs: the file goes to the private vault (only the owner

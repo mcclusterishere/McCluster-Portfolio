@@ -20,7 +20,7 @@ create policy "artists pull their own tracks"
   on storage.objects for delete to authenticated
   using (bucket_id = 'tracks' and (storage.foldername(name))[1] = auth.uid()::text);
 
-create table if not exists public.tracks (
+create table if not exists public.rack (
   id    uuid primary key default gen_random_uuid(),
   at    timestamptz default now(),
   owner uuid not null default auth.uid(),
@@ -30,22 +30,22 @@ create table if not exists public.tracks (
   kind  text default '',
   price numeric(10,2) not null default 0 check (price >= 0)
 );
-alter table public.tracks enable row level security;
+alter table public.rack enable row level security;
 
-drop policy if exists "the rack is public" on public.tracks;
-create policy "the rack is public" on public.tracks for select using (true);
+drop policy if exists "the rack is public" on public.rack;
+create policy "the rack is public" on public.rack for select using (true);
 
-drop policy if exists "artists rack their own records" on public.tracks;
+drop policy if exists "artists rack their own records" on public.rack;
 create policy "artists rack their own records"
-  on public.tracks for insert to authenticated
+  on public.rack for insert to authenticated
   with check (owner = auth.uid()
-    and exists (select 1 from providers p where p.owner = auth.uid() and p.slug = tracks.slug));
+    and exists (select 1 from providers p where p.owner = auth.uid() and p.slug = rack.slug));
 
-drop policy if exists "artists pull their own records" on public.tracks;
+drop policy if exists "artists pull their own records" on public.rack;
 create policy "artists pull their own records"
-  on public.tracks for delete
+  on public.rack for delete
   using (owner = auth.uid() or auth.jwt() ->> 'email' = 'matthew@mccluster.org');
 
 -- self-check: expect 1 · 1
 select count(*) as distro_vault from storage.buckets where id = 'tracks';
-select count(*) as distro_rack from information_schema.tables where table_name = 'tracks';
+select count(*) as distro_rack from information_schema.tables where table_name = 'rack';

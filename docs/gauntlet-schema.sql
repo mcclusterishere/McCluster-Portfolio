@@ -28,7 +28,7 @@ begin
       ('card_live',   0.50, exists(select 1 from providers where owner = auth.uid() and coalesce(headline, '') <> '')),
       ('signed',      0.25, exists(select 1 from agreements where owner = auth.uid())),
       ('first_post',  0.50, exists(select 1 from posts where owner = auth.uid())),
-      ('first_track', 0.75, exists(select 1 from tracks where owner = auth.uid())),
+      ('first_track', 0.75, exists(select 1 from rack where owner = auth.uid())),
       ('first_deal',  0.75, exists(select 1 from deals where from_owner = auth.uid())),
       ('civic_card',  0.50, exists(select 1 from civic_profiles where owner = auth.uid())),
       ('push_on',     0.25, exists(select 1 from push_subs where owner = auth.uid())),
@@ -75,7 +75,7 @@ begin
                                                                      nullif(upper(coalesce(me.slug, '')), ''))),
     'followers', (select count(*) from follows where creator_slug = coalesce(me.slug, '')),
     'posts', (select count(*) from posts where owner = auth.uid()),
-    'tracks', (select count(*) from tracks where owner = auth.uid()),
+    'tracks', (select count(*) from rack where owner = auth.uid()),
     'requests', (select count(*) from booking_requests br
                   join providers p on p.id = br.provider_id where p.owner = auth.uid()),
     'deals_open', (select count(*) from deals d
