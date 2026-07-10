@@ -251,6 +251,9 @@
     tracksFresh: function () {
       return anon("tracks?order=at.desc&select=id,owner,slug,title,path,price,at&limit=24");
     },
+    tracksBySlug: function (slug) {
+      return anon("tracks?slug=eq." + encodeURIComponent(slug) + "&order=at.desc&select=id,slug,title,path,price,at&limit=40");
+    },
     myTracks: function () {
       return authed("tracks?owner=eq." + S.uid() + "&order=at.desc&select=*");
     },

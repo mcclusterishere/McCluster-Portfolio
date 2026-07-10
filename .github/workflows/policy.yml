@@ -1,0 +1,41 @@
+name: Policy sweep — the moving docket
+
+# The automated policy engine's clock: twice a week the watch-list
+# states' freshest bills land in data/policy.json, and the git
+# history of that file becomes the archive. The button
+# (workflow_dispatch) runs it on demand. Needs the OPENSTATES_KEY
+# repository secret (free key: openstates.org/accounts/signup) —
+# without it the job exits quietly and the board stays dark.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 6 * * 1,4" # Mondays and Thursdays, 6:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: production
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Pull the moving docket
+        env:
+          OPENSTATES_KEY: ${{ secrets.OPENSTATES_KEY }}
+        run: node tools/fetch-policy.mjs
+
+      - name: Commit the docket
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/policy.json
+          git diff --cached --quiet || git commit -m "Policy sweep: the moving docket"
+          git push

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Civic HQ · Equity Uprise</title>
+  <meta name="description" content="Equity Uprise's Civic HQ: fan accounts and policy accounts, the moving docket of live state bills, civic missions, and a younger-voter activation engine — run in the open.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .cv { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 9rem; max-width: 46rem; margin: 0 auto; }
+    .cv h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.6rem, 11vw, 4.4rem); }
+    .cv__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; max-width: 54ch; }
+    .cv__sub b { color: var(--cream); }
+    .cv__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6);
+      padding: 1.2rem 1.15rem 1.3rem; margin-top: 1.3rem; }
+    .cv__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .cv__k { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: #2f9e62; font-weight: 800; }
+    .cv__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+    .cv__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.85rem; text-align: center; }
+    .cv__stat b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; color: #2f9e62; }
+    .cv__stat small { color: var(--cream-dim); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .cv__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.6rem 0; }
+    .cv__chip { border: 1px solid rgba(244,239,230,0.3); border-radius: 100px; background: none; color: var(--cream-dim);
+      font: inherit; font-size: 0.74rem; padding: 0.5em 1.1em; cursor: pointer; }
+    .cv__chip.is-on { border-color: #2f9e62; color: #fff; background: rgba(47,158,98,0.25); }
+    .cv__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.25); border-radius: 10px;
+      color: var(--cream); font: inherit; font-size: max(16px, 0.95rem); padding: 0.75em 1em; margin: 0 0 0.55rem; }
+    .cv__msg { color: #2f9e62; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
+    .cv__bill { border: 1px solid rgba(244,239,230,0.12); border-radius: 12px; padding: 0.8rem 0.95rem; margin-top: 0.6rem; }
+    .cv__bill b { font-size: 0.88rem; }
+    .cv__bill p { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.5; margin-top: 0.3rem; }
+    .cv__st { display: inline-block; font-size: 0.56rem; letter-spacing: 0.16em; border: 1px solid rgba(47,158,98,0.5);
+      color: #2f9e62; border-radius: 100px; padding: 0.3em 0.8em; margin-right: 0.4em; }
+    .cv__mi { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.13); border-radius: 12px;
+      padding: 0.75rem 0.9rem; margin-top: 0.5rem; text-decoration: none; color: var(--cream); }
+    .cv__mi small { display: block; color: var(--cream-dim); font-size: 0.68rem; margin-top: 0.15rem; }
+    .cv__mi .pts { flex: none; color: #2f9e62; font-weight: 800; font-size: 0.7rem; }
+    .cv__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="equity-uprise.html">Equity Uprise</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="cv">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · the civic wing</p>
+    <h1>The Civic<br>HQ.</h1>
+    <p class="cv__sub"><b>Two ways to ride:</b> a <b>fan account</b> is here for the music and the movement — a
+      <b>policy account</b> is here to work: state law, federal law, trade policy, and the local organizing that
+      actually moves them. This is younger-voter activation run like everything else on this floor — as a game
+      with real stakes and public books.</p>
+
+    <div class="cv__grid" id="cvPulse"><div class="cv__stat"><b>…</b><small>reading the movement</small></div></div>
+
+    <section class="cv__card">
+      <p class="cv__k">Your civic card</p>
+      <h2>Pick your side of the work.</h2>
+      <div id="cvCardHost"><p class="cv__sub" style="margin-top:0.2rem">Checking your card…</p></div>
+    </section>
+
+    <section class="cv__card">
+      <p class="cv__k">Civic missions — the activation game</p>
+      <h2>Run the civic arc.</h2>
+      <div id="cvMissions"></div>
+      <p class="cv__sub" style="font-size:0.8rem;margin-top:0.7rem">Civic points ride the same engine as everything
+        else — the <b>Please Set Me Free</b> ride mints them, City Hall in M City unlocks on them, and the desk sees
+        who's really carrying the work.</p>
+    </section>
+
+    <section class="cv__card">
+      <p class="cv__k">The moving docket — the policy engine</p>
+      <h2>What's moving, right now.</h2>
+      <input class="cv__in" id="cvQ" type="search" placeholder="Search the docket — housing, police, tax, schools…">
+      <div id="cvBills"><p class="cv__sub" style="margin-top:0.2rem">Opening the docket…</p></div>
+    </section>
+
+    <p class="cv__fine">Your civic card is self-reported and <b>private by design</b>: party, registration, district,
+      and voting history are visible only to you and the desk — never on a public profile, never sold, never shared.
+      The public numbers above are counts only. The docket is pulled from official legislative records
+      (openstates.org) on a fixed schedule; its git history is the archive.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var S = window.MCC_SUPA;
+
+      /* ---- the pulse: aggregates only ---- */
+      fetch(S.url + "/rest/v1/rpc/civic_pulse", { method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key }, body: "{}" })
+        .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          var g = $("cvPulse");
+          function stat(n, l) { return '<div class="cv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+          if (!j) { g.innerHTML = stat("—", "arms after one paste: docs/civic-schema.sql"); return; }
+          g.innerHTML = stat(+j.members || 0, "civic cards filed") +
+            stat(+j.policy_accounts || 0, "policy accounts") +
+            stat(+j.registered || 0, "registered to vote") +
+            stat(+j.states || 0, "states in the room");
+        }).catch(function () {});
+
+      /* ---- the civic card: self-reported, private, one save ---- */
+      var CARD = { mode: "fan", focus: [] };
+      function cardForm() {
+        var host = $("cvCardHost");
+        host.innerHTML =
+          '<div class="cv__chips" id="cvMode">' +
+          '<button class="cv__chip' + (CARD.mode === "fan" ? " is-on" : "") + '" data-m="fan" type="button">Fan account — the culture</button>' +
+          '<button class="cv__chip' + (CARD.mode === "policy" ? " is-on" : "") + '" data-m="policy" type="button">Policy account — the work</button></div>' +
+          '<div class="cv__chips" id="cvFocus">' + [["state", "State policy"], ["federal", "Federal policy"], ["trade", "Trade & labor"], ["local", "Local organizing"]].map(function (f) {
+            return '<button class="cv__chip' + (CARD.focus.indexOf(f[0]) !== -1 ? " is-on" : "") + '" data-f="' + f[0] + '" type="button">' + f[1] + "</button>";
+          }).join("") + "</div>" +
+          '<input class="cv__in" id="cvState" type="text" maxlength="2" placeholder="Your state — like GA" autocapitalize="characters" value="' + esc(CARD.state || "") + '">' +
+          '<input class="cv__in" id="cvDistrict" type="text" maxlength="40" placeholder="Your district (optional — like GA-05 or your county)" value="' + esc(CARD.district || "") + '">' +
+          '<select class="cv__in" id="cvReg"><option value="">Registered to vote? (optional)</option>' +
+          ["yes", "no", "unsure"].map(function (v) { return '<option value="' + v + '"' + (CARD.registered === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
+          '<select class="cv__in" id="cvVoted"><option value="">Last time you voted? (optional)</option>' +
+          ["2026", "2024", "2022", "2020", "before 2020", "never yet"].map(function (v) { return '<option value="' + v + '"' + (CARD.last_voted === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
+          '<select class="cv__in" id="cvParty"><option value="">Party status? (optional — stays private)</option>' +
+          ["Democrat", "Republican", "Independent", "Other", "None", "keep private"].map(function (v) { return '<option value="' + v + '"' + (CARD.party === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
+          '<button class="btn btn--ruby" id="cvSave" type="button" style="width:100%;justify-content:center">Save my civic card</button>' +
+          '<p class="cv__msg" id="cvMsg"></p>' +
+          '<p class="cv__sub" style="font-size:0.74rem;margin-top:0.4rem">Only you and the desk ever see this card. The public sees counts.</p>';
+        host.querySelector("#cvMode").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-m]"); if (!b) return;
+          CARD.mode = b.getAttribute("data-m");
+          host.querySelectorAll("[data-m]").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+        });
+        host.querySelector("#cvFocus").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-f]"); if (!b) return;
+          var f = b.getAttribute("data-f"), i = CARD.focus.indexOf(f);
+          if (i === -1) CARD.focus.push(f); else CARD.focus.splice(i, 1);
+          b.classList.toggle("is-on", i === -1);
+        });
+        $("cvSave").addEventListener("click", function () {
+          var body = { mode: CARD.mode, focus: CARD.focus,
+            state: ($("cvState").value || "").trim().toUpperCase(),
+            district: ($("cvDistrict").value || "").trim(),
+            registered: $("cvReg").value, last_voted: $("cvVoted").value,
+            party: $("cvParty").value, updated_at: new Date().toISOString() };
+          $("cvMsg").textContent = "Filing the card…";
+          S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/civic_profiles?on_conflict=owner", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t,
+                Prefer: "resolution=merge-duplicates" },
+              body: JSON.stringify(body),
+            });
+          }).then(function (r) {
+            $("cvMsg").textContent = r.ok || r.status === 409 ? "On the record — the movement counts you now." :
+              "The room isn't armed yet — one paste: docs/civic-schema.sql.";
+            if (r.ok) track("civic_card_saved", { mode: CARD.mode });
+          }).catch(function () { $("cvMsg").textContent = "It didn't take — retap."; });
+        });
+      }
+      if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/civic_profiles?owner=eq." + S.uid() + "&select=*", {
+            headers: { apikey: S.key, Authorization: "Bearer " + t } });
+        }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+          if (rows && rows[0]) {
+            CARD = rows[0];
+            CARD.focus = CARD.focus || [];
+          }
+          cardForm();
+        }).catch(cardForm);
+      } else {
+        $("cvCardHost").innerHTML = '<p class="cv__sub" style="margin-top:0.2rem">The card files under your account — open one first.</p><div id="cvDoor" style="margin-top:0.8rem"></div>';
+        if (window.MCC_DOOR) window.MCC_DOOR.mount($("cvDoor"), { ticker: true, context: "civic", onDone: function () { location.reload(); } });
+      }
+
+      /* ---- civic missions: the activation game, riding live engines ---- */
+      (function missions() {
+        var cp = 0;
+        try { cp = (JSON.parse(localStorage.getItem("mcc_psmf_game")) || {}).cp || 0; } catch (e) {}
+        var M = [
+          ["Ride the testimony", "song-please-set-me-free.html", "Please Set Me Free — every bar is a case file. Mints civic points.", cp >= 10],
+          ["Enter the evidence room", "docket-516.html", "Docket 516 — the monopoles, the money, the record.", false],
+          ["Register to vote — for real", "https://vote.gov", "Five minutes, official site, every state. The realest mission on the board.", false],
+          ["Take the oath", "fellowship.html", "The Policy Fellowship — from witness to advocate.", false],
+          ["Unlock City Hall", "mcity.html", "Ten civic points open the political district in M City. The Docket badge lives there.", cp >= 10],
+        ];
+        $("cvMissions").innerHTML = M.map(function (m) {
+          return '<a class="cv__mi" href="' + m[1] + '"' + (/^https:/.test(m[1]) ? ' target="_blank" rel="noopener"' : "") + ">" +
+            "<span>" + (m[3] ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + m[0] + "</b><small>" + m[2] + "</small></span>" +
+            '<span class="pts">' + (m[3] ? "done" : "go →") + "</span></a>";
+        }).join("") +
+          '<p class="cv__sub" style="font-size:0.8rem;margin-top:0.6rem">Civic points banked: <b style="color:#2f9e62">' + cp + "</b></p>";
+      })();
+
+      /* ---- the moving docket ---- */
+      var BILLS = [];
+      function paintBills() {
+        var q = ($("cvQ").value || "").toLowerCase();
+        var host = $("cvBills");
+        var rows = BILLS.filter(function (b) {
+          return !q || (b.title + " " + b.state + " " + b.bill + " " + (b.subjects || []).join(" ")).toLowerCase().indexOf(q) !== -1;
+        });
+        if (!rows.length) {
+          host.innerHTML = '<p class="cv__sub" style="margin-top:0.2rem">' +
+            (BILLS.length ? "Nothing on the docket matches that." :
+              "The docket arms when the policy sweep runs — official records, on a schedule, never typed by hand.") + "</p>";
+          return;
+        }
+        host.innerHTML = rows.slice(0, 30).map(function (b) {
+          return '<div class="cv__bill"><span class="cv__st">' + esc(b.state) + "</span><b>" + esc(b.bill) + " · " + esc(b.title) + "</b>" +
+            "<p>" + esc(b.action || "") + (b.action_date ? " · " + esc(b.action_date) : "") +
+            (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener" style="color:#2f9e62">the record ↗</a>' : "") + "</p></div>";
+        }).join("");
+      }
+      fetch("data/policy.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (j) {
+        BILLS = j.bills || [];
+        paintBills();
+      }).catch(paintBills);
+      $("cvQ").addEventListener("input", paintBills);
+
+      track("civic_view", {});
+    })();
+  </script>
+</body>
+</html>

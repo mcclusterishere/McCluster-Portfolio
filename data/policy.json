@@ -1,0 +1,6 @@
+{
+  "updated": null,
+  "note": "The moving docket arms when the policy sweep runs with an OPENSTATES_KEY secret — dark until real, never fake.",
+  "states": ["GA", "CT", "NY", "CA", "TX", "FL"],
+  "bills": []
+}

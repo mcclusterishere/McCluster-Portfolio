@@ -160,6 +160,11 @@
 
     <div class="pg__links" id="pgLinks"></div>
 
+    <section class="pg__sec pg__hidden" id="pgAboutSec">
+      <p class="pg__k">The profile</p>
+      <div id="pgAbout"></div>
+    </section>
+
     <section class="pg__sec" id="pgFeedSec">
       <p class="pg__k">The feed</p>
       <div class="pg__compose pg__hidden" id="pgCompose">
@@ -171,7 +176,7 @@
     </section>
 
     <section class="pg__sec pg__hidden" id="pgMusicSec">
-      <p class="pg__k">The music</p>
+      <p class="pg__k">Discography</p>
       <div class="pg__tracks" id="pgTracks"></div>
     </section>
 
@@ -256,7 +261,10 @@
         var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker(P.ticker, P.name) : (P.ticker || "");
         document.title = P.name + " · The Page · M Network";
         $("pgName").textContent = P.name;
-        $("pgTick").textContent = "$" + tick + (P.roles && P.roles.length ? " · " + P.roles.join(" · ") : "");
+        $("pgTick").innerHTML = "$" + esc(tick) +
+          (P.id_verified === true || P.charges_enabled === true
+            ? ' <span style="color:#2fbf71;font-size:0.8em">✓ ID-Verified</span>' : "") +
+          esc(P.roles && P.roles.length ? " · " + P.roles.join(" · ") : "");
         $("pgHeadline").textContent = P.headline || "";
         var links = (PAGE.links || []).filter(function (l) { return l && l.href; });
         if (!links.length && P.href) links = [{ label: "The site", href: P.href }];
@@ -338,25 +346,54 @@
         });
       }
 
-      /* ---- the music shelf: heat rides along ---- */
+      /* ---- the discography: their OWN uploads stream first (the
+         Distro rack), the seed catalogue rides after, heat along ---- */
       function paintMusic() {
-        var tr = P.tracks || [];
-        if (!tr.length) return;
-        $("pgMusicSec").classList.remove("pg__hidden");
-        window.MCC_HEAT.counts().then(function (n) {
-          $("pgTracks").innerHTML = tr.map(function (t) {
-            var plays = n[window.MCC_HEAT.norm(t)] || 0;
-            var label = t.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
-            return '<a class="pg__track" href="app.html#music"><b>' + esc(label) + "</b>" +
-              (plays ? '<small class="fire">&#9835; ' + plays.toLocaleString() + " plays</small>" : "<small>&#9835;</small>") + "</a>";
-          }).join("");
-        });
+        var seed = P.tracks || [];
+        var slug = P.slug || P.id;
+        (window.MCC_NET.tracksBySlug ? window.MCC_NET.tracksBySlug(slug).catch(function () { return []; }) : Promise.resolve([]))
+          .then(function (ups) {
+            ups = ups || [];
+            if (!seed.length && !ups.length) return;
+            $("pgMusicSec").classList.remove("pg__hidden");
+            var html = ups.map(function (t) {
+              return '<div style="margin:0.5rem 0"><p style="margin:0 0 0.25rem;font-size:0.85rem"><b>' + esc(t.title) + "</b>" +
+                (+t.price ? ' <small style="opacity:0.7">back it — ' + (+t.price).toFixed(0) + " E⤴︎</small>" : "") + "</p>" +
+                '<audio controls preload="none" style="width:100%;height:34px" src="' + esc(window.MCC_NET.trackUrl(t.path)) + '"></audio></div>';
+            }).join("");
+            if (!seed.length) { $("pgTracks").innerHTML = html; return; }
+            window.MCC_HEAT.counts().then(function (n) {
+              $("pgTracks").innerHTML = html + seed.map(function (t) {
+                var plays = n[window.MCC_HEAT.norm(t)] || 0;
+                var label = t.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+                return '<a class="pg__track" href="app.html#music"><b>' + esc(label) + "</b>" +
+                  (plays ? '<small class="fire">&#9835; ' + plays.toLocaleString() + " plays</small>" : "<small>&#9835;</small>") + "</a>";
+              }).join("");
+            });
+          });
+      }
+
+      /* ---- the profile: what they do, where, and the receipts ---- */
+      function paintAbout() {
+        var bits = [];
+        if (P.blurb) bits.push('<p style="color:var(--cream-dim);line-height:1.65;font-size:0.9rem;margin:0 0 0.6rem">' + esc(P.blurb) + "</p>");
+        var chips = [];
+        (P.roles || []).forEach(function (r) { chips.push(r); });
+        if (P.area) chips.push("📍 " + P.area);
+        if (P.terms && P.terms.rate) chips.push("from " + (+P.terms.rate).toFixed(0) + " E⤴︎");
+        if (chips.length) bits.push('<div style="display:flex;flex-wrap:wrap;gap:0.4rem">' + chips.map(function (c) {
+          return '<span style="border:1px solid rgba(244,239,230,0.25);border-radius:100px;padding:0.35em 0.95em;font-size:0.72rem;color:var(--cream-dim)">' + esc(c) + "</span>";
+        }).join("") + "</div>");
+        if (!bits.length) return;
+        $("pgAboutSec").classList.remove("pg__hidden");
+        $("pgAbout").innerHTML = bits.join("");
       }
 
       function paintDoors() {
         var slug = P.slug || P.id;
         $("pgDoors").innerHTML =
           '<a class="btn btn--ruby" href="market.html?to=' + encodeURIComponent(slug) + '#pay">Pay / book</a>' +
+          '<a class="btn btn--ghost" href="market.html?with=' + encodeURIComponent(slug) + '&kind=service_booking#build">Send a deal</a>' +
           '<a class="btn btn--ghost" href="market.html#floor">$' + esc(window.MCC_STOCK.ticker(P.ticker, P.name)) + " on the floor</a>" +
           (P.href ? '<a class="btn btn--ghost" href="' + esc(P.href) + '">The site</a>' : "");
         if (OWNER) {
@@ -487,7 +524,7 @@
         P = floor.providers.filter(function (x) { return (x.slug || x.id) === WHO; })[0];
         if (!P) { $("pgName").textContent = "No page here yet"; $("pgFeed").innerHTML = '<p class="pg__note">This slug isn’t on the floor. <a href="onboard.html">Get on the platform &#8594;</a></p>'; return; }
         PAGE = P.page || {};
-        vibe(); paintHead(); paintMusic(); paintDoors(); paintFeed();
+        vibe(); paintHead(); paintAbout(); paintMusic(); paintDoors(); paintFeed();
         // the owner unlocks the editor + composer
         if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
           window.MCC_NET.myListing().then(function (mine) {
