@@ -74,7 +74,7 @@ const T = {
   nitro: { mul: 1.65, ms: 600, cd: 2400 },
   turret: { rate: 6, dmg: 30, speed: 700, range: 430 },
   patrol: { route: 172, chase: 315, chaseW: 8, chaseCap: 345, hp: 90, dmg: 16, bumpCd: 500,
-    cone: 280, half: 0.46, fillMs: 700, coolMs: 1400, loseMs: 3500, converge: 480 },
+    cone: 360, half: 0.46, near: 95, fillMs: 450, coolMs: 2600, loseMs: 3500, converge: 480 },
   van: { hp: 320, chase: 265 },
   contract: { base: 120, hotR: 420, hotPay: 30, per: 3 },
   smoke: { r: 95, ms: 4200 },
@@ -442,7 +442,8 @@ function update(dt, cmds) {
     // can the cone see the whip?
     const coneLen = T.patrol.cone * (shift >= 4 ? 1.15 : 1) * (P.carrying ? 1.12 : 1);
     let sees = false;
-    if (dP < coneLen && Math.abs(angTo(f.h, Math.atan2(P.y - f.y, P.x - f.x))) < T.patrol.half) {
+    if (dP < T.patrol.near) sees = canSee(f.x, f.y, P.x, P.y);   // nobody parks on their bumper unseen
+    else if (dP < coneLen && Math.abs(angTo(f.h, Math.atan2(P.y - f.y, P.x - f.x))) < T.patrol.half) {
       sees = canSee(f.x, f.y, P.x, P.y);
     }
     if (sees) { f.sus = Math.min(1, f.sus + dt / T.patrol.fillMs); f.lastSeen = tNow; }

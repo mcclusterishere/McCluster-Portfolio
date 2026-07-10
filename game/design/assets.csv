@@ -1,11 +1,13 @@
 id,role,type,description,size/ratio,style line ref,source
-runner_top,player sprite rotated by heading,sprite,the cream-and-gold street runner top-down,1:1 1k -> 128px,STYLE FORMULA v1,generate
-rusher_top,rival crew melee enemy sprite,sprite,maroon-jacket rival crew rusher top-down,1:1 1k -> 128px,STYLE FORMULA v1,generate
-heavy_top,shielded heavy enemy sprite,sprite,graphite-armored heavy with riot shield top-down,1:1 1k -> 144px,STYLE FORMULA v1,generate
-sedan_cover,cover prop blocks movement and shots,sprite,parked dark slate sedan top-down,1:1 1k -> 220px,STYLE FORMULA v1,generate
-crate_prop,breakable crate drops pickups,sprite,weathered wooden street crate top-down,1:1 1k -> 96px,STYLE FORMULA v1,generate
-package_gold,delivery package pickup,sprite,gold-wrapped package with ruby ribbon top-down,1:1 1k -> 84px,STYLE FORMULA v1,generate
+whip,player car rotated by heading,sprite,cream-and-gold street coupe top-down,1:1 1k -> 256px,STYLE FORMULA v1,generate
+patrol,patrol crew car with headlight cone,sprite,maroon muscle car graphite stripes top-down,1:1 1k -> 256px,STYLE FORMULA v1,generate
+van,armored chaser boss front-immune,sprite,graphite security van roof lights top-down,1:1 1k -> 288px,STYLE FORMULA v1,generate
+sedan_cover,parked cover prop blocks movement and shots,sprite,parked dark slate sedan top-down,1:1 1k -> 512px,STYLE FORMULA v1,generate
+crate_prop,street furniture,sprite,weathered wooden street crate top-down,1:1 1k -> 128px,STYLE FORMULA v1,generate
+package_gold,contract package pickup,sprite,gold-wrapped package with ruby ribbon top-down,1:1 1k -> 128px,STYLE FORMULA v1,generate
 asphalt_tile,ground tiling texture,tile,cracked wet night asphalt faded gold paint,1:1 1k -> 256px,STYLE FORMULA v1,generate
+buildings,LOS blockers drawn procedurally in formula palette,procedural,charcoal slabs with gold hairline,code,STYLE FORMULA v1,code
+cones_fx,headlight vision cones + smoke + beacons + skids,procedural,gradient light FX in formula colors,code,STYLE FORMULA v1,code
 key_art,deploy thumbnail / OG image,background,top-down night street standoff key art,16:9 1k,STYLE FORMULA v1,generate
 app_icon,deploy favicon / catalog icon,ui,charcoal badge with gold upward arrow,1:1 1k,STYLE FORMULA v1,generate
-audio,none in v1 - ships silent by scope decision,audio,,,,absent
+audio,none in v2 - ships silent by scope decision,audio,,,,absent
