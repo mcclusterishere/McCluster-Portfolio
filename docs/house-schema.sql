@@ -51,12 +51,18 @@ create policy "the admin works the claims"
   using (auth.jwt() ->> 'email' = 'matthew@mccluster.org');
 -- inserts happen ONLY through the function below
 
+-- HARDENED (audit #2): the shelf is EARNED-ONLY. You must have earned
+-- the price through your own real work (deals / bounties / service pay)
+-- — the beta bankroll, gauntlet awards, and credit transferred to you
+-- are granted color and don't buy a real service. This is the capture
+-- engine working: no funnelling free accounts' bankrolls into a shoot.
 create or replace function public.claim_house_offer(offer uuid)
 returns numeric
 language plpgsql security definer set search_path = public as $$
 declare
   o record;
   bal numeric;
+  earned numeric;
   taken int;
 begin
   if auth.uid() is null then
@@ -71,8 +77,14 @@ begin
     raise exception 'all claimed — watch the shelf for the next one';
   end if;
   select coalesce(sum(delta), 0) into bal from mtoken_ledger where owner = auth.uid();
+  select coalesce(sum(delta), 0) into earned from mtoken_ledger
+   where owner = auth.uid() and delta > 0 and is_earned_reason(reason);
+  if earned < o.price then
+    raise exception 'the shelf is earned-only — you have % of % E⤴ earned through real work (the beta bankroll and gifted credit don''t count here)',
+      earned, o.price;
+  end if;
   if bal < o.price then
-    raise exception 'you are % short — stack it: the claim run, deals, or credit sent your way', (o.price - bal);
+    raise exception 'you hold % — % short', bal, (o.price - bal);
   end if;
   -- the pay-the-house leg: unique(owner, ref, reason) makes double-claims impossible
   insert into mtoken_ledger (owner, delta, reason, ref)

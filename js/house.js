@@ -13,15 +13,21 @@
       headers: { apikey: S.key, Authorization: "Bearer " + S.key },
     }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
   }
-  function balance() {
+  /* the shelf is earned-only, so the card must show EARNED credit, not
+     total balance — that's what the server actually checks. house_wallet
+     returns {balance, earned} in one call. Null = signed out. */
+  function wallet() {
     if (!window.MCC_AUTH || !window.MCC_AUTH.user || !window.MCC_AUTH.user()) return Promise.resolve(null);
     return S.token().then(function (t) {
-      return fetch(S.url + "/rest/v1/mtoken_ledger?owner=eq." + S.uid() + "&select=delta", {
-        headers: { apikey: S.key, Authorization: "Bearer " + t },
+      return fetch(S.url + "/rest/v1/rpc/house_wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+        body: "{}",
       });
-    }).then(function (r) { return r.ok ? r.json() : []; })
-      .then(function (rows) {
-        return +(rows || []).reduce(function (a, x) { return a + (+x.delta || 0); }, 0).toFixed(2);
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j) return null;
+        return { balance: +(+j.balance || 0).toFixed(2), earned: +(+j.earned || 0).toFixed(2) };
       }).catch(function () { return null; });
   }
   function claim(id) {
@@ -42,8 +48,9 @@
   function shelf(host) {
     if (!host) return;
     host.innerHTML = '<p class="mp__note">Opening the shelf…</p>';
-    Promise.all([offers(), balance()]).then(function (r) {
-      var rows = r[0], bal = r[1];
+    Promise.all([offers(), wallet()]).then(function (r) {
+      var rows = r[0], w = r[1];
+      var earned = w ? w.earned : null;   // the shelf pays out of earned credit only
       if (!rows.length) {
         host.innerHTML = '<p class="mp__note">The shelf is bare right now — the house restocks. (Admin: one paste, docs/house-schema.sql.)</p>';
         return;
@@ -64,9 +71,9 @@
           '<div data-house-act></div><p class="mp__msg" data-house-msg></p>';
         var act = card.querySelector("[data-house-act]");
         var msg = card.querySelector("[data-house-msg]");
-        if (bal === null) {
+        if (earned === null) {
           act.innerHTML = '<a class="btn btn--ruby" style="width:100%;justify-content:center" href="market.html#yours">Open your account — start stacking</a>';
-        } else if (bal >= +o.price) {
+        } else if (earned >= +o.price) {
           var b = document.createElement("button");
           b.className = "btn btn--ruby"; b.type = "button";
           b.style.cssText = "width:100%;justify-content:center";
@@ -85,11 +92,11 @@
           });
           act.appendChild(b);
         } else {
-          var short = (+o.price - bal).toFixed(0);
+          var short = (+o.price - earned).toFixed(0);
           act.innerHTML =
-            '<p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">You hold ' + bal.toFixed(0) +
-            " E⤴︎ — " + short + " short.</b> Stack it for real: complete deals, run " +
-            '<a href="backend.html" style="color:#c99d45">the claim run</a>, complete deals, or get people to send you credit.</p>' +
+            '<p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">You\'ve earned ' + earned.toFixed(0) +
+            " E⤴︎ — " + short + " short.</b> The shelf is earned-only: stack it for real by completing deals, running " +
+            '<a href="backend.html" style="color:#c99d45">the claim run</a>, or landing service pay. (The beta bankroll doesn\'t count here.)</p>' +
             '<a class="btn btn--ghost" style="width:100%;justify-content:center" href="market.html#yours">Open the desk — stack it</a>';
         }
         host.appendChild(card);

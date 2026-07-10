@@ -15,14 +15,16 @@ create or replace function public.fund_uid() returns uuid
 -- 1% of every completed deal accrues to the fund, from the platform's cut.
 -- Runs alongside the token mint; unique (owner, ref, reason) makes it
 -- idempotent no matter how many times completion fires.
+-- HARDENED (audit #5): the 1% draws off the REAL captured total in
+-- deal_payments, never a fee a participant typed into a deal they
+-- completed themselves — so fake completions can't inflate the pool.
 create or replace function public.fund_accrue_on_completion() returns trigger
 language plpgsql security definer set search_path = public as $$
-declare
-  fee numeric := coalesce((new.terms ->> 'fee')::numeric, 0);
-  cut numeric;
+declare paid numeric; cut numeric;
 begin
-  if new.status = 'completed' and old.status is distinct from 'completed' and fee > 0 then
-    cut := round(fee * 0.01, 2);          -- one percent of the deal
+  if new.status = 'completed' and old.status is distinct from 'completed' then
+    select coalesce(sum(gross), 0) into paid from deal_payments where deal_id = new.id;
+    cut := round(paid * 0.01, 2);         -- one percent of what actually cleared
     if cut > 0 then
       insert into mtoken_ledger (owner, delta, reason, ref)
       values (public.fund_uid(), cut, 'fund_accrue', new.id::text)

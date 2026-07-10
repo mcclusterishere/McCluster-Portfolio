@@ -31,27 +31,38 @@ create policy "members read their own ledger"
   on mtoken_ledger for select using (owner = auth.uid());
 -- no insert/update/delete policies on purpose: only the trigger writes
 
-create or replace function mint_on_completion() returns trigger as $$
+-- HARDENED (audit #1): earned credit mints ONLY against money Stripe
+-- actually captured (deal_payments, written by the webhook on the
+-- service role — no browser can forge it), never against a fee a
+-- participant typed, and never on a self-dealt buyer==provider leg.
+-- This body is identical to docs/equity-schema.sql and
+-- docs/hardening-schema.sql so no run-order can re-open the hole.
+create or replace function mint_on_completion() returns trigger
+language plpgsql security definer set search_path = public as $$
 declare
-  fee numeric := coalesce((new.terms ->> 'fee')::numeric, 0);
+  paid numeric;
   provider_owner uuid;
 begin
-  if new.status = 'completed' and old.status is distinct from 'completed' and fee > 0 then
+  if new.status = 'completed' and old.status is distinct from 'completed' then
+    select coalesce(sum(gross), 0) into paid from deal_payments where deal_id = new.id;
+    if paid <= 0 then
+      return new;  -- money moved outside the app, or not at all: nothing redeemable mints
+    end if;
     select owner into provider_owner from providers where slug = new.to_slug limit 1;
     if provider_owner is not null then
       insert into mtoken_ledger (owner, delta, reason, ref)
-      values (provider_owner, round(fee * 0.05, 2), 'deal completed — the work pays twice', new.id::text)
+      values (provider_owner, round(paid * 0.05, 2), 'deal completed — the work pays twice', new.id::text)
       on conflict (owner, ref, reason) do nothing;
     end if;
-    if new.from_owner is not null then
+    if new.from_owner is not null and new.from_owner is distinct from provider_owner then
       insert into mtoken_ledger (owner, delta, reason, ref)
-      values (new.from_owner, round(fee * 0.01, 2), 'deal completed — thank you for moving money here', new.id::text)
+      values (new.from_owner, round(paid * 0.01, 2), 'deal completed — thank you for moving money here', new.id::text)
       on conflict (owner, ref, reason) do nothing;
     end if;
   end if;
   return new;
 end;
-$$ language plpgsql security definer;
+$$;
 
 drop trigger if exists mint_on_completion_t on deals;
 create trigger mint_on_completion_t after update on deals

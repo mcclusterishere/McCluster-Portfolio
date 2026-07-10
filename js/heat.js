@@ -20,6 +20,20 @@
   function isPublic() { try { return localStorage.getItem(K_SET) !== "0"; } catch (e) { return true; } }
   function setPublic(on) { try { localStorage.setItem(K_SET, on ? "1" : "0"); } catch (e) {} }
 
+  /* a stable per-device fingerprint — the server dedupes plays per
+     fingerprint per hour, so a real listener still counts but a loop
+     can't print the chart. Not identity, just a bucket key. */
+  function fp() {
+    try {
+      var v = localStorage.getItem("mcc_fp");
+      if (!v) {
+        v = (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+        localStorage.setItem("mcc_fp", v);
+      }
+      return v;
+    } catch (e) { return "anon"; }
+  }
+
   /* song pages don't carry the full backend — the counter stands alone.
      Same public anon key as js/backend.js; RLS is the wall, not the key. */
   var FB_URL = "https://fxbkvcrfbbcmrrupdcjt.supabase.co";
@@ -39,7 +53,7 @@
     fetch(s.url + "/rest/v1/rpc/bump_play", {
       method: "POST",
       headers: { apikey: s.key, Authorization: "Bearer " + s.key, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_slug: slug }),
+      body: JSON.stringify({ p_slug: slug, p_fp: fp() }),
     }).catch(function () {});
   }
 
@@ -69,5 +83,5 @@
     });
   }
 
-  window.MCC_HEAT = { bump: bump, counts: counts, norm: norm, isPublic: isPublic, setPublic: setPublic };
+  window.MCC_HEAT = { bump: bump, counts: counts, norm: norm, isPublic: isPublic, setPublic: setPublic, fp: fp };
 })();

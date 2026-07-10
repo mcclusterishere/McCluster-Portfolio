@@ -126,7 +126,7 @@
           if (window.MCC_TRACK) window.MCC_TRACK("track_play", { slug: "upset", title: "Upset" });
           fetch(window.MCC_SUPA.url + "/rest/v1/rpc/stream_record", {
             method: "POST", headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
-            body: JSON.stringify({ p_record_slug: "upset" })
+            body: JSON.stringify({ p_record_slug: "upset", p_fp: (window.MCC_HEAT && window.MCC_HEAT.fp && window.MCC_HEAT.fp()) || (function(){try{var v=localStorage.getItem("mcc_fp");if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem("mcc_fp",v);}return v;}catch(e){return "anon";}})() })
           }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) { if (n != null && lbl) lbl.textContent = n; }).catch(function () {});
         }
         if (au) au.addEventListener("play", stream, { once: true });
