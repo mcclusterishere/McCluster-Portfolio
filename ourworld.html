@@ -6,7 +6,7 @@
   <title>Our World — the real map · Equity Uprise</title>
   <meta name="description" content="Our World, on the real map: drive the actual streets of Bridgeport, New Haven, Hartford and Waterbury. Every member has a real place, the missions are real, and you can see everyone else driving live.">
   <meta name="robots" content="noindex,follow">
-  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/maplibre-gl.css">
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -78,6 +78,24 @@
     .ow-ctl { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.9rem; flex-wrap: wrap; }
     .ow-ctl span { border: 1px solid rgba(244,239,230,0.25); border-radius: 10px; padding: 0.45em 0.8em; font-size: 0.66rem; color: var(--cream-dim); }
     .ow-ctl b { color: var(--cream); }
+    .ow-din__badge { display: inline-grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 0.7rem;
+      background: var(--cream, #f4efe6); border-radius: 15px; box-shadow: 0 0 22px rgba(69,182,255,0.45); }
+    .ow-din__badge img { width: 44px; margin: 0; filter: none; }
+    .ow-ask { color: #45b6ff; font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 800; margin-top: 1.1rem; }
+    /* the city picker */
+    .ow-cities { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-top: 0.7rem; }
+    .ow-city { position: relative; text-align: left; border: 1px solid rgba(244,239,230,0.16); border-radius: 14px;
+      background: rgba(16,13,11,0.7); color: var(--cream); font: inherit; padding: 0.75rem 0.85rem; cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; }
+    .ow-city:active { transform: scale(0.97); }
+    .ow-city b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; line-height: 1; }
+    .ow-city small { display: block; color: var(--cream-dim); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-top: 0.3rem; }
+    .ow-city.is-on { border-color: var(--cc, #45b6ff); box-shadow: 0 0 0 2px var(--cc, #45b6ff), 0 10px 26px rgba(0,0,0,0.5); }
+    .ow-city.is-locked { cursor: not-allowed; opacity: 0.5; }
+    .ow-city.is-locked b, .ow-city.is-locked small { color: var(--cream-dim); }
+    .ow-city__lock { position: absolute; top: 0.55rem; right: 0.6rem; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase;
+      font-weight: 800; color: #d8ba7c; border: 1px solid rgba(216,186,124,0.4); border-radius: 100px; padding: 0.15em 0.5em; }
+    .btn--ruby:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* the sheet (shared: districts + spaces) */
     .ow-veil { position: fixed; inset: 0; background: rgba(5,4,3,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 110; }
@@ -127,13 +145,14 @@
 
   <div class="ow-door" id="owDoor">
     <div class="ow-din">
-      <img src="assets/img/m-mark.png" alt="M"><h1>Our World</h1>
-      <p class="tag">The real map · Connecticut</p>
-      <p>Drive the actual streets of <b>Bridgeport, New Haven, Hartford and Waterbury</b>. Every member has a
-        real place on the map, the missions are real, and you can see everyone else driving <b>live</b>.</p>
+      <span class="ow-din__badge"><img src="assets/img/eu-favicon.png" alt="Equity Uprise"></span>
+      <h1>Our World</h1>
+      <p class="tag">The Game · Afuera mode</p>
+      <p class="ow-ask">Where do you want to go?</p>
+      <div class="ow-cities" id="owCities"></div>
       <div class="ow-ctl" id="owCtl"></div>
       <div class="finale__actions" style="justify-content:center;margin-top:1.2rem">
-        <button class="btn btn--ruby" id="owEnter" type="button">&#9654;&#xFE0E; Enter Our World</button>
+        <button class="btn btn--ruby" id="owEnter" type="button" disabled>Pick a city to enter</button>
       </div>
       <p style="margin-top:0.8rem;font-size:0.72rem"><a href="mcity.html" style="color:#9e9890">or the classic hand-painted city →</a></p>
     </div>
@@ -163,11 +182,23 @@
 
       /* ---------- the four real Connecticut downtowns ---------- */
       var CITIES = [
-        { id: "bridgeport", name: "Bridgeport", tag: "The Harbor",    c: "#45b6ff", lng: -73.1894, lat: 41.1792 },
+        { id: "bridgeport", name: "Bridgeport", tag: "The Harbor",    c: "#45b6ff", lng: -73.1894, lat: 41.1792, open: true },
         { id: "newhaven",   name: "New Haven",  tag: "The University", c: "#e5383b", lng: -72.9279, lat: 41.3083 },
         { id: "hartford",   name: "Hartford",   tag: "The Gold Dome",  c: "#c99d45", lng: -72.6734, lat: 41.7658 },
         { id: "waterbury",  name: "Waterbury",  tag: "Brass City",     c: "#a3e635", lng: -73.0515, lat: 41.5582 },
       ];
+      var CITY_BY_ID = {}; CITIES.forEach(function (c) { CITY_BY_ID[c.id] = c; });
+      /* ---------- real addresses: businesses that live at a fixed spot ----------
+         A member's marker is deterministic by default, but a claimed business
+         gets pinned to its real block. As members name their address the desk
+         drops it here; this is where "fast-forward to an address" will read from.
+         Ocho's Only Us Studios anchors Bridgeport — its whole downtown. */
+      var PLACES = {
+        "only-us-studios": { city: "bridgeport", lng: -73.1902, lat: 41.1808, addr: "Downtown Bridgeport, CT" },
+        "only-us-radio":   { city: "bridgeport", lng: -73.1889, lat: 41.1799, addr: "Bridgeport, CT" },
+        "ocho-gr8":        { city: "bridgeport", lng: -73.1878, lat: 41.1820, addr: "Bridgeport, CT" },
+        "ocho":            { city: "bridgeport", lng: -73.1878, lat: 41.1820, addr: "Bridgeport, CT" }
+      };
       function nearestCity(lng, lat) {
         var best = CITIES[0], bd = 1e9;
         CITIES.forEach(function (c) { var d = (c.lng - lng) * (c.lng - lng) + (c.lat - lat) * (c.lat - lat); if (d < bd) { bd = d; best = c; } });
@@ -289,16 +320,21 @@
       function addMember(p, mine) {
         var slug = p.slug || p.id; if (!slug || seen[slug]) { if (mine && markerEls[slug]) markerEls[slug].getElement().classList.add("mine"); return; }
         seen[slug] = 1;
-        var h = shash(slug), city = CITIES[h % 4];              // a real city, deterministic
-        var lng = city.lng + (((h >> 3) % 100) / 100 - 0.5) * 0.03;
-        var lat = city.lat + (((h >> 9) % 100) / 100 - 0.5) * 0.024;
+        var pin = PLACES[slug], lng, lat;
+        if (pin) {                                              // a business at its real block
+          lng = pin.lng; lat = pin.lat;
+        } else {
+          var h = shash(slug), city = CITIES[h % 4];            // a real city, deterministic
+          lng = city.lng + (((h >> 3) % 100) / 100 - 0.5) * 0.03;
+          lat = city.lat + (((h >> 9) % 100) / 100 - 0.5) * 0.024;
+        }
         var color = p.badgeColor || "#d8ba7c";
         var el = document.createElement("div"); el.className = "ow-mk ow-face" + (mine ? " mine" : "");
         el.style.borderColor = color;
         if (p.photo) el.style.backgroundImage = "url(" + p.photo + ")"; else el.textContent = (p.name || slug).slice(0, 1).toUpperCase();
         var info = { slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(), roles: p.roles || [], color: color,
           href: p.href || p.profile || ("page.html?who=" + slug), photo: p.photo || null, blurb: p.blurb || p.headline || "",
-          mine: !!mine, char: CHARACTERS[slug] || null };
+          mine: !!mine, char: CHARACTERS[slug] || null, addr: (pin && pin.addr) || (p.area || "") };
         el.addEventListener("click", function () { openSpace(info); });
         markerEls[slug] = mk(el, lng, lat);
       }
@@ -321,7 +357,8 @@
       function openSpace(l) {
         $("owSheet").style.setProperty("--dc", l.color);
         $("owK").textContent = (l.roles || []).join(" · ") || "A space in Our World"; $("owK").style.color = l.color;
-        $("owName").textContent = l.name; $("owDesc").textContent = l.blurb || "Their own corner of the map.";
+        $("owName").textContent = l.name;
+        $("owDesc").textContent = (l.addr ? "📍 " + l.addr + " — " : "") + (l.blurb || "Their own corner of the map.");
         var av = l.photo ? '<img src="' + esc(l.photo) + '" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ' + l.color + ';vertical-align:middle;margin-right:0.5rem" onerror="this.remove()">' : "";
         $("owArc").innerHTML = '<div style="margin-top:0.6rem">' + av + (l.ticker ? '<b style="font-size:1rem;color:' + l.color + '">$' + esc(l.ticker) + "</b>" : (l.mine ? "★ your space" : "")) + "</div>" +
           (l.char ? '<img src="' + l.char + '" alt="" style="width:100%;margin-top:0.7rem;border-radius:14px;border:1px solid ' + l.color + '" onerror="this.remove()">' : "");
@@ -452,10 +489,41 @@
         ? "<span><b>Left thumb</b> · drive</span><span><b>Tap a point</b> · open it</span>"
         : "<span><b>W/S</b> · gas &amp; brake</span><span><b>A/D</b> · steer</span><span><b>Click a point</b> · open it</span>";
       paintTraits();
+
+      /* ---------- where do you want to go? the city picker ----------
+         Bridgeport is the city we've built; the rest of Connecticut is
+         drawn on the door but locked until each one opens. Pick a city and
+         you spawn there. */
+      var pickedCity = null;
+      $("owCities").innerHTML = CITIES.map(function (c) {
+        var lock = c.open ? "" : " is-locked";
+        return '<button class="ow-city' + lock + '" type="button" data-city="' + c.id + '"' +
+          (c.open ? "" : " disabled aria-disabled=\"true\"") + ' style="--cc:' + c.c + '">' +
+          (c.open ? "" : '<span class="ow-city__lock">Soon</span>') +
+          "<b>" + esc(c.name) + "</b><small>" + esc(c.tag) + "</small></button>";
+      }).join("");
+      $("owCities").querySelectorAll(".ow-city").forEach(function (b) {
+        if (b.disabled) return;
+        b.addEventListener("click", function () {
+          pickedCity = CITY_BY_ID[b.getAttribute("data-city")];
+          $("owCities").querySelectorAll(".ow-city").forEach(function (o) { o.classList.remove("is-on"); });
+          b.classList.add("is-on");
+          var e = $("owEnter"); e.disabled = false;
+          e.innerHTML = "&#9654;&#xFE0E; Go to " + esc(pickedCity.name);
+          track("ow_city_pick", { city: pickedCity.id });
+        });
+      });
+
       $("owEnter").addEventListener("click", function () {
+        if (!pickedCity) return;
+        // spawn in the chosen city
+        player.lng = pickedCity.lng; player.lat = pickedCity.lat; player.h = 0;
+        curCity = pickedCity;
+        if (map && ready) { try { map.jumpTo({ center: [player.lng, player.lat], bearing: 0, zoom: 15 }); } catch (e) {} }
+        showPlace(pickedCity);
         entered = true; $("owCar").classList.remove("hidden");
         $("owDoor").classList.add("is-gone"); setTimeout(function () { $("owDoor").remove(); }, 600);
-        MP.connect(); track("ow_enter", { touch: touch });
+        MP.connect(); track("ow_enter", { touch: touch, city: pickedCity.id });
       });
       track("ow_view", {});
     })();
