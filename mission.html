@@ -92,6 +92,7 @@
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
         <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
         <button class="mc__tab" data-tab="mcHouse" type="button">The House <b id="tabNHouse"></b></button>
+        <button class="mc__tab" data-tab="mcFund" type="button">The Fund</button>
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
@@ -147,6 +148,17 @@
         <p class="mc__empty" style="margin-bottom:0.6rem">Only EARNED credit reaches this queue (the ledger enforces it).
           Pay = you send the dollars through their card rail, then mark it. Deny refunds the hold automatically.</p>
         <div id="mcCashouts"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcFund">
+        <h2>The One Percent Fund — award the chest</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem" id="fundStat">Counting the chest…</p>
+        <input class="mc__in" id="fundWho" type="text" placeholder="Ticker of the member to award — like AFRO">
+        <input class="mc__in" id="fundAmt" type="number" min="1" step="1" placeholder="Amount in E⤴︎">
+        <input class="mc__in" id="fundWhy" type="text" placeholder="What it's for — loyalty, contest win, culture">
+        <button class="btn btn--ruby" id="fundGrant" type="button">Award from the fund</button>
+        <p class="mc__msg" id="fundMsg"></p>
+        <p class="mc__empty" style="margin-top:0.6rem">Awards are granted credit — they spend across the floor and build the member's record, but never cash out. The chest can only give what it holds.</p>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
@@ -566,16 +578,44 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });
-      $("mcRefresh").addEventListener("click", loadAll);
+      function loadFund() {
+        fetch(window.MCC_SUPA.url + "/rest/v1/rpc/fund_stats", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key }, body: "{}" })
+          .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+            var el = $("fundStat");
+            if (!el) return;
+            el.innerHTML = j ? ("<b style='color:var(--cream)'>" + (+j.balance || 0).toFixed(0) + " E\u2934\uFE0E in the chest</b> · " +
+              (+j.accrued || 0).toFixed(0) + " raised all-time · " + (j.awards || 0) + " members awarded") :
+              "The chest needs one paste: docs/fund-schema.sql";
+          }).catch(function () {});
+      }
+      $("fundGrant") && $("fundGrant").addEventListener("click", function () {
+        var who = $("fundWho").value.trim(), amt = +$("fundAmt").value, why = $("fundWhy").value.trim() || "community award";
+        var m = $("fundMsg");
+        if (!who || !(amt > 0)) { m.textContent = "A ticker and an amount."; return; }
+        m.textContent = "Awarding…";
+        var slug = who.toLowerCase().replace(/^\$/, "");
+        fetch(window.MCC_SUPA.url + "/rest/v1/rpc/grant_from_fund", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.token() },
+          body: JSON.stringify({ to_slug: slug, amt: amt, why: why }) })
+          .then(function (r) { return r.json().catch(function () { return null; }).then(function (j) {
+            if (!r.ok) throw new Error((j && (j.message || j.hint)) || "the award bounced");
+            m.textContent = "Awarded — it's on their record and the chest updated.";
+            $("fundAmt").value = ""; loadFund();
+          }); })
+          .catch(function (e) { m.textContent = String(e && e.message || e); });
+      });
+      $("mcRefresh").addEventListener("click", function () { loadAll(); loadFund(); });
       $("mcOut").addEventListener("click", function () {
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
       });
 
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        loadFund();
         $("mcAuth").classList.add("mc__hidden");
         $("mcIn").classList.remove("mc__hidden");
         var u = window.MCC_AUTH.user();
