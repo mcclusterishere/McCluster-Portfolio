@@ -23,7 +23,7 @@ const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SB_SER
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") || "";
 const GEMINI_KEY = Deno.env.get("GEMINI_KEY") || "";
 const INTERN_SECRET = Deno.env.get("INTERN_SECRET") || "";
-const MODEL = "gemini-2.5-flash"; // the intern runs the fast, cheap seat
+const MODEL = "gemini-2.5-flash-lite"; // the lite seat — bigger free-tier quota, same chores
 const H = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` };
 
 const CHARTER =
