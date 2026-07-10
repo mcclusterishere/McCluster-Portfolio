@@ -309,6 +309,30 @@
         "floor": 45,
         "notes": "The gear drop — masks from $45, vests, hoodies. Cop it on the floor."
       }
+    },
+    {
+      "id": "rahndrx",
+      "slug": "rahndrx",
+      "name": "Rahndrx",
+      "ticker": "RAHN",
+      "headline": "Leader by Voice · CT artist, founder of BREDE",
+      "blurb": "\"It's way bigger than me.\" Connecticut artist and founder of BREDE — music made to move people to move. Be the difference you want to see in the world.",
+      "area": "Connecticut",
+      "roles": [
+        "Music"
+      ],
+      "badgeColor": "#7c3aed",
+      "profile": "page.html?who=rahndrx",
+      "href": "page.html?who=rahndrx",
+      "claimed": false,
+      "terms": {
+        "notes": "Unclaimed artist profile — Rahndrx claims it to go live and route his plays here.",
+        "links": {
+          "ig": "https://instagram.com/rahndrx",
+          "music": "https://linktr.ee/rahndrx",
+          "web": "https://linktr.ee/rahndrx"
+        }
+      }
     }
   ]
 }
