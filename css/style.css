@@ -4272,3 +4272,52 @@ a, button, input, select, textarea, summary, label, [role="button"] { touch-acti
 .door__row .door__alt { flex: none; width: auto; }
 .door__msg { margin: 0; min-height: 1.2em; color: var(--cream); font-size: 0.85rem; }
 .door__fine { margin: 0; color: rgba(244, 239, 230, 0.5); font-size: 0.76rem; line-height: 1.55; }
+
+/* ============================================================
+   MODERN UPLIFT — a light, shared finishing layer.
+   Appended last so it refines the whole app at once (every page
+   imports this file) without touching the rules above. Adds
+   tactile press feedback, softer depth, glassier surfaces, and
+   one consistent form treatment across all 80 pages. Every motion
+   is disabled under reduced-motion.
+   ============================================================ */
+
+/* smoother everywhere; kill the mobile tap flash */
+html { scroll-behavior: smooth; }
+* { -webkit-tap-highlight-color: transparent; }
+img, video { image-rendering: auto; }
+
+/* buttons: tactile press + a little lift on the primary */
+.btn { position: relative; isolation: isolate; }
+.btn:active { transform: translateY(1px) scale(0.985); }
+.btn--ruby {
+  background: linear-gradient(180deg, var(--ruby-hot), var(--ruby) 62%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.14) inset, 0 10px 30px rgba(193,18,31,0.32);
+}
+.btn--ruby:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 16px 44px rgba(229,56,59,0.5); }
+.btn--ghost { backdrop-filter: blur(6px); }
+
+/* one modern form treatment, app-wide — inputs pick up a real focus
+   ring and a soft fill instead of raw browser chrome */
+input, select, textarea {
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+input:focus, select:focus, textarea:focus,
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  border-color: rgba(229,56,59,0.7);
+  box-shadow: 0 0 0 3px rgba(229,56,59,0.18);
+}
+
+/* card-like surfaces: hover depth on the shared card primitive */
+.mp__card { transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), border-color 0.28s, box-shadow 0.28s; }
+.mp__card:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.4); }
+
+/* dock tabs: gentle lift on hover to feel alive */
+.appbar__tab:hover { transform: translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn:active, .btn--ruby:hover, .mp__card:hover, .appbar__tab:hover { transform: none; }
+}

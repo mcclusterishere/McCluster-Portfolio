@@ -133,15 +133,36 @@ $$;
 grant execute on function public.record_board(text) to anon, authenticated;
 
 -- ---------- count a stream (called when the record plays) ----------
-create or replace function public.stream_record(p_record_slug text)
+-- HARDENED (audit #4): dedupes like the heat counter — one stream per
+-- record, per device fingerprint, per hour (shares the play_pulses
+-- guard ledger, namespaced 'rec:'). Anon can still count a real listen;
+-- a loop can't print streams.
+create table if not exists public.play_pulses (
+  slug text not null,
+  fp   text not null,
+  hr   timestamptz not null,
+  primary key (slug, fp, hr)
+);
+alter table public.play_pulses enable row level security;
+
+create or replace function public.stream_record(p_record_slug text, p_fp text default '')
 returns integer language plpgsql security definer set search_path = public as $$
-declare n integer;
+declare s text; f text; ins int; n integer;
 begin
-  update records set streams = streams + 1 where slug = lower(p_record_slug) returning streams into n;
+  s := lower(coalesce(p_record_slug, ''));
+  if s = '' then return 0; end if;
+  f := left(coalesce(nullif(p_fp, ''), 'anon'), 64);
+  insert into public.play_pulses (slug, fp, hr)
+  values ('rec:' || s, f, date_trunc('hour', now())) on conflict do nothing;
+  get diagnostics ins = row_count;
+  if ins > 0 then
+    update records set streams = streams + 1 where slug = s;
+  end if;
+  select streams into n from records where slug = s;
   return coalesce(n, 0);
 end;
 $$;
-grant execute on function public.stream_record(text) to anon, authenticated;
+grant execute on function public.stream_record(text, text) to anon, authenticated;
 
 -- ============================================================
 -- FIRST USE CASE — "Upset" (Hitman Benji × Rahndrx × Raheem), free

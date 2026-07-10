@@ -70,7 +70,9 @@ create trigger mint_on_completion_t after update on public.deals
   for each row execute function public.mint_on_completion();
 
 -- ---------- the profile type + the provider's share toggle ----------
-alter table public.providers add column if not exists account_type text default 'provider';
+-- HARDENED (audit #7): default 'customer' — you're a customer until you
+-- provide. The desk (or Connect onboarding) promotes to 'provider'.
+alter table public.providers add column if not exists account_type text default 'customer';
 alter table public.providers add column if not exists equity_share boolean default false;
 -- a customer can't restyle themselves a provider to farm equity: the desk sets type
 revoke update (account_type) on public.providers from authenticated, anon;
