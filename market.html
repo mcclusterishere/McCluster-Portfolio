@@ -499,6 +499,9 @@
 
       <div class="xc__movers" id="xcMovers" aria-label="Today's movers"></div>
 
+      <!-- the board: the tape's top desks — real nightly scores; stays empty until the tape writes -->
+      <div id="xcBoard"></div>
+
       <div class="xc__acct">
         <a class="btn btn--xc" href="profile.html" data-cta="xc-claim">Claim your ticker — run your own account</a>
         <button class="btn btn--ghost" id="xcBizBtn" type="button">Launch a business ticker</button>
@@ -2788,6 +2791,42 @@
               (+j.share ? " (" + (+j.share).toFixed(2) + " from the lifetime 1%)" : "");
           }).catch(function () {});
         }
+        // THE SCORE: the tape's number rides the desk — six pillars, one
+        // standing price. Paints only when the score engine (seal #2) is
+        // live; until then the desk stays exactly as it was.
+        (function () {
+          var host = document.createElement("div");
+          body.appendChild(host);
+          window.MCC_SUPA.token().then(function (t) {
+            if (!t) return null;
+            return fetch(window.MCC_SUPA.url + "/rest/v1/rpc/my_score", { method: "POST",
+              headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t }, body: "{}" });
+          }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (s) {
+            if (!s || s.score == null) return;
+            var P = s.pillars || {};
+            var mom = (s.prev_30d == null) ? null : (s.score - s.prev_30d);
+            var names = [["capital", "Capital"], ["craft", "Craft"], ["reach", "Reach"],
+              ["community", "Community"], ["consistency", "Consistency"], ["cosign", "Co-sign"]];
+            host.className = "mp__card";
+            host.style.cssText = "border-color:rgba(69,182,255,0.45)";
+            host.innerHTML = '<span class="mp__lblx" style="color:#45b6ff">Your score — the tape</span>' +
+              '<div style="display:flex;align-items:baseline;gap:0.9rem;flex-wrap:wrap;margin:0.3rem 0 0.2rem">' +
+              '<b style="font-size:2.2rem;font-variant-numeric:tabular-nums">' + (+s.score) + "</b>" +
+              '<span style="color:var(--cream-dim);font-size:0.8rem">of 1000</span>' +
+              (s.price ? '<span style="font-weight:800;color:#2fbf71">$' + (+s.price).toFixed(2) + " standing</span>" : "") +
+              (mom == null ? "" : '<span class="xc__chg ' + (mom >= 0 ? "up" : "down") + '">' + (mom >= 0 ? "▲ " : "▼ ") + Math.abs(mom) + " · 30d</span>") +
+              "</div>" +
+              names.map(function (n) {
+                var v = Math.max(0, Math.min(100, +P[n[0]] || 0));
+                return '<div style="display:flex;align-items:center;gap:0.6rem;margin-top:0.35rem">' +
+                  '<small style="flex:none;width:6.2rem;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream-dim)">' + n[1] + "</small>" +
+                  '<span style="flex:1;height:6px;border-radius:4px;background:rgba(244,239,230,0.08);overflow:hidden"><i style="display:block;height:100%;width:' + v + '%;background:linear-gradient(90deg,#1f8fe0,#45b6ff)"></i></span>' +
+                  '<b style="flex:none;width:2rem;text-align:right;font-size:0.72rem;font-variant-numeric:tabular-nums">' + Math.round(v) + "</b></div>";
+              }).join("") +
+              '<p class="mp__note" style="margin-top:0.55rem">Six pillars, all unforgeable — money the webhook actually saw, verified identifiers, deduped plays, head-counted votes, showing up. Confidence ' +
+              Math.round((+s.confidence || 0) * 100) + "% — verify more and the cap lifts. The tape writes nightly.</p>";
+          }).catch(function () {});
+        })();
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
         // the One Percent Fund: the community chest, visible to every member
@@ -3109,6 +3148,33 @@
           }).catch(function () { paintYou(); });
         } else paintYou();
       });
+      /* THE BOARD: the tape's top desks on the floor — real nightly
+         scores from score_board(). Paints only when the tape has lines;
+         until seal #2 runs and the cron writes, the floor is unchanged. */
+      (function () {
+        if (!window.MCC_SUPA || !window.MCC_SUPA.url) return;
+        fetch(window.MCC_SUPA.url + "/rest/v1/rpc/score_board", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+          body: JSON.stringify({ p_limit: 10 }) })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (rows) {
+            if (!rows || !rows.length) return;
+            $("xcBoard").innerHTML = '<div class="mk__card" style="margin:1.1rem 0 0.2rem;border-color:rgba(69,182,255,0.35)">' +
+              '<span class="mp__lblx" style="color:#45b6ff">The board — the tape&rsquo;s top desks</span>' +
+              rows.map(function (b, i) {
+                return '<a href="page.html?who=' + encodeURIComponent(b.slug) + '" data-cta="board-' + esc(b.slug) +
+                  '" style="display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid rgba(244,239,230,0.07);text-decoration:none;color:var(--cream)">' +
+                  '<b style="flex:none;width:1.4rem;color:var(--cream-dim);font-size:0.75rem">' + (i + 1) + "</b>" +
+                  '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><b>' + esc(b.name || b.slug) +
+                  '</b> <small style="color:var(--cream-dim)">$' + esc(String(b.ticker || "").toUpperCase()) + "</small></span>" +
+                  '<b style="font-variant-numeric:tabular-nums">' + (+b.score || 0) + "</b>" +
+                  '<span style="color:#2fbf71;font-weight:800;font-size:0.8rem;font-variant-numeric:tabular-nums">$' + (+b.price || 0).toFixed(2) + "</span></a>";
+              }).join("") +
+              '<p class="mk__note" style="margin-top:0.5rem">Score of 1000 — money the webhook saw, verified IDs, deduped heat, head-counted votes. The tape writes it nightly.</p></div>';
+            track("board_view", { n: rows.length });
+          }).catch(function () {});
+      })();
+
       track("mpay_view", { authed: AUTHED, merged: true });
     })();
   </script>
