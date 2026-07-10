@@ -46,21 +46,19 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
 
-      - name: Cap oversized game art to a web-friendly size
+      - name: Convert heavy game art to web-light JPG
         run: |
-          # the M City map ships at 4K from the model — far heavier than a
-          # phone should download. Cap the big game images at 2048px wide,
-          # keeping the PNG name the game references. Skips anything absent.
-          for n in mcity-map mcity-loading; do
+          # the world map ships at 4K and the character portraits at 2K from
+          # the model — far heavier than a phone should download. Cap at
+          # 2048px wide and re-encode as JPG (these have no transparency),
+          # then drop the source PNG. The game references the .jpg names.
+          for n in ourworld-map char-mccluster char-ocho char-rahndrx; do
             f="assets/img/${n}.png"
             [ -f "$f" ] || continue
-            w=$(ffmpeg -hide_banner -i "$f" 2>&1 | grep -oE '[0-9]{3,5}x[0-9]{3,5}' | head -1 | cut -dx -f1)
-            if [ -n "$w" ] && [ "$w" -gt 2048 ]; then
-              ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale=2048:-1" "${f}.tmp.png" && mv "${f}.tmp.png" "$f"
-              echo "capped $n ($w -> 2048)"
-            fi
+            ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \
+              && rm -f "$f" && echo "converted $n -> jpg"
           done
-          ls -la assets/img/mcity-*.png 2>/dev/null || true
+          ls -la assets/img/ourworld-map.jpg assets/img/char-*.jpg 2>/dev/null || true
 
       - name: Extract scroll-scrub frame sequences
         run: |

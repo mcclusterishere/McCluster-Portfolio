@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>M City — the open world · Equity Uprise</title>
-  <meta name="description" content="M City: the open-world game where the missions are real. Nine districts, story arcs from the come-up to the corruption files — real-life moves unlock the map, pay tokens, and build your rep.">
+  <title>Our World — the open world · Equity Uprise</title>
+  <meta name="description" content="Our World: the open-world game where the missions are real. Nine districts, story arcs from the come-up to the corruption files — real-life moves unlock the map, pay tokens, and build your rep.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -100,7 +100,7 @@
   <div class="mc__door" id="mcDoor">
     <div class="mc__door-in">
       <img src="assets/img/m-mark.png" alt="M">
-      <h1>M City</h1>
+      <h1>Our World</h1>
       <p class="tag">The city only opens for work</p>
       <p>An open world where <b>every mission is real</b> — plays, deals, claims, testimony. What you do
         out there unlocks the map in here. Nine districts. Story arcs. A city with receipts.</p>
@@ -112,7 +112,7 @@
   </div>
 
   <div class="mc__hud">
-    <span class="mc__brand"><img src="assets/img/m-mark.png" alt="M"><b>M City</b></span>
+    <span class="mc__brand"><img src="assets/img/m-mark.png" alt="M"><b>Our World</b></span>
     <span class="mc__stats">
       <span class="mc__stat"><small>REP</small><span id="mcRep">0</span></span>
       <span class="mc__stat" id="mcRankPill"><small>RANK</small><span id="mcRank">Visitor</span></span>
@@ -347,7 +347,7 @@
          the procedural fallback below still renders a playable city. */
       var mapImg = new Image(); var mapReady = false;
       mapImg.onload = function () { mapReady = true; };
-      mapImg.src = "assets/img/mcity-map.jpg";
+      mapImg.src = "assets/img/ourworld-map.jpg";
       var carImg = new Image(); var carReady = false;
       carImg.onload = function () { carReady = true; };
       carImg.src = "assets/img/mcity-car.png";
@@ -369,10 +369,35 @@
       var dpr = 1, scale = 1, offX = 0, offY = 0;
       var entered = false;
 
+      /* ---------- the four Connecticut downtowns, joined into one world ----------
+         Each quadrant of the map is a real CT city's downtown; crossing the line
+         flies its name across the screen, GTA-style. Districts fall into whichever
+         sector they sit in. */
+      var SECTORS = [
+        { id: "newhaven",   name: "New Haven",  tag: "The University",  c: "#e5383b", x0: 0,   y0: 0,   x1: 800,  y1: 570 },
+        { id: "bridgeport", name: "Bridgeport", tag: "The Harbor",       c: "#45b6ff", x0: 0,   y0: 570, x1: 800,  y1: 1140 },
+        { id: "hartford",   name: "Hartford",   tag: "The Gold Dome",    c: "#c99d45", x0: 800, y0: 0,   x1: 1600, y1: 570 },
+        { id: "waterbury",  name: "Waterbury",  tag: "Brass City",       c: "#a3e635", x0: 800, y0: 570, x1: 1600, y1: 1140 },
+      ];
+      function sectorAt(x, y) { for (var i = 0; i < SECTORS.length; i++) { var s = SECTORS[i]; if (x >= s.x0 && x < s.x1 && y >= s.y0 && y < s.y1) return s; } return SECTORS[0]; }
+      var curSector = null, placeEl = null;
+      function showPlace(s) {
+        if (!placeEl) {
+          placeEl = document.createElement("div");
+          placeEl.style.cssText = "position:fixed;left:0;right:0;bottom:calc(7.5rem + env(safe-area-inset-bottom));z-index:44;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.5s,transform 0.5s;transform:translateY(10px)";
+          document.body.appendChild(placeEl);
+        }
+        placeEl.innerHTML = '<div style="font-family:var(--display,Anton,sans-serif);text-transform:uppercase;font-size:2.3rem;line-height:0.9;color:#f4efe6;text-shadow:0 3px 18px rgba(0,0,0,0.7)">' + s.name +
+          '</div><div style="font-size:0.66rem;letter-spacing:0.32em;text-transform:uppercase;font-weight:800;margin-top:0.3rem;color:' + s.c + '">' + s.tag + " · Connecticut</div>";
+        placeEl.style.opacity = "1"; placeEl.style.transform = "translateY(0)";
+        clearTimeout(showPlace._t);
+        showPlace._t = setTimeout(function () { if (placeEl) { placeEl.style.opacity = "0"; placeEl.style.transform = "translateY(10px)"; } }, 2600);
+      }
+
       function resize() {
         dpr = Math.min(window.devicePixelRatio || 1, 2);
         cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
-        scale = Math.max(innerWidth / W, innerHeight / H) * 1.35 * dpr;
+        scale = Math.max(innerWidth / W, innerHeight / H) * 2.05 * dpr;  // zoomed in tight on the whip
       }
       window.addEventListener("resize", resize); resize();
       // iOS Safari collapsing/expanding its bars resizes the VISUAL
@@ -416,8 +441,8 @@
         return false;
       }
       var CELLS = [];
-      for (var qy = 175; qy <= 1000; qy += 118) for (var qx = 120; qx <= 1470; qx += 132) {
-        if (!rectHits(qx, qy, LOTW, LOTH, 26)) CELLS.push({ x: qx, y: qy });
+      for (var qy = 172; qy <= 1000; qy += 156) for (var qx = 120; qx <= 1460; qx += 182) {
+        if (!rectHits(qx, qy, LOTW, LOTH, 30)) CELLS.push({ x: qx, y: qy });
       }
       function placeLot(slug) {
         if (!CELLS.length) return { x: 120, y: 175 };
@@ -427,6 +452,9 @@
       }
       var ROLE_COLOR = { Photo: "#e5383b", Video: "#ff7a00", Web: "#45b6ff", Studios: "#c99d45", Stages: "#a3e635", Music: "#f472b6", Merch: "#2aa8a0", Programs: "#8b5cf6", "Civic / Community": "#2f9e62" };
       function memberColor(p) { if (p.badgeColor) return p.badgeColor; return ROLE_COLOR[(p.roles || [])[0]] || "#d8ba7c"; }
+      // the lore leads have bespoke GTA character portraits, forged from their
+      // real faces — they can claim themselves, and stand as characters here
+      var CHARACTERS = { "mccluster": "assets/img/char-mccluster.jpg", "ocho-gr8": "assets/img/char-ocho.jpg", "rahndrx": "assets/img/char-rahndrx.jpg" };
       function addLot(p, mine) {
         var slug = p.slug || p.id; if (!slug) return;
         var ex = null; LOTS.forEach(function (l) { if (l.slug === slug) ex = l; });
@@ -435,7 +463,7 @@
         LOTS.push({ slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(),
           roles: p.roles || [], color: memberColor(p), href: p.href || p.profile || ("page.html?who=" + slug),
           photo: p.photo || null, blurb: p.blurb || p.headline || "", mine: !!mine,
-          x: pos.x, y: pos.y, w: LOTW, h: LOTH });
+          char: CHARACTERS[slug] || null, x: pos.x, y: pos.y, w: LOTW, h: LOTH });
         if (p.photo) loadFace(slug, p.photo);
       }
       function buildCity() {
@@ -475,6 +503,108 @@
         cx.restore();
         cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.lineWidth = 2.5; cx.strokeStyle = color; cx.stroke();
       }
+
+      /* ---------- THE MARKERS: your psychology, live in the city ----------
+         The nine behavioral patterns from the duality scan are scattered as
+         glowing pickups. Drive over one and it becomes part of your build —
+         each boosts one stat and drains another. Your stats shape the run:
+         HUSTLE drives the whip's top speed; the trade-offs are the game. */
+      var TSTATE = J("mcc_ow_traits", null) || { hustle: 50, heat: 50, focus: 50, got: [] };
+      if (!TSTATE.got) TSTATE.got = [];
+      function tsave() { try { localStorage.setItem("mcc_ow_traits", JSON.stringify(TSTATE)); } catch (e) {} }
+      var MARKERS = [
+        { id: "habit",      name: "Force of habit",           icon: "↻", x: 250,  y: 250, c: "#e5383b", up: ["focus", 10], dn: ["hustle", 8],  line: "Routine over impulse." },
+        { id: "greener",    name: "Grass is greener",         icon: "⤢", x: 610,  y: 330, c: "#a3e635", up: ["hustle", 12], dn: ["focus", 10], line: "Always chasing the next thing." },
+        { id: "joneses",    name: "Keeping up",               icon: "$", x: 1090, y: 250, c: "#c99d45", up: ["heat", 12],   dn: ["focus", 8],  line: "Flash to match the room." },
+        { id: "tomorrow",   name: "Tomorrow never comes",     icon: "⏳", x: 1370, y: 360, c: "#45b6ff", up: ["focus", 8],   dn: ["hustle", 12], line: "The plan is always for later." },
+        { id: "rug",        name: "Under the rug",            icon: "▤", x: 300,  y: 910, c: "#8b5cf6", up: ["heat", 8],    dn: ["focus", 10], line: "Looks clean; nothing's resolved." },
+        { id: "safe",       name: "Better safe than sorry",   icon: "⛨", x: 660,  y: 980, c: "#2aa8a0", up: ["focus", 12],  dn: ["heat", 8],   line: "Protect what you have." },
+        { id: "bottle",     name: "Bottling it up",           icon: "⧗", x: 1090, y: 950, c: "#ff7a00", up: ["hustle", 10], dn: ["focus", 8],  line: "Grind through the pressure." },
+        { id: "moderation", name: "Everything in moderation", icon: "◐", x: 820,  y: 600, c: "#f4efe6", up: ["focus", 6],   dn: ["heat", 4],   line: "Never the extreme." },
+        { id: "birds",      name: "Birds of a feather",       icon: "⋔", x: 1330, y: 910, c: "#f472b6", up: ["hustle", 10], dn: ["focus", 6],  line: "Move with your people." },
+      ];
+      function collectMarkers() {
+        for (var i = 0; i < MARKERS.length; i++) { var m = MARKERS[i];
+          if (TSTATE.got.indexOf(m.id) !== -1) continue;
+          if (Math.hypot(player.x - m.x, player.y - m.y) < 26) {
+            TSTATE.got.push(m.id);
+            TSTATE[m.up[0]] = Math.max(0, Math.min(100, TSTATE[m.up[0]] + m.up[1]));
+            TSTATE[m.dn[0]] = Math.max(0, Math.min(100, TSTATE[m.dn[0]] - m.dn[1]));
+            tsave(); paintTraits();
+            toast(m.icon + " <b>" + m.name + "</b> — +" + m.up[1] + " " + m.up[0].toUpperCase() + ", −" + m.dn[1] + " " + m.dn[0].toUpperCase() + ". " + m.line);
+            track("ow_marker", { id: m.id });
+          }
+        }
+      }
+      var traitEl = null;
+      function paintTraits() {
+        if (!traitEl) {
+          traitEl = document.createElement("div");
+          traitEl.style.cssText = "position:fixed;top:calc(3.15rem + env(safe-area-inset-top));right:0.8rem;z-index:40;display:flex;gap:0.3rem;pointer-events:none";
+          document.body.appendChild(traitEl);
+        }
+        function pill(l, v, c) { return '<span style="background:rgba(12,9,8,0.85);border:1px solid ' + c + ';border-radius:100px;padding:0.24rem 0.5rem;font-size:0.56rem;font-weight:800;color:#f4efe6;backdrop-filter:blur(8px)"><span style="color:' + c + '">' + l + "</span> " + Math.round(v) + "</span>"; }
+        traitEl.innerHTML = pill("HUS", TSTATE.hustle, "#ff7a00") + pill("HEAT", TSTATE.heat, "#e5383b") + pill("FOC", TSTATE.focus, "#45b6ff");
+      }
+
+      /* ---------- LIVE MULTIPLAYER: everyone drives the same city ----------
+         Positions ride Supabase Realtime broadcast — no server of our own.
+         Each whip broadcasts where it is; every other whip on the channel
+         paints on your screen with its driver's face and name. Degrades to
+         solo silently if the socket can't open. */
+      var MP = (function () {
+        var peers = {}, ws = null, hb = null, bc = null, ready = false;
+        var myId = (window.MCC_GRIND && MCC_GRIND.device && MCC_GRIND.device()) || ("g" + Math.random().toString(36).slice(2, 9));
+        function connect() {
+          if (ws || !window.MCC_SUPA || !MCC_SUPA.url) return;
+          try {
+            var url = MCC_SUPA.url.replace(/^http/, "ws") + "/realtime/v1/websocket?apikey=" + encodeURIComponent(MCC_SUPA.key) + "&vsn=1.0.0";
+            ws = new WebSocket(url);
+          } catch (e) { return; }
+          ws.onopen = function () {
+            try { ws.send(JSON.stringify({ topic: "realtime:ourworld", event: "phx_join", payload: { config: { broadcast: { self: false } } }, ref: "1" })); } catch (e) {}
+            ready = true;
+            hb = setInterval(function () { try { ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" })); } catch (e) {} }, 25000);
+            bc = setInterval(send, 160);
+          };
+          ws.onmessage = function (ev) {
+            try {
+              var m = JSON.parse(ev.data);
+              if (m.event === "broadcast" && m.payload && m.payload.event === "pos") {
+                var d = m.payload.payload; if (!d || d.id === myId) return;
+                d.t = Date.now(); peers[d.id] = d;
+                if (d.s && d.p) loadFace(d.s, d.p);
+              }
+            } catch (e) {}
+          };
+          ws.onclose = function () { clearInterval(hb); clearInterval(bc); ready = false; ws = null; };
+          ws.onerror = function () { try { ws.close(); } catch (e) {} };
+        }
+        function send() {
+          if (!ready || !entered) return;
+          var d = { id: myId, x: Math.round(player.x), y: Math.round(player.y), h: +heading.toFixed(2),
+            n: (PLAYER && PLAYER.name) ? String(PLAYER.name).slice(0, 18) : "A driver",
+            c: (curSector && curSector.c) || "#c99d45", s: PLAYER && PLAYER.slug, p: PLAYER && PLAYER.photo };
+          try { ws.send(JSON.stringify({ topic: "realtime:ourworld", event: "broadcast", payload: { type: "broadcast", event: "pos", payload: d }, ref: null })); } catch (e) {}
+        }
+        function render() {
+          for (var id in peers) {
+            var p = peers[id]; if (Date.now() - p.t > 6000) { delete peers[id]; continue; }
+            cx.save(); cx.translate(p.x, p.y); cx.rotate(p.h || 0);
+            cx.fillStyle = "rgba(0,0,0,0.4)"; cx.beginPath(); cx.ellipse(0, 0, 18, 11, 0, 0, 7); cx.fill();
+            cx.globalAlpha = 0.92; cx.fillStyle = p.c || "#c99d45";
+            cx.shadowColor = p.c || "#c99d45"; cx.shadowBlur = 10;
+            cx.beginPath(); cx.roundRect(-13, -7, 26, 14, 5); cx.fill(); cx.shadowBlur = 0;
+            cx.fillStyle = "#0a0807"; cx.fillRect(2, -5, 6, 10);
+            cx.restore();
+            if (p.s && faceCache[p.s] && faceCache[p.s].ok) drawToken(p.x, p.y - 17, 8, p.s, p.c || "#c99d45", "•");
+            cx.fillStyle = "#f4efe6"; cx.font = "800 9px system-ui"; cx.textAlign = "center";
+            cx.fillText(String(p.n || "driver"), p.x, p.y - 27);
+          }
+        }
+        function count() { return Object.keys(peers).length; }
+        return { connect: connect, render: render, count: count };
+      })();
 
       addEventListener("keydown", function (e) {
         keys[e.key.toLowerCase()] = true;
@@ -517,7 +647,7 @@
       })();
 
       function step(dt) {
-        var maxSp = 0.34;
+        var maxSp = 0.30 + (TSTATE.hustle / 100) * 0.14;  // HUSTLE drives the whip's top speed
         var dx = 0, dy = 0;
         if (keys.w || keys.arrowup) dy -= 1;
         if (keys.s || keys.arrowdown) dy += 1;
@@ -550,6 +680,16 @@
             speed *= 0.6;
           }
         });
+        // every member building is a solid boundary too — you drive the streets
+        LOTS.forEach(function (b) {
+          if (player.x > b.x - 15 && player.x < b.x + b.w + 15 && player.y > b.y - 15 && player.y < b.y + b.h + 15) {
+            var l = player.x - (b.x - 15), r2 = (b.x + b.w + 15) - player.x, t2 = player.y - (b.y - 15), bo = (b.y + b.h + 15) - player.y;
+            var m = Math.min(l, r2, t2, bo);
+            if (m === l) player.x = b.x - 15; else if (m === r2) player.x = b.x + b.w + 15;
+            else if (m === t2) player.y = b.y - 15; else player.y = b.y + b.h + 15;
+            speed *= 0.6;
+          }
+        });
         nearDoor = null;
         D.forEach(function (b) {
           var doorX = b.x + b.w / 2, doorY = b.y + b.h + 16;
@@ -570,7 +710,10 @@
               : "🔒 <b>" + esc(nearDoor.name) + "</b> · tap to see the key")
             : nearLot
               ? "<b>" + esc(nearLot.name) + "</b>" + (nearLot.mine ? " · your space" : "") + " · tap to enter"
-              : "<b>" + esc(rankOf(rep(w))) + "</b> in the city · find a lit door";
+              : "<b>" + esc((curSector && curSector.name) || "Our World") + "</b> · " + esc(rankOf(rep(w))) + (MP.count() ? " · " + MP.count() + " live" : " · find a lit door");
+          var sec = sectorAt(player.x, player.y);
+          if (sec !== curSector) { curSector = sec; showPlace(sec); }
+          collectMarkers();
         }
         try { localStorage.setItem("mcc_mcity_pos", JSON.stringify(player)); } catch (e) {}
       }
@@ -673,6 +816,21 @@
           cx.fillText((l.mine ? "★ " : "$") + (l.ticker || l.name.slice(0, 9)).toUpperCase(), l.x + l.w / 2, l.y + l.h - 5);
           drawToken(l.x + l.w / 2, l.y - 3, 15, l.slug, l.color, (l.name[0] || "?").toUpperCase());
         });
+
+        // the markers: your psychology, glowing on the street
+        MARKERS.forEach(function (m) {
+          var got = TSTATE.got.indexOf(m.id) !== -1;
+          var pul = got ? 0 : (0.5 + 0.5 * Math.sin(now / 300));
+          cx.save(); cx.globalAlpha = got ? 0.3 : 1;
+          cx.shadowColor = m.c; cx.shadowBlur = got ? 3 : (9 + pul * 14);
+          cx.beginPath(); cx.arc(m.x, m.y, got ? 7 : 11, 0, 7); cx.fillStyle = hexA(m.c, 0.92); cx.fill();
+          cx.shadowBlur = 0; cx.fillStyle = "#0a0807"; cx.font = "800 12px system-ui";
+          cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText(got ? "✓" : m.icon, m.x, m.y + 1); cx.textBaseline = "alphabetic";
+          cx.restore();
+        });
+
+        // every other driver on the channel, live
+        MP.render();
 
         // the whip: rotates into its heading, glows at speed
         // a soft ground shadow reads on the painted street either way
@@ -796,7 +954,7 @@
       /* ---------- the member space sheet ---------- */
       function openLot(l) {
         $("mcSheet").style.setProperty("--dc", l.color);
-        $("shK").textContent = (l.roles || []).join(" · ") || "A space in M City";
+        $("shK").textContent = (l.roles || []).join(" · ") || "A space in Our World";
         $("shK").style.color = l.color;
         $("shName").textContent = l.name;
         $("shDesc").textContent = l.blurb || "Their own corner of the city.";
@@ -814,7 +972,15 @@
           (l.mine ? '<a class="mc__m" href="market.html#yours" style="--dc:' + l.color + '"><span class="mc__m-ic">★</span>' +
             "<span class=\"mc__m-mid\"><b>Run your desk</b><small>Dress your space — the card the city sees.</small></span>" +
             '<span class="mc__m-go">go &#8594;</span></a>' : "");
-        $("shLock").innerHTML = ""; $("shProof").innerHTML = "";
+        $("shLock").innerHTML = "";
+        // a lore lead stands as a full GTA character, forged from their real face
+        $("shProof").innerHTML = l.char
+          ? '<div style="margin-top:0.9rem;position:relative;border-radius:16px;overflow:hidden;border:1px solid ' + l.color + '">' +
+            '<img src="' + l.char + '" alt="' + esc(l.name) + '" style="width:100%;display:block" ' +
+            'onerror="this.parentNode.style.display=\'none\'">' +
+            '<div style="position:absolute;left:0;right:0;bottom:0;padding:0.7rem 0.9rem;background:linear-gradient(transparent,rgba(6,4,4,0.92));font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;font-weight:800;color:' + l.color + '">' +
+            (l.mine ? "★ Your character · claimed" : "Our World character · " + esc(l.name)) + "</div></div>"
+          : "";
         document.body.classList.add("mc-open");
         track("mcity_space", { slug: l.slug, mine: !!l.mine });
       }
@@ -834,6 +1000,7 @@
         $("mcBadge").textContent = Object.keys(have).length + "/" + (D.length + 1);
       }
       refreshHUD();
+      paintTraits();                     // the trait HUD (HUSTLE / HEAT / FOCUS)
       buildCity();                       // drop every member's space into the city
       setTimeout(buildCity, 1800);       // catch the player's own face once auth settles
       setInterval(refreshHUD, 4000);
@@ -847,6 +1014,7 @@
         entered = true;
         $("mcDoor").classList.add("is-gone");
         setTimeout(function () { $("mcDoor").remove(); }, 600);
+        MP.connect();                    // go live — see everyone else driving
         track("mcity_enter", { rep: rep(WORLD), touch: touch });
       });
 
