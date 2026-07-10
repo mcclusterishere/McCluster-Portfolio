@@ -19,6 +19,7 @@
         ticker: c.ticker, terms: c.terms, space: c.space, photo: c.photo,
         href: c.href, book: c.book, profile: c.href,
         square: c.square, stripe_acct: c.stripe_acct, charges_enabled: c.charges_enabled,
+        id_verified: c.id_verified,
       });
     });
     return {

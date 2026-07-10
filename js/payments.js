@@ -150,6 +150,25 @@ window.MCC_STRIPE = {
     }).catch(function () { return null; });
   },
 
+  /* the verified mark: asks verify-id for a Stripe Identity session —
+     government ID + selfie match on Stripe's secure page. Stripe holds
+     the documents; the webhook stamps only the verdict on the listing.
+     Caller must be signed in — the function checks the token itself. */
+  verifyId: function () {
+    var S = window.MCC_SUPA;
+    if (!S || !S.url || !S.token || !S.token()) return Promise.resolve(null);
+    return fetch(S.url + "/functions/v1/verify-id", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.token() },
+      body: "{}",
+    }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (j) {
+        if (r.ok) return j;
+        return { error: (j && (j.error || j.message)) || ("net " + r.status) };
+      });
+    }).catch(function () { return null; });
+  },
+
   payDeal: function (deal, rail) {
     var S = window.MCC_SUPA;
     if (!S || !S.url) return Promise.resolve(null);
