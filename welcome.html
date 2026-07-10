@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Welcome to the floor · Equity Uprise</title>
-  <meta name="description" content="The member walk-in: who you are, what you do, what you're here for — your listing dresses itself and the whole economy gets explained in two minutes.">
+  <title>Welcome to Equity Uprise · the walk-in</title>
+  <meta name="description" content="The Chaser walk-in: claim what you are, dress your card, drop your links, and learn exactly how you get paid (and never eat a processing fee) and how the game pays you to show up.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -13,8 +13,8 @@
     .wl { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 9rem; max-width: 34rem; margin: 0 auto; }
     .wl__kick { font-family: var(--micro); font-size: 0.64rem; letter-spacing: 0.24em; text-transform: uppercase; color: #c99d45; }
     .wl h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 9vw, 3.6rem); margin-top: 0.3rem; }
-    .wl__dots { display: flex; gap: 0.45rem; margin: 1.1rem 0 0.4rem; }
-    .wl__dot { width: 26px; height: 4px; border-radius: 100px; background: rgba(244,239,230,0.15); transition: background 0.3s; }
+    .wl__dots { display: flex; gap: 0.35rem; margin: 1.1rem 0 0.4rem; flex-wrap: wrap; }
+    .wl__dot { width: 20px; height: 4px; border-radius: 100px; background: rgba(244,239,230,0.15); transition: background 0.3s; }
     .wl__dot.is-on { background: linear-gradient(90deg, var(--ruby), var(--ruby-hot)); }
     .wl__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 18px; background: rgba(20,16,14,0.65);
       padding: 1.3rem 1.2rem 1.4rem; margin-top: 0.9rem; }
@@ -26,6 +26,7 @@
       color: var(--cream); font: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.65em 1.25em;
       transition: border-color 0.2s, background 0.2s; -webkit-tap-highlight-color: transparent; }
     .wl__chip.is-on { border-color: var(--ruby-hot); background: rgba(193,18,31,0.35); color: #fff; }
+    .wl__lbl { display: block; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cream-dim); margin: 0.9rem 0 -0.2rem; }
     .wl__in { width: 100%; background: rgba(10,8,7,0.75); border: 1px solid rgba(244,239,230,0.3); border-radius: 12px;
       color: var(--cream); font: inherit; font-size: max(16px, 1rem); padding: 0.85em 1em; margin-top: 0.7rem; }
     .wl__in:focus { outline: none; border-color: var(--ruby-hot); }
@@ -33,11 +34,15 @@
     .wl__ex { border-left: 3px solid #c99d45; padding: 0.15rem 0 0.15rem 0.9rem; margin-top: 0.9rem; }
     .wl__ex b { color: var(--cream); display: block; font-size: 0.9rem; }
     .wl__ex small { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.55; display: block; margin-top: 0.15rem; }
+    .wl__big { font-family: var(--display); font-weight: 400; text-transform: uppercase; color: var(--ruby-hot);
+      font-size: 1.6rem; line-height: 1; margin: 0.3rem 0 0.2rem; }
     .wl__go { display: block; width: 100%; border: 0; border-radius: 12px; cursor: pointer; font: inherit; font-weight: 800;
       font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 1.05em; color: #fff; margin-top: 1.1rem;
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); box-shadow: 0 8px 26px rgba(229,56,59,0.35); }
     .wl__skip { display: block; width: 100%; background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.78rem;
       color: rgba(244,239,230,0.5); text-decoration: underline; padding: 0.7em; margin-top: 0.2rem; }
+    .wl__back { background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.78rem; color: rgba(244,239,230,0.5);
+      padding: 0.3em 0; margin-top: 0.6rem; }
     .wl__msg { min-height: 1.2em; color: var(--cream); font-size: 0.85rem; margin-top: 0.5rem; }
   </style>
 </head>
@@ -49,7 +54,7 @@
 
   <main class="wl">
     <p class="wl__kick">Equity Uprise · the walk-in</p>
-    <h1 id="wlTitle">You're a<br>member now.</h1>
+    <h1 id="wlTitle">You're a<br>Chaser now.</h1>
     <div class="wl__dots" id="wlDots"></div>
     <div id="wlStage"></div>
   </main>
@@ -65,23 +70,98 @@
       "use strict";
       function $(id) { return document.getElementById(id); }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p || {}); }
+      function esc(s) { return String(s || "").replace(/"/g, "&quot;"); }
+      function escT(s) { return String(s || "").replace(/</g, "&lt;"); }
       var stage = $("wlStage");
-      var A = { roles: [], goals: [], area: "", headline: "", blurb: "", rate: "" };
+      var A = { roles: [], goals: [], area: "", headline: "", blurb: "", rate: "",
+                ig: "", music: "", web: "" };
       try {
         var ob = JSON.parse(localStorage.getItem("mcc_onboard") || "{}") || {};
         A.headline = ob.headline || ""; A.area = ob.area || ""; A.blurb = ob.blurb || "";
+        A.ig = ob.ig || ""; A.music = ob.music || ""; A.web = ob.web || "";
         if (ob.roles && ob.roles.length) A.roles = ob.roles.slice();
       } catch (e) {}
 
       // signed out? the door stands here too — then the walk begins
       if (!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) {
         stage.innerHTML = '<div class="wl__card"><h2>First, the door.</h2>' +
-          '<p>The walk-in starts the moment your account opens.</p><div id="wlDoor" style="margin-top:0.9rem"></div></div>';
+          '<p>The walk-in starts the moment your account opens — one tap, no email needed.</p><div id="wlDoor" style="margin-top:0.9rem"></div></div>';
         window.MCC_DOOR.mount($("wlDoor"), { ticker: true, context: "welcome", onDone: function () { location.reload(); } });
         return;
       }
 
-      var STEPS = 5, at = 0;
+      var ROLES = [["Music", "Artist / Music"], ["Beats", "Producer"], ["Photo", "Photographer"],
+        ["Video", "Videographer"], ["Web", "Web / Software"], ["Studios", "Studio"],
+        ["Stages", "Venue / Stage"], ["Brand", "Brand / Business"]];
+      var GOALS = [["booked", "Get booked & paid"], ["music", "Put my music on"], ["collab", "Find collaborators"],
+        ["credit", "Build my street credit"], ["back", "Back artists I believe in"], ["sell", "Sell my own drops"]];
+
+      var steps = [
+        function s0() {
+          card('<h2>Welcome, Chaser.</h2>' +
+            '<p><b>You just joined a private member association</b> — a floor where artists, operators, and the people ' +
+            'who back them deal directly: real deals, real records, your own ticker moved by real work. The next ' +
+            'few taps dress your profile and show you exactly how you get paid. Quick, then the floor is yours.</p>' + goBtn("Walk me in"));
+        },
+        function s1() {
+          card('<h2>Claim what you are.</h2><p>Pick <b>everything</b> that fits — you get one profile with many badges, ' +
+            'and each one you claim unlocks its own tools. You can add more later.</p>' +
+            chiprow(ROLES, A.roles, true) + goBtn());
+          wireChips(A.roles, true);
+        },
+        function s2() {
+          card('<h2>The card the floor sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
+            '<span class="wl__lbl">Your one-liner</span>' +
+            '<input class="wl__in" id="wlHead" type="text" placeholder="e.g. CT artist — Leader by Voice" value="' + esc(A.headline) + '">' +
+            '<span class="wl__lbl">Where you work</span>' +
+            '<input class="wl__in" id="wlArea" type="text" placeholder="e.g. Connecticut · travels" value="' + esc(A.area) + '">' +
+            '<span class="wl__lbl">Your rate in E⤴︎ — per job or hour (optional)</span>' +
+            '<input class="wl__in" id="wlRate" type="number" min="0" placeholder="e.g. 500" value="' + esc(A.rate) + '">' +
+            '<span class="wl__lbl">The pitch (optional)</span>' +
+            '<textarea class="wl__in" id="wlBlurb" placeholder="Your sound, your style, what working with you feels like">' + escT(A.blurb) + '</textarea>' + goBtn());
+        },
+        function s3() {
+          card('<h2>Drop your links.</h2><p>Where your people already are. These light up your profile and let fans ' +
+            'find your music, your feed, your world — right from your card.</p>' +
+            '<span class="wl__lbl">Instagram / socials</span>' +
+            '<input class="wl__in" id="wlIg" type="text" placeholder="@yourhandle or a link" value="' + esc(A.ig) + '">' +
+            '<span class="wl__lbl">Music — Spotify, Apple, SoundCloud</span>' +
+            '<input class="wl__in" id="wlMusic" type="text" placeholder="Link to your music" value="' + esc(A.music) + '">' +
+            '<span class="wl__lbl">Website / Linktree (optional)</span>' +
+            '<input class="wl__in" id="wlWeb" type="text" placeholder="linktr.ee/you or your site" value="' + esc(A.web) + '">' + goBtn());
+        },
+        function s4() {
+          card('<h2>What are you here for?</h2><p>This tunes what the floor shows you first.</p>' +
+            chiprow(GOALS, A.goals, true) + goBtn());
+          wireChips(A.goals, true);
+        },
+        function s5() {
+          card('<h2>How you get paid.</h2>' +
+            '<p class="wl__big">You keep 100%.</p>' +
+            '<p>Name your rate. When someone books you, <b>they pay one price and you receive your full rate — whole.</b> ' +
+            'The platform\'s cut is baked into the buyer\'s number on the back end, so <b>you never eat a processing fee. Ever.</b> ' +
+            'Not on a booking, not on a beat, not on a drop.</p>' +
+            '<div class="wl__ex"><b>E⤴︎ credit — earned, then cashed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
+            'Finish a deal and you earn credit on top of your pay. Credit you <b>earned by work cashes out</b>; credit you buy or get gifted spends on the floor. Nothing is fake — nothing mints unbacked.</small></div>' +
+            '<div class="wl__ex"><b>The equity pool — a stake for building the house</b><small>Every real deal draws 1% into a pool, and you accrue a stake that grows the more you move. It\'s a membership benefit, not a bill — it never comes out of your rate.</small></div>' +
+            goBtn("Almost done →"));
+        },
+        function s6() {
+          card('<h2>The game pays you to show up.</h2>' +
+            '<p>Equity Uprise runs like a city, and it rewards real moves — not clout, <b>action</b>.</p>' +
+            '<div class="wl__ex"><b>The Trap — up to 5 E⤴︎ just for setting up</b><small>Ten first moves in your Mission Control ' +
+            '(claim your card, drop a track, sign your first deal, bring a friend). Finish them and the house pays you up to 5 E⤴︎ — that\'s $5 for learning the floor.</small></div>' +
+            '<div class="wl__ex"><b>Badges & M City — level up your profile</b><small>Clear missions in the open world, earn badges that ' +
+            'light up your card and unlock archetypes. Your daily value goes up when you play.</small></div>' +
+            '<div class="wl__ex"><b>The Plug — get paid for life</b><small>Every Chaser has a share link. Bring 3 real signups and earn 1 E⤴︎ — ' +
+            'plus a <b>lifetime 1%</b> of everything the people you bring ever earn here. Build your team, eat forever.</small></div>' +
+            goBtn("Save my card & open the floor") +
+            '<button class="wl__skip" type="button" data-tour>…or take the guided tour first</button>' +
+            '<p class="wl__msg" id="wlMsg"></p>');
+        },
+      ];
+      var STEPS = steps.length, at = 0;
+
       function dots() {
         $("wlDots").innerHTML = "";
         for (var i = 0; i < STEPS; i++) {
@@ -90,7 +170,7 @@
           $("wlDots").appendChild(d);
         }
       }
-      function chiprow(list, picked, multi) {
+      function chiprow(list, picked) {
         return '<div class="wl__chips">' + list.map(function (c) {
           return '<button class="wl__chip' + (picked.indexOf(c[0]) !== -1 ? " is-on" : "") + '" type="button" data-c="' + c[0] + '">' + c[1] + "</button>";
         }).join("") + "</div>";
@@ -105,68 +185,34 @@
           });
         });
       }
-      function card(html) { stage.innerHTML = '<div class="wl__card">' + html + "</div>"; dots(); window.scrollTo(0, 0); }
+      function card(html) {
+        var back = at > 0 ? '<button class="wl__back" type="button" data-back>&#8592; back</button>' : "";
+        stage.innerHTML = '<div class="wl__card">' + html + "</div>" + back;
+        dots(); window.scrollTo(0, 0);
+      }
       function goBtn(label) { return '<button class="wl__go" type="button" data-next>' + (label || "Next") + '</button>'; }
 
-      var ROLES = [["Music", "Artist / Music"], ["Beats", "Producer"], ["Photo", "Photographer"], ["Video", "Videographer"], ["Web", "Web / Software"], ["Studios", "Studio"], ["Stages", "Venue / Stage"]];
-      var GOALS = [["booked", "Get booked & paid"], ["music", "Put my music on"], ["collab", "Find collaborators"], ["credit", "Build my street credit"], ["back", "Back artists I believe in"]];
-
-      var steps = [
-        function s0() {
-          card('<h2>Welcome to the floor.</h2>' +
-            '<p><b>You just joined a private association</b> — a floor where artists, operators, and the people who back them ' +
-            'deal directly: real deals, real records, your own ticker moved by real work. The next two minutes dress your ' +
-            'listing and hand you the keys. Two minutes, then the floor is yours.</p>' + goBtn("Walk me in"));
-        },
-        function s1() {
-          card('<h2>What\'s your hustle?</h2><p>Pick everything you do — this is how the floor finds you.</p>' +
-            chiprow(ROLES, A.roles, true) + goBtn());
-          wireChips(A.roles, true);
-        },
-        function s2() {
-          card('<h2>The card the floor sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
-            '<input class="wl__in" id="wlHead" type="text" placeholder="One line — e.g. Portraits & event photography" value="' + A.headline.replace(/"/g, "&quot;") + '">' +
-            '<input class="wl__in" id="wlArea" type="text" placeholder="Where you work — e.g. Atlanta metro" value="' + A.area.replace(/"/g, "&quot;") + '">' +
-            '<input class="wl__in" id="wlRate" type="number" min="0" placeholder="Your rate in E⤴︎ per job or hour (optional)">' +
-            '<textarea class="wl__in" id="wlBlurb" placeholder="The pitch — gear, style, what booking you feels like (optional)">' + A.blurb.replace(/</g, "&lt;") + '</textarea>' + goBtn());
-        },
-        function s3() {
-          card('<h2>What are you here for?</h2><p>This tunes what the platform shows you first.</p>' +
-            chiprow(GOALS, A.goals, true) + goBtn());
-          wireChips(A.goals, true);
-        },
-        function s4() {
-          card('<h2>How this economy works.</h2>' +
-            '<div class="wl__ex"><b>E⤴︎ credit — earned, never handed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
-            'Complete a deal: the worker earns 5%, the payer 1%. Credit earned by work can cash out; credit bought or gifted spends inside the floor. Nothing mints unbacked.</small></div>' +
-            '<div class="wl__ex"><b>Your Street Score — behavior is the bank</b><small>Payment history, finished deals, the community\'s word, ' +
-            'clean books, time in good standing. The same behavior that raises the score mints your credit. Only you see your numbers.</small></div>' +
-            '<div class="wl__ex"><b>Your ticker — moved by real work</b><small>Deals kept, ratings earned, plays counted — the floor prices you in points, publicly. ' +
-            'Your listing goes live after a human review; until then everything else already works.</small></div>' +
-            goBtn("Save my card & open the floor") +
-            '<button class="wl__skip" type="button" data-tour>…or save and take the guided tour first</button>' +
-            '<p class="wl__msg" id="wlMsg"></p>');
-        },
-      ];
-
       function harvest() {
-        var h = $("wlHead"), a = $("wlArea"), r = $("wlRate"), b = $("wlBlurb");
-        if (h) A.headline = h.value.trim();
-        if (a) A.area = a.value.trim();
-        if (r) A.rate = r.value.trim();
-        if (b) A.blurb = b.value.trim();
+        var map = { wlHead: "headline", wlArea: "area", wlRate: "rate", wlBlurb: "blurb",
+                    wlIg: "ig", wlMusic: "music", wlWeb: "web" };
+        Object.keys(map).forEach(function (id) { var el = $(id); if (el) A[map[id]] = el.value.trim(); });
       }
       function save(then) {
         var fields = { headline: A.headline || null, area: A.area || null, blurb: A.blurb || null };
         if (A.roles.length) fields.roles = A.roles;
         $("wlMsg") && ($("wlMsg").textContent = "Dressing your card…");
-        // the answers ride the listing: goals + rate merge into terms so
+        // the answers ride the listing: goals, rate, and links merge into terms so
         // the desk (and the owner's People room) can read them later
         window.MCC_NET.myListing().catch(function () { return null; }).then(function (mine) {
           var terms = (mine && mine.terms) || {};
           if (A.rate) terms.rate = +A.rate;
           if (A.goals.length) terms.goals = A.goals;
-          if (A.rate || A.goals.length || mine) fields.terms = terms;
+          var links = {};
+          if (A.ig) links.ig = A.ig;
+          if (A.music) links.music = A.music;
+          if (A.web) links.web = A.web;
+          if (A.ig || A.music || A.web) terms.links = links;
+          if (A.rate || A.goals.length || A.ig || A.music || A.web || mine) fields.terms = terms;
           return window.MCC_NET.saveListing(fields);
         }).catch(function () {}).then(function () {
           try {
@@ -185,6 +231,8 @@
           if (at === STEPS - 1) { save(function () { location.href = "market.html#yours"; }); return; }
           at++; track("welcome_step", { step: at }); paint();
         });
+        var bk = stage.querySelector("[data-back]");
+        if (bk) bk.addEventListener("click", function () { harvest(); at--; paint(); });
         var tr = stage.querySelector("[data-tour]");
         if (tr) tr.addEventListener("click", function () {
           harvest();
