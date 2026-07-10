@@ -1,10 +1,12 @@
 // STRIPE-WEBHOOK — the money marks itself. When Checkout completes,
 // the deal it carries flips to 'paid' with the service role; nobody
 // taps "Mark paid" for card money ever again. On completion the
-// database's mint trigger then pays the M Tokens.
+// database's mint trigger then pays the M Tokens. When Stripe
+// Identity verifies a member's government ID, the same wire stamps
+// the verified mark on their listing.
 // Secrets: STRIPE_SK, STRIPE_WEBHOOK_SECRET, SB_URL, SB_SERVICE_KEY.
 // Stripe dashboard → Webhooks → endpoint = this function's URL,
-// event: checkout.session.completed.
+// events: checkout.session.completed, identity.verification_session.verified.
 import Stripe from "npm:stripe@14";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SK")!);
@@ -22,14 +24,15 @@ Deno.serve(async (req) => {
     return new Response("bad signature", { status: 400 });
   }
 
+  const H = {
+    apikey: SB_KEY,
+    Authorization: `Bearer ${SB_KEY}`,
+    "Content-Type": "application/json",
+    Prefer: "return=minimal",
+  };
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const H = {
-      apikey: SB_KEY,
-      Authorization: `Bearer ${SB_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    };
 
     // a paid deal flips itself
     const dealId = session.metadata?.deal_id;
@@ -54,6 +57,23 @@ Deno.serve(async (req) => {
         });
         if (!r2.ok && r2.status !== 409) console.error("mint failed", session.id, r2.status);
       }
+    }
+  }
+
+  // Stripe Identity confirmed a real person behind the account: stamp
+  // the verified mark on their listing. Stripe keeps the documents;
+  // only the verdict and the verified name land here.
+  if (event.type === "identity.verification_session.verified") {
+    const vs = event.data.object as Stripe.Identity.VerificationSession;
+    const uid = vs.metadata?.uid;
+    if (uid) {
+      const doc = vs.verified_outputs;
+      const name = [doc?.first_name, doc?.last_name].filter(Boolean).join(" ") || null;
+      const r = await fetch(`${SB_URL}/rest/v1/providers?owner=eq.${uid}`, {
+        method: "PATCH", headers: H,
+        body: JSON.stringify({ id_verified: true, verified_name: name }),
+      });
+      if (!r.ok) console.error("verify stamp failed", uid, r.status);
     }
   }
   return new Response("ok");

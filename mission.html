@@ -470,8 +470,11 @@
           $("tabNMembers").textContent = applied.length || "";
 
           $("mcListings").innerHTML = listings.length ? listings.map(function (l) {
+            var idMark = (l.id_verified === true || l.charges_enabled === true)
+              ? '<span class="mc__tag" style="color:#2fbf71;border-color:rgba(47,191,113,0.5)">✓ ID' + (l.verified_name ? " · " + esc(l.verified_name) : "") + "</span>"
+              : '<span class="mc__tag" style="opacity:0.55">no ID yet</span>';
             return '<div class="mc__row' + (l.status === "pending" ? " is-hot" : "") + '"><h3>' + esc(l.name) +
-              '<span class="mc__tag">' + esc(l.status) + "</span></h3>" +
+              '<span class="mc__tag">' + esc(l.status) + "</span>" + idMark + "</h3>" +
               "<p>" + esc((l.roles || []).join(" · ")) + (l.area ? " — " + esc(l.area) : "") + "</p>" +
               (l.blurb ? "<p>" + esc(l.blurb) + "</p>" : "") +
               (l.review_note ? '<p style="color:var(--ruby-hot)">Note on file: ' + esc(l.review_note) + "</p>" : "") +
