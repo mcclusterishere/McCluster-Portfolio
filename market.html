@@ -1585,6 +1585,7 @@
         $("xcList").innerHTML = realHtml + ROWS.map(function (r, i) {
           return '<button class="xc__row" type="button" data-i="' + i + '">' +
             '<span class="xc__id"><b>$' + esc(r.tick) +
+            (r.onTape ? '<span class="xc__unclaimed" style="color:#00c805;border-color:rgba(0,200,5,0.5)">&#9679; live</span>' : "") +
             (r.p.entity === "program" ? '<span class="xc__unclaimed" style="color:#2f9e62;border-color:rgba(47,158,98,0.5)">program</span>' : "") +
             (r.p.claimed === false ? '<span class="xc__unclaimed">unclaimed</span>' : "") +
             "</b><small>" + esc(r.p.name) +
@@ -1754,19 +1755,42 @@
         c.textContent = (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%";
         c.className = "xc__chg " + (r.chg >= 0 ? "up" : "down");
         var rate = (r.p.space && r.p.space.rate) || (r.p.terms && r.p.terms.floor) || null;
-        var hs = seed((r.p.slug || r.p.id) + "st");
         var lo = Math.min.apply(null, r.stock.series.map(function (p) { return p.v; }));
         var hi = Math.max.apply(null, r.stock.series.map(function (p) { return p.v; }));
+        /* no theater in the stat grid: a tape row shows the real engine,
+           an unscored row says PROJECTION to your face */
         $("xcDStats").innerHTML =
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
-          '<div class="xc__stat"><small>Open</small><b>' + fmt(r.open) + "</b></div>" +
-          '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>" +
-          '<div class="xc__stat"><small>Volume</small><b>' + ((hs % 90) + 12) + " prints</b></div>" +
-          '<div class="xc__stat"><small>Backers</small><b>' + ((hs >>> 6) % 34 + 3) + "</b></div>" +
-          '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
-          '<div class="xc__stat"><small>Session</small><b>14 days</b></div>' +
+          (r.onTape
+            ? '<div class="xc__stat" style="border-color:rgba(0,200,5,0.45)"><small>This price</small><b style="color:#00c805">Real — the game tape</b></div>' +
+              '<div class="xc__stat"><small>Game points</small><b>' + Math.round(r.val * 100).toLocaleString() + "</b></div>"
+            : '<div class="xc__stat" style="border-color:rgba(216,186,124,0.5)"><small>This chart</small><b style="color:#d8ba7c">Projection — not scored yet</b></div>' +
+              '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>") +
+          ((r.stock.dollars || 0) > 0 ? '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" : "") +
           (r.engage ? '<div class="xc__stat"><small>The crowd &middot; plays</small><b>' + r.engage.toLocaleString() + "</b></div>" : "");
+        /* REAL STATS: the swept platform numbers ride the sheet for any
+           desk on the tape — Spotify, YouTube, Last.fm, in-app plays,
+           verified identifiers. Straight from external_signals; nothing
+           invented. Needs one paste: docs/signals-board.sql. */
+        if (r.onTape && window.MCC_SUPA && window.MCC_SUPA.url) {
+          var sigSlug = r.p.slug || r.p.id;
+          fetch(window.MCC_SUPA.url + "/rest/v1/rpc/board_signals", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+            body: JSON.stringify({ p_slug: sigSlug }) })
+            .then(function (r2) { return r2.ok ? r2.json() : null; })
+            .then(function (j) {
+              if (!j || !current || (current.p.slug || current.p.id) !== sigSlug) return;
+              var nice = { spotify: "Spotify", youtube: "YouTube", lastfm: "Last.fm", songstats: "Songstats" };
+              var bits = (j.signals || []).map(function (s) {
+                return '<div class="xc__stat" style="border-color:rgba(69,182,255,0.4)"><small>' +
+                  (nice[s.source] || esc(s.source)) + " · " + esc(s.kind) + '</small><b>' + (+s.value).toLocaleString() + "</b></div>";
+              });
+              if (+j.plays) bits.push('<div class="xc__stat" style="border-color:rgba(69,182,255,0.4)"><small>In-app plays</small><b>' + (+j.plays).toLocaleString() + "</b></div>");
+              if (+j.identifiers) bits.push('<div class="xc__stat" style="border-color:rgba(69,182,255,0.4)"><small>Identifiers</small><b>' + (+j.verified || 0) + " verified · " + (+j.identifiers) + " banked</b></div>");
+              if (bits.length) $("xcDStats").innerHTML += bits.join("");
+            }).catch(function () {});
+        }
         /* anyone can read anyone's chart — claiming it is the door in */
         $("xcClaim").innerHTML = r.p.claimed === false
           ? '<div class="mk__card" style="margin-top:0.9rem;border-color:rgba(216,186,124,0.5)">' +

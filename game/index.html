@@ -574,7 +574,14 @@ let acc = 0, last = performance.now(), paused = false, frames = 0, fpsAt = last;
 addEventListener("blur", () => { paused = true; });
 addEventListener("focus", () => { paused = false; last = performance.now(); });
 const dev = new URLSearchParams(location.search).has("dev");
-if (dev) document.getElementById("dev").style.display = "block";
+if (dev) {
+  document.getElementById("dev").style.display = "block";
+  // dev-only state window so automated preflight can read the sim
+  window.__BO = function () {
+    return { mode, rep, wave, streak, hp: P ? P.hp : null,
+      foes: (foes || []).map((f) => ({ x: f.x - P.x + vw / 2, y: f.y - P.y + vh / 2, heavy: f.heavy })) };
+  };
+}
 function frame(now) {
   requestAnimationFrame(frame);
   if (paused) return;
