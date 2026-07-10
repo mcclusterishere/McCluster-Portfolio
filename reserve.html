@@ -53,6 +53,13 @@
       behind it, dollar for dollar.</p>
     <div class="rv__grid" id="rvVault"><div class="rv__stat"><b>…</b><small>opening the vault</small></div></div>
 
+    <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem;margin:2rem 0 0.3rem">The Treasury</h2>
+    <p class="rv__sub" style="margin-top:0.3rem"><b>The pool learns the chain.</b> Part of the reserve buys real,
+      existing cryptocurrency on a licensed exchange — held by the org, attested here, never custodied by the app.
+      Members who finish <a href="academy.html" style="color:#c99d45">the Web3 Academy</a> get their first gas
+      on the house.</p>
+    <div class="rv__grid" id="rvTreasury"><div class="rv__stat"><b>…</b><small>opening the treasury</small></div></div>
+
     <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem;margin:2rem 0 0.3rem">The One Percent Fund</h2>
     <p class="rv__sub" style="margin-top:0.3rem"><b>One percent for the new one percent.</b> A slice of every deal
       flows into a community chest — taken from the house's own fee, never the paying side's price. It isn't any one
@@ -91,6 +98,19 @@
           stat("$" + (+j.redeemed_paid || 0).toFixed(0), "paid out for work, lifetime") +
           stat("$" + (+j.reserve_dollars || 0).toFixed(0), "reserve attested" + (j.attested_at ? " · " + new Date(j.attested_at).toLocaleDateString() : "")) +
           (cover === null ? stat("∞", "coverage — nothing owed yet") : stat(cover.toFixed(0) + "%", "coverage of redeemable"));
+      }).catch(function () {});
+
+      fetch(S.url + "/rest/v1/treasury_holdings?select=asset,quantity,note,at&order=at.desc", {
+        headers: { apikey: S.key, Authorization: "Bearer " + S.key },
+      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
+        var g = document.getElementById("rvTreasury");
+        if (!g) return;
+        function stat(n, l) { return '<div class="rv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+        if (!rows) { g.innerHTML = stat("—", "the treasury opens after one paste: docs/web3-schema.sql"); return; }
+        if (!rows.length) { g.innerHTML = stat("0", "holdings attested — the first buy lands here"); return; }
+        g.innerHTML = rows.map(function (h) {
+          return stat((+h.quantity).toFixed(4) + " " + h.asset, h.note || ("attested " + new Date(h.at).toLocaleDateString()));
+        }).join("");
       }).catch(function () {});
 
       fetch(S.url + "/rest/v1/rpc/vault_stats", {
