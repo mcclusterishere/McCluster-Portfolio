@@ -125,11 +125,14 @@
     <p class="mc__arc" id="shArc"></p>
     <div class="mc__ms" id="shMs"></div>
     <div id="shLock"></div>
+    <div id="shProof"></div>
   </div>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script>
     (function () {
@@ -490,6 +493,44 @@
               try { localStorage.setItem("mcc_mcity_v1", JSON.stringify(v)); } catch (e) {}
             });
           });
+        }
+        /* the proof door: real-world missions stop running on the honor
+           system — a photo or clip goes to the private vault, the desk
+           (and its AI eyes) rule on it */
+        var pf = $("shProof");
+        pf.innerHTML = "";
+        if (open && window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          pf.innerHTML = '<div class="mc__locknote" style="margin-top:0.7rem">📸 <b>Ran a mission in the real world?</b> ' +
+            'Turn in the proof — a photo or a short clip. The desk reviews every one; fakes get read.' +
+            '<div style="margin-top:0.6rem"><button class="btn btn--ghost" type="button" data-proof-btn style="font-size:0.72rem;padding:0.5em 1.1em">Upload the proof</button>' +
+            '<input type="file" accept="image/*,video/*" hidden data-proof-file></div>' +
+            '<span data-proof-msg style="display:block;margin-top:0.4rem;color:#d8ba7c"></span></div>';
+          var btn = pf.querySelector("[data-proof-btn]");
+          var inp = pf.querySelector("[data-proof-file]");
+          var msg = pf.querySelector("[data-proof-msg]");
+          btn.addEventListener("click", function () { inp.click(); });
+          inp.addEventListener("change", function () {
+            var f = inp.files && inp.files[0];
+            if (!f) return;
+            if (f.size > 8000000) { msg.textContent = "Keep it under 8 MB — a photo or a short clip."; return; }
+            msg.textContent = "Filing it in the vault…";
+            var ms = b.missions(WORLD);
+            var open1 = "";
+            for (var mi = 0; mi < ms.length; mi++) { if (!ms[mi][1]) { open1 = ms[mi][0]; break; } }
+            window.MCC_NET.proofFile(f, b.name + (open1 ? " — " + open1 : " — district mission"), "")
+              .then(function () {
+                msg.textContent = "Filed. The desk reviews it — the city marks it when it passes.";
+                track("mcity_proof_filed", { d: b.id });
+              })
+              .catch(function (e) {
+                msg.textContent = /signed out/.test(String(e)) ? "Your session blinked — sign in and retry." :
+                  /vault 4/.test(String(e)) ? "The vault isn't armed yet — the desk knows." :
+                  "It didn't take — try a smaller file.";
+              });
+          });
+        } else if (open) {
+          pf.innerHTML = '<div class="mc__locknote" style="margin-top:0.7rem">📸 Real-world missions pay when you can prove them — ' +
+            '<a href="market.html#yours" style="color:#d8ba7c">open your account</a> to turn in proof.</div>';
         }
         document.body.classList.add("mc-open");
         track("mcity_district", { d: b.id, open: open });

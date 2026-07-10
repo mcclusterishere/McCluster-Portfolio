@@ -246,6 +246,25 @@
         .then(function (rows) { return rows && rows[0]; });
     },
 
+    /* mission proofs: the file goes to the private vault (only the owner
+       and the desk can ever read it), the row goes on the docket */
+    proofFile: function (file, mission, note) {
+      return S.token().then(function (t) {
+        if (!t) throw new Error("signed out");
+        var path = S.uid() + "/" + Date.now() + "-" +
+          String(file.name || "proof").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-60);
+        return fetch(S.url + "/storage/v1/object/proofs/" + path, {
+          method: "POST",
+          headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": file.type || "application/octet-stream" },
+          body: file,
+        }).then(function (r) {
+          if (!r.ok) throw new Error("vault " + r.status);
+          return authed("mission_proofs", { method: "POST", prefer: "return=representation",
+            body: { mission: mission, note: note || "", kind: file.type || "", path: path } });
+        }).then(function (rows) { return rows && rows[0]; });
+      });
+    },
+
     admin: {
       listings: function () { return authed("providers?order=created_at.desc&select=*"); },
       setListing: function (id, status, note) {
@@ -280,6 +299,38 @@
       },
       setIntake: function (id, status) {
         return authed("intake?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
+      },
+      /* the proof docket: list, rule, open the file, call the AI eyes */
+      proofs: function () { return authed("mission_proofs?order=at.desc&select=*&limit=100"); },
+      setProof: function (id, status, verdict) {
+        var body = { status: status };
+        if (verdict !== undefined) body.verdict = verdict;
+        return authed("mission_proofs?id=eq." + id, { method: "PATCH", body: body, prefer: "return=representation" });
+      },
+      proofUrl: function (path) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/storage/v1/object/sign/proofs/" + path, {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ expiresIn: 3600 }),
+          }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+            return j && j.signedURL ? S.url + "/storage/v1" + j.signedURL : null;
+          });
+        });
+      },
+      scanProof: function (id) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/functions/v1/scan-proof", {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id }),
+          }).then(function (r) {
+            return r.json().catch(function () { return null; }).then(function (j) {
+              if (r.ok) return j;
+              return { error: (j && (j.error || j.message)) || ("net " + r.status) };
+            });
+          });
+        });
       },
     },
   };
