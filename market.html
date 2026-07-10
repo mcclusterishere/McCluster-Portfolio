@@ -772,7 +772,7 @@
     </section>
   </main>
 
-  <!-- M Pay's send sheet: pick who → confirm → done -->
+  <!-- E-Up Pay's send sheet: pick who → confirm → done -->
   <div class="mp__veil" id="mpVeil"></div>
   <div class="mp__sheet" id="mpSheet" role="dialog" aria-modal="true" aria-label="Send the deal">
     <button class="mp__x" id="shX" type="button" aria-label="Close">✕</button>
@@ -2291,6 +2291,8 @@
           });
           return;
         }
+        var welcomeDue = false;
+        try { welcomeDue = !!localStorage.getItem("mcc_welcome_pending"); } catch (e) {}
         var face = roleFace(ME && ME.roles);
         var tick = ME ? window.MCC_STOCK.ticker(ME.ticker, ME.name) : "MMBR";
         var color = (ME && ME.badgeColor) || "#e5383b";
@@ -2302,6 +2304,11 @@
           '<span class="mp__role">' + esc(FACE_LABEL[face]) + "</span></span></div>" +
           '<div id="youBody"></div>';
         var body = $("youBody"), html = "";
+        if (welcomeDue) {
+          html += '<a class="mp__card" href="welcome.html" style="display:block;text-decoration:none;border-color:rgba(201,157,69,0.55)">' +
+            '<span class="mp__lblx" style="color:#c99d45">Finish your walk-in — two minutes</span>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0;color:var(--cream)">Dress your card for the floor and get the whole economy explained — lanes, rate, what E⤴\uFE0E is, how the score works. It\u2019s how the floor finds you.</p></a>';
+        }
 
         if (!ME) {
           html += '<p class="mp__note">Set up your listing below and the whole network can find and book you — you keep 100% of your rate.</p>';

@@ -56,7 +56,7 @@
     { id: "floor", label: "Walk the floor — open the live market", href: "market.html#floor" },
     { id: "play", label: "Play a track — press play on any song", href: "app.html" },
     { id: "spaces", label: "Scout a room — open the Spaces floor", href: "spaces.html" },
-    { id: "mpay", label: "Touch the money — open M Pay", href: "market.html#pay" },
+    { id: "mpay", label: "Touch the money — open E-Up Pay", href: "market.html#pay" },
     { id: "worth", label: "Face your number — check your worth", href: "profile.html" },
     { id: "deal", label: "Move on somebody — send a deal or request", href: "market.html#build" },
   ];

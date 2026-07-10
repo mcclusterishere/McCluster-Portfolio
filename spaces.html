@@ -255,7 +255,7 @@
       <input class="sp__in sp__hidden" id="spContact" type="text" placeholder="Your name · email or phone">
 
       <div class="sp__total">
-        <span><span class="sp__tnum" id="spTotal">$0</span><small id="spTotalSub"> — pick a date &amp; window</small></span>
+        <span><span class="sp__tnum" id="spTotal">0 E⤴︎</span><small id="spTotalSub"> — pick a date &amp; window</small></span>
         <a class="btn btn--ruby" id="spSend" href="#" style="align-self:center">Request to book</a>
       </div>
       <p class="sp__fee" id="spFee"></p>
@@ -391,7 +391,7 @@
           return '<button class="sp__card" type="button" data-i="' + ALL.indexOf(p) + '">' +
             '<span class="sp__card-img"><img src="' + esc(photoOf(p)) + '" alt="' + esc(p.name) + '" loading="lazy">' +
             '<span class="sp__card-seal"><img src="assets/img/m-mark.png" alt="M-Verified"><b>$' + esc(tickOf(p)) + "</b></span>" +
-            '<span class="sp__card-rate">$' + rateOf(p) + "<small>/hr</small></span>" +
+            '<span class="sp__card-rate">' + rateOf(p) + "<small> E⤴︎/hr</small></span>" +
             (promoOf(p) ? '<span class="sp__promo">★ ' + esc(promoOf(p)) + "</span>" : "") +
             '<span class="sp__card-name"><h3>' + esc(p.name) + "</h3>" +
             '<p class="sp__where">' + esc(p.area || (p.roles || []).join(" · ")) + "</p></span></span>" +
@@ -432,7 +432,7 @@
         $("spPhoto").src = photoOf(p);
         $("spPhoto").alt = p.name;
         $("spName").textContent = p.name;
-        $("spWhere").textContent = (p.area ? p.area + " · " : "") + "$" + rateOf(p) + "/hr · M-Verified";
+        $("spWhere").textContent = (p.area ? p.area + " · " : "") + rateOf(p) + " E⤴︎/hr · M-Verified";
         $("spAm").innerHTML = amChips(amenOf(p), p.badgeColor, true);
         $("spHrs").textContent = "2";
         $("spContact").classList.toggle("sp__hidden", AUTHED);
@@ -495,9 +495,9 @@
 
       function total() {
         var rate = rateOf(sel.space), amt = rate * sel.hours;
-        $("spTotal").textContent = "$" + amt.toLocaleString();
+        $("spTotal").textContent = amt.toLocaleString() + " E⤴︎";
         var ready = sel.date && sel.slot !== null;
-        $("spTotalSub").textContent = ready ? " — " + sel.hours + " hr @ $" + rate + "/hr" : " — pick a date & window";
+        $("spTotalSub").textContent = ready ? " — " + sel.hours + " hr @ " + rate + " E⤴︎/hr" : " — pick a date & window";
         $("spFee").textContent = ready ? "Plus a small booking fee — shown before you confirm." : "";
         return amt;
       }
@@ -532,7 +532,7 @@
           window.MCC_NET.requestBooking({
             provider_id: p.cloud_id || null, provider_slug: p.slug || p.id,
             name: contact.split("·")[0].trim(), contact: contact, date_wanted: when,
-            details: "[Space booking · $" + amt + "] " + title + ($("spNote").value.trim() ? " — " + $("spNote").value.trim() : ""),
+            details: "[Space booking · " + amt + " E⤴︎] " + title + ($("spNote").value.trim() ? " — " + $("spNote").value.trim() : ""),
           }).then(function () { done("request"); }).catch(fail);
         }
       });
