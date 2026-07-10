@@ -1,6 +1,9 @@
 # BLOCK OPS — deploy record
 
-- **Play URL:** https://merry-puffin-231.higgsfield.gg/
+- **Home (branded, canonical):** https://mcclusterishere.github.io/McCluster-Portfolio/game/
+  — served from this repo on the owner's own site; Our World doors here.
+  Moves to equityuprise.org with the domain.
+- **Higgsfield marketplace mirror:** https://merry-puffin-231.higgsfield.gg/
 - **game_id:** `65b294b5-111e-42d4-a4b2-f785204c1153` (pass this back to
   `deploy_game` to update in place — never omit it on an update or a
   second game with a new URL is created)
