@@ -261,10 +261,19 @@
         var tick = window.MCC_STOCK ? window.MCC_STOCK.ticker(P.ticker, P.name) : (P.ticker || "");
         document.title = P.name + " · The Page · M Network";
         $("pgName").textContent = P.name;
+        var FACE_BADGE = { Music: "🎙 Artist", Beats: "🎛 Producer", Photo: "📸 Photographer",
+          Video: "🎬 Videographer", Web: "💻 Builder", Studios: "🎚 Studio", Stages: "🏟 Stage" };
         $("pgTick").innerHTML = "$" + esc(tick) +
           (P.id_verified === true || P.charges_enabled === true
             ? ' <span style="color:#2fbf71;font-size:0.8em">✓ ID-Verified</span>' : "") +
-          esc(P.roles && P.roles.length ? " · " + P.roles.join(" · ") : "");
+          ((P.roles || []).length
+            ? '<span style="display:flex;flex-wrap:wrap;gap:0.35rem;justify-content:center;margin-top:0.5rem">' +
+              P.roles.map(function (rr) {
+                return '<span style="border:1px solid rgba(201,157,69,0.55);border-radius:100px;padding:0.3em 0.9em;' +
+                  'font-size:0.68rem;font-weight:700;color:#c99d45;background:rgba(201,157,69,0.1)">' +
+                  (FACE_BADGE[rr] || "★ " + esc(rr)) + "</span>";
+              }).join("") + "</span>"
+            : "");
         $("pgHeadline").textContent = P.headline || "";
         var links = (PAGE.links || []).filter(function (l) { return l && l.href; });
         if (!links.length && P.href) links = [{ label: "The site", href: P.href }];

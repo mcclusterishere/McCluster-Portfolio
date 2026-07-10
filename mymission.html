@@ -31,6 +31,15 @@
     .mm__bar i { display: block; height: 100%; background: linear-gradient(90deg, #7a5a17, #c99d45); }
     .mm__msg { color: #2fbf71; font-size: 0.85rem; min-height: 1.1em; margin-top: 0.5rem; }
     .mm__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+    .mm__badges { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+    .mm__badge { display: inline-flex; align-items: center; gap: 0.4em; border: 1px solid rgba(201,157,69,0.55);
+      border-radius: 100px; padding: 0.45em 1.05em; font-size: 0.74rem; font-weight: 700; color: #c99d45;
+      background: rgba(201,157,69,0.08); }
+    .mm__badge.is-add { border-style: dashed; border-color: rgba(244,239,230,0.3); color: var(--cream-dim);
+      background: none; text-decoration: none; font-weight: 400; }
+    .mm__card.is-locked { opacity: 0.45; pointer-events: none; filter: grayscale(0.4); }
+    .mm__lock { font-size: 0.76rem; color: #c99d45; margin: 1.2rem 0 -0.9rem; }
+    .mm__lock a { color: #c99d45; }
   </style>
 </head>
 <body class="songpage">
@@ -99,8 +108,13 @@
         });
       }
 
-      Promise.all([auth("my_mission"), auth("claim_gauntlet")]).then(function (r) {
-        var m = r[0], g = r[1];
+      var ADMIN = (window.MCC_SUPA.email && window.MCC_SUPA.email()) === "matthew@mccluster.org";
+      var FACE_BADGE = { Music: "🎙 Artist", Beats: "🎛 Producer", Photo: "📸 Photographer",
+        Video: "🎬 Videographer", Web: "💻 Builder", Studios: "🎚 Studio", Stages: "🏟 Stage" };
+
+      Promise.all([auth("my_mission"), auth("claim_gauntlet"),
+        window.MCC_NET.myListing().catch(function () { return null; })]).then(function (r) {
+        var m = r[0], g = r[1], mine = r[2];
         if (!m) {
           host.innerHTML = '<div class="mm__card"><h2>The room arms with one paste.</h2>' +
             '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live.</p></div>';
@@ -110,8 +124,23 @@
         var paid = (g && +g.paid_total) || 0;
         var minted = (g && +g.minted) || 0;
         function stat(n, l) { return '<div class="mm__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+        /* the room's law: locked rooms show, grayed, with the mission that
+           opens them — the ADMIN's room grays nothing, missions or not */
+        function unlocked(key) { return ADMIN || done.indexOf(key) !== -1; }
+        function lockLine(key, label, href) {
+          return unlocked(key) ? "" :
+            '<p class="mm__lock">🔒 Grayed until you ' + label + ' — <a href="' + href + '">run the mission →</a></p>';
+        }
+        function lockCls(key) { return unlocked(key) ? "" : " is-locked"; }
 
-        var html = '<div class="mm__card"><p class="mm__k">The gauntlet · ' + done.length + "/10 · " +
+        /* one profile, every personality — worn as badges */
+        var roles = (mine && mine.roles) || [];
+        var badges = roles.map(function (rr) {
+          return '<span class="mm__badge">' + (FACE_BADGE[rr] || "★ " + esc(rr)) + "</span>";
+        }).join("") + '<a class="mm__badge is-add" href="welcome.html">+ add a personality</a>';
+
+        var html = '<div class="mm__badges">' + badges + "</div>";
+        html += '<div class="mm__card"><p class="mm__k">The gauntlet · ' + done.length + "/10 · " +
           paid.toFixed(2) + ' of 5.00 E⤴︎ claimed</p>' +
           "<h2>Run the whole app, get paid for it.</h2>" +
           '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 5 * 100) + '%"></i></div>' +
@@ -124,7 +153,8 @@
           }).join("") +
           '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move.</p></div>';
 
-        html += '<div class="mm__card"><p class="mm__k">Your traffic — who came to YOU</p>' +
+        html += lockLine("card_live", "dress your card", "market.html#yours");
+        html += '<div class="mm__card' + lockCls("card_live") + '"><p class="mm__k">Your traffic — who came to YOU</p>' +
           "<h2>The numbers on your name.</h2><div class=\"mm__grid\">" +
           stat((+m.page_views || 0).toLocaleString(), "landing-page visits") +
           stat((+m.floor_opens || 0).toLocaleString(), "ticker opens on the floor") +
@@ -133,7 +163,8 @@
           stat((+m.followers || 0).toLocaleString(), "supporters") + "</div>" +
           '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Your landing page is <b>page.html?who=' + esc(m.slug || "") + "</b> — every visit counts here, nowhere else.</p></div>";
 
-        html += '<div class="mm__card"><p class="mm__k">Your listing data</p>' +
+        html += lockLine("walk_in", "finish the walk-in", "welcome.html");
+        html += '<div class="mm__card' + lockCls("walk_in") + '"><p class="mm__k">Your listing data</p>' +
           "<h2>The business, by the numbers.</h2><div class=\"mm__grid\">" +
           stat((+m.tracks || 0), "records on the rack") +
           stat((+m.posts || 0), "wire posts") +
@@ -148,7 +179,8 @@
           '<a class="btn btn--ruby" href="market.html#yours">Open the desk — wallet &amp; tools</a>' +
           '<a class="btn btn--ghost" href="page.html?who=' + esc(m.slug || "") + '">See your public page</a></div></div>';
 
-        html += '<div class="mm__card"><p class="mm__k">The outside platforms</p>' +
+        html += lockLine("first_track", "rack your first record", "market.html#yours");
+        html += '<div class="mm__card' + lockCls("first_track") + '"><p class="mm__k">The outside platforms</p>' +
           "<h2>Spotify · Apple · the merge.</h2>" +
           '<p class="mm__sub" style="margin-top:0.2rem">Your streaming numbers from the outside platforms merge into this room when the ' +
           "platform keys land — one place for everything your music does, here and out there. Dark until real, never fake.</p></div>";

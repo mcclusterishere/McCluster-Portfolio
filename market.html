@@ -2453,7 +2453,9 @@
           '<span class="mp__idtick">$' + esc(tick) + "</span>" +
           "<span><b>" + esc((ME && ME.name) || (window.MCC_SUPA.email() || "Your room")) + "</b>" +
           "<small>" + (ME ? esc(ME.status === "live" ? "● Live on the floor" : ME.status) : "No listing yet") + "</small>" +
-          '<span class="mp__role">' + esc(faces.map(function (f) { return FACE_LABEL[f]; }).join(" · ")) + "</span></span></div>" +
+          faces.map(function (f) {
+            return '<span class="mp__role" style="margin-right:0.3rem;border:1px solid rgba(201,157,69,0.5);border-radius:100px;padding:0.2em 0.8em;color:#c99d45">' + esc(FACE_LABEL[f]) + "</span>";
+          }).join("") + "</span></div>" +
           '<div id="youBody"></div>';
         var body = $("youBody"), html = "";
         if (welcomeDue) {
