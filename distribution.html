@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Distribution Desk · Equity Uprise</title>
+  <meta name="description" content="Connect every platform you distribute and earn through — pick your distributor, open your reports and bank in one tap, and upload your earnings CSV. Built for every industry.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .ds { min-height: 100dvh; max-width: 46rem; margin: 0 auto; padding: clamp(5.2rem, 10vh, 6.5rem) clamp(1rem, 4vw, 2.2rem) 9rem; }
+    .ds h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 4.2rem); }
+    .ds__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; max-width: 54ch; } .ds__sub b { color: var(--cream); }
+    .ds__tabs { display: flex; gap: 0.45rem; overflow-x: auto; margin: 1.5rem 0 1rem; padding-bottom: 0.3rem; -webkit-overflow-scrolling: touch; }
+    .ds__tab { flex: none; border: 1px solid rgba(244,239,230,0.2); background: rgba(244,239,230,0.04); color: var(--cream-dim);
+      border-radius: 100px; padding: 0.5rem 0.95rem; font: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .ds__tab.is-on { background: var(--ruby); border-color: var(--ruby); color: #fff; }
+    .ds__note { color: var(--cream-dim); font-size: 0.82rem; margin: 0 0 1rem; }
+    .ds__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; }
+    .ds__card { position: relative; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px; background: rgba(20,16,14,0.6);
+      padding: 0.9rem 0.95rem; cursor: pointer; transition: border-color 0.2s, transform 0.2s, background 0.2s; text-align: left; font: inherit; color: var(--cream); }
+    .ds__card:hover { transform: translateY(-2px); border-color: rgba(229,56,59,0.5); }
+    .ds__card.is-on { border-color: rgba(47,191,113,0.6); background: rgba(47,191,113,0.07); }
+    .ds__dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 0.4rem; vertical-align: -1px; }
+    .ds__card b { font-size: 0.9rem; } .ds__card .st { display: block; margin-top: 0.4rem; font-size: 0.68rem; color: var(--cream-dim); }
+    .ds__card.is-on .st { color: #2fbf71; font-weight: 700; }
+    .ds__sec-h { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; margin: 2rem 0 0.4rem; }
+    .ds__conn { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; background: rgba(20,16,14,0.55); padding: 0.75rem 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.7rem; }
+    .ds__conn b { font-size: 0.88rem; } .ds__conn small { display: block; color: var(--cream-dim); font-size: 0.68rem; }
+    .ds__conn .grow { flex: 1; min-width: 0; }
+    .ds__stat { border: 1px solid rgba(201,157,69,0.4); border-radius: 14px; background: rgba(30,24,14,0.5); padding: 1rem 1.1rem; margin: 1rem 0; }
+    .ds__stat b { display: block; font-size: 2rem; font-variant-numeric: tabular-nums; color: var(--cream); } .ds__stat small { color: var(--cream-dim); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .ds__fine { font-size: 0.74rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+
+    .ds__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.6); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 110; }
+    .ds__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 32rem; margin: 0 auto; background: #14100e;
+      border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0; padding: 1.3rem 1.3rem calc(1.8rem + env(safe-area-inset-bottom));
+      transform: translateY(105%); transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 86dvh; overflow-y: auto; }
+    body.ds-open .ds__veil { opacity: 1; pointer-events: auto; } body.ds-open .ds__sheet { transform: translateY(0); }
+    .ds__x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; }
+    .ds__sheet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.6rem; }
+    .ds__sheet .act { display: block; width: 100%; margin-top: 0.6rem; text-align: center; }
+    .ds__in { width: 100%; background: rgba(244,239,230,0.05); border: 1px solid rgba(244,239,230,0.2); border-radius: 12px; color: var(--cream); font: inherit; font-size: max(16px,0.9rem); padding: 0.65rem 0.8rem; margin-top: 0.6rem; }
+    .ds__msg { font-size: 0.82rem; color: #d8ba7c; min-height: 1.2em; margin-top: 0.5rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="market.html#yours">Your Desk</a><a href="reserve.html">The Reserve</a></nav>
+  </header>
+
+  <main class="ds">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Equity Uprise · your real income</p>
+    <h1>The Distribution<br>Desk.</h1>
+    <p class="ds__sub"><b>Every platform you distribute and earn through, in one place.</b> Pick your distributor —
+      the desk knows exactly who that is and takes you straight to your reports and bank. Then upload your earnings
+      CSV and your real numbers land on your record. Built for <b>every industry</b>, not just music.</p>
+
+    <div id="dsGate"></div>
+
+    <div class="ds__tabs" id="dsTabs"></div>
+    <p class="ds__note" id="dsNote"></p>
+    <div class="ds__grid" id="dsGrid"></div>
+
+    <div id="dsMine"></div>
+
+    <p class="ds__fine">Your uploaded earnings are your own self-reported income — a signal the desk can verify, and the
+      backbone of your standing on the platform. It is <b>not</b> platform credit and never enters the cash-out rail;
+      the two-color law holds. We store the totals you upload, not your bank logins — you open those yourself, on the
+      platform's own site. Missing your distributor? Use <b>Other</b> and it's added to your desk all the same.</p>
+  </main>
+
+  <div class="ds__veil" id="dsVeil"></div>
+  <div class="ds__sheet" id="dsSheet" role="dialog" aria-modal="true">
+    <button class="ds__x" id="dsX" type="button" aria-label="Close">✕</button>
+    <p class="kicker" id="dsShK" style="margin:0"></p>
+    <h2 id="dsShName"></h2>
+    <div id="dsShBody"></div>
+    <p class="ds__msg" id="dsShMsg"></p>
+  </div>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/distribution.js?v=__STAMP__"></script>
+  <script src="js/guide.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      var REG = null, MINE = null, industry = "music", connected = {};
+
+      function signedIn() { return !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()); }
+
+      function boot() {
+        MCC_DIST.registry().then(function (reg) {
+          REG = reg;
+          $("dsTabs").innerHTML = (reg.industries || []).map(function (ind, i) {
+            return '<button class="ds__tab' + (i === 0 ? " is-on" : "") + '" type="button" data-ind="' + esc(ind.id) + '">' + esc(ind.name) + "</button>";
+          }).join("");
+          $("dsTabs").querySelectorAll("[data-ind]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              industry = b.getAttribute("data-ind");
+              $("dsTabs").querySelectorAll(".ds__tab").forEach(function (x) { x.classList.remove("is-on"); });
+              b.classList.add("is-on"); paintGrid();
+            });
+          });
+          industry = (reg.industries[0] || {}).id || "music";
+          refresh();
+        });
+      }
+      function refresh() {
+        if (!signedIn()) { $("dsGate").innerHTML = '<div class="ds__stat" style="border-color:rgba(229,56,59,0.4)"><b style="font-size:1.1rem">Open your account to connect your platforms</b><small style="text-transform:none;letter-spacing:0">One tap, no email. <a href="market.html#yours" style="color:#e5383b">Start here →</a> — you can still browse the list below.</small></div>'; }
+        else $("dsGate").innerHTML = "";
+        (signedIn() ? MCC_DIST.mine() : Promise.resolve(null)).then(function (m) {
+          MINE = m; connected = {};
+          if (m && m.connections) m.connections.forEach(function (c) { connected[c.id] = c; });
+          paintGrid(); paintMine();
+        });
+      }
+      function paintGrid() {
+        var ind = (REG.industries || []).filter(function (x) { return x.id === industry; })[0] || {};
+        $("dsNote").textContent = ind.blurb || "";
+        var list = (REG.distributors || []).filter(function (d) { return d.industry === industry; });
+        var html = list.map(function (d) {
+          var on = !!connected[d.id];
+          return '<button class="ds__card' + (on ? " is-on" : "") + '" type="button" data-d="' + esc(d.id) + '">' +
+            '<span class="ds__dot" style="background:' + (d.color || "#c99d45") + '"></span><b>' + esc(d.name) + "</b>" +
+            '<span class="st">' + (on ? "✓ connected · tap to manage" : "tap to connect &amp; open reports") + "</span></button>";
+        }).join("");
+        // the Other card, always
+        html += '<button class="ds__card" type="button" data-d="__other__" style="border-style:dashed">' +
+          '<span class="ds__dot" style="background:#9e9890"></span><b>Other…</b><span class="st">not listed? add it here</span></button>';
+        $("dsGrid").innerHTML = html;
+        $("dsGrid").querySelectorAll("[data-d]").forEach(function (b) {
+          b.addEventListener("click", function () { openSheet(b.getAttribute("data-d")); });
+        });
+      }
+      function distById(id) { return (REG.distributors || []).filter(function (d) { return d.id === id; })[0]; }
+
+      function openSheet(id) {
+        if (!signedIn()) { location.href = "market.html#yours"; return; }
+        var msg = $("dsShMsg"); msg.textContent = "";
+        var other = id === "__other__";
+        var d = other ? null : distById(id);
+        var conn = connected[id];
+        $("dsShK").textContent = other ? "Add your platform" : ((REG.industries.filter(function (x) { return x.id === (d && d.industry); })[0] || {}).name || "");
+        $("dsShName").textContent = other ? "Other distributor" : d.name;
+        var body = $("dsShBody");
+        if (other) {
+          body.innerHTML =
+            '<input class="ds__in" id="dsOName" placeholder="Platform name (e.g. My Label Portal)">' +
+            '<input class="ds__in" id="dsOUrl" placeholder="Your reports/login URL (optional)">' +
+            '<input class="ds__in" id="dsHandle" placeholder="Your artist / account name (optional)">' +
+            '<button class="btn btn--ruby act" id="dsOAdd" type="button">Add &amp; connect</button>';
+          body.querySelector("#dsOAdd").addEventListener("click", function () {
+            var nm = (body.querySelector("#dsOName").value || "").trim();
+            if (!nm) { msg.textContent = "Give it a name."; return; }
+            var oid = "other-" + nm.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24);
+            doConnect({ distributor_id: oid, distributor: nm, industry: industry, reports_url: (body.querySelector("#dsOUrl").value || "").trim(), handle: (body.querySelector("#dsDHandle").value || "").trim() }, msg);
+          });
+        } else {
+          var url = (conn && conn.reports_url) || d.reports;
+          body.innerHTML =
+            (conn ? '<p style="color:#2fbf71;font-size:0.82rem;margin:0 0 0.3rem">✓ Connected — the desk knows you distribute through ' + esc(d.name) + ".</p>" : '<p class="ds__sub" style="margin:0 0 0.4rem;font-size:0.82rem">Connect this and the desk knows exactly who you distribute through.</p>') +
+            (conn ? "" : '<input class="ds__in" id="dsDHandle" placeholder="Your artist / account name on ' + esc(d.name) + ' (optional)">') +
+            '<a class="btn btn--ghost act" href="' + esc(url) + '" target="_blank" rel="noopener" id="dsOpen">Open your ' + esc(d.name) + ' reports &amp; bank ↗</a>' +
+            (conn ? "" : '<button class="btn btn--ruby act" id="dsConnect" type="button">Connect ' + esc(d.name) + "</button>") +
+            (d.csv === false ? '<p class="ds__sub" style="font-size:0.76rem;margin-top:0.6rem">' + esc(d.name) + " doesn't export a CSV — download what they give you, or log the total under Other." : "") +
+            '<div style="margin-top:0.7rem;border-top:1px dashed rgba(244,239,230,0.15);padding-top:0.7rem">' +
+            '<p style="font-size:0.82rem;color:var(--cream);font-weight:700;margin:0 0 0.3rem">Got your earnings report?</p>' +
+            '<p class="ds__sub" style="font-size:0.76rem;margin:0 0 0.5rem">Download the CSV from ' + esc(d.name) + ' and drop it here — we read the total and file it on your record.</p>' +
+            '<button class="btn btn--ghost act" id="dsUp" type="button">⬆ Upload earnings CSV</button>' +
+            '<input type="file" accept=".csv,text/csv,text/plain" hidden id="dsFile"></div>';
+          var openBtn = body.querySelector("#dsOpen");
+          if (openBtn) openBtn.addEventListener("click", function () { if (!conn) doConnect({ distributor_id: d.id, distributor: d.name, industry: d.industry, reports_url: d.reports, handle: (body.querySelector("#dsDHandle") || {}).value || "" }, msg, true); });
+          var cbtn = body.querySelector("#dsConnect");
+          if (cbtn) cbtn.addEventListener("click", function () { doConnect({ distributor_id: d.id, distributor: d.name, industry: d.industry, reports_url: d.reports, handle: (body.querySelector("#dsDHandle") || {}).value || "" }, msg); });
+          var up = body.querySelector("#dsUp"), fin = body.querySelector("#dsFile");
+          up.addEventListener("click", function () { fin.click(); });
+          fin.addEventListener("change", function () { if (fin.files && fin.files[0]) doUpload(fin.files[0], { distributor_id: d.id, distributor: d.name }, msg); });
+        }
+        document.body.classList.add("ds-open");
+        if (window.MCC_TRACK) window.MCC_TRACK("dist_open", { d: id });
+      }
+
+      function doConnect(rec, msg, quiet) {
+        msg.textContent = "Connecting…";
+        MCC_DIST.connect(rec).then(function () {
+          connected[rec.distributor_id] = rec;
+          if (!quiet) msg.textContent = "Connected — it's on your desk.";
+          if (window.MCC_TRACK) window.MCC_TRACK("dist_connect", { d: rec.distributor_id });
+          refresh();
+        }).catch(function (e) {
+          var s = String(e && e.message || e);
+          msg.textContent = /42P01|404|my_distribution|member_connections/.test(s) ? "One paste opens this: docs/distribution-schema.sql in Supabase." : ("Couldn't connect — " + s);
+        });
+      }
+      function doUpload(file, rec, msg) {
+        if (file.size > 15000000) { msg.textContent = "That file's over 15 MB — export a smaller period."; return; }
+        msg.textContent = "Reading " + file.name + "…";
+        MCC_DIST.readFile(file).then(function (text) {
+          var p = MCC_DIST.parseCsv(text);
+          if (!p.ok) { msg.textContent = "Couldn't read that as a report — is it the CSV export?"; return; }
+          // make sure they're connected first
+          if (!connected[rec.distributor_id]) MCC_DIST.connect({ distributor_id: rec.distributor_id, distributor: rec.distributor, industry: industry }).catch(function () {});
+          MCC_DIST.fileReport({ distributor_id: rec.distributor_id, distributor: rec.distributor, period: p.period, gross: p.gross, currency: p.currency, rows: p.rows, filename: file.name }).then(function () {
+            msg.innerHTML = "✓ Filed <b style='color:var(--cream)'>" + p.currency + " " + p.gross.toLocaleString() + "</b> across " + p.rows + " line items" + (p.amountColumn ? " (from the “" + esc(p.amountColumn) + "” column)" : "") + ". It's on your record.";
+            if (window.MCC_TRACK) window.MCC_TRACK("dist_report", { d: rec.distributor_id, gross: p.gross });
+            refresh();
+          }).catch(function (e) {
+            var s = String(e && e.message || e);
+            msg.textContent = /42P01|404|earnings_reports/.test(s) ? "One paste opens this: docs/distribution-schema.sql in Supabase." : ("Couldn't file it — " + s);
+          });
+        }).catch(function () { msg.textContent = "Couldn't read the file."; });
+      }
+
+      function paintMine() {
+        var host = $("dsMine");
+        if (!signedIn() || !MINE) { host.innerHTML = ""; return; }
+        var conns = MINE.connections || [], reps = MINE.reports || [];
+        var html = "";
+        if (conns.length) {
+          html += '<h2 class="ds__sec-h">Your connections</h2>' + conns.map(function (c) {
+            return '<div class="ds__conn"><span class="ds__dot" style="background:#2fbf71"></span><span class="grow"><b>' + esc(c.name) + "</b><small>" + esc(c.industry) + (c.handle ? " · " + esc(c.handle) : "") + (c.verified ? " · ✓ verified" : "") + "</small></span>" +
+              (c.reports_url ? '<a class="btn btn--ghost" style="padding:0.4em 0.9em;font-size:0.7rem" href="' + esc(c.reports_url) + '" target="_blank" rel="noopener">Reports ↗</a>' : "") + "</div>";
+          }).join("");
+        }
+        html += '<div class="ds__stat"><b>' + (MINE.reported_total != null ? "$" + (+MINE.reported_total).toLocaleString() : "$0") + '</b><small>reported earnings, all time · $' + (+(MINE.reported_12mo || 0)).toLocaleString() + " last 12 months</small></div>";
+        if (reps.length) {
+          html += '<h2 class="ds__sec-h">Filed reports</h2>' + reps.map(function (r) {
+            return '<div class="ds__conn"><span class="grow"><b>' + esc(r.distributor) + " — $" + (+r.gross).toLocaleString() + "</b><small>" + (r.period ? esc(r.period) + " · " : "") + r.rows + " items · " + new Date(r.at).toLocaleDateString() + (r.verified ? " · ✓ verified" : "") + "</small></span></div>";
+          }).join("");
+        }
+        host.innerHTML = html;
+      }
+
+      $("dsVeil").addEventListener("click", function () { document.body.classList.remove("ds-open"); });
+      $("dsX").addEventListener("click", function () { document.body.classList.remove("ds-open"); });
+      boot();
+      if (window.MCC_TRACK) window.MCC_TRACK("dist_view", {});
+    })();
+  </script>
+</body>
+</html>
