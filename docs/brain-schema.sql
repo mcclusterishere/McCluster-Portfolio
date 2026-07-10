@@ -14,7 +14,7 @@
 create table if not exists public.brain_pitches (
   id       uuid primary key default gen_random_uuid(),
   at       timestamptz default now(),
-  source   text not null default 'algorithm' check (source in ('algorithm', 'ai')),
+  source   text not null default 'algorithm' check (source in ('algorithm', 'ai', 'gemini')),
   kind     text default 'growth',
   title    text not null,
   pitch    text not null,
