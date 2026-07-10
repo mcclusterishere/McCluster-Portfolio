@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Your Mission Control · M Network</title>
+  <meta name="description" content="Every member's own command room: the gauntlet that pays 5 E⤴ for running the whole app, your landing-page traffic, your listing data, your books — your numbers only.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .mm { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 9rem; max-width: 46rem; margin: 0 auto; }
+    .mm h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 4rem); }
+    .mm__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; max-width: 54ch; }
+    .mm__sub b { color: var(--cream); }
+    .mm__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6);
+      padding: 1.2rem 1.15rem 1.3rem; margin-top: 1.3rem; }
+    .mm__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .mm__k { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .mm__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+    .mm__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.85rem; text-align: center; }
+    .mm__stat b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; color: var(--ruby-hot); }
+    .mm__stat small { color: var(--cream-dim); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .mm__mi { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.13); border-radius: 12px;
+      padding: 0.75rem 0.9rem; margin-top: 0.5rem; text-decoration: none; color: var(--cream); }
+    .mm__mi.is-done { border-color: rgba(47,191,113,0.5); opacity: 0.85; }
+    .mm__mi small { display: block; color: var(--cream-dim); font-size: 0.68rem; margin-top: 0.15rem; }
+    .mm__mi .amt { flex: none; font-weight: 800; font-size: 0.74rem; color: #c99d45; font-variant-numeric: tabular-nums; }
+    .mm__bar { height: 10px; border-radius: 100px; background: rgba(244,239,230,0.08); overflow: hidden; margin-top: 0.7rem; }
+    .mm__bar i { display: block; height: 100%; background: linear-gradient(90deg, #7a5a17, #c99d45); }
+    .mm__msg { color: #2fbf71; font-size: 0.85rem; min-height: 1.1em; margin-top: 0.5rem; }
+    .mm__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="market.html#yours">The desk</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="mm">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Yours only — nobody else's numbers live here</p>
+    <h1>Your Mission<br>Control.</h1>
+    <p class="mm__sub">The same command room the house runs — scoped to <b>you</b>: your traffic, your listing,
+      your books, and <b>the gauntlet</b>: run every part of this app for real and the house pays you
+      <b>5 E⤴︎, flat, once</b>. Every milestone is verified against the record — the machine checks, not the honor system.</p>
+
+    <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
+
+    <p class="mm__fine">The gauntlet pays 5.00 E⤴︎ maximum per member, ever — that is the law, enforced by the ledger.
+      Gauntlet credit is granted-color: it spends everywhere on the floor and never cashes out. Traffic counts are your
+      surfaces only; nobody's numbers but yours are readable from this room.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var S = window.MCC_SUPA;
+      var host = $("mmHost");
+
+      if (!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) {
+        host.innerHTML = '<div class="mm__card"><p class="mm__k">First, the door</p>' +
+          '<h2>The room opens with your account.</h2><div id="mmDoor" style="margin-top:0.8rem"></div></div>';
+        window.MCC_DOOR.mount($("mmDoor"), { ticker: true, context: "mymission", onDone: function () { location.reload(); } });
+        return;
+      }
+
+      var GAUNTLET = [
+        ["walk_in", 0.50, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained."],
+        ["card_live", 0.50, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you."],
+        ["signed", 0.25, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one."],
+        ["first_post", 0.50, "Speak on the Wire", "market.html#wire", "One post to the whole floor."],
+        ["first_track", 0.75, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming."],
+        ["first_deal", 0.75, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record."],
+        ["civic_card", 0.50, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work."],
+        ["push_on", 0.25, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded."],
+        ["first_plug", 0.50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door."],
+        ["explorer", 0.50, "Move on five days", "mcity.html", "Show up five separate days — the city pays consistency."],
+      ];
+
+      function auth(path, body) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/" + path, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+            body: JSON.stringify(body || {}),
+          }).then(function (r) { return r.ok ? r.json() : null; });
+        });
+      }
+
+      Promise.all([auth("my_mission"), auth("claim_gauntlet")]).then(function (r) {
+        var m = r[0], g = r[1];
+        if (!m) {
+          host.innerHTML = '<div class="mm__card"><h2>The room arms with one paste.</h2>' +
+            '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live.</p></div>';
+          return;
+        }
+        var done = (g && g.done) || [];
+        var paid = (g && +g.paid_total) || 0;
+        var minted = (g && +g.minted) || 0;
+        function stat(n, l) { return '<div class="mm__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+
+        var html = '<div class="mm__card"><p class="mm__k">The gauntlet · ' + done.length + "/10 · " +
+          paid.toFixed(2) + ' of 5.00 E⤴︎ claimed</p>' +
+          "<h2>Run the whole app, get paid for it.</h2>" +
+          '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 5 * 100) + '%"></i></div>' +
+          (minted > 0 ? '<p class="mm__msg">💰 ' + minted.toFixed(2) + " E⤴︎ just landed for what you've already done.</p>" : "") +
+          GAUNTLET.map(function (mi) {
+            var hit = done.indexOf(mi[0]) !== -1;
+            return '<a class="mm__mi' + (hit ? " is-done" : "") + '" href="' + mi[3] + '">' +
+              "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" + mi[4] + "</small></span>" +
+              '<span class="amt">' + (hit ? "paid" : mi[1].toFixed(2) + " E⤴︎") + "</span></a>";
+          }).join("") +
+          '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move.</p></div>';
+
+        html += '<div class="mm__card"><p class="mm__k">Your traffic — who came to YOU</p>' +
+          "<h2>The numbers on your name.</h2><div class=\"mm__grid\">" +
+          stat((+m.page_views || 0).toLocaleString(), "landing-page visits") +
+          stat((+m.floor_opens || 0).toLocaleString(), "ticker opens on the floor") +
+          stat((+m.plug_landings || 0).toLocaleString(), "souls your plug brought") +
+          stat((+m.followers || 0).toLocaleString(), "supporters") + "</div>" +
+          '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Your landing page is <b>page.html?who=' + esc(m.slug || "") + "</b> — every visit counts here, nowhere else.</p></div>";
+
+        html += '<div class="mm__card"><p class="mm__k">Your listing data</p>' +
+          "<h2>The business, by the numbers.</h2><div class=\"mm__grid\">" +
+          stat((+m.tracks || 0), "records on the rack") +
+          stat((+m.posts || 0), "wire posts") +
+          stat((+m.requests || 0), "booking requests") +
+          stat((+m.deals_open || 0) + " · " + (+m.deals_done || 0), "deals open · done") +
+          stat((+m.balance || 0).toFixed(2) + " E⤴︎", "balance") +
+          stat((+m.earned || 0).toFixed(2) + " E⤴︎", "earned by work") +
+          stat((+m.active_days_30 || 0), "active days · 30d") +
+          stat(esc(m.status || "—"), "listing status") + "</div>" +
+          '<div class="finale__actions" style="margin-top:1rem">' +
+          '<a class="btn btn--ruby" href="market.html#yours">Open the desk — wallet &amp; tools</a>' +
+          '<a class="btn btn--ghost" href="page.html?who=' + esc(m.slug || "") + '">See your public page</a></div></div>';
+
+        html += '<div class="mm__card"><p class="mm__k">The outside platforms</p>' +
+          "<h2>Spotify · Apple · the merge.</h2>" +
+          '<p class="mm__sub" style="margin-top:0.2rem">Your streaming numbers from the outside platforms merge into this room when the ' +
+          "platform keys land — one place for everything your music does, here and out there. Dark until real, never fake.</p></div>";
+
+        host.innerHTML = html;
+        track("mymission_view", { done: done.length });
+      }).catch(function () {
+        host.innerHTML = '<div class="mm__card"><h2>The room blinked.</h2><p class="mm__sub">Pull to refresh — or the paste (docs/gauntlet-schema.sql) hasn\'t run yet.</p></div>';
+      });
+    })();
+  </script>
+</body>
+</html>
