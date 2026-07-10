@@ -170,13 +170,20 @@ grant execute on function public.stream_record(text, text) to anon, authenticate
 -- the functions above to file the proposal; each party accepts by
 -- claiming their profile and calling accept_split('upset').
 -- ============================================================
-select public.propose_split(
-  'Upset',
-  'upset',
-  '[{"slug":"hitman-benji","pct":34},{"slug":"rahndrx","pct":33},{"slug":"raheem","pct":33}]'::jsonb,
-  true
-)
-where not exists (select 1 from public.records where slug = 'upset');  -- idempotent: re-runs skip the seed
+-- Seeded with DIRECT inserts (not propose_split) so it runs cleanly in the
+-- SQL editor as the postgres role — propose_split's is_mcc_admin() gate is
+-- for browser callers and would (correctly) reject a role with no JWT.
+-- Idempotent: the whole block no-ops once 'upset' exists.
+do $$
+declare rid uuid;
+begin
+  if exists (select 1 from public.records where slug = 'upset') then return; end if;
+  insert into public.records (slug, title, free, house_owns, status)
+  values ('upset', 'Upset', true, true, 'proposed') returning id into rid;
+  insert into public.record_splits (record_id, party_slug, party_owner, pct)
+  select rid, x.slug, (select owner from public.providers where slug = x.slug limit 1), x.pct
+  from (values ('hitman-benji', 34::numeric), ('rahndrx', 33), ('raheem', 33)) as x(slug, pct);
+end $$;
 
 -- self-checks: expect 2 tables, 6 functions, 1 record
 select count(*) as records_tables from information_schema.tables where table_name in ('records', 'record_splits');
