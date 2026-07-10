@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>BLOCK OPS · Equity Uprise</title>
+<link rel="icon" type="image/png" href="./assets/eu.png">
+<link rel="apple-touch-icon" href="./assets/eu.png">
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #0a0807; touch-action: none;
     font-family: system-ui, -apple-system, sans-serif; -webkit-user-select: none; user-select: none; }
@@ -109,7 +111,9 @@ addEventListener("resize", resize); addEventListener("orientationchange", resize
 const BIND = { KeyW: "u", KeyS: "d", KeyA: "l", KeyD: "r", ArrowUp: "u", ArrowDown: "d",
   ArrowLeft: "l", ArrowRight: "r", Space: "dash", ShiftLeft: "dash" };
 const held = new Set();
-addEventListener("keydown", (e) => { const c = BIND[e.code]; if (c) { held.add(c); e.preventDefault(); } });
+let dashPress = false; // latched on the tap edge so a quick tap can't fall between frames
+let dashEdges = 0, dashFires = 0; // dev counters
+addEventListener("keydown", (e) => { const c = BIND[e.code]; if (c) { held.add(c); if (c === "dash") { dashPress = true; dashEdges++; } e.preventDefault(); } });
 addEventListener("keyup", (e) => { const c = BIND[e.code]; if (c) held.delete(c); });
 const mouse = { x: 0, y: 0, down: false };
 addEventListener("mousemove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
@@ -118,18 +122,23 @@ addEventListener("mouseup", () => { mouse.down = false; });
 
 // twin virtual sticks — left half moves, right half aims+fires; gold dash button
 const sticks = { L: { id: -1, ox: 0, oy: 0, x: 0, y: 0, m: 0 }, R: { id: -1, ox: 0, oy: 0, x: 0, y: 0, m: 0 } };
-let dashBtn = { x: 0, y: 0, r: 34, id: -1, hot: false };
+let dashBtn = { x: 0, y: 0, r: 38, id: -1, hot: false };
+function placeDash() { dashBtn.x = innerWidth - 90; dashBtn.y = innerHeight - 210; }
+placeDash(); addEventListener("resize", placeDash); addEventListener("orientationchange", placeDash);
 const isTouch = matchMedia("(hover: none)").matches;
+function onUI(e) { return e.target && e.target.closest && e.target.closest("#ui .panel"); }
 function tstart(e) {
+  if (onUI(e)) return;               // panel buttons keep their native taps
   for (const t of e.changedTouches) {
     const dx = t.clientX - dashBtn.x, dy = t.clientY - dashBtn.y;
-    if (Math.hypot(dx, dy) < dashBtn.r * 1.6) { dashBtn.id = t.identifier; dashBtn.hot = true; continue; }
+    if (Math.hypot(dx, dy) < dashBtn.r * 1.8) { dashBtn.id = t.identifier; dashBtn.hot = true; dashPress = true; dashEdges++; continue; }
     const s = t.clientX < vw / 2 ? sticks.L : sticks.R;
     if (s.id === -1) { s.id = t.identifier; s.ox = t.clientX; s.oy = t.clientY; s.x = 0; s.y = 0; s.m = 0; }
   }
   e.preventDefault();
 }
 function tmove(e) {
+  if (onUI(e)) return;
   for (const t of e.changedTouches) for (const k of ["L", "R"]) {
     const s = sticks[k];
     if (s.id === t.identifier) {
@@ -140,6 +149,7 @@ function tmove(e) {
   e.preventDefault();
 }
 function tend(e) {
+  if (onUI(e)) return;
   for (const t of e.changedTouches) {
     for (const k of ["L", "R"]) if (sticks[k].id === t.identifier) { sticks[k].id = -1; sticks[k].m = 0; }
     if (dashBtn.id === t.identifier) { dashBtn.id = -1; dashBtn.hot = false; }
@@ -156,7 +166,7 @@ function readInput() {
   let mx = 0, my = 0;
   if (held.has("u")) my -= 1; if (held.has("d")) my += 1;
   if (held.has("l")) mx -= 1; if (held.has("r")) mx += 1;
-  let ax = 0, ay = 0, fire = false, dash = held.has("dash") || dashBtn.hot;
+  let ax = 0, ay = 0, fire = false, dash = dashPress || held.has("dash") || dashBtn.hot;
   if (sticks.L.m) { mx = sticks.L.x * sticks.L.m; my = sticks.L.y * sticks.L.m; }
   if (sticks.R.m > 0.35) { ax = sticks.R.x; ay = sticks.R.y; fire = true; }
   else if (!isTouch) {
@@ -245,9 +255,15 @@ function update(dt, cmds) {
 
   // player
   const dashing = tNow < P.dashUntil;
-  if (cmds.dash && tNow - P.dashAt > T.dash.cooldown * P.dashCdMul && (cmds.mx || cmds.my)) {
+  if (cmds.dash && tNow - P.dashAt > T.dash.cooldown * P.dashCdMul) {
+    // dash where you're pushing; standing still, dash where you're facing
+    let dvx = cmds.mx, dvy = cmds.my;
+    if (!dvx && !dvy) { dvx = Math.cos(P.h); dvy = Math.sin(P.h); }
+    const dm = Math.hypot(dvx, dvy);
     P.dashAt = tNow; P.dashUntil = tNow + T.dash.ms;
-    P.vx = cmds.mx; P.vy = cmds.my;
+    P.vx = dvx / dm; P.vy = dvy / dm;
+    dashFires++;
+    sparks(P.x, P.y, "#e8c877", 6);
   }
   let sp = T.player.speed * P.speedMul * (P.carrying ? T.contract.carrySlow : 1);
   let nx, ny;
@@ -522,7 +538,6 @@ function touchHud() {
     ctx.fillStyle = k === "L" ? "rgba(244,239,230,0.35)" : "rgba(229,56,59,0.45)";
     ctx.beginPath(); ctx.arc(bx + s.x * s.m * 38, by + s.y * s.m * 38, 22, 0, Math.PI * 2); ctx.fill();
   }
-  dashBtn.x = vw - 90; dashBtn.y = vh - 210;
   const cd = Math.min(1, (tNow - P.dashAt) / (T.dash.cooldown * P.dashCdMul));
   ctx.fillStyle = cd >= 1 ? "rgba(232,200,119,0.85)" : "rgba(232,200,119,0.25)";
   ctx.beginPath(); ctx.arc(dashBtn.x, dashBtn.y, dashBtn.r, 0, Math.PI * 2); ctx.fill();
@@ -578,7 +593,8 @@ if (dev) {
   document.getElementById("dev").style.display = "block";
   // dev-only state window so automated preflight can read the sim
   window.__BO = function () {
-    return { mode, rep, wave, streak, hp: P ? P.hp : null,
+    return { mode, rep, wave, streak, hp: P ? P.hp : null, dashEdges, dashFires, paused,
+      x: P ? P.x : null, y: P ? P.y : null, dashAt: P ? P.dashAt : null,
       foes: (foes || []).map((f) => ({ x: f.x - P.x + vw / 2, y: f.y - P.y + vh / 2, heavy: f.heavy })) };
   };
 }
@@ -588,6 +604,7 @@ function frame(now) {
   acc += Math.min(120, now - last); last = now;
   const cmds = readInput();
   while (acc >= STEP) { if (mode === "play") { update(STEP, cmds); runPend(); } acc -= STEP; }
+  dashPress = false; // the latch is consumed once the sim has seen it
   render();
   if (dev) {
     frames++;
