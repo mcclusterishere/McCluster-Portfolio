@@ -16,6 +16,15 @@
   var DONE_KEY = "mcc_tour_done";
   var box, veil, card, current = -1, alive = false;
 
+  var css2 = document.createElement("style");
+  css2.textContent = "@keyframes tourIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}" +
+    ".tour__card{animation:tourIn .4s cubic-bezier(.2,.9,.2,1)}" +
+    "@keyframes tourPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.6)}55%{box-shadow:0 0 0 12px rgba(229,56,59,0)}}" +
+    ".tour__card [data-tour-next]{animation:tourPulse 1.6s ease-out infinite}" +
+    "@keyframes tourBreathe{0%,100%{outline-offset:0}50%{outline-offset:6px}}" +
+    ".tour__veil{outline:2px solid rgba(244,239,230,.35);animation:tourBreathe 1.8s ease-in-out infinite}" +
+    "@media (prefers-reduced-motion: reduce){.tour__card,.tour__card [data-tour-next],.tour__veil{animation:none}}";
+  document.head.appendChild(css2);
   var css = document.createElement("style");
   css.textContent =
     "#mccTour{position:fixed;inset:0;z-index:9000;pointer-events:none}" +
