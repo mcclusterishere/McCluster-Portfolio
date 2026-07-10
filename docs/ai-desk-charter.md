@@ -14,6 +14,12 @@ even if it asked).
 | **The Guide** | `the-guide` | every signed-in member (40/day cap) | Haiku — the economy seat |
 | **The Brain** | `the-brain` | the desk only | Fable — the frontier seat |
 | **The Scanner** | `scan-proof` | members via missions | Haiku |
+| **The Intern** | `the-intern` | the desk + the morning cron | Gemini Flash |
+
+**The city runs two vendors on purpose.** Claude holds the judgment seats
+(strategy, the floor, the scans); Gemini holds the chore seat (the morning
+digest, draft polish). No single model's blind spots run this desk, and
+every seat files TEXT for a human — none of them holds a lever.
 
 ## What the AI CAN do
 
@@ -26,6 +32,9 @@ even if it asked).
   to read; ground every pitch in the numbers it saw.
 - **The Scanner**: look at ONE uploaded proof image and say whether it
   plausibly shows the claimed mission done.
+- **The Intern** (Gemini): read the same aggregates as the Brain, file the
+  morning digest, and draft headline/blurb polish for sparse listings —
+  all as desk notes a human reviews.
 - **Drafting** (all seats): words, summaries, recommendations —
   anything a human reviews before it takes effect.
 
