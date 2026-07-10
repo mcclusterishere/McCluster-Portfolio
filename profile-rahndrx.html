@@ -105,6 +105,43 @@
   </section>
 
   <section class="rx-sec">
+    <div class="rx-kick">The Record · free</div>
+    <h2>"Upset" — <em>on the house.</em></h2>
+    <p><b>Hitman Benji × Rahndrx × Raheem.</b> The first record released free under Equity Uprise — the platform owns
+      it, the artists split it, the streams count here. This is what a loss-leader looks like when the house has your back.</p>
+    <div style="margin-top:1.2rem;border:1px solid rgba(168,85,247,0.3);border-radius:16px;padding:1.2rem 1.3rem;background:rgba(124,58,237,0.06)">
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline">
+        <b style="font-family:var(--display);text-transform:uppercase;font-size:1.4rem;letter-spacing:0.03em">Upset</b>
+        <span style="font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:#c99d45;border:1px solid rgba(201,157,69,0.5);border-radius:100px;padding:0.15rem 0.6rem">Free · Equity Uprise</span>
+      </div>
+      <p style="font-size:0.86rem;color:var(--cream-dim);margin:0.35rem 0 0.7rem">$BENJI · $RAHN · $RHEEM — 34 / 33 / 33</p>
+      <audio id="upsetAudio" controls preload="none" style="width:100%" src="assets/audio/upset.mp3"></audio>
+      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:0.5rem"><span id="upsetStreams">—</span> streams · counted on the platform</p>
+    </div>
+    <script>
+      (function () {
+        var au = document.getElementById("upsetAudio"), lbl = document.getElementById("upsetStreams"), counted = false;
+        function stream() {
+          if (counted || !window.MCC_SUPA) return; counted = true;
+          if (window.MCC_TRACK) window.MCC_TRACK("track_play", { slug: "upset", title: "Upset" });
+          fetch(window.MCC_SUPA.url + "/rest/v1/rpc/stream_record", {
+            method: "POST", headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+            body: JSON.stringify({ p_record_slug: "upset" })
+          }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) { if (n != null && lbl) lbl.textContent = n; }).catch(function () {});
+        }
+        if (au) au.addEventListener("play", stream, { once: true });
+        // show current count on load
+        if (window.MCC_SUPA) fetch(window.MCC_SUPA.url + "/rest/v1/rpc/record_board", {
+          method: "POST", headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+          body: JSON.stringify({ p_record_slug: "upset" })
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          if (j && j.record && lbl) lbl.textContent = j.record.streams;
+        }).catch(function () {});
+      })();
+    </script>
+  </section>
+
+  <section class="rx-sec">
     <div class="rx-kick">Find him</div>
     <h2>The <em>whole world.</em></h2>
     <p>Everywhere his people already are — and soon, all his plays route right back here.</p>

@@ -304,6 +304,15 @@
 
     admin: {
       listings: function () { return authed("providers?order=created_at.desc&select=*"); },
+      /* the Mint button: spin up an unclaimed profile on the live floor */
+      mintProfile: function (f) {
+        return authed("rpc/mint_profile", { method: "POST", body: {
+          p_name: f.name, p_ticker: f.ticker || "", p_slug: f.slug || "",
+          p_headline: f.headline || "", p_blurb: f.blurb || "", p_area: f.area || "",
+          p_roles: f.roles && f.roles.length ? f.roles : ["Music"],
+          p_photo: f.photo || null, p_links: f.links || {},
+        } });
+      },
       setListing: function (id, status, note) {
         var body = { status: status };
         if (note !== undefined) body.review_note = note;

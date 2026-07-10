@@ -406,6 +406,25 @@
       "terms": {
         "notes": "Only Us Studios — Ocho's space, unclaimed."
       }
+    },
+    {
+      "id": "raheem",
+      "slug": "raheem",
+      "name": "Raheem",
+      "ticker": "RHEEM",
+      "headline": "Artist · on the record with the Uprise",
+      "blurb": "Collaborator on 'Upset' with McCluster and Rahndrx — the first record released free under Equity Uprise. His profile's waiting; claim it to lock the split.",
+      "area": "Connecticut",
+      "roles": [
+        "Music"
+      ],
+      "badgeColor": "#0ea5a4",
+      "profile": "page.html?who=raheem",
+      "href": "page.html?who=raheem",
+      "claimed": false,
+      "terms": {
+        "notes": "Unclaimed — Raheem claims it to accept his split on 'Upset'."
+      }
     }
   ]
 }

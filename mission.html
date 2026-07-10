@@ -98,6 +98,7 @@
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
+        <button class="mc__tab" data-tab="mcMint" type="button">Mint</button>
       </nav>
 
       <section class="mc__card" id="pane-mcPulse">
@@ -235,6 +236,27 @@
           <a class="btn btn--ghost" href="https://supabase.com/dashboard/project/fxbkvcrfbbcmrrupdcjt" target="_blank" rel="noopener">Supabase</a>
           <a class="btn btn--ghost" href="https://github.com/mcclusterishere/McCluster-Portfolio" target="_blank" rel="noopener">The repo</a>
         </div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcMint">
+        <h2>Mint a profile</h2>
+        <p class="mc__empty">Spin up an unclaimed profile on the live floor — pitch anyone their page before they sign up. They claim it later to take it over.</p>
+        <input class="mc__in" id="mintName" type="text" placeholder="Name — e.g. Ocho Gr8">
+        <div class="mc__row" style="display:flex;gap:0.5rem">
+          <input class="mc__in" id="mintTicker" type="text" placeholder="Ticker — e.g. OCHO" style="flex:1">
+          <input class="mc__in" id="mintSlug" type="text" placeholder="Handle/slug (optional)" style="flex:2">
+        </div>
+        <input class="mc__in" id="mintHead" type="text" placeholder="One-liner headline">
+        <textarea class="mc__in" id="mintBlurb" placeholder="Their story — use their real bio/quotes"></textarea>
+        <div class="mc__row" style="display:flex;gap:0.5rem">
+          <input class="mc__in" id="mintArea" type="text" placeholder="Where — e.g. Bridgeport, CT" style="flex:1">
+          <input class="mc__in" id="mintRoles" type="text" placeholder="Archetypes — Music,Beats,Video" style="flex:1">
+        </div>
+        <input class="mc__in" id="mintPhoto" type="text" placeholder="Photo path (optional) — assets/img/…">
+        <input class="mc__in" id="mintIg" type="text" placeholder="Instagram / link (optional)">
+        <input class="mc__in" id="mintMusic" type="text" placeholder="Music link (optional)">
+        <button class="btn btn--ruby" id="mintGo" type="button" style="margin-top:0.7rem">Mint it</button>
+        <p class="mc__msg" id="mintMsg"></p>
       </section>
     </div>
   </main>
@@ -1011,8 +1033,30 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcBrain", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcBrain", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit", "mcMint"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
+        });
+      });
+      $("mintGo") && $("mintGo").addEventListener("click", function () {
+        var name = $("mintName").value.trim();
+        var msg = $("mintMsg");
+        if (!name) { msg.textContent = "A name, at least."; return; }
+        var links = {};
+        if ($("mintIg").value.trim()) links.ig = $("mintIg").value.trim();
+        if ($("mintMusic").value.trim()) links.music = $("mintMusic").value.trim();
+        var roles = $("mintRoles").value.trim() ? $("mintRoles").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean) : ["Music"];
+        msg.textContent = "Minting…";
+        MCC_NET.admin.mintProfile({
+          name: name, ticker: $("mintTicker").value.trim(), slug: $("mintSlug").value.trim(),
+          headline: $("mintHead").value.trim(), blurb: $("mintBlurb").value.trim(),
+          area: $("mintArea").value.trim(), roles: roles, photo: $("mintPhoto").value.trim() || null, links: links,
+        }).then(function (r) {
+          var slug = (Array.isArray(r) ? r[0] : r) || $("mintSlug").value.trim();
+          msg.innerHTML = "Minted &#9989; — live at <b>page.html?who=" + (slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-")) + "</b>. Share it.";
+          ["mintName", "mintTicker", "mintSlug", "mintHead", "mintBlurb", "mintArea", "mintRoles", "mintPhoto", "mintIg", "mintMusic"].forEach(function (id) { $(id).value = ""; });
+        }).catch(function (e) {
+          var s = String(e && e.message || e);
+          msg.textContent = /mint_profile/.test(s) || /404/.test(s) ? "One paste opens this: docs/records-schema.sql in Supabase." : s;
         });
       });
       function loadFund() {
