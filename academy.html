@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Web3 Academy · Equity Uprise</title>
+  <meta name="description" content="Learn Web3 the Equity Uprise way: wallets, seed safety, gas, layers, scams, and how the treasury works. Finish all six lessons and the desk sends your first gas.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .ac { min-height: 100dvh; padding: 0 0 9rem; }
+    .ac-hero { position: relative; min-height: 56dvh; display: flex; flex-direction: column; justify-content: flex-end;
+      padding: clamp(5.5rem, 11vh, 7rem) clamp(1.1rem, 4.5vw, 2.6rem) clamp(1.8rem, 5vh, 2.8rem); overflow: hidden; }
+    .ac-hero__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+    .ac-hero__scrim { position: absolute; inset: 0; z-index: -1; background:
+      radial-gradient(110% 70% at 60% 18%, rgba(193,18,31,0.22), transparent 55%),
+      linear-gradient(190deg, rgba(6,4,4,0.18) 0%, rgba(6,4,4,0.5) 45%, rgba(6,4,4,0.95) 92%); }
+    .ac-hero h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.92; font-size: clamp(2.6rem, 11vw, 4.8rem); }
+    .ac-hero p { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; max-width: 52ch; }
+    .ac-hero p b { color: var(--cream); }
+    .ac-wrap { max-width: 44rem; margin: 0 auto; padding: 1.6rem clamp(1.1rem, 4.5vw, 2.6rem) 0; }
+    .ac-meter { display: flex; align-items: center; gap: 0.8rem; margin: 0.4rem 0 1.4rem; }
+    .ac-meter__bar { flex: 1; height: 8px; border-radius: 100px; background: rgba(244,239,230,0.12); overflow: hidden; }
+    .ac-meter__fill { height: 100%; width: 0%; border-radius: 100px; transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+      background: linear-gradient(90deg, var(--ruby), #c99d45); }
+    .ac-meter b { font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+    .ac-lesson { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; margin-bottom: 0.9rem;
+      background: linear-gradient(180deg, rgba(20,16,14,0.85), rgba(8,6,5,0.9)); overflow: hidden; }
+    .ac-lesson.is-done { border-color: rgba(201,157,69,0.55); }
+    .ac-lesson__head { display: flex; align-items: center; gap: 0.8rem; width: 100%; text-align: left;
+      background: none; border: 0; color: var(--cream); cursor: pointer; padding: 1rem 1.1rem; font: inherit; }
+    .ac-lesson__num { flex: none; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
+      border: 1px solid rgba(244,239,230,0.3); font-size: 0.8rem; font-weight: 800; }
+    .is-done .ac-lesson__num { background: #c99d45; color: #0a0807; border-color: #c99d45; }
+    .ac-lesson__head h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.02em; }
+    .ac-lesson__head small { display: block; color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.1rem; }
+    .ac-lesson__body { display: none; padding: 0 1.1rem 1.1rem; }
+    .ac-lesson.is-open .ac-lesson__body { display: block; }
+    .ac-lesson__body p { color: var(--cream-dim); font-size: 0.92rem; line-height: 1.65; }
+    .ac-lesson__body p + p { margin-top: 0.6rem; }
+    .ac-lesson__body p b { color: var(--cream); }
+    .ac-quiz { margin-top: 0.9rem; border-top: 1px dashed rgba(244,239,230,0.15); padding-top: 0.9rem; }
+    .ac-quiz p { font-weight: 700; color: var(--cream); margin-bottom: 0.5rem; }
+    .ac-quiz button { display: block; width: 100%; text-align: left; margin-bottom: 0.4rem; padding: 0.7rem 0.9rem;
+      border-radius: 10px; border: 1px solid rgba(244,239,230,0.2); background: rgba(244,239,230,0.05);
+      color: var(--cream); font: inherit; font-size: 0.88rem; cursor: pointer; }
+    .ac-quiz button:hover { border-color: rgba(229,56,59,0.6); }
+    .ac-quiz .msg { font-size: 0.82rem; min-height: 1.2em; margin-top: 0.3rem; }
+    .ac-grant { border: 1px solid rgba(201,157,69,0.5); border-radius: 16px; padding: 1.2rem 1.2rem 1.3rem; margin-top: 1.6rem;
+      background: linear-gradient(160deg, rgba(30,24,14,0.9), rgba(8,6,5,0.95)); }
+    .ac-grant h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; }
+    .ac-grant p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin-top: 0.4rem; }
+    .ac-grant p b { color: var(--cream); }
+    .ac-fine { font-size: 0.74rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="reserve.html">The Reserve</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="ac">
+    <section class="ac-hero">
+      <img class="ac-hero__bg" alt="The Web3 study hall" src="assets/img/web3-academy.png"
+        onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_131204_62c862c7-a83f-493c-ba8e-5dab0ad6d2b8.png';}else{this.style.display='none';}">
+      <div class="ac-hero__scrim"></div>
+      <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Equity Uprise · The Academy</p>
+      <h1>Learn the<br>chain.</h1>
+      <p><b>Six lessons. Then the desk sends your first gas.</b> Web3 isn't a lottery ticket — it's rails.
+        Learn what a wallet actually is, how to never get robbed, and how the treasury holds real
+        crypto behind this platform. Finish all six and request a gas grant to a wallet you control.</p>
+    </section>
+
+    <div class="ac-wrap">
+      <div class="ac-meter">
+        <div class="ac-meter__bar"><div class="ac-meter__fill" id="acFill"></div></div>
+        <b id="acCount">0 / 6</b>
+      </div>
+
+      <div id="acLessons"></div>
+
+      <div class="ac-grant" id="acGrant">
+        <h2>The gas grant</h2>
+        <p id="acGrantBody"><b>Locked until all six lessons are done.</b> Then: paste the address of a wallet
+          YOU created and control — the desk sends a small amount of real ETH for gas so your first
+          on-chain move is on the house. One grant per member, receipt stamped on your record.</p>
+        <div id="acGrantAct" style="margin-top:0.8rem"></div>
+        <p class="mp__msg" id="acGrantMsg"></p>
+      </div>
+
+      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.5rem;margin:2rem 0 0.3rem">The treasury, in public</h2>
+      <p style="color:var(--cream-dim);font-size:0.9rem;line-height:1.6">What the platform's pool actually holds —
+        bought on a licensed exchange, attested by the desk, verifiable here. The app never touches keys.</p>
+      <div class="rv__grid" id="acTreasury" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.7rem;margin:1rem 0">
+        <div style="border:1px solid rgba(244,239,230,0.13);border-radius:14px;background:rgba(20,16,14,0.6);padding:1rem 1.1rem"><b>…</b></div>
+      </div>
+
+      <p class="ac-fine">The academy teaches; it never sells. Nothing here is investment advice, no token is issued by
+        the platform, and the app takes no custody — your wallet is yours, your keys are yours. Gas grants are small
+        educational gifts fulfilled manually by the desk from the org's exchange account.</p>
+    </div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/guide.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      var S = window.MCC_SUPA;
+      var LESSONS = [
+        { k: "wallets", t: "What a wallet really is", s: "Not an app — a keypair.",
+          body: "<p>A wallet is a <b>pair of keys</b>: a public address anyone can see (like your ticker) and a private key only you hold (like the deed). The app on your phone is just a window to it. Whoever holds the private key owns everything at that address — no password reset, no support line.</p><p>That's the whole revolution and the whole risk in one sentence: <b>you become your own bank.</b></p>",
+          q: "Who can move the money at a wallet address?",
+          a: ["Whoever holds the private key", "The wallet app's support team", "The blockchain police"], c: 0 },
+        { k: "seed-safety", t: "Seed phrase law", s: "12 words that ARE the money.",
+          body: "<p>Your seed phrase (12–24 words) can rebuild your private key anywhere. Anyone who reads it owns your wallet — instantly, silently, forever. <b>Never type it into a website. Never photograph it. Never read it to 'support'.</b></p><p>Write it on paper, store it like cash. The #1 way people lose everything isn't hacking — it's being talked into revealing the words.</p>",
+          q: "Your 'wallet support agent' asks for your seed phrase to fix a bug. You:",
+          a: ["Give it — they're support", "Never — no real service ever asks", "Give half of it to be safe"], c: 1 },
+        { k: "gas", t: "Gas — why every move costs", s: "The network's toll.",
+          body: "<p>Every transaction pays <b>gas</b> — a small fee to the people running the network's computers. No gas, no move: you can hold $1,000 of tokens and still be stuck if you have $0 in ETH for the toll.</p><p>That's exactly why the academy ends with a <b>gas grant</b>: your first toll is on the house, so your first real transaction isn't blocked at the door.</p>",
+          q: "You have tokens but zero ETH. What happens when you try to send them?",
+          a: ["It works — tokens pay for themselves", "The transaction can't run — no gas", "The network sends free ETH"], c: 1 },
+        { k: "layers", t: "Layer 1s and Layer 2s", s: "The highway and the express lanes.",
+          body: "<p>Ethereum is a <b>Layer 1</b> — the base highway, maximum security, higher tolls. <b>Layer 2s</b> (Base, Arbitrum, Optimism) run on top: same security family, tolls measured in cents instead of dollars.</p><p>For creators, L2s are where the real economy lives — minting, tipping, small trades that would be eaten alive by mainnet gas.</p>",
+          q: "Why would a creator use a Layer 2?",
+          a: ["It's older than Ethereum", "Fees drop from dollars to cents", "L2s don't need wallets"], c: 1 },
+        { k: "scams", t: "The scam catalogue", s: "Know every play before it's run on you.",
+          body: "<p>The greatest hits: <b>fake airdrops</b> (connect wallet → drained), <b>impersonator DMs</b> ('support' asking for your seed), <b>too-good yields</b> (guaranteed 2% a day = a treadmill that ends), <b>copy-paste poisoning</b> (an address that looks like yours in your history), <b>urgency</b> ('mint closes in 10 minutes').</p><p>The one rule that beats them all: <b>if you didn't start the conversation, it's a scam until proven otherwise.</b></p>",
+          q: "A hot new project DMs you first with a free mint link. The move is:",
+          a: ["Mint fast before it closes", "Treat it as a scam until proven otherwise", "Connect a wallet with only half your money"], c: 1 },
+        { k: "treasury", t: "How OUR treasury works", s: "The pool, the exchange, the receipts.",
+          body: "<p>The platform's reserve pool buys real, existing crypto on a <b>licensed exchange</b> — the org holds it, the desk attests every holding below, and this app <b>never touches keys or custody</b>. No token is issued; nothing here is a security.</p><p>Your gas grant comes from that treasury: a small educational gift, sent manually by the desk to the wallet YOU control, receipt stamped on your record. The pool teaches the next generation the rails — that's the whole play.</p>",
+          q: "Where do the treasury's keys live?",
+          a: ["Inside this app", "With the org on a licensed exchange — the app never touches them", "Split among all members"], c: 1 },
+      ];
+      var doneSet = {};
+
+      function authedHeaders() {
+        return S.token().then(function (t) {
+          return { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t };
+        });
+      }
+      function paintMeter() {
+        var n = Object.keys(doneSet).length;
+        document.getElementById("acFill").style.width = (n / 6 * 100) + "%";
+        document.getElementById("acCount").textContent = n + " / 6";
+        paintGrant(n);
+      }
+      function saveLesson(k) {
+        if (!window.MCC_AUTH || !window.MCC_AUTH.user || !window.MCC_AUTH.user()) {
+          // instant account, then retry — the academy is worth a keypair of its own
+          return window.MCC_AUTH.signInAnon().then(function () { return saveLesson(k); });
+        }
+        return authedHeaders().then(function (h) {
+          return fetch(S.url + "/rest/v1/web3_progress", { method: "POST", headers: h, body: JSON.stringify({ lesson: k, owner: S.uid() }) });
+        });
+      }
+      function paintGrant(n) {
+        var act = document.getElementById("acGrantAct");
+        var body = document.getElementById("acGrantBody");
+        if (window.__grant && window.__grant.status) {
+          var g = window.__grant;
+          body.innerHTML = g.status === "sent"
+            ? "<b>Sent.</b> Your first gas is live at <span style='word-break:break-all'>" + g.address + "</span>" + (g.tx ? " — receipt <span style='word-break:break-all'>" + g.tx + "</span>" : "")
+            : "<b>On the books.</b> The desk sends your gas to <span style='word-break:break-all'>" + g.address + "</span> and stamps the receipt here.";
+          act.innerHTML = "";
+          return;
+        }
+        if (n < 6) return;
+        body.innerHTML = "<b>Unlocked.</b> Paste the address of a wallet YOU created and control (starts with 0x). The desk sends a small amount of real ETH for gas — one grant per member, receipt stamped here.";
+        act.innerHTML = '<div class="mp__linkrow">' +
+          '<input class="mp__in" id="acAddr" type="text" placeholder="0x… your wallet address" style="flex:1">' +
+          '<button class="btn btn--ruby" id="acReq" type="button">Request my gas</button></div>';
+        act.querySelector("#acReq").addEventListener("click", function () {
+          var addr = act.querySelector("#acAddr").value.trim();
+          var msg = document.getElementById("acGrantMsg");
+          msg.textContent = "Talking to the desk…";
+          authedHeaders().then(function (h) {
+            return fetch(S.url + "/rest/v1/rpc/request_gas_grant", { method: "POST", headers: h, body: JSON.stringify({ p_address: addr }) });
+          }).then(function (r) { return r.json().catch(function () { return null; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+            .then(function (res) {
+              if (!res.ok) throw new Error((res.j && (res.j.message || res.j.hint)) || "the request bounced");
+              msg.textContent = String(res.j);
+              if (window.MCC_TRACK) window.MCC_TRACK("gas_grant_request", {});
+              load();
+            }).catch(function (e) {
+              var s = String(e && e.message || e);
+              msg.textContent = /request_gas_grant|404/.test(s) ? "One paste opens the grants: docs/web3-schema.sql in Supabase." : s;
+            });
+        });
+      }
+      function paintLessons() {
+        var host = document.getElementById("acLessons");
+        host.innerHTML = "";
+        LESSONS.forEach(function (L, i) {
+          var el = document.createElement("div");
+          el.className = "ac-lesson" + (doneSet[L.k] ? " is-done" : "");
+          el.innerHTML =
+            '<button class="ac-lesson__head" type="button">' +
+            '<span class="ac-lesson__num">' + (doneSet[L.k] ? "✓" : (i + 1)) + "</span>" +
+            "<span><h3>" + L.t + "</h3><small>" + L.s + "</small></span></button>" +
+            '<div class="ac-lesson__body">' + L.body +
+            (doneSet[L.k] ? '<p style="color:#c99d45;font-weight:700;margin-top:0.8rem">✓ On your record.</p>'
+              : '<div class="ac-quiz"><p>' + L.q + "</p>" +
+                L.a.map(function (a, j) { return '<button type="button" data-q="' + j + '">' + a + "</button>"; }).join("") +
+                '<div class="msg"></div></div>') +
+            "</div>";
+          el.querySelector(".ac-lesson__head").addEventListener("click", function () { el.classList.toggle("is-open"); });
+          el.querySelectorAll("[data-q]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var msg = el.querySelector(".msg");
+              if (+b.dataset.q !== L.c) { msg.textContent = "Not that one — read it back once more."; msg.style.color = "var(--ruby-hot)"; return; }
+              msg.textContent = "Right. Saving it to your record…"; msg.style.color = "#c99d45";
+              saveLesson(L.k).then(function () {
+                doneSet[L.k] = true;
+                if (window.MCC_TRACK) window.MCC_TRACK("web3_lesson", { lesson: L.k });
+                paintLessons(); paintMeter();
+              }).catch(function () { msg.textContent = "Couldn't reach the record — it still counts on this device."; doneSet[L.k] = true; paintLessons(); paintMeter(); });
+            });
+          });
+          host.appendChild(el);
+        });
+      }
+      function paintTreasury() {
+        fetch(S.url + "/rest/v1/treasury_holdings?select=asset,quantity,note,at&order=at.desc", {
+          headers: { apikey: S.key, Authorization: "Bearer " + S.key },
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
+          var g = document.getElementById("acTreasury");
+          function cell(n, l) { return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:14px;background:rgba(20,16,14,0.6);padding:1rem 1.1rem"><b style="display:block;font-size:1.4rem;font-variant-numeric:tabular-nums">' + n + '</b><small style="color:var(--cream-dim);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase">' + l + "</small></div>"; }
+          if (!rows) { g.innerHTML = cell("—", "the treasury opens after one paste: docs/web3-schema.sql"); return; }
+          if (!rows.length) { g.innerHTML = cell("0", "holdings attested — the first buy lands here"); return; }
+          g.innerHTML = rows.map(function (h) { return cell((+h.quantity).toFixed(4) + " " + h.asset, h.note || ("attested " + new Date(h.at).toLocaleDateString())); }).join("");
+        }).catch(function () {});
+      }
+      function load() {
+        paintLessons(); paintMeter(); paintTreasury();
+        if (!window.MCC_AUTH || !window.MCC_AUTH.user || !window.MCC_AUTH.user()) return;
+        authedHeaders().then(function (h) {
+          return fetch(S.url + "/rest/v1/rpc/my_web3", { method: "POST", headers: h, body: "{}" });
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          if (!j) return;
+          (j.lessons || []).forEach(function (k) { doneSet[k] = true; });
+          if (j.grant_status) window.__grant = { status: j.grant_status, tx: j.grant_tx, address: j.grant_address };
+          paintLessons(); paintMeter();
+        }).catch(function () {});
+      }
+      load();
+      if (window.MCC_TRACK) window.MCC_TRACK("academy_view", {});
+    })();
+  </script>
+</body>
+</html>

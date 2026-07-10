@@ -175,7 +175,8 @@ select public.propose_split(
   'upset',
   '[{"slug":"hitman-benji","pct":34},{"slug":"rahndrx","pct":33},{"slug":"raheem","pct":33}]'::jsonb,
   true
-);
+)
+where not exists (select 1 from public.records where slug = 'upset');  -- idempotent: re-runs skip the seed
 
 -- self-checks: expect 2 tables, 6 functions, 1 record
 select count(*) as records_tables from information_schema.tables where table_name in ('records', 'record_splits');

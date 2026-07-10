@@ -88,6 +88,22 @@
       return rest("follows?creator_slug=eq." + encodeURIComponent(slug) + "&supporter=eq." + u.id, { method: "DELETE" }, true);
     },
 
+    /* ---- reactions: ❤️ 🔥 📈, one per member per post per kind ---- */
+    react: function (postId, kind) {
+      var ready = (window.MCC_AUTH.user && window.MCC_AUTH.user())
+        ? Promise.resolve()
+        : window.MCC_AUTH.signInAnon();
+      return ready.then(function () {
+        return rest("rpc/react", { method: "POST", body: { p_post: postId, p_kind: kind } }, true);
+      });
+    },
+
+    /* ---- THE WIRE: the whole floor's posts in one public feed ---- */
+    wire: function (limit) {
+      return rest("rpc/wire_feed", { method: "POST", body: { p_limit: limit || 40 } })
+        .then(function (rows) { return rows || []; }).catch(function () { return []; });
+    },
+
     /* ---- the fan book: yours to take with you ---- */
     exportFans: function () {
       return rest("rpc/my_supporters", { method: "POST", body: {} }, true).then(function (rows) {

@@ -34,7 +34,14 @@
     "letter-spacing:0.05em;text-transform:uppercase;font-size:0.8rem;padding:0.65em 1.3em;color:#fff;" +
     "background:linear-gradient(120deg,var(--ruby,#a4161a),var(--ruby-hot,#e5383b))}" +
     "#mccTour .tour__skip{background:none;border:0;cursor:pointer;font:inherit;font-size:0.78rem;" +
-    "color:rgba(244,239,230,0.5);text-decoration:underline;padding:0.4em}";
+    "color:rgba(244,239,230,0.5);text-decoration:underline;padding:0.4em}" +
+    "#mccTour .tour__img{width:calc(100% + 2.2rem);margin:-1.05rem -1.1rem 0.7rem;height:110px;" +
+    "object-fit:cover;border-radius:15px 15px 0 0;display:block}" +
+    "#mccTour .tour__doors{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.7rem}" +
+    "#mccTour .tour__doors a{border:1px solid rgba(244,239,230,0.22);border-radius:100px;" +
+    "padding:0.42em 0.95em;font-size:0.76rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;" +
+    "color:var(--cream,#f4efe6);text-decoration:none;background:rgba(244,239,230,0.05)}" +
+    "#mccTour .tour__doors a:hover{border-color:rgba(229,56,59,0.7);background:rgba(229,56,59,0.12)}";
   document.head.appendChild(css);
 
   function q(sel) { return document.querySelector(sel); }
@@ -48,6 +55,7 @@
       kick: "The floor",
       title: "Everybody trades.",
       body: "Every artist, room, and operator here runs under a ticker — moved by real work: deals kept, ratings earned, plays counted. This is the whole city on one screen.",
+      img: "assets/img/floor-scene.png",
     },
     {
       target: function () { return q("#xcList .xc__row"); },
@@ -86,10 +94,24 @@
       body: "Your ticker, your listing, your inbox, your payment link — the whole business. It opens with one tap, no email needed. That button right there.",
     },
     {
+      target: function () { return q(".gd__fab"); },
+      kick: "The glowing M",
+      title: "Your guide lives up here.",
+      body: "Tap the M any time, on any page — it knows the floor, your card, and the fastest route to whatever you're trying to do. Ask it anything in plain words.",
+    },
+    {
       target: null,
       kick: "The record",
-      title: "The record carries it.",
-      body: "Deals build your street credit. Plays move your ticker. Everything you do here becomes yours to keep. ✦ Show me around lives in the rail whenever you want the walk again.",
+      title: "The whole city is open.",
+      body: "Deals build your street credit. Plays move your ticker. Everything you do here becomes yours to keep — and these doors are all one tap away.",
+      img: "assets/img/wire-scene.png",
+      doors: [
+        ["wire.html", "The Wire"],
+        ["academy.html", "The Academy"],
+        ["house.html", "The House"],
+        ["spaces.html", "Spaces"],
+        ["app.html", "Only Us"],
+      ],
     },
   ];
 
@@ -145,8 +167,12 @@
   function paint() {
     var s = STEPS[current];
     card.innerHTML =
+      (s.img ? '<img class="tour__img" alt="" src="' + s.img + '" onerror="this.remove()">' : "") +
       '<div class="tour__kick"><span>' + s.kick + "</span><span>" + (current + 1) + " / " + STEPS.length + "</span></div>" +
       "<h3>" + s.title + "</h3><p>" + s.body + "</p>" +
+      (s.doors ? '<div class="tour__doors">' + s.doors.map(function (d) {
+        return '<a href="' + d[0] + '">' + d[1] + "</a>";
+      }).join("") + "</div>" : "") +
       '<div class="tour__acts">' +
       '<button class="tour__next" type="button" data-tour-next>' + (current === STEPS.length - 1 ? "Walk the floor" : "Next") + "</button>" +
       '<button class="tour__skip" type="button" data-tour-skip>Skip the tour</button></div>';
@@ -201,6 +227,14 @@
     chip.textContent = "✦ Tour";
     chip.addEventListener("click", start);
     rail.appendChild(chip);
+    // the Wire and the Academy ride the same rail — one tap off the floor
+    [["wire.html", "⚡ The Wire"], ["academy.html", "⛓ Academy"]].forEach(function (d) {
+      var a = document.createElement("a");
+      a.className = "mk__jump";
+      a.href = d[0];
+      a.textContent = d[1];
+      rail.appendChild(a);
+    });
   }
 
   /* first visit, signed out, standing on the floor → the walk begins */

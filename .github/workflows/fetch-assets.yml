@@ -50,13 +50,19 @@ jobs:
         run: |
           test -f assets/video/hero.mp4 || { echo "no hero video"; exit 0; }
           mkdir -p assets/frames
-          rm -f assets/frames/*.jpg
-          entries=""
+          # regenerate ONLY sequences whose source video is present — never
+          # wipe frames whose clips aren't in the manifest (they'd be lost)
           for f in assets/video/*.mp4; do
             n=$(basename "$f" .mp4)
+            rm -f assets/frames/${n}_*.jpg
             if [ "$n" = "hero" ]; then scale=1536; q=3; else scale=1280; q=7; fi
             ffmpeg -hide_banner -loglevel error -i "$f" \
               -vf "fps=20,scale=${scale}:-2" -q:v "$q" "assets/frames/${n}_%04d.jpg"
+          done
+          # rebuild the manifest from EVERY sequence on disk, kept or new
+          entries=""
+          for first in assets/frames/*_0001.jpg; do
+            n=$(basename "$first" _0001.jpg)
             count=$(ls assets/frames/${n}_*.jpg | wc -l | tr -d ' ')
             entries="${entries}\"${n}\": { \"count\": ${count} }, "
           done
