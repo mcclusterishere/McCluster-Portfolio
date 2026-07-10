@@ -58,7 +58,6 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
-  <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/door.js?v=__STAMP__"></script>
   <script>
     (function () {
@@ -81,7 +80,7 @@
         return;
       }
 
-      var STEPS = 6, at = 0;
+      var STEPS = 5, at = 0;
       function dots() {
         $("wlDots").innerHTML = "";
         for (var i = 0; i < STEPS; i++) {
@@ -119,7 +118,7 @@
             'listing and hand you the keys. Two minutes, then the floor is yours.</p>' + goBtn("Walk me in"));
         },
         function s1() {
-          card('<h2>What do you do?</h2><p>Pick every lane that\'s yours — this is how the floor finds you.</p>' +
+          card('<h2>What\'s your hustle?</h2><p>Pick everything you do — this is how the floor finds you.</p>' +
             chiprow(ROLES, A.roles, true) + goBtn());
           wireChips(A.roles, true);
         },
@@ -136,16 +135,6 @@
           wireChips(A.goals, true);
         },
         function s4() {
-          card('<h2>Prove it’s really you.</h2>' +
-            '<p>Every serious floor runs on real people. Two minutes on Stripe’s secure page — scan a government ID, ' +
-            'match a live selfie — and your listing wears the <b style="color:#2fbf71">✓ ID-Verified</b> mark everywhere. ' +
-            'Stripe keeps the documents; the floor only ever sees the mark. Verified members get booked first, ' +
-            'and going live on the public floor asks for it.</p>' +
-            '<button class="wl__go" type="button" data-verify>Scan my ID now — wear the mark</button>' +
-            '<button class="wl__skip" type="button" data-next>Later, from my desk</button>' +
-            '<p class="wl__msg" id="wlIdMsg"></p>');
-        },
-        function s5() {
           card('<h2>How this economy works.</h2>' +
             '<div class="wl__ex"><b>E⤴︎ credit — earned, never handed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
             'Complete a deal: the worker earns 5%, the payer 1%. Credit earned by work can cash out; credit bought or gifted spends inside the floor. Nothing mints unbacked.</small></div>' +
@@ -169,9 +158,16 @@
       function save(then) {
         var fields = { headline: A.headline || null, area: A.area || null, blurb: A.blurb || null };
         if (A.roles.length) fields.roles = A.roles;
-        if (A.rate) fields.terms = { rate: +A.rate };
         $("wlMsg") && ($("wlMsg").textContent = "Dressing your card…");
-        window.MCC_NET.saveListing(fields).catch(function () {}).then(function () {
+        // the answers ride the listing: goals + rate merge into terms so
+        // the desk (and the owner's People room) can read them later
+        window.MCC_NET.myListing().catch(function () { return null; }).then(function (mine) {
+          var terms = (mine && mine.terms) || {};
+          if (A.rate) terms.rate = +A.rate;
+          if (A.goals.length) terms.goals = A.goals;
+          if (A.rate || A.goals.length || mine) fields.terms = terms;
+          return window.MCC_NET.saveListing(fields);
+        }).catch(function () {}).then(function () {
           try {
             localStorage.removeItem("mcc_welcome_pending");
             localStorage.setItem("mcc_goals", JSON.stringify(A.goals));
@@ -192,32 +188,6 @@
         if (tr) tr.addEventListener("click", function () {
           harvest();
           save(function () { location.href = "market.html?tour=1#floor"; });
-        });
-        /* the mark's door mid-walk: card saved first, then Stripe's scan.
-           The webhook stamps the verdict; the desk shows it on return. */
-        var vf = stage.querySelector("[data-verify]");
-        if (vf) vf.addEventListener("click", function () {
-          vf.textContent = "Opening the scan…";
-          harvest();
-          save(function () {
-            window.MCC_STRIPE.verifyId().then(function (j) {
-              if (j && j.url) {
-                // the walk isn't finished — the desk banner brings them back
-                try {
-                  localStorage.setItem("mcc_idv_pending", "1");
-                  localStorage.setItem("mcc_welcome_pending", "1");
-                } catch (e) {}
-                track("verify_id_open", { from: "welcome" });
-                location.href = j.url;
-                return;
-              }
-              vf.textContent = "Scan my ID now — wear the mark";
-              var m = $("wlIdMsg");
-              if (m) m.textContent = (j && j.error)
-                ? "The scanner answered: " + j.error
-                : "The scanner isn’t armed yet — you can verify any time from your desk.";
-            });
-          });
         });
       }
       track("welcome_start", {});

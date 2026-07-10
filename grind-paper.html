@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Grind White Paper · The Behavior Lab</title>
+  <meta name="description" content="The Grind — a staged behavioral market: the full design of the two-model pricing engine, the visible task board, the shadow instrument board, and the ethics of running psychology experiments in the open.">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    body { background: #0a0807; }
+    .wp { max-width: 46rem; margin: 0 auto; padding: clamp(5.5rem, 10vh, 7rem) clamp(1.1rem, 4vw, 2rem) 9rem; }
+    .wp__k { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: #d8ba7c; font-weight: 800; }
+    .wp h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: 0.95;
+      font-size: clamp(2.2rem, 8.5vw, 3.6rem); margin-top: 0.4rem; }
+    .wp__meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin-top: 0.9rem;
+      font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-dim); font-weight: 700; }
+    .wp__meta b { color: var(--cream); }
+    .wp__abstract { margin-top: 2.2rem; border-left: 2px solid rgba(216, 186, 124, 0.6); padding: 0.2rem 0 0.2rem 1.1rem;
+      color: var(--cream-dim); font-size: 0.95rem; line-height: 1.75; }
+    .wp__abstract b { color: var(--cream); }
+    .wp__sec { margin-top: 2.6rem; }
+    .wp__sec h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem;
+      border-bottom: 1px solid rgba(216, 186, 124, 0.35); padding-bottom: 0.5rem; }
+    .wp__sec h3 { font-size: 0.95rem; margin-top: 1.4rem; color: var(--cream); }
+    .wp__sec p, .wp__sec li { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.75; }
+    .wp__sec p { margin-top: 0.9rem; }
+    .wp__sec ul { margin: 0.7rem 0 0 1.1rem; display: grid; gap: 0.45rem; }
+    .wp__sec p b, .wp__sec li b { color: var(--cream); }
+    .wp__tablewrap { overflow-x: auto; margin-top: 1.1rem; border: 1px solid rgba(244,239,230,0.12); border-radius: 14px; }
+    .wp table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 34rem; }
+    .wp th { text-align: left; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: #d8ba7c;
+      padding: 0.8rem 0.9rem; border-bottom: 1px solid rgba(216, 186, 124, 0.35); }
+    .wp td { padding: 0.7rem 0.9rem; border-bottom: 1px solid rgba(244, 239, 230, 0.07); color: var(--cream-dim); vertical-align: top; }
+    .wp td b { color: var(--cream); }
+    .wp__law { border-left: 3px solid #c99d45; padding: 0.2rem 0 0.2rem 1rem; margin-top: 1.3rem;
+      color: var(--cream-dim); line-height: 1.7; font-size: 0.88rem; }
+    .wp__law b { color: var(--cream); }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="equity-uprise.html">The Lab</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="wp">
+    <p class="wp__k">The Behavior Lab · a working paper, published where the subjects can read it</p>
+    <h1>The Grind:<br>a staged behavioral market.</h1>
+    <div class="wp__meta">
+      <span>Series <b>Equity Uprise Behavior Lab</b></span>
+      <span>Model <b>grind_v2</b></span>
+      <span>Status <b>live in production</b></span>
+      <span>July 2026</span>
+    </div>
+
+    <p class="wp__abstract"><b>Abstract.</b> The Grind is a live behavioral experiment running inside M Network's
+      market: a two-model pricing engine in which a member's <b>staged</b> ticker price responds to daily interaction
+      while the <b>true</b> book — priced on money and the record — is never altered. The design pairs a visible task
+      board built on well-studied motivational mechanics (bounded daily reward, streak reinforcement, loss on silence)
+      with a <b>shadow instrument board</b>: nine covert behavioral markers that pay no visible reward and exist purely
+      as measurement. Every signal leaves the device as tagged telemetry and becomes training data for the deep worth
+      model. This paper documents the full mechanics, the anti-gaming walls, what is and is not collected, and the
+      ethical frame: the experiment is disclosed here, in public, in plain language, to the people inside it.</p>
+
+    <section class="wp__sec">
+      <h2>1 · Why stage a market at all</h2>
+      <p>Every platform you use runs behavioral experiments on you. Almost none of them tell you. The feed reorders
+        itself to hold your eyes, the notification fires at the hour you're weakest, and the results are read in
+        rooms you will never enter. The Behavior Lab's position is the opposite: <b>run the experiments in the open,
+        publish the instrument designs, and let the subjects read the paper.</b></p>
+      <p>The Grind exists to answer a real pricing problem. A member's dollar worth (deals closed, money moved) is
+        the honest number, but it moves slowly and arrives late — a photographer six weeks from their first booking
+        shows a flat line no matter how alive they are. Engagement is the leading indicator: the member who walks
+        the floor daily, reads deep, and speaks inside deal threads is statistically <i>becoming</i> the member who
+        closes. The Grind makes that leading indicator visible — carefully, inside a hard band, and never at the
+        expense of the truth.</p>
+      <p>The mechanics borrow from the literature deliberately: bounded daily rewards and streaks lean on
+        <b>operant reinforcement schedules</b> (fixed daily ratios, not slot-machine variable ones — a deliberate
+        ethical choice), the idle penalty leans on <b>loss aversion</b> (losses weigh roughly twice as much as
+        equivalent gains, so a small daily bleed outworks a large occasional bonus), and the always-fuller-than-cashable
+        task board uses the <b>goal-gradient effect</b> — effort accelerates near a visible goal that renews daily.</p>
+    </section>
+
+    <section class="wp__sec">
+      <h2>2 · The two-model architecture</h2>
+      <p>The engine's honesty invariant is structural, not aspirational — the two numbers live in different models
+        and only one of them can be bent:</p>
+      <div class="wp__tablewrap"><table>
+        <tr><th>Model</th><th>Prices on</th><th>Can the Grind move it?</th><th>Who sees it</th></tr>
+        <tr><td><b>M-GRIND</b> (staged)</td><td>Interaction: tasks, streaks, silence</td><td>Yes — clamped to [−10%, +8%]</td><td>The public floor, in points</td></tr>
+        <tr><td><b>M-WORTH</b> (true book)</td><td>Money and the record: deals, dollars, ratings</td><td><b>Never</b></td><td>Each member sees only their own</td></tr>
+      </table></div>
+      <p>Money keeps roughly <b>ten times the weight by construction</b>: the staged boost lives inside a hard
+        ±band while labor dollars have no cap. The floor's public prices are staged and say so; the private worth
+        number is computed only from RLS-locked inputs and is never theatrically adjusted. We call this the
+        <b>dark-not-fake law</b>: a number may be withheld, styled, or staged within a disclosed band — it may never
+        be invented.</p>
+    </section>
+
+    <section class="wp__sec">
+      <h2>3 · The visible board — the part the player is shown</h2>
+      <p>Six tasks are offered daily; only three can pay. The arithmetic, exactly as it runs:</p>
+      <ul>
+        <li><b>+1% per fulfilled task</b>, maximum three counted per day — the board always offers more than a day
+          can cash, so the only way to eat is to come back.</li>
+        <li><b>Streak pays +0.25% per consecutive day</b>, capped at +5%.</li>
+        <li><b>Silence costs −1% per idle day</b>, floored at −10%. A comeback pays the debt down one day per task —
+          no instant absolution.</li>
+        <li>Net boost clamps to <b>[−10%, +8%]</b> and applies to the staged price only.</li>
+        <li>An internal energy score <b>E</b> rises +10 per visible task (cap 1,000) and bleeds 4% per idle day —
+          the decay curve of an unwatered habit.</li>
+        <li><b>Anti-gaming wall:</b> task credits land minimum 20 seconds apart; rapid-fire completion is logged as
+          <i>throttled</i>, not paid. Each device carries its own permanent instrument id, so the everyday phone and
+          the deal-closing laptop read as different instruments of the same player.</li>
+      </ul>
+    </section>
+
+    <section class="wp__sec">
+      <h2>4 · The shadow instrument board — the part the player is not shown (until now)</h2>
+      <p>Nine markers fire on behavior nobody is asked to perform. They pay <b>no boost</b> — only E, the training
+        signal — because a measurement that pays visibly stops measuring and starts incentivizing. Publication of
+        this table is the disclosure:</p>
+      <div class="wp__tablewrap"><table>
+        <tr><th>Marker</th><th>Fires when</th><th>What it reads</th></tr>
+        <tr><td><b>dwell_60</b></td><td>A full minute on one page</td><td>Attention span</td></tr>
+        <tr><td><b>scroll_deep</b></td><td>Read past 80% of a long page</td><td>Depth of reading</td></tr>
+        <tr><td><b>wanderer</b></td><td>Walked 4+ rooms in a day</td><td>Breadth of curiosity</td></tr>
+        <tr><td><b>night_owl</b></td><td>Moved between midnight and 5am</td><td>Chronotype</td></tr>
+        <tr><td><b>early_bird</b></td><td>Moved between 5 and 8am</td><td>Chronotype</td></tr>
+        <tr><td><b>vr_pilot</b></td><td>Entered the 360° cabin</td><td>Novelty seeking</td></tr>
+        <tr><td><b>listener</b></td><td>Played 3 different songs in a day</td><td>Catalogue engagement</td></tr>
+        <tr><td><b>closer</b></td><td>Spoke inside a deal thread</td><td>Deal sociality — the strongest predictor we watch</td></tr>
+        <tr><td><b>scholar</b></td><td>Read the fine rooms — docs, amenities, markers</td><td>Diligence</td></tr>
+      </table></div>
+      <p>Together the markers sketch a behavioral profile: <i>when</i> a member moves, <i>how deep</i> they read,
+        <i>how wide</i> they roam, and whether they talk where money is decided. The operator's desk aggregates them
+        into per-player grades (S/A/B/C) and, in the People room, into named <b>archetypes</b> — The Closer, The
+        Grinder, The Watcher, The Ghost — labels computed from the numbers in the open, so they can be argued with.</p>
+    </section>
+
+    <section class="wp__sec">
+      <h2>5 · The exhaust is the product</h2>
+      <p>Every grind event leaves the device tagged <b>model:grind_v2</b> with the hour, the day of week, the page,
+        the streak, and the instrument id, and lands in the platform's own first-party events table (never a
+        third-party broker). This exhaust has one job: <b>teaching the deep model which behaviors predict real deal
+        flow.</b> When M-WORTH graduates, it will weigh a member's history knowing, from data, that <i>closer</i>
+        behavior at 2pm predicts bookings and <i>wanderer</i> behavior at 3am predicts churn — or whatever the data
+        actually says, which is the point of running the experiment instead of guessing.</p>
+    </section>
+
+    <section class="wp__sec">
+      <h2>6 · Ethics — the rules the lab runs by</h2>
+      <ul>
+        <li><b>Disclosure is this page.</b> The full instrument list, the exact arithmetic, and the purpose are
+          published where every subject can read them. A lab that hides its methods from its subjects is running
+          on them, not with them.</li>
+        <li><b>Fixed schedules, not slot machines.</b> Rewards are bounded, predictable, and daily. No variable-ratio
+          jackpot mechanics, no infinite feed, no engineered near-misses.</li>
+        <li><b>The truth is structurally unbendable.</b> Staged theater lives in its own model with a disclosed band;
+          the money record cannot be dressed.</li>
+        <li><b>What is collected:</b> interaction telemetry — pages, taps, hours, streaks — keyed to a device
+          instrument id and, when signed in, the account. <b>What is not:</b> contacts, location, keystrokes,
+          message contents outside the platform, or anything read off the device beyond what the pages themselves do.</li>
+        <li><b>Coaching, not consumer reporting.</b> Scores explain themselves and are used to coach and to rank
+          inside the platform's own games. Nothing here is furnished to third parties for credit, employment,
+          insurance, or housing decisions.</li>
+        <li><b>The exit is real.</b> Stop using the app and the score simply decays; no data is sold on the way out.</li>
+      </ul>
+    </section>
+
+    <section class="wp__sec">
+      <h2>7 · Live and upcoming experiments</h2>
+      <ul>
+        <li><b>EXP-01 · The Grind</b> (live) — does a bounded daily game move weekly active behavior without
+          degrading deal quality?</li>
+        <li><b>EXP-02 · Shadow instruments</b> (live) — which covert markers actually predict first-deal conversion?</li>
+        <li><b>EXP-03 · Street Score</b> (live) — behavior-based creditworthiness coaching; see the
+          <a href="scb-paper.html" style="color:#d8ba7c">SCB white paper</a>.</li>
+        <li><b>EXP-04 · The Plug</b> (arming) — referral credit that pays only on <i>real</i> accounts: three
+          finished, moving, agreement-signed members per 1 E⤴︎, plus a lifetime 1% share of everything a
+          referred member earns — a test of quality-gated virality against click-farm decay.</li>
+        <li><b>EXP-05 · The One Percent Fund</b> (arming) — does a visible community chest funded by the house's own
+          fee measurably raise retention and standing behavior?</li>
+      </ul>
+      <div class="wp__law"><b>Reproducibility note.</b> The engine described here ships in the site's own
+        JavaScript, unminified, in public view — the rare psychology experiment whose full source is the
+        publication.</div>
+    </section>
+
+    <section class="wp__sec">
+      <h2>8 · Limitations</h2>
+      <p>Device-keyed instruments undercount multi-device players and overcount shared devices. Chronotype markers
+        read local clock, not sleep. E and boost are proxies with known ceilings, chosen for legibility over
+        sensitivity. Archetype labels are heuristics on small-n data and are presented as conversation, not verdict.
+        The lab's honest posture: publish the design, watch the data, revise in public.</p>
+    </section>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>if (window.MCC_TRACK) window.MCC_TRACK("grind_paper_view", {});</script>
+</body>
+</html>

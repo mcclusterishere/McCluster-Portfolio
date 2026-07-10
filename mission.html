@@ -88,6 +88,7 @@
         <button class="mc__tab" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
+        <button class="mc__tab" data-tab="mcPeople" type="button">People <b id="tabNPeople"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
         <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
@@ -116,6 +117,15 @@
       <section class="mc__card mc__hidden" id="pane-mcMembers">
         <h2>Member applications</h2>
         <div id="mcMembers"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcPeople">
+        <h2>People — the whole person, one card</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem">Every member's full picture: what they answered at the door,
+          how they move, what they hold, who they deal with, and the archetype their behavior is building. Computed
+          fresh from the database on every load — nothing typed by hand.</p>
+        <input class="mc__in" id="peopleQ" type="search" placeholder="Search — name, ticker, hustle, archetype">
+        <div id="mcPeople"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcDeals">
@@ -309,12 +319,35 @@
       }
 
       /* ---- THE PLATFORM'S OWN EYES: first-party events, admin only ----
-         Every MCC_TRACK event mirrors into the events table; this room
-         aggregates the last ~1500 into today/7-day pulse, top events,
-         top pages, and how many distinct signed-in souls moved. */
-      function paintAnalytics(rows) {
+         Every MCC_TRACK event mirrors into the events table. This room
+         reads the last ~6000 raw events across four time panes plus the
+         worker's nightly snapshots (pulse_log) for the long history. */
+      var ANNA = { rows: null, listings: [], pulse: null, range: 7 };
+      function annaBars(pairs) {
+        var max = pairs.length ? Math.max.apply(null, pairs.map(function (p) { return p[1]; })) : 1;
+        return pairs.map(function (p) {
+          return '<p style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;margin:0.25em 0">' +
+            '<span style="flex:0 0 11rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cream-dim)">' + esc(p[0]) + "</span>" +
+            '<span style="flex:1;height:8px;border-radius:100px;background:rgba(244,239,230,0.08);overflow:hidden">' +
+            '<span style="display:block;height:100%;width:' + Math.max(3, Math.round(p[1] / max * 100)) + '%;background:linear-gradient(90deg,var(--ruby),var(--ruby-hot))"></span></span>' +
+            "<b style='font-variant-numeric:tabular-nums'>" + p[1] + "</b></p>";
+        }).join("");
+      }
+      function annaCols(vals, labels) {
+        var max = Math.max.apply(null, vals.concat([1]));
+        return '<div style="display:flex;align-items:flex-end;gap:2px;height:56px;margin:0.3rem 0 0.1rem">' +
+          vals.map(function (v) {
+            return '<span title="' + v + '" style="flex:1;min-width:2px;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--ruby-hot),var(--ruby));height:' +
+              Math.max(4, Math.round(v / max * 100)) + '%;opacity:' + (v ? 1 : 0.18) + '"></span>';
+          }).join("") + "</div>" +
+          (labels ? '<div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--cream-dim)"><span>' +
+            labels[0] + "</span><span>" + labels[1] + "</span></div>" : "");
+      }
+      function paintAnalytics(rows, listings, pulse) {
+        if (rows !== undefined) { ANNA.rows = rows; ANNA.listings = listings || []; ANNA.pulse = pulse || null; }
         var el = $("mcAnna");
         if (!el) return;
+        rows = ANNA.rows;
         if (rows === null) {
           el.innerHTML = "<p class='mc__empty'>The eyes need one paste: docs/analytics-schema.sql in Supabase — then every tap on the site lands here.</p>";
           return;
@@ -323,42 +356,142 @@
           el.innerHTML = "<p class='mc__empty'>Armed and watching — no events banked yet. They start landing the moment anyone touches the live site.</p>";
           return;
         }
-        var now = Date.now(), day = 864e5;
-        var today = 0, week = 0, souls = {};
-        var byName = {}, byPage = {};
+        var now = Date.now(), day = 864e5, R = ANNA.range;
+        var nameOf = {};
+        (ANNA.listings || []).forEach(function (l) { if (l.owner) nameOf[l.owner] = l.name + (l.ticker ? " · $" + l.ticker : ""); });
+        var today = 0, inR = 0, souls = {}, byName = {}, byPage = {}, bySoul = {}, byHour = [], byDay = [];
+        for (var h = 0; h < 24; h++) byHour.push(0);
+        for (var d = 0; d < R; d++) byDay.push(0);
         rows.forEach(function (r) {
-          var t = new Date(r.at).getTime();
-          if (now - t < day) today++;
-          if (now - t < 7 * day) {
-            week++;
-            if (r.uid) souls[r.uid] = 1;
+          var t = new Date(r.at).getTime(), age = now - t;
+          if (age < day) today++;
+          if (age < R * day) {
+            inR++;
             byName[r.name] = (byName[r.name] || 0) + 1;
             byPage[r.path || "?"] = (byPage[r.path || "?"] || 0) + 1;
+            byHour[new Date(r.at).getHours()]++;
+            byDay[R - 1 - Math.floor(age / day)]++;
+            if (r.uid) {
+              souls[r.uid] = 1;
+              bySoul[nameOf[r.uid] || ("guest · " + String(r.uid).slice(0, 8))] =
+                (bySoul[nameOf[r.uid] || ("guest · " + String(r.uid).slice(0, 8))] || 0) + 1;
+            }
           }
         });
         function top(map, n) {
           return Object.keys(map).map(function (k) { return [k, map[k]]; })
             .sort(function (a, b) { return b[1] - a[1]; }).slice(0, n);
         }
-        function bars(pairs) {
-          var max = pairs.length ? pairs[0][1] : 1;
-          return pairs.map(function (p) {
-            return '<p style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;margin:0.25em 0">' +
-              '<span style="flex:0 0 11rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cream-dim)">' + esc(p[0]) + "</span>" +
-              '<span style="flex:1;height:8px;border-radius:100px;background:rgba(244,239,230,0.08);overflow:hidden">' +
-              '<span style="display:block;height:100%;width:' + Math.max(3, Math.round(p[1] / max * 100)) + '%;background:linear-gradient(90deg,var(--ruby),var(--ruby-hot))"></span></span>' +
-              "<b style='font-variant-numeric:tabular-nums'>" + p[1] + "</b></p>";
-          }).join("");
-        }
         var n = document.getElementById("tabNAnna");
         if (n) n.textContent = today;
-        el.innerHTML =
+        var oldest = rows.length ? (now - new Date(rows[rows.length - 1].at).getTime()) / day : 0;
+        var chips = [[1, "Today"], [7, "7 days"], [30, "30 days"], [90, "90 days"]].map(function (c) {
+          return '<button class="btn btn--ghost" data-rng="' + c[0] + '" type="button" style="padding:0.35em 0.9em;font-size:0.72rem' +
+            (c[0] === R ? ";border-color:var(--ruby-hot);color:var(--cream)" : "") + '">' + c[1] + "</button>";
+        }).join(" ");
+        var html =
+          '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin:0 0 0.9rem">' + chips + "</div>" +
           '<div class="mc__stats" style="margin:0 0 0.9rem">' +
-          stat("events today", today) + stat("events · 7 days", week) +
-          stat("signed-in souls · 7d", Object.keys(souls).length) + "</div>" +
-          "<p class='mc__empty' style='margin:0 0 0.3rem'>What they do (7 days)</p>" + bars(top(byName, 12)) +
-          "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it (7 days)</p>" + bars(top(byPage, 10));
+          stat("events · " + (R === 1 ? "today" : R + "d"), inR) +
+          stat("signed-in souls", Object.keys(souls).length) +
+          stat("events / day", R > 1 ? Math.round(inR / R) : inR) +
+          stat("events today", today) + "</div>";
+        if (R > 1) html += "<p class='mc__empty' style='margin:0.9rem 0 0'>The heartbeat — events per day</p>" +
+          annaCols(byDay, [new Date(now - (R - 1) * day).toLocaleDateString(undefined, { month: "short", day: "numeric" }), "today"]);
+        html += "<p class='mc__empty' style='margin:0.9rem 0 0'>The clock — when the floor moves (hour of day)</p>" +
+          annaCols(byHour, ["12am", "11pm"]) +
+          "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>What they do</p>" + annaBars(top(byName, 14)) +
+          "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it</p>" + annaBars(top(byPage, 10)) +
+          "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Who moves the most</p>" + annaBars(top(bySoul, 8));
+        if (oldest && R > oldest + 1) html += "<p class='mc__empty' style='margin-top:0.5rem'>Raw events on hand reach back ~" +
+          Math.ceil(oldest) + " day(s) — the pane shows what's banked.</p>";
+        if (ANNA.pulse && ANNA.pulse.length) {
+          var pl = ANNA.pulse.slice(0, 60).reverse();
+          html += "<p class='mc__empty' style='margin:1.1rem 0 0'>The long book — the worker's nightly snapshots (souls / day)</p>" +
+            annaCols(pl.map(function (p) { return +((p.data || {}).souls_24h || 0); }),
+              [new Date(pl[0].day).toLocaleDateString(undefined, { month: "short", day: "numeric" }), "latest"]) +
+            "<p class='mc__empty' style='margin:0.5rem 0 0'>Credit outstanding, latest snapshot: <b style='color:var(--cream)'>" +
+            (+((pl[pl.length - 1].data || {}).credit_outstanding || 0)).toFixed(0) + " E⤴︎</b></p>";
+        } else {
+          html += "<p class='mc__empty' style='margin-top:1.1rem'>The long book arms with one paste: docs/worker-schema.sql — a database worker snapshots the whole platform nightly, forever.</p>";
+        }
+        el.innerHTML = html;
+        el.querySelectorAll("[data-rng]").forEach(function (b) {
+          b.addEventListener("click", function () { ANNA.range = +b.getAttribute("data-rng"); paintAnalytics(); });
+        });
       }
+
+      /* ---- PEOPLE: the whole person, one card — the owner's deep room ----
+         member_dossier() computes everything server-side; archetypes are
+         read off the numbers here, in the open, so the labels can be
+         argued with. Search filters as you type. */
+      var PEOPLE = { rows: null };
+      function archetypes(p) {
+        var out = [], now = Date.now(), day = 864e5;
+        var lastSeen = p.last_seen ? (now - new Date(p.last_seen).getTime()) / day : null;
+        var joined = p.joined ? (now - new Date(p.joined).getTime()) / day : null;
+        if ((p.deals_done || 0) >= 3) out.push(["The Closer", "#2fbf71"]);
+        else if ((p.deals_done || 0) >= 1) out.push(["The Builder", "#2fbf71"]);
+        if ((p.counterparties || 0) >= 3) out.push(["The Connector", "#c99d45"]);
+        if ((p.active_days_30 || 0) >= 10) out.push(["The Grinder", "#c99d45"]);
+        if ((p.events_total || 0) >= 50 && !(p.deals_total || 0)) out.push(["The Watcher", "#8ab4f8"]);
+        if ((p.spent || 0) > (p.earned || 0) && (p.spent || 0) > 0) out.push(["The Spender", "#e2726e"]);
+        if ((p.earned || 0) > 0) out.push(["The Earner", "#2fbf71"]);
+        if (joined !== null && joined < 7) out.push(["Day One", "#8ab4f8"]);
+        if (lastSeen === null || lastSeen > 14) out.push(["The Ghost", "#777"]);
+        if (!out.length) out.push(["Unwritten", "#777"]);
+        return out.slice(0, 3);
+      }
+      function paintPeople(rows) {
+        if (rows !== undefined) PEOPLE.rows = rows;
+        var el = $("mcPeople");
+        if (!el) return;
+        rows = PEOPLE.rows;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The room needs one paste: docs/people-schema.sql — then every member's whole picture computes itself.</p>";
+          return;
+        }
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>No claimed accounts yet.</p>"; return; }
+        var q = ($("peopleQ") && $("peopleQ").value || "").trim().toLowerCase();
+        var n = document.getElementById("tabNPeople");
+        if (n) n.textContent = rows.length;
+        el.innerHTML = rows.map(function (p) {
+          var arcs = archetypes(p);
+          var hay = [p.name, p.ticker, (p.roles || []).join(" "), arcs.map(function (a) { return a[0]; }).join(" ")].join(" ").toLowerCase();
+          if (q && hay.indexOf(q) === -1) return "";
+          var goals = (p.goals || []).map(function (g) {
+            return '<span class="mc__tag" style="color:#c99d45;border-color:rgba(201,157,69,0.45)">' + esc(g) + "</span>";
+          }).join(" ");
+          var idm = (p.id_verified === true || p.charges_enabled === true)
+            ? '<span class="mc__tag" style="color:#2fbf71;border-color:rgba(47,191,113,0.5)">✓ ID' + (p.verified_name ? " · " + esc(p.verified_name) : "") + "</span>" : "";
+          var seen = p.last_seen ? new Date(p.last_seen).toLocaleString() : "never seen moving";
+          var moves = (p.top_moves || []).map(function (m) { return [m.name, +m.n]; });
+          return '<div class="mc__row" style="display:block">' +
+            "<h3>" + esc(p.name || "—") + (p.ticker ? ' <span style="color:var(--cream-dim)">· $' + esc(p.ticker) + "</span>" : "") +
+            ' <span class="mc__tag">' + esc(p.status || "?") + "</span>" + idm +
+            arcs.map(function (a) {
+              return ' <span class="mc__tag" style="color:' + a[1] + ';border-color:' + a[1] + '55">' + a[0] + "</span>";
+            }).join("") + "</h3>" +
+            "<p>" + esc((p.roles || []).join(" · ") || "no hustle picked") + (p.area ? " — " + esc(p.area) : "") +
+            (p.joined ? ' · joined ' + new Date(p.joined).toLocaleDateString() : "") + "</p>" +
+            (goals ? "<p style='margin:0.25em 0'>At the door they said: " + goals + "</p>" : "") +
+            '<div class="mc__stats" style="margin:0.5rem 0">' +
+            stat("balance", (+p.balance || 0).toFixed(0) + " E⤴︎") +
+            stat("earned by work", (+p.earned || 0).toFixed(0) + " E⤴︎") +
+            stat("deals · done", (p.deals_total || 0) + " · " + (p.deals_done || 0)) +
+            stat("dealt with", (p.counterparties || 0) + " member(s)") +
+            stat("moves banked", p.events_total || 0) +
+            stat("active days · 30d", p.active_days_30 || 0) + "</div>" +
+            (moves.length ? "<p class='mc__empty' style='margin:0.4rem 0 0.2rem'>Their signature moves</p>" + annaBars(moves) : "") +
+            "<p style='margin:0.4em 0 0;font-size:0.72rem;color:var(--cream-dim)'>" +
+            (p.signed_agreement ? "Member Agreement signed" : "agreement NOT signed") +
+            " · last seen " + esc(seen) +
+            (p.intake_asks ? " · " + p.intake_asks + " intake ask(s)" : "") +
+            (p.cashouts ? " · " + p.cashouts + " cash-out(s)" : "") + "</p></div>";
+        }).join("") || "<p class='mc__empty'>Nobody matches that search.</p>";
+      }
+      var pq = $("peopleQ");
+      if (pq) pq.addEventListener("input", function () { paintPeople(); });
 
       /* ---- THE INTAKE QUEUE: kinds, contacts, one-tap status ---- */
       function paintIntake(rows) {
@@ -440,17 +573,20 @@
           A.sms().catch(function () { return null; }),
           A.deals().catch(function () { return null; }),
           A.grind ? A.grind().catch(function () { return null; }) : Promise.resolve(null),
-          A.events ? A.events().catch(function () { return null; }) : Promise.resolve(null),
+          A.events ? A.events(6000).catch(function () { return null; }) : Promise.resolve(null),
           A.intake ? A.intake().catch(function () { return null; }) : Promise.resolve(null),
           A.house ? A.house().catch(function () { return null; }) : Promise.resolve(null),
           A.cashouts ? A.cashouts().catch(function () { return null; }) : Promise.resolve(null),
+          A.dossier ? A.dossier().catch(function () { return null; }) : Promise.resolve(null),
+          A.pulseLog ? A.pulseLog().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
-          paintAnalytics(r[6]);
+          paintAnalytics(r[6], r[0], r[11]);
           paintIntake(r[7]);
           paintHouse(r[8]);
           paintCashouts(r[9]);
+          paintPeople(r[10]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -581,7 +717,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });

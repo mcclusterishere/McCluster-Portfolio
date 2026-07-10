@@ -68,7 +68,7 @@
       <p class="ob-sub" id="obSub">
         Artists, studios, spaces, engineers, shooters — the network gives you
         <b>your own landing page, a booking system, and verification badges</b>, and
-        you keep <b>100% of your rate</b>. We eat the fees. Pick your lane:
+        you keep <b>100% of your rate</b>. We eat the fees. Pick your hustle:
       </p>
       <div class="ob-roles" id="obRoles" role="tablist">
         <button class="ob-role is-on" type="button" data-role="artist">Artist</button>
@@ -114,7 +114,7 @@
           <label class="ob-kick" for="qWhat" style="display:block;margin:0.8rem 0 0.4rem">What do you do, in one line?</label>
           <input class="cr__in" id="qWhat" type="text" placeholder="e.g. Recording artist & engineer"
             style="width:100%;background:rgba(10,8,7,0.7);border:1px solid rgba(244,239,230,0.2);border-radius:10px;color:var(--cream);font:inherit;padding:0.8em 1em">
-          <label class="ob-kick" style="display:block;margin:0.8rem 0 0.4rem">Your lanes</label>
+          <label class="ob-kick" style="display:block;margin:0.8rem 0 0.4rem">Your hustles</label>
           <div class="ob-roles" id="qRoles" style="margin:0">
             <button class="ob-role" type="button" data-q="Photo">Photo</button>
             <button class="ob-role" type="button" data-q="Video">Video</button>
@@ -139,7 +139,7 @@
       <div id="obDoor" style="margin:0 auto 1.2rem;max-width:430px;text-align:left"></div>
       <div class="finale__actions" style="justify-content:center">
         <a class="btn btn--ruby" id="obGo" href="market.html#yours" data-cta="onboard-go">Open your desk in the Market →</a>
-        <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Onboarding%20question&body=My%20lane%20(artist%2Fprovider%2Fspace)%3A%0AMy%20question%3A%0A" data-cta="onboard-question">Ask a question first</a>
+        <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Onboarding%20question&body=My%20hustle%20(artist%2Fprovider%2Fspace)%3A%0AMy%20question%3A%0A" data-cta="onboard-question">Ask a question first</a>
       </div>
       <p class="ob-lede" style="margin:1.6rem auto 0;font-size:0.8rem">
         Want the site in your pocket while you wait on review?
@@ -162,7 +162,7 @@
       "use strict";
       var COPY = {
         artist: {
-          h1: "Artists,<br>own your lane.",
+          h1: "Artists,<br>own your hustle.",
           sub: "Your profile, your songs, your feature terms, your booking link — one page that works while you sleep. You keep <b>100% of your rate</b>; we eat the fees.",
           getsH: "The whole storefront, built for you",
           gets: [
@@ -226,7 +226,7 @@
       function render(role) {
         var c = COPY[role] || COPY.artist;
         $("obH1").innerHTML = c.h1;
-        $("obSub").innerHTML = c.sub + " Pick your lane:";
+        $("obSub").innerHTML = c.sub + " Pick your hustle:";
         $("obGetsH").textContent = c.getsH;
         $("obGets").innerHTML = c.gets.map(function (g) {
           return '<div class="ob-get"><b>' + g[0] + "</b><small>" + g[1] + "</small></div>";

@@ -35,6 +35,13 @@ of underneath it.
 | Seller receives (destination charge, whole) | N |
 | Platform keeps (back-end application fee) | P − N (9.5% of N) |
 | Stripe's ~2.9% + 30¢ | out of the platform's cut |
+| The One Percent Fund | 1% of every completed deal accrues to the community chest — **taken from the platform's own cut**, never from the buyer's price or the seller's net (docs/fund-schema.sql trigger) |
+
+So the working split of the 9.5% spread: ~2.9%+30¢ to Stripe,
+1% of the deal to the Fund, the remainder is the house's margin.
+The buyer still sees ONE number; the seller still receives their
+ask whole. The Fund changes where the house's own money goes —
+not what anyone else pays or receives.
 
 ## Money out (payouts, once Stripe Connect Express is live)
 

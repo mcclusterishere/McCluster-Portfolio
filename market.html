@@ -52,6 +52,9 @@
     .mk__featcard small { display: block; font-size: 0.56rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
     .mk__featcard b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.2rem; line-height: 1.05; }
 
+    /* a real-market ticker strips the sheet to the truth */
+    .xc--real .xc__book, .xc--real .xc__tf, .xc--real .xc__prints, .xc--real .xc__deep,
+    .xc--real #xcDInvest, .xc--real #xcDPay, .xc--real #xcDPage, .xc--real #xcDRep, .xc--real #xcClaim { display: none; }
     /* lanes */
     .mk__lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.7rem; margin-top: 1.2rem; }
     .mk__lane { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 14px; padding: 1.1rem 1rem; cursor: pointer;
@@ -457,7 +460,8 @@
       <a class="mk__jump" href="#build">&#9889; Deal builder</a>
       <a class="mk__jump mk__jump--pay" href="#pay">$ E-Up Pay</a>
       <a class="mk__jump" href="#scb">&#127963;&#65038; SCB</a>
-      <a class="mk__jump" href="#lanes">Lanes</a>
+      <a class="mk__jump" href="#wire">&#128172; The Wire</a>
+      <a class="mk__jump" href="#lanes">Hustles</a>
       <a class="mk__jump" href="#yours">Your desk</a>
       <a class="mk__jump" href="#providers">Providers</a>
     </nav>
@@ -540,9 +544,9 @@
         Investing here means dealing with the human — the returns are songs, shoots, and rooms that exist because you did.</p>
     </div>
 
-    <!-- 2 · LANES -->
+    <!-- 2 · HUSTLES -->
     <section id="lanes">
-      <p class="mk__k">Browse by lane</p>
+      <p class="mk__k">Browse the hustles</p>
       <h2 class="mk__h2">What are you here to do?</h2>
       <div class="mk__lanes">
         <button class="mk__lane" type="button" data-lane="service_booking" data-cats="Photo,Video,Web">
@@ -717,6 +721,16 @@
       </div>
     </section>
 
+    <!-- THE WIRE: the floor's open feed -->
+    <section id="wire">
+      <p class="mk__k">The Wire</p>
+      <h2 class="mk__h2">What the floor is saying</h2>
+      <div class="mk__card">
+        <div id="wireCompose"></div>
+        <div id="wireFeed"><p class="mk__note">Tapping the wire…</p></div>
+      </div>
+    </section>
+
     <!-- 5 · YOUR DEALS -->
     <section id="yours">
       <p class="mk__k">Your desk</p>
@@ -837,7 +851,7 @@
       var ME = null, DIR = [], counterOf = null, active = "All";
 
       /* ---------- app mode: pick a room, everything else vanishes ---------- */
-      var PANES = ["floor", "lanes", "build", "yours", "providers", "pay", "scb"];
+      var PANES = ["floor", "lanes", "build", "yours", "providers", "pay", "scb", "wire"];
       window.MK_SHOW = function (id) {
         if (PANES.indexOf(id) === -1) return;
         PANES.forEach(function (pid) {
@@ -1411,6 +1425,25 @@
       var UP = "#00c805", DN = "#ff5000";
       var ROWS = [];
 
+      /* the real book, fetched once and shared with the outside board:
+         actual public companies the platform has dealings with, priced by
+         the market-sweep workflow — real dollars, never jittered, never
+         faked. They stand on the floor beside the members. */
+      var REAL = [];
+      window.MCC_REALBOOK = fetch("data/realstocks.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .catch(function () { return null; });
+      window.MCC_REALBOOK.then(function (b) {
+        if (!b || !b.updated) return;
+        REAL = (b.rows || []).filter(function (x) { return !x.dark && x.price != null; })
+          .map(function (x) {
+            return { real: true, tick: x.label, name: x.name, note: x.note || "",
+              val: +x.price, chg: +x.chg || 0,
+              series: (x.series || []).map(function (v) { return { v: +v }; }) };
+          });
+        if (REAL.length && ROWS.length) paintList();
+      });
+
       function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
       // the wall: the public floor speaks in points; dollars are private
       function fmt(v) { return Math.round(+v * 10).toLocaleString() + " pts"; }
@@ -1473,7 +1506,19 @@
       }
 
       function paintList() {
-        $("xcList").innerHTML = ROWS.map(function (r, i) {
+        /* the real companies lead the tape — actual dollars, marked so */
+        var realHtml = REAL.map(function (r, i) {
+          var up = r.chg >= 0;
+          return '<button class="xc__row" type="button" data-r="' + i + '">' +
+            '<span class="xc__id"><b>$' + esc(r.tick) +
+            '<span class="xc__unclaimed" style="color:#c99d45;border-color:rgba(201,157,69,0.5)">real market</span>' +
+            "</b><small>" + esc(r.name) + " · our record</small></span>" +
+            '<canvas class="xc__spark" data-rspark="' + i + '"></canvas>' +
+            '<span class="xc__quote"><b>$' + r.val.toFixed(2) + "</b>" +
+            '<span class="xc__pill' + (up ? "" : " down") + '">' + (up ? "▲" : "▼") + " " +
+            Math.abs(r.chg).toFixed(2) + "%</span></span></button>";
+        }).join("");
+        $("xcList").innerHTML = realHtml + ROWS.map(function (r, i) {
           return '<button class="xc__row" type="button" data-i="' + i + '">' +
             '<span class="xc__id"><b>$' + esc(r.tick) +
             (r.p.entity === "program" ? '<span class="xc__unclaimed" style="color:#2f9e62;border-color:rgba(47,158,98,0.5)">program</span>' : "") +
@@ -1486,8 +1531,15 @@
         ROWS.forEach(function (r, i) {
           drawLine(document.querySelector('[data-spark="' + i + '"]'), r.stock.series, r.chg >= 0 ? UP : DN);
         });
+        REAL.forEach(function (r, i) {
+          var cv = document.querySelector('[data-rspark="' + i + '"]');
+          if (cv && r.series.length > 1) drawLine(cv, r.series, r.chg >= 0 ? UP : DN);
+        });
         document.querySelectorAll(".xc__row").forEach(function (b) {
-          b.addEventListener("click", function () { openSheet(ROWS[+b.getAttribute("data-i")]); });
+          b.addEventListener("click", function () {
+            if (b.hasAttribute("data-r")) { openSheet(REAL[+b.getAttribute("data-r")]); return; }
+            openSheet(ROWS[+b.getAttribute("data-i")]);
+          });
         });
       }
 
@@ -1585,6 +1637,26 @@
           }).join("");
       }
       function openSheet(r) {
+        /* a real company: real dollars, no invented book, no fake prints —
+           the sheet strips to what's true (dark-not-fake, always) */
+        $("xcSheet").classList.toggle("xc--real", !!r.real);
+        if (r.real) {
+          current = null;
+          $("xcDTick").textContent = "$" + r.tick + " · real market · our record";
+          $("xcDName").innerHTML = esc(r.name);
+          $("xcDPrice").textContent = "$" + r.val.toFixed(2);
+          var rc = $("xcDChg");
+          rc.textContent = (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%";
+          rc.className = "xc__chg " + (r.chg >= 0 ? "up" : "down");
+          $("xcDStats").innerHTML =
+            '<div class="xc__stat"><small>What it is</small><b>' + esc(r.note || "a company on our record") + "</b></div>" +
+            '<div class="xc__stat"><small>Last close</small><b>$' + r.val.toFixed(2) + "</b></div>" +
+            '<div class="xc__stat"><small>Source</small><b>daily market sweep</b></div>';
+          document.body.classList.add("xc-open");
+          if (r.series.length > 1) requestAnimationFrame(function () { drawLine($("xcDChart"), r.series, r.chg >= 0 ? UP : DN, true); });
+          track("xc_real_open", { tick: r.tick });
+          return;
+        }
         current = r; curTF = "1D";
         $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1D"); });
         $("xcDTick").textContent = "$" + r.tick + " · " + (r.chg >= 0 ? "up" : "down") + " today";
@@ -1602,7 +1674,7 @@
         var lo = Math.min.apply(null, r.stock.series.map(function (p) { return p.v; }));
         var hi = Math.max.apply(null, r.stock.series.map(function (p) { return p.v; }));
         $("xcDStats").innerHTML =
-          '<div class="xc__stat"><small>Lane</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
+          '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>$' + rate + "/hr</b></div>" : "") +
           '<div class="xc__stat"><small>Open</small><b>' + fmt(r.open) + "</b></div>" +
           '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>" +
@@ -2311,7 +2383,7 @@
         if (welcomeDue) {
           html += '<a class="mp__card" href="welcome.html" style="display:block;text-decoration:none;border-color:rgba(201,157,69,0.55)">' +
             '<span class="mp__lblx" style="color:#c99d45">Finish your walk-in — two minutes</span>' +
-            '<p class="mp__note" style="margin:0.3rem 0 0;color:var(--cream)">Dress your card for the floor and get the whole economy explained — lanes, rate, what E⤴\uFE0E is, how the score works. It\u2019s how the floor finds you.</p></a>';
+            '<p class="mp__note" style="margin:0.3rem 0 0;color:var(--cream)">Dress your card for the floor and get the whole economy explained — your hustles, your rate, what E⤴\uFE0E is, how the score works. It\u2019s how the floor finds you.</p></a>';
         }
 
         if (!ME) {
@@ -2365,27 +2437,29 @@
               '<p class="mp__msg" id="dkRailMsg"></p>' +
               '<p class="mp__note">Five minutes with Stripe — identity and a bank account, all on their secure page. Then every signed deal grows a card checkout and your rate lands straight in your bank.</p></div>';
           }
-          /* the verified mark: three states — verified, submitted, unworn.
-             Connect onboarding already ID-checked the payout members, so
-             the rail going live wears the same mark. */
+          /* the verified mark rides the money: Stripe's payout onboarding
+             already checks identity + bank, so the rail going live IS the
+             verification — no separate paid scan */
           var idVerified = ME.id_verified === true || ME.charges_enabled === true;
-          var idPending = !idVerified && localStorage.getItem("mcc_idv_pending") === "1";
           if (idVerified) {
-            localStorage.removeItem("mcc_idv_pending");
             html += '<div class="mp__card"><span class="mp__lblx">The verified mark</span>' +
-              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● ID-Verified — a government ID and a live selfie stand behind this listing. The floor sees the mark; nobody sees the documents.</p></div>';
+              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● ID-Verified — a real identity and a real bank stand behind this listing. The floor sees the mark; nobody sees the paperwork.</p></div>';
           } else {
             html += '<div class="mp__card"><span class="mp__lblx">The verified mark — prove it’s really you</span>' +
-              (idPending
-                ? '<p class="mp__note" style="color:#c99d45;margin-top:0.4rem">◐ Verification submitted — Stripe is reading your ID now. The mark lands on its own, usually within minutes.</p>'
-                : "") +
-              '<div class="mp__linkrow"><button class="btn ' + (idPending ? "btn--ghost" : "btn--ruby") + '" id="dkIdBtn" type="button" style="flex:1">' +
-              (idPending ? "Retry the scan" : "Verify your ID — wear the mark") + "</button></div>" +
-              '<p class="mp__msg" id="dkIdMsg"></p>' +
-              (idPending ? "" :
-                '<p class="mp__note">Two minutes on Stripe’s secure page — scan a government ID, match a live selfie. Stripe keeps the documents; your listing keeps only the mark. Verified members carry it everywhere on the floor.</p>');
-            html += "</div>";
+              '<p class="mp__note" style="margin-top:0.4rem">The mark rides the money: finish <b style="color:var(--cream)">Set up payouts</b> above — identity and a bank account on Stripe’s secure page, free — and your listing wears <b style="color:#2fbf71">✓ ID-Verified</b> everywhere on the floor. Verified members get booked first.</p></div>';
           }
+          /* the plug: bring three real ones, earn one E⤴ — and "real"
+             means full accounts that move, not clicks */
+          var refCode = (ME.ticker || slug || "").toUpperCase();
+          html += '<div class="mp__card"><span class="mp__lblx">The plug — share it, stack it</span>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0.5rem"><b style="color:var(--cream)">Three real ones = 1 E⤴︎ — plus 1% of everything they ever earn here, for life.</b> ' +
+            'Your link puts your ticker on their door. They count when they finish the walk — full account, agreement signed, ' +
+            'actually moving on the floor and putting their own people on. Clicks count for nothing; people do. ' +
+            'And every time someone you brought earns credit on a deal, the house cuts you 1% of it off its own take — forever.</p>' +
+            '<div class="mp__linkrow"><input class="mp__in" id="dkRef" readonly value="' + esc(base + "market.html?ref=" + refCode) + '">' +
+            '<button class="btn btn--ghost" id="dkRefCopy" type="button">Copy</button>' +
+            '<button class="btn btn--ghost" id="dkRefShare" type="button">Share</button></div>' +
+            '<p class="mp__msg" id="dkRefMsg"></p></div>';
           if (face === "venue") {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
@@ -2459,27 +2533,32 @@
             });
           }
         }
-        /* the mark's door: opens Stripe Identity's hosted scan */
-        var idBtn = body.querySelector("#dkIdBtn");
-        if (idBtn) {
-          idBtn.addEventListener("click", function () {
-            idBtn.textContent = "Opening the scan…";
-            window.MCC_STRIPE.verifyId().then(function (j) {
-              if (j && j.url) {
-                localStorage.setItem("mcc_idv_pending", "1");
-                track("verify_id_open", {});
-                location.href = j.url;
-                return;
-              }
-              idBtn.textContent = "Verify your ID — wear the mark";
-              var m = body.querySelector("#dkIdMsg");
-              var why = (j && j.error) || "";
-              if (m) m.textContent =
-                /signed out/.test(why) ? "Your session blinked — sign in again and retap." :
-                why ? "The scanner answered: " + why :
-                "The scanner didn't answer — the verify-id function may not be deployed yet.";
-            });
+        /* the plug: copy/share the referral link, read the count */
+        var refIn = body.querySelector("#dkRef");
+        if (refIn) {
+          var refMsg = body.querySelector("#dkRefMsg");
+          var refCopyB = body.querySelector("#dkRefCopy");
+          if (refCopyB) refCopyB.addEventListener("click", function () {
+            refIn.select();
+            try { navigator.clipboard.writeText(refIn.value); } catch (e) { document.execCommand("copy"); }
+            if (refMsg) refMsg.textContent = "Copied — send it.";
+            track("ref_copy", {});
           });
+          var refShareB = body.querySelector("#dkRefShare");
+          if (refShareB) refShareB.addEventListener("click", function () {
+            track("ref_share", {});
+            if (navigator.share) navigator.share({ title: "Get on the floor", text: "Claim your ticker on M Network — my link puts you in:", url: refIn.value }).catch(function () {});
+            else if (refMsg) refMsg.textContent = "Copy it instead — this browser doesn't share.";
+          });
+          window.MCC_SUPA.token().then(function (t) {
+            if (!t) return null;
+            return fetch(window.MCC_SUPA.url + "/rest/v1/rpc/referral_stats", { method: "POST",
+              headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t }, body: "{}" });
+          }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (j) {
+            if (j && refMsg) refMsg.textContent = (+j.signups || 0) + " walked in · " + (+j.qualified || 0) +
+              " count as real · " + ((+j.minted || 0) + (+j.share || 0)).toFixed(2) + " E⤴︎ made off the plug" +
+              (+j.share ? " (" + (+j.share).toFixed(2) + " from the lifetime 1%)" : "");
+          }).catch(function () {});
         }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
@@ -2733,9 +2812,9 @@
           return '<svg width="60" height="18" viewBox="0 0 60 18" aria-hidden="true" style="flex:none">' +
             '<polyline points="' + pts + '" fill="none" stroke="' + (up ? "#00c805" : "#ff5000") + '" stroke-width="1.5"/></svg>';
         }
-        fetch("data/realstocks.json", { cache: "no-cache" })
-          .then(function (r) { return r.json(); })
+        (window.MCC_REALBOOK || Promise.resolve(null))
           .then(function (b) {
+            if (!b) return;
             var lbl = '<small style="display:block;font-family:var(--micro);font-size:0.62rem;letter-spacing:0.22em;' +
               'text-transform:uppercase;color:#c99d45;margin-bottom:0.5rem">The outside board · real markets, our record' +
               (b.updated ? " · " + new Date(b.updated).toLocaleDateString() : "") + "</small>";
@@ -2864,6 +2943,92 @@
         });
       });
       armed();
+    })();
+  </script>
+  <script>
+    /* ============ THE WIRE: the floor's open feed ============
+       Posts ride the same table the member pages use; the feed is the
+       cross-cut. Writing takes a listing — RLS checks the slug, not
+       the UI. Names and colors resolve from the shared floor cache. */
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function ago(iso) {
+        var m = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+        if (m < 60) return m + "m";
+        if (m < 1440) return Math.round(m / 60) + "h";
+        return Math.round(m / 1440) + "d";
+      }
+      function paintFeed() {
+        var host = $("wireFeed");
+        if (!host) return;
+        Promise.all([
+          window.MCC_NET.feed().catch(function () { return null; }),
+          window.MCC_FLOOR.load().catch(function () { return { providers: [] }; }),
+        ]).then(function (r) {
+          var rows = r[0], byslug = {};
+          (r[1].providers || []).forEach(function (p) { byslug[p.slug || p.id] = p; });
+          if (rows === null) {
+            host.innerHTML = '<p class="mk__note">The Wire opens after one paste on the back end: docs/social-schema.sql.</p>';
+            return;
+          }
+          if (!rows.length) {
+            host.innerHTML = '<p class="mk__note">Silence on the wire — be the first voice. Every member with a listing can post.</p>';
+            return;
+          }
+          host.innerHTML = rows.map(function (t) {
+            var p = byslug[t.slug] || {};
+            var name = p.name || t.slug;
+            var tick = p.ticker || (p.name ? "" : t.slug);
+            var verified = p.id_verified === true || p.charges_enabled === true;
+            return '<div style="padding:0.8rem 0.2rem;border-bottom:1px dashed rgba(244,239,230,0.12)">' +
+              '<p style="margin:0;font-size:0.78rem"><a href="page.html?who=' + encodeURIComponent(t.slug) + '" style="color:var(--cream);font-weight:700;text-decoration:none">' + esc(name) + "</a>" +
+              (tick ? ' <span style="color:var(--cream-dim)">$' + esc(String(tick).toUpperCase()) + "</span>" : "") +
+              (verified ? ' <span style="color:#2fbf71;font-size:0.85em">✓</span>' : "") +
+              ' <span style="color:var(--cream-dim);float:right">' + ago(t.created_at) + "</span></p>" +
+              '<p style="margin:0.35em 0 0;white-space:pre-wrap;line-height:1.55">' + esc(t.body) + "</p></div>";
+          }).join("");
+        });
+      }
+      function mountCompose() {
+        var host = $("wireCompose");
+        if (!host) return;
+        if (!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) {
+          host.innerHTML = '<p class="mk__note" style="margin:0 0 0.9rem">Reading is free. Speaking takes a seat — <a href="#yours" style="color:var(--cream)">open your account</a> and come back.</p>';
+          return;
+        }
+        window.MCC_NET.myListing().then(function (mine) {
+          if (!mine) {
+            host.innerHTML = '<p class="mk__note" style="margin:0 0 0.9rem">Save your listing first — the Wire speaks in tickers.</p>';
+            return;
+          }
+          host.innerHTML =
+            '<textarea class="mk__in" id="wireBody" rows="3" maxlength="2000" placeholder="Put it on the wire — a drop, a booking window, a win…"></textarea>' +
+            '<div style="display:flex;gap:0.6rem;align-items:center;margin:0.4rem 0 1rem">' +
+            '<button class="btn btn--ruby" id="wireSend" type="button">Post to the floor</button>' +
+            '<span class="mk__msg" id="wireMsg"></span></div>';
+          $("wireSend").addEventListener("click", function () {
+            var body = ($("wireBody").value || "").trim();
+            if (!body) { $("wireMsg").textContent = "Say something first."; return; }
+            $("wireSend").disabled = true;
+            $("wireMsg").textContent = "Putting it out…";
+            window.MCC_NET.feedPost(mine.slug, body).then(function () {
+              $("wireBody").value = "";
+              $("wireMsg").textContent = "On the wire.";
+              $("wireSend").disabled = false;
+              if (window.MCC_TRACK) window.MCC_TRACK("wire_post", {});
+              paintFeed();
+            }).catch(function (e) {
+              $("wireSend").disabled = false;
+              $("wireMsg").textContent = /signed out/.test(String(e)) ? "Your session blinked — sign in again." :
+                "The wire didn't take it — is your listing saved?";
+            });
+          });
+        }).catch(function () {});
+      }
+      mountCompose();
+      paintFeed();
     })();
   </script>
   <script src="js/tour.js?v=__STAMP__"></script>
