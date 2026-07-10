@@ -184,7 +184,7 @@
       function paintEntry() {
         stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The network is forming · select your entry point</p>' +
           "<h1 style=\"font-size:clamp(1.8rem,7vw,2.6rem)\">Where do you enter?</h1>" +
-          '<div class="rz__chips" id="rzChips">' + ENTRIES.map(function (e, i) {
+          '<div class="rz__chips">' + ENTRIES.map(function (e, i) {
             return '<button class="rz__chip" data-i="' + i + '"><b>' + e[1] + "</b><small>" + e[2] + "</small></button>";
           }).join("") + "</div></div>";
         wire(function (i) {
@@ -199,7 +199,7 @@
         stage.innerHTML = '<div class="rz__step"><p class="rz__meta">Mission ' + (si + 1) + " of " + SCENES.length + " · " + s.k + "</p>" +
           "<h1 style=\"font-size:clamp(1.6rem,6.4vw,2.3rem)\">" + s.t + "</h1>" +
           '<p class="rz__lede" style="font-size:0.98rem">' + s.d + "</p>" +
-          '<div class="rz__chips" id="rzChips">' + s.c.map(function (c, i) {
+          '<div class="rz__chips">' + s.c.map(function (c, i) {
             return '<button class="rz__chip" data-i="' + i + '"><b>' + c[0] + "</b><small>" + c[1] + "</small></button>";
           }).join("") + '</div><p class="rz__echo" id="rzEcho"></p><div class="rz__forming" id="rzForm"></div></div>';
         wire(function (i) {
@@ -215,7 +215,7 @@
         });
       }
       function wire(fn) {
-        var box = $("rzChips");
+        var box = stage.querySelector(".rz__chips");
         box.addEventListener("click", function (e) {
           var b = e.target.closest(".rz__chip"); if (!b || b.disabled) return;
           box.classList.add("is-touched");
