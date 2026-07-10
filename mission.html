@@ -160,6 +160,8 @@
       <section class="mc__card" id="pane-mcPulse">
         <h2>The pulse — what needs you, computed</h2>
         <div id="mcPulse"><p class="mc__empty">Loading…</p></div>
+        <h2 style="margin-top:1.6rem">The floor, live — every member's moves</h2>
+        <div id="mcLive"><p class="mc__empty">Reading the tape…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcBrain">
@@ -1106,6 +1108,28 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
+        // THE FLOOR, LIVE — desk_pulse(): who did what, newest first
+        (function paintLive() {
+          var host = document.getElementById("mcLive");
+          window.MCC_SUPA.token().then(function (t) {
+            if (!t) return null;
+            return fetch(window.MCC_SUPA.url + "/rest/v1/rpc/desk_pulse", { method: "POST",
+              headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t },
+              body: JSON.stringify({ p_limit: 60 }) });
+          }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (rows) {
+            if (!rows) { host.innerHTML = '<p class="mc__empty">One paste arms this feed: <b>desk_pulse()</b> from the chat — then every member move streams here.</p>'; return; }
+            if (!rows.length) { host.innerHTML = '<p class="mc__empty">Silence on the floor — no member moves recorded yet.</p>'; return; }
+            host.innerHTML = rows.map(function (e) {
+              var when = new Date(e.at); var mins = Math.round((Date.now() - when) / 60000);
+              var ago = mins < 60 ? mins + "m" : mins < 1440 ? Math.round(mins / 60) + "h" : Math.round(mins / 1440) + "d";
+              return '<p style="display:flex;gap:0.7rem;align-items:baseline;border-bottom:1px dashed rgba(244,239,230,0.1);padding:0.4em 0;font-size:0.82rem">' +
+                '<b style="flex:none;color:#c99d45">$' + (e.ticker || "—") + "</b>" +
+                '<span style="flex:1;min-width:0">' + (e.who || "anonymous") + ' · <span style="color:var(--cream-dim)">' + e.action + "</span></span>" +
+                '<small style="flex:none;color:var(--cream-dim)">' + ago + "</small></p>";
+            }).join("");
+          }).catch(function () {});
+        })();
+
         ["mcPulse", "mcBrain", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit", "mcMint", "mcDecks"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
