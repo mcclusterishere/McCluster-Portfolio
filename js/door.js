@@ -208,6 +208,71 @@
     row.appendChild(go);
     wrap.appendChild(row);
 
+    /* a password: a real account that works on ANY device, not just this one */
+    wrap.appendChild(el("p", "door__or", "or set a password — works on any device"));
+    var pwRow = el("div", "door__row");
+    var pem = el("input", "door__in");
+    pem.type = "email"; pem.placeholder = "you@email.com"; pem.autocomplete = "email";
+    var pw = el("input", "door__in");
+    pw.type = "password"; pw.placeholder = "a password"; pw.autocomplete = "current-password"; pw.minLength = 6;
+    pwRow.appendChild(pem); pwRow.appendChild(pw);
+    wrap.appendChild(pwRow);
+
+    var pwBtns = el("div", "door__row");
+    var mkAcct = el("button", "door__alt", "Create account");
+    mkAcct.type = "button";
+    var signIn = el("button", "door__alt", "Sign in");
+    signIn.type = "button";
+    pwBtns.appendChild(mkAcct); pwBtns.appendChild(signIn);
+    wrap.appendChild(pwBtns);
+
+    mkAcct.addEventListener("click", function () {
+      var e = pem.value.trim(), p = pw.value;
+      var nm = nameIn.value.trim(), tk = tickerVal();
+      if (!e || p.length < 6) { msg.textContent = "An email and a password (6+ characters)."; return; }
+      if (!nm) { msg.textContent = "Your name first — the floor doesn't trade with ghosts."; nameIn.focus(); return; }
+      if (tick && !tk) { msg.textContent = "Pick your ticker — 3–5 letters, it's yours."; tick.focus(); return; }
+      if (!agreeBox.checked) { msg.textContent = "The Association runs on the Agreement — one box, then you're in."; return; }
+      bank();
+      mkAcct.textContent = "Creating…";
+      window.MCC_AUTH.signUpPassword(e, p).then(function (res) {
+        if (res && res.confirm) {
+          try { localStorage.setItem("mcc_agree_pending", JSON.stringify({ v: "v1-2026-07", ctx: ctx, at: Date.now() })); } catch (e2) {}
+          mkAcct.textContent = "Create account";
+          msg.textContent = "Check your email to confirm, then Sign in here with your password.";
+          return;
+        }
+        recordAgreement(ctx);
+        if (window.MCC_NET && window.MCC_NET.saveListing) {
+          var fields = { name: nm, ticker: tk || null, roles: [] };
+          var ref = null; try { ref = localStorage.getItem("mcc_ref"); } catch (eR) {}
+          if (ref) fields.referred_by = ref;
+          return window.MCC_NET.saveListing(fields).catch(function () {
+            if (!ref) return; delete fields.referred_by;
+            return window.MCC_NET.saveListing(fields).catch(function () {});
+          });
+        }
+      }).then(function () {
+        if (window.MCC_AUTH.user && window.MCC_AUTH.user()) finish("password");
+      }).catch(function (err) {
+        mkAcct.textContent = "Create account";
+        msg.textContent = String((err && err.message) || err);
+      });
+    });
+
+    signIn.addEventListener("click", function () {
+      var e = pem.value.trim(), p = pw.value;
+      if (!e || !p) { msg.textContent = "Your email and password."; return; }
+      signIn.textContent = "Signing in…";
+      window.MCC_AUTH.signInPassword(e, p).then(function () {
+        track("door_open", { how: "password_signin", context: ctx });
+        if (opts.onDone) opts.onDone(); else location.reload();
+      }).catch(function (err) {
+        signIn.textContent = "Sign in";
+        msg.textContent = String((err && err.message) || err);
+      });
+    });
+
     wrap.appendChild(el("p", "door__fine",
       "Instant accounts are real accounts: your name and ticker file onto the floor (pending review), " +
       "this device stays signed in so you can come right back, and attaching an email later carries it anywhere."));

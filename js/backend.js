@@ -190,6 +190,27 @@
         });
       });
     },
+    /* set a password: a real cross-device account. Supabase → Auth →
+       Providers → Email: if "Confirm email" is ON, this returns no
+       session until they confirm; turn it OFF for instant password
+       accounts. Returns { session:true } when signed in, else { confirm:true }. */
+    signUpPassword: function (emailAddr, pass) {
+      return fetch(URL_ + "/auth/v1/signup", {
+        method: "POST",
+        headers: { apikey: KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailAddr, password: pass }),
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok) throw new Error(j.msg || j.error_description || j.error || "sign-up failed");
+          if (j.access_token) {
+            saveSession({ access_token: j.access_token, refresh_token: j.refresh_token || "" });
+            window.MCC_DB = sb;
+            return { session: true };
+          }
+          return { session: false, confirm: true };
+        });
+      });
+    },
     /* instant start: a real cloud account with no email at all.
        Requires Anonymous sign-ins ON (Supabase → Auth → Sign In / Providers).
        The visitor gets a true auth.uid(), profiles and listings save under
@@ -213,7 +234,7 @@
   };
 
   window.MCC_DB = session() ? sb : local;
-  window.MCC_AUTH = { signIn: sb.signIn, signInAnon: sb.signInAnon, signInPassword: sb.signInPassword, signOut: sb.signOut, user: sb.user };
+  window.MCC_AUTH = { signIn: sb.signIn, signInAnon: sb.signInAnon, signInPassword: sb.signInPassword, signUpPassword: sb.signUpPassword, signOut: sb.signOut, user: sb.user };
   // the low-level surface for other modules (network layer, talent app):
   // same public anon key, same RLS wall — never a secret
   window.MCC_SUPA = { url: URL_, key: KEY, token: token, uid: uid, email: email };

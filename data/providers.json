@@ -333,7 +333,8 @@
           "web": "https://linktr.ee/rahndrx"
         }
       },
-      "photo": "assets/img/rahndrx-hero.jpg"
+      "photo": "assets/img/rahndrx-hero.jpg",
+      "approved": true
     },
     {
       "id": "ocho-gr8",
