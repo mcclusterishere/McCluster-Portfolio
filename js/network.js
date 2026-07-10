@@ -318,6 +318,22 @@
           });
         });
       },
+      /* the horn: how many ears are armed, and speak into all of them */
+      pushSubs: function () { return authed("push_subs?select=id&limit=1000"); },
+      pushSend: function (title, body, url, to) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/functions/v1/push-send", {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "send", title: title, body: body, url: url || "", to: to || "" }),
+          }).then(function (r) {
+            return r.json().catch(function () { return null; }).then(function (j) {
+              if (r.ok) return j;
+              return { error: (j && (j.error || j.message)) || ("net " + r.status) };
+            });
+          });
+        });
+      },
       scanProof: function (id) {
         return S.token().then(function (t) {
           return fetch(S.url + "/functions/v1/scan-proof", {

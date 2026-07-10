@@ -837,6 +837,7 @@
   <script src="js/mworth.js?v=__STAMP__"></script>
   <script src="js/mtoken.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
+  <script src="js/push.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script src="js/amenities.js?v=__STAMP__"></script>
   <script src="js/floorcache.js?v=__STAMP__"></script>
@@ -2460,6 +2461,15 @@
             '<button class="btn btn--ghost" id="dkRefCopy" type="button">Copy</button>' +
             '<button class="btn btn--ghost" id="dkRefShare" type="button">Share</button></div>' +
             '<p class="mp__msg" id="dkRefMsg"></p></div>';
+          /* notifications: the app taps YOU — paid, booked, awarded */
+          html += '<div class="mp__card"><span class="mp__lblx">🔔 Notifications — the app taps you</span>' +
+            (window.MCC_PUSH && window.MCC_PUSH.ready()
+              ? '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkPushBtn" type="button" style="flex:1">' +
+                (window.MCC_PUSH.state() === "granted" ? "Notifications are on — retap to re-arm this device" : "Turn on notifications") + "</button></div>" +
+                '<p class="mp__msg" id="dkPushMsg"></p>' +
+                '<p class="mp__note">Paid, booked, awarded, spoken to — the word reaches your lock screen even with the app closed.</p>'
+              : '<p class="mp__note" style="margin-top:0.4rem">On iPhone: tap <b style="color:var(--cream)">Share → Add to Home Screen</b>, open the app from its icon, and this switch appears. Installed apps get the word on the lock screen.</p>');
+          html += "</div>";
           if (face === "venue") {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
@@ -2532,6 +2542,29 @@
               if (j && j.status === "live") { ME.charges_enabled = true; paintYou(); }
             });
           }
+        }
+        /* the ear: one tap arms this device for push */
+        var pushBtn = body.querySelector("#dkPushBtn");
+        if (pushBtn) {
+          pushBtn.addEventListener("click", function () {
+            pushBtn.textContent = "Arming this device…";
+            window.MCC_PUSH.arm().then(function (j) {
+              var m = body.querySelector("#dkPushMsg");
+              if (j && j.ok) {
+                pushBtn.textContent = "Notifications are on";
+                if (m) m.textContent = "This device hears the app now.";
+                track("push_on", {});
+                return;
+              }
+              pushBtn.textContent = "Turn on notifications";
+              var why = (j && j.error) || "";
+              if (m) m.textContent =
+                why === "denied" ? "The phone said no — allow notifications for this app in Settings, then retap." :
+                why === "unarmed" ? "The horn isn't armed yet — the desk knows." :
+                /signed out/.test(why) ? "Your session blinked — sign in again and retap." :
+                "It didn't take — retap in a moment.";
+            });
+          });
         }
         /* the plug: copy/share the referral link, read the count */
         var refIn = body.querySelector("#dkRef");

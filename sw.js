@@ -6,7 +6,7 @@
      so the first view caches them and every visit after is instant + offline,
      while a fresh copy is fetched in the background for next time.
    Bump CACHE_VERSION to force-clear old caches on a major change. */
-const CACHE_VERSION = "mccluster-v2";
+const CACHE_VERSION = "mccluster-v3";
 const OFFLINE_FALLBACK = "./offline.html";
 
 self.addEventListener("install", function (e) {
@@ -30,6 +30,30 @@ self.addEventListener("activate", function (e) {
 
 self.addEventListener("message", function (e) {
   if (e.data === "skipWaiting") self.skipWaiting();
+});
+
+/* push: the app's ear when every tab is closed. A tap opens (or
+   focuses) the app at the room the message names. */
+self.addEventListener("push", function (e) {
+  var d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) {}
+  e.waitUntil(self.registration.showNotification(d.title || "M Network", {
+    body: d.body || "",
+    icon: "./assets/img/icon-192.png",
+    badge: "./assets/img/icon-192.png",
+    data: { url: d.url || "./market.html" },
+  }));
+});
+
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || "./market.html";
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (ws) {
+    for (var i = 0; i < ws.length; i++) {
+      if ("focus" in ws[i]) { if (ws[i].navigate) ws[i].navigate(url); return ws[i].focus(); }
+    }
+    return self.clients.openWindow(url);
+  }));
 });
 
 self.addEventListener("fetch", function (e) {
