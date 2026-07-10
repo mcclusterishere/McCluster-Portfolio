@@ -401,9 +401,25 @@
         if (chips.length) bits.push('<div style="display:flex;flex-wrap:wrap;gap:0.4rem">' + chips.map(function (c) {
           return '<span style="border:1px solid rgba(244,239,230,0.25);border-radius:100px;padding:0.35em 0.95em;font-size:0.72rem;color:var(--cream-dim)">' + esc(c) + "</span>";
         }).join("") + "</div>");
-        if (!bits.length) return;
-        $("pgAboutSec").classList.remove("pg__hidden");
-        $("pgAbout").innerHTML = bits.join("");
+        if (bits.length) {
+          $("pgAboutSec").classList.remove("pg__hidden");
+          $("pgAbout").innerHTML = bits.join("");
+        }
+        // appointed civic seats are public record — they wear here
+        var slug0 = P.slug || P.id;
+        fetch(window.MCC_SUPA.url + "/rest/v1/civic_roles?slug=eq." + encodeURIComponent(slug0) +
+          "&active=eq.true&select=title,area", {
+          headers: { apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+        }).then(function (r) { return r.ok ? r.json() : []; }).then(function (seats) {
+          if (!seats || !seats.length) return;
+          $("pgAboutSec").classList.remove("pg__hidden");
+          $("pgAbout").innerHTML += '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem">' +
+            seats.map(function (sr) {
+              return '<span style="border:1px solid rgba(138,180,248,0.6);border-radius:100px;padding:0.35em 0.95em;' +
+                'font-size:0.72rem;font-weight:700;color:#8ab4f8;background:rgba(138,180,248,0.1)">🏛 ' +
+                esc(sr.title) + (sr.area ? " · " + esc(sr.area) : "") + "</span>";
+            }).join("") + "</div>";
+        }).catch(function () {});
       }
 
       function paintDoors() {

@@ -142,6 +142,15 @@
           fresh from the database on every load — nothing typed by hand.</p>
         <input class="mc__in" id="peopleQ" type="search" placeholder="Search — name, ticker, hustle, archetype">
         <div id="mcPeople"><p class="mc__empty">Loading…</p></div>
+        <h2 style="margin-top:1.4rem">Civic appointments — seat someone real</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem">A seat is a named position in their city — it wears as a
+          public badge on their page and makes them a Delegate on the ladder. Appoint the ones carrying the work.</p>
+        <input class="mc__in" id="seatWho" type="text" placeholder="Their ticker — like AFRO">
+        <input class="mc__in" id="seatTitle" type="text" maxlength="80" placeholder="The seat — like Atlanta Housing Delegate">
+        <input class="mc__in" id="seatArea" type="text" maxlength="60" placeholder="Where (optional) — like Atlanta, GA">
+        <button class="btn btn--ruby" id="seatGo" type="button">Appoint to the seat</button>
+        <p class="mc__msg" id="seatMsg"></p>
+        <div id="mcSeats"></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcDeals">
@@ -537,6 +546,56 @@
       }
       var pq = $("peopleQ");
       if (pq) pq.addEventListener("input", function () { paintPeople(); });
+
+      /* ---- CIVIC APPOINTMENTS: the bench ---- */
+      function paintSeats() {
+        if (!A.civicRoles) return;
+        A.civicRoles().then(function (rows) {
+          var el = $("mcSeats");
+          if (!el) return;
+          if (!rows || !rows.length) { el.innerHTML = "<p class='mc__empty'>No seats granted yet.</p>"; return; }
+          el.innerHTML = rows.map(function (sr) {
+            return '<div class="mc__row"><div><b>🏛 ' + esc(sr.title) + "</b>" +
+              (sr.area ? " · " + esc(sr.area) : "") +
+              ' <span class="mc__tag" style="color:#8ab4f8">$' + esc(sr.slug) + "</span>" +
+              (sr.active ? "" : ' <span class="mc__tag">revoked</span>') +
+              "<p style='font-size:0.72rem'>" + esc(new Date(sr.at).toLocaleDateString()) + "</p>" +
+              (sr.active ? '<span class="mc__acts"><button class="btn btn--ghost" type="button" data-seat="' + sr.id + '">Revoke the seat</button></span>' : "") +
+              "</div></div>";
+          }).join("");
+          el.querySelectorAll("[data-seat]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              b.textContent = "…";
+              A.revokeCivicRole(b.getAttribute("data-seat")).then(paintSeats).catch(function () { b.textContent = "retry"; });
+            });
+          });
+        }).catch(function () {
+          var el = $("mcSeats");
+          if (el) el.innerHTML = "<p class='mc__empty'>The bench needs one paste: docs/civic2-schema.sql.</p>";
+        });
+      }
+      (function wireSeats() {
+        var go = $("seatGo");
+        if (!go) return;
+        paintSeats();
+        go.addEventListener("click", function () {
+          var who = ($("seatWho").value || "").trim();
+          var title = ($("seatTitle").value || "").trim();
+          if (!who || title.length < 4) { $("seatMsg").textContent = "A ticker and a real title first."; return; }
+          go.disabled = true;
+          $("seatMsg").textContent = "Seating them…";
+          A.grantCivicRole(who, title, ($("seatArea").value || "").trim()).then(function (out) {
+            go.disabled = false;
+            $("seatMsg").textContent = "Seated: " + out + " — it wears on their page now.";
+            $("seatWho").value = ""; $("seatTitle").value = ""; $("seatArea").value = "";
+            paintSeats();
+          }).catch(function (e) {
+            go.disabled = false;
+            $("seatMsg").textContent = /no claimed account/.test(String(e)) ? "No claimed account behind that ticker." :
+              "The bench isn't armed yet — one paste: docs/civic2-schema.sql.";
+          });
+        });
+      })();
 
       /* ---- THE INTAKE QUEUE: kinds, contacts, one-tap status ---- */
       function paintIntake(rows) {

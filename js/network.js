@@ -321,6 +321,15 @@
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
       events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid,props&limit=" + (limit || 1500)); },
+      /* civic appointments: the desk seats members in real positions */
+      civicRoles: function () { return authed("civic_roles?order=at.desc&select=*&limit=100"); },
+      grantCivicRole: function (name, title, area) {
+        return authed("rpc/grant_civic_role", { method: "POST",
+          body: { to_name: name, role_title: title, role_area: area || "" } });
+      },
+      revokeCivicRole: function (id) {
+        return authed("civic_roles?id=eq." + id, { method: "PATCH", body: { active: false }, prefer: "return=representation" });
+      },
       /* the People's Board: the floor's proposals, ruled from the desk */
       proposals: function () { return authed("proposals?order=at.desc&select=*&limit=100"); },
       setProposal: function (id, status, note) {

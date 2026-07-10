@@ -57,6 +57,14 @@
 
     <div class="cv__grid" id="cvPulse"><div class="cv__stat"><b>…</b><small>reading the movement</small></div></div>
 
+    <section class="cv__card" id="cvRankCard" style="display:none">
+      <p class="cv__k">The ladder — rank is earned, never typed</p>
+      <h2 id="cvRankName">…</h2>
+      <div class="cv__chips" id="cvLadder"></div>
+      <p class="cv__sub" id="cvRankNext" style="margin-top:0.4rem;font-size:0.82rem"></p>
+      <div id="cvSeat"></div>
+    </section>
+
     <section class="cv__card">
       <p class="cv__k">Your civic card</p>
       <h2>Pick your side of the work.</h2>
@@ -125,13 +133,35 @@
         }).catch(function () {});
 
       /* ---- the civic card: self-reported, private, one save ---- */
-      var CARD = { mode: "fan", focus: [] };
+      var CARD = { mode: "fan", modes: ["fan"], focus: [], issues: [], country: "US" };
+      var COUNTRIES = [
+        ["US", "United States", "Congress · statehouse · city council — your three arenas."],
+        ["GH", "Ghana", "Parliament · district assemblies — your two arenas."],
+        ["NG", "Nigeria", "National Assembly · state houses · local government areas."],
+        ["UK", "United Kingdom", "Parliament · devolved assemblies · local councils."],
+        ["CA", "Canada", "Parliament · provincial legislatures · city councils."],
+        ["OTHER", "Somewhere else", "Your system's module arms as it's built — the missions still count."],
+      ];
+      var ISSUES = [["housing", "Housing"], ["justice", "Justice"], ["environment", "Environment"],
+        ["business", "Small business"], ["education", "Education"], ["health", "Health"],
+        ["arts", "Arts funding"], ["transit", "Transit"]];
       function cardForm() {
         var host = $("cvCardHost");
+        CARD.modes = (CARD.modes && CARD.modes.length ? CARD.modes : [CARD.mode || "fan"]).slice();
+        CARD.issues = CARD.issues || [];
         host.innerHTML =
+          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.8rem">Wear one or both — the personalities stack:</p>' +
           '<div class="cv__chips" id="cvMode">' +
-          '<button class="cv__chip' + (CARD.mode === "fan" ? " is-on" : "") + '" data-m="fan" type="button">Fan account — the culture</button>' +
-          '<button class="cv__chip' + (CARD.mode === "policy" ? " is-on" : "") + '" data-m="policy" type="button">Policy account — the work</button></div>' +
+          '<button class="cv__chip' + (CARD.modes.indexOf("fan") !== -1 ? " is-on" : "") + '" data-m="fan" type="button">🎟 Fan — the culture</button>' +
+          '<button class="cv__chip' + (CARD.modes.indexOf("policy") !== -1 ? " is-on" : "") + '" data-m="policy" type="button">⚖ Policy — the work</button></div>' +
+          '<select class="cv__in" id="cvCountry">' + COUNTRIES.map(function (c) {
+            return '<option value="' + c[0] + '"' + ((CARD.country || "US") === c[0] ? " selected" : "") + ">" + c[1] + "</option>";
+          }).join("") + "</select>" +
+          '<p class="cv__sub" id="cvSysLine" style="margin:0 0 0.55rem;font-size:0.76rem"></p>' +
+          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.8rem">Your portfolio — the issues you carry:</p>' +
+          '<div class="cv__chips" id="cvIssues">' + ISSUES.map(function (f) {
+            return '<button class="cv__chip' + (CARD.issues.indexOf(f[0]) !== -1 ? " is-on" : "") + '" data-i="' + f[0] + '" type="button">' + f[1] + "</button>";
+          }).join("") + "</div>" +
           '<div class="cv__chips" id="cvFocus">' + [["state", "State policy"], ["federal", "Federal policy"], ["trade", "Trade & labor"], ["local", "Local organizing"]].map(function (f) {
             return '<button class="cv__chip' + (CARD.focus.indexOf(f[0]) !== -1 ? " is-on" : "") + '" data-f="' + f[0] + '" type="button">' + f[1] + "</button>";
           }).join("") + "</div>" +
@@ -148,8 +178,21 @@
           '<p class="cv__sub" style="font-size:0.74rem;margin-top:0.4rem">Only you and the desk ever see this card. The public sees counts.</p>';
         host.querySelector("#cvMode").addEventListener("click", function (e) {
           var b = e.target.closest("[data-m]"); if (!b) return;
-          CARD.mode = b.getAttribute("data-m");
-          host.querySelectorAll("[data-m]").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+          var m = b.getAttribute("data-m"), i = CARD.modes.indexOf(m);
+          if (i === -1) CARD.modes.push(m);
+          else if (CARD.modes.length > 1) CARD.modes.splice(i, 1); // never zero personalities
+          b.classList.toggle("is-on", CARD.modes.indexOf(m) !== -1);
+        });
+        function sysLine() {
+          var c = COUNTRIES.filter(function (x) { return x[0] === $("cvCountry").value; })[0] || COUNTRIES[0];
+          $("cvSysLine").textContent = "Your system: " + c[2];
+        }
+        $("cvCountry").addEventListener("change", sysLine); sysLine();
+        host.querySelector("#cvIssues").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-i]"); if (!b) return;
+          var f = b.getAttribute("data-i"), i = CARD.issues.indexOf(f);
+          if (i === -1) CARD.issues.push(f); else CARD.issues.splice(i, 1);
+          b.classList.toggle("is-on", i === -1);
         });
         host.querySelector("#cvFocus").addEventListener("click", function (e) {
           var b = e.target.closest("[data-f]"); if (!b) return;
@@ -158,7 +201,9 @@
           b.classList.toggle("is-on", i === -1);
         });
         $("cvSave").addEventListener("click", function () {
-          var body = { mode: CARD.mode, focus: CARD.focus,
+          var body = { mode: CARD.modes.indexOf("policy") !== -1 ? "policy" : "fan",
+            modes: CARD.modes, issues: CARD.issues, focus: CARD.focus,
+            country: $("cvCountry").value,
             state: ($("cvState").value || "").trim().toUpperCase(),
             district: ($("cvDistrict").value || "").trim(),
             registered: $("cvReg").value, last_voted: $("cvVoted").value,
@@ -178,7 +223,34 @@
           }).catch(function () { $("cvMsg").textContent = "It didn't take — retap."; });
         });
       }
+      var LADDER = ["Witness", "Advocate", "Organizer", "Delegate"];
+      function paintRank() {
+        S.token().then(function (t) {
+          if (!t) return null;
+          return fetch(S.url + "/rest/v1/rpc/civic_rank", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" });
+        }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (j) {
+          if (!j) return;
+          var card = $("cvRankCard");
+          card.style.display = "";
+          $("cvRankName").textContent = j.rank === "Visitor" ? "Start the climb." : "You stand as " + j.rank + ".";
+          $("cvLadder").innerHTML = LADDER.map(function (rk) {
+            var on = LADDER.indexOf(rk) <= LADDER.indexOf(j.rank);
+            return '<span class="cv__chip' + (on ? " is-on" : "") + '" style="cursor:default">' +
+              (on ? "✓ " : "") + rk + "</span>";
+          }).join("");
+          $("cvRankNext").innerHTML = "<b style='color:var(--cream)'>The climb:</b> " + esc(j.next) +
+            " <span style='opacity:0.7'>(" + (+j.votes || 0) + " votes cast · " + (+j.proposals || 0) +
+            " proposals · best +" + (+j.best_ups || 0) + ")</span>";
+          if (j.seat) {
+            $("cvSeat").innerHTML = '<p class="cv__sub" style="margin-top:0.6rem"><span style="border:1px solid rgba(138,180,248,0.6);' +
+              'border-radius:100px;padding:0.4em 1em;color:#8ab4f8;font-weight:700;font-size:0.78rem">🏛 ' +
+              esc(j.seat) + "</span> — your seat, on the public record.</p>";
+          }
+        }).catch(function () {});
+      }
       if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        paintRank();
         S.token().then(function (t) {
           return fetch(S.url + "/rest/v1/civic_profiles?owner=eq." + S.uid() + "&select=*", {
             headers: { apikey: S.key, Authorization: "Bearer " + t } });
