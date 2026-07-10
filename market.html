@@ -1741,7 +1741,7 @@
         }
         current = r; curTF = "1D";
         $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1D"); });
-        $("xcDTick").textContent = "$" + r.tick + " · " + (r.chg >= 0 ? "up" : "down") + " today";
+        $("xcDTick").textContent = "$" + r.tick + (r.onTape ? " · ON THE TAPE — real nightly score" : " · " + (r.chg >= 0 ? "up" : "down") + " today");
         /* the verified mark rides the name: a real ID (or Connect's own
            KYC) stands behind this listing */
         $("xcDName").innerHTML = esc(r.p.name) +
@@ -2063,8 +2063,21 @@
         }
       })();
 
-      /* ---- boot: one shared fetch feeds every engine on the page ---- */
-      window.MCC_FLOOR.load().then(function (floor) {
+      /* ---- boot: one shared fetch feeds every engine on the page ----
+         THE TAPE IS THE AUTHORITY: desks with a real nightly score line
+         price from score_board(); the seeded spread survives only where
+         no tape line exists yet — placeholder, never over the record. */
+      var TAPE = {};
+      var tapeReq = (window.MCC_SUPA && window.MCC_SUPA.url)
+        ? fetch(window.MCC_SUPA.url + "/rest/v1/rpc/score_board", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
+            body: JSON.stringify({ p_limit: 200 }) })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (rows) { (rows || []).forEach(function (b) { TAPE[b.slug] = b; }); })
+          .catch(function () {})
+        : Promise.resolve();
+      Promise.all([window.MCC_FLOOR.load(), tapeReq]).then(function (rr) {
+        var floor = rr[0];
         var all = floor.providers;
         ROWS = all.map(function (p) {
           var slug = p.slug || p.id;
@@ -2086,8 +2099,16 @@
             return { d: pt.d, v: +v.toFixed(2) };
           });
           stock.value = stock.series[stock.series.length - 1].v;
+          // a tape line overrides the theater: the whole series rescales to
+          // end exactly on the REAL nightly price, and the row is marked
+          var line = TAPE[slug];
+          if (line && +line.price > 0) {
+            var f = +line.price / stock.value;
+            stock.series = stock.series.map(function (pt) { return { d: pt.d, v: +(pt.v * f).toFixed(2) }; });
+            stock.value = +(+line.price).toFixed(2);
+          }
           var open = stock.series[stock.series.length - 2] ? stock.series[stock.series.length - 2].v : stock.value;
-          return { p: p, stock: stock, tick: tickOf(p), val: stock.value, open: open,
+          return { p: p, stock: stock, tick: tickOf(p), val: stock.value, open: open, onTape: !!line,
             chg: open ? ((stock.value - open) / open) * 100 : 0 };
         }).sort(function (a, b) { return b.val - a.val; });
         paintTape(); paintIndex(); paintList(); paintMovers();
