@@ -2834,9 +2834,9 @@
           var fundHost = document.createElement("div");
           fundHost.className = "mp__card";
           fundHost.style.cssText = "border-color:rgba(201,157,69,0.4)";
-          fundHost.innerHTML = '<span class="mp__lblx" style="color:#c99d45">The One Percent Fund — one percent for the new one percent</span>' +
+          fundHost.innerHTML = '<span class="mp__lblx" style="color:#c99d45">The One Percent Fund — we donate our fees to the cause</span>' +
             '<p style="font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0.2rem 0" id="fundBal">…</p>' +
-            '<p class="mp__note">A slice of every deal, from the house\'s own fee — the community chest you can\'t touch but can watch grow. The desk awards it to loyal members, contest winners, and the ones carrying the culture. <a href="reserve.html" style="color:#c99d45">See the books &#8594;</a></p>';
+            '<p class="mp__note">One percent of every deal — a full tenth of the platform\'s own fee — is donated into this fund. Never from your price, always from ours. It exists to develop artists, educate members, and build the community: the desk awards it for artist development, education, contest wins, and carrying the culture. <a href="reserve.html" style="color:#c99d45">See the books &#8594;</a></p>';
           body.appendChild(fundHost);
           fetch(window.MCC_SUPA.url + "/rest/v1/rpc/fund_stats", { method: "POST",
             headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key }, body: "{}" })
