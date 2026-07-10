@@ -167,6 +167,14 @@
       <li><strong>Months 2–3:</strong> Impact numbers gathered from each pillar and published. First newsletter to the list. Search rankings rebuilt city by city.</li>
     </ul>
 
+    <h2>And here is the part that is already done</h2>
+    <p>While we talked, Shiloh's event space went <strong>live on the Equity Uprise floor</strong> —
+      the sanctuary and the fellowship hall, bookable by the hour for services, rehearsals, recordings,
+      receptions, and community events, with the church confirming every request. Tap it. This is real,
+      today, at no cost to the church:</p>
+    <p><a class="cta" href="spaces.html?who=shiloh-church" style="background:var(--navy)">See Shiloh's space, live &#8594;</a></p>
+    <figure class="band" data-frbg="assets/img/fr-hall.jpg"><figcaption>The fellowship hall, dressed for the community — receptions, celebrations, classes.</figcaption></figure>
+
     <h2>What I need to begin</h2>
     <ul>
       <li>Current hosting and domain access — one sitting, we move it together.</li>
@@ -210,6 +218,7 @@
         ["The problem", "The current site hides it.", "A misspelling in the first line Google shows. Doors that answer “Forbidden.” Pages named in code. No way for a partner to say yes. Every day it stays up, it costs the mission."],
         ["The build", "Six clear pages. Every eye welcome.", "The credential wall on the front door, the affiliate map, one Connect page with four doors — partner, train, subscribe, give — all set in type built for elders and boards to read without glasses."],
         ["The terms", "$800 once. $400 a month. $0 hosting.", "The rebuild, the retainer that keeps it alive, and a hosting bill that stops existing. Ninety days from yes to a site that wins meetings on its own."],
+        ["Already moving", "Shiloh's event space is live right now.", "The sanctuary and fellowship hall are already bookable on the Equity Uprise floor — services, rehearsals, recordings, receptions — with the church confirming every request. The last screen of this walk has the button."],
       ];
       var walk = document.getElementById("frWalk"), i = 0;
       var seen = false;
@@ -220,15 +229,19 @@
         document.getElementById("fwKick").textContent = s[0] + " · " + (i + 1) + " of " + STEPS.length;
         document.getElementById("fwHead").textContent = s[1];
         document.getElementById("fwBody").textContent = s[2];
-        document.getElementById("fwNext").textContent = i === STEPS.length - 1 ? "See the plan →" : "Next →";
+        document.getElementById("fwNext").textContent = i === STEPS.length - 1 ? "Take me to the live space →" : "Next →";
         document.getElementById("fwDots").innerHTML = STEPS.map(function (_, k) { return k === i ? "<b>●</b>" : "○"; }).join(" ");
       }
-      function close() {
+      function close(toLive) {
         walk.classList.remove("on");
         try { localStorage.setItem("fr_walk_done", "1"); } catch (e) {}
+        if (toLive) {
+          var cta = document.querySelector('a[href^="spaces.html?who=shiloh-church"]');
+          if (cta) cta.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       }
       document.getElementById("fwNext").addEventListener("click", function () {
-        if (i >= STEPS.length - 1) return close();
+        if (i >= STEPS.length - 1) return close(true);
         i++; paint();
       });
       document.getElementById("fwSkip").addEventListener("click", close);

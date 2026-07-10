@@ -487,7 +487,7 @@
    "slug": "shiloh-church",
    "name": "Shiloh Baptist Church",
    "ticker": "SBC",
-   "headline": "477 Broad Street — the sanctuary that powers itself",
+   "headline": "Sanctuary & fellowship hall — services, rehearsals, recordings, events",
    "blurb": "Shiloh Baptist Church of Bridgeport — Rev. Carl McCluster, Senior Pastor for thirty years. The first African-American church in Connecticut to run energy self-sufficient on solar, and the home of the Faith Community Development Corporation. The sanctuary and hall book for services, rehearsals, recordings, and community events — piano, screens, sound, seating, parking.",
    "area": "Bridgeport, CT",
    "roles": [
@@ -505,11 +505,12 @@
      "piano",
      "sound",
      "screens",
-     "parking"
+     "parking",
+     "green-room"
     ]
    },
    "terms": {
-    "notes": "Unclaimed — the church claims it to manage bookings.",
+    "notes": "Two rooms, one booking desk: the sanctuary (services, concerts, recordings) and the fellowship hall (receptions, community events, classes). The church confirms every request.",
     "links": {
      "web": "https://www.shilohchurchbpt.org"
     }
