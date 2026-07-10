@@ -425,6 +425,55 @@
       "terms": {
         "notes": "Unclaimed — Raheem claims it to accept his split on 'Upset'."
       }
+    },
+    {
+      "id": "daniel-cano",
+      "slug": "daniel-cano",
+      "name": "Daniel Cano",
+      "ticker": "CANO",
+      "headline": "Digital creator, DJ & civic leader — half of Sena Daniel Cano",
+      "blurb": "Multi-hyphenate out of Atlanta & Orange County. Board comms chair, Equity Uprise fellow named in the Georgia Governor's Youth Innovation & Civic Leadership proclamation — and one half of the plant-based band Sena Daniel Cano (with Papa Sena), 20K monthly Spotify listeners. Book him for your next event.",
+      "area": "Atlanta · Orange County",
+      "roles": [
+        "Music",
+        "Programs"
+      ],
+      "badgeColor": "#16a34a",
+      "profile": "page.html?who=daniel-cano",
+      "href": "page.html?who=daniel-cano",
+      "claimed": false,
+      "civic": true,
+      "terms": {
+        "notes": "Unclaimed dual-type — Artist + Civic. Daniel claims it, then files his civic card to climb the ladder.",
+        "links": {
+          "ig": "https://instagram.com/kidcano",
+          "music": "https://linktr.ee/kidcano",
+          "web": "https://linktr.ee/kidcano"
+        }
+      }
+    },
+    {
+      "id": "sena-daniel-cano",
+      "slug": "sena-daniel-cano",
+      "name": "Sena Daniel Cano",
+      "ticker": "SENA",
+      "headline": "Your fav plant-based spice bois — Papa Sena × Kidcano",
+      "blurb": "The band: Papa Sena × Daniel Cano. 20,000 monthly Spotify listeners, on 25K playlists, 500K+ plays. Music videos, the whole run.",
+      "area": "Atlanta",
+      "roles": [
+        "Music"
+      ],
+      "badgeColor": "#22c55e",
+      "profile": "page.html?who=sena-daniel-cano",
+      "href": "page.html?who=sena-daniel-cano",
+      "claimed": false,
+      "terms": {
+        "notes": "The band's unclaimed profile — Daniel or Papa Sena claims it.",
+        "links": {
+          "ig": "https://instagram.com/senadanielcano",
+          "music": "https://linktr.ee/Senadanielcano"
+        }
+      }
     }
   ]
 }
