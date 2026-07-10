@@ -1,0 +1,41 @@
+name: Game assets
+
+# The build box can't reach the media CDN; this runner fetches the raw
+# BLOCK OPS art, keys the green screens to transparency, feathers the
+# ground tile, writes the contact sheet, and commits it all back to the
+# branch it was dispatched on.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  kitchen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pillow + numpy
+        run: pip install --quiet numpy pillow
+
+      - name: Fetch raw art
+        run: |
+          mkdir -p game/raw
+          jq -r 'to_entries[] | "\(.key) \(.value)"' game/raw-manifest.json | while read -r name url; do
+            echo "fetching $name"
+            curl -fL --retry 4 --retry-delay 3 -o "game/raw/${name}.png" "$url"
+          done
+          ls -la game/raw
+
+      - name: Key, crop, downscale, contact sheet
+        run: python3 game/tools/key.py
+
+      - name: Commit the kitchen output
+        run: |
+          git config user.name "asset-runner"
+          git config user.email "actions@users.noreply.github.com"
+          git add game/assets game/design/contact-sheet.png
+          git commit -m "BLOCK OPS assets land [skip ci]" || echo "nothing new"
+          git push

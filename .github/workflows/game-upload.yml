@@ -1,0 +1,39 @@
+name: Game upload
+
+# Zips the BLOCK OPS source (platform layout: code + index.html + assets
+# at the archive root) and PUTs it to the presigned upload URL passed in,
+# because the build box has no egress to the storage host. The URL is a
+# short-lived one-shot upload slot.
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_url:
+        description: Presigned PUT URL for the zip
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ship:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package with the platform layout
+        run: |
+          cd game
+          zip -r ../block-ops.zip logic.js index.html strings.js assets
+          cd ..
+          unzip -l block-ops.zip
+
+      - name: PUT to the upload slot
+        run: |
+          code=$(curl -sS -o /dev/null -w "%{http_code}" -X PUT \
+            -H "Content-Type: application/zip" \
+            --upload-file block-ops.zip \
+            "${{ inputs.upload_url }}")
+          echo "upload status $code"
+          test "$code" -ge 200 -a "$code" -lt 300
