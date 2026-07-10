@@ -147,6 +147,10 @@
           everything that used to vanish into the inbox files here now, tagged by kind. The kind is the hook the
           back-end algorithms route on.</p>
         <div id="mcIntake"><p class="mc__empty">Loading…</p></div>
+        <h2 style="margin-top:1.4rem">Mission proofs — the docket</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem">Photos and clips turned in from the city. One tap has the
+          AI eyes read the image against the mission and stamp a recommendation — you always outrank the machine.</p>
+        <div id="mcProofs"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcHouse">
@@ -565,6 +569,61 @@
         wireActs(el, function (id, to) { return A.setCashout(id, to); });
       }
 
+      /* ---- MISSION PROOFS: the docket, ruled by eye or by the AI eyes ---- */
+      function paintProofs(rows) {
+        var el = $("mcProofs");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The docket needs one paste: docs/proofs-schema.sql — then every turned-in proof lands here.</p>";
+          return;
+        }
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nothing turned in yet.</p>"; return; }
+        el.innerHTML = rows.map(function (p) {
+          var tone = p.status === "passed" ? "#2fbf71" : p.status === "failed" ? "var(--ruby-hot)" : "#c99d45";
+          return '<div class="mc__row' + (p.status === "new" ? " is-hot" : "") + '"><div>' +
+            "<b>" + esc(p.mission) + '</b> <span class="mc__tag" style="color:' + tone + '">' + esc(p.status) + "</span>" +
+            (p.verdict ? "<p style='margin:0.25em 0 0;color:var(--cream-dim);font-size:0.8rem'>The eyes said: " + esc(p.verdict) + "</p>" : "") +
+            "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>member " + esc(String(p.owner).slice(0, 8)) +
+            " · " + esc(new Date(p.at).toLocaleString()) + " · " + esc(p.kind || "file") + "</p></div>" +
+            '<span class="mc__acts">' +
+            '<button class="btn btn--ghost" type="button" data-proof-open="' + esc(p.path) + '">Open</button>' +
+            (p.status === "new"
+              ? '<button class="btn btn--ruby" type="button" data-proof-scan="' + p.id + '">Scan with AI</button>' +
+                '<button class="btn btn--ghost" type="button" data-proof-set="' + p.id + ':passed">Pass</button>' +
+                '<button class="btn btn--ghost" type="button" data-proof-set="' + p.id + ':failed">Fail</button>'
+              : '<button class="btn btn--ghost" type="button" data-proof-set="' + p.id + ":" + (p.status === "passed" ? "failed" : "passed") + '">Overrule</button>') +
+            "</span></div>";
+        }).join("");
+        el.querySelectorAll("[data-proof-open]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            b.textContent = "…";
+            A.proofUrl(b.getAttribute("data-proof-open")).then(function (u) {
+              b.textContent = "Open";
+              if (u) window.open(u, "_blank"); else b.textContent = "no file";
+            });
+          });
+        });
+        el.querySelectorAll("[data-proof-scan]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            b.textContent = "Reading…";
+            A.scanProof(b.getAttribute("data-proof-scan")).then(function (j) {
+              if (j && j.error) { b.textContent = "Scan with AI"; alert("The eyes answered: " + j.error); return; }
+              A.proofs().then(paintProofs);
+            });
+          });
+        });
+        el.querySelectorAll("[data-proof-set]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var kv = b.getAttribute("data-proof-set").split(":");
+            b.textContent = "…";
+            A.setProof(kv[0], kv[1], "ruled by the desk").then(function (rows2) {
+              if (!rows2 || !rows2.length) { b.textContent = "database declined it"; b.style.color = "var(--ruby-hot)"; return; }
+              A.proofs().then(paintProofs);
+            }).catch(function () { b.textContent = "failed — retap"; });
+          });
+        });
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -579,6 +638,7 @@
           A.cashouts ? A.cashouts().catch(function () { return null; }) : Promise.resolve(null),
           A.dossier ? A.dossier().catch(function () { return null; }) : Promise.resolve(null),
           A.pulseLog ? A.pulseLog().catch(function () { return null; }) : Promise.resolve(null),
+          A.proofs ? A.proofs().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5]);
@@ -587,6 +647,7 @@
           paintHouse(r[8]);
           paintCashouts(r[9]);
           paintPeople(r[10]);
+          paintProofs(r[12]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";

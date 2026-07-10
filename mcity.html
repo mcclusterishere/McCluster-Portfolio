@@ -56,12 +56,12 @@
     @media (hover: none) { .mc__stick { display: block; } }
 
     /* ---- the mission sheet ---- */
-    .mc__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.72); backdrop-filter: blur(4px); opacity: 0;
+    .mc__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.45); backdrop-filter: blur(3px); opacity: 0;
       pointer-events: none; transition: opacity 0.25s; z-index: 110; }
     .mc__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 32rem; margin: 0 auto;
       background: #14100e; border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0;
-      padding: 1.2rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom)); transform: translateY(105%);
-      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 82dvh; overflow-y: auto; }
+      padding: 1.2rem 1.3rem calc(1.6rem + var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 78dvh; overflow-y: auto; }
     body.mc-open .mc__veil { opacity: 1; pointer-events: auto; }
     body.mc-open .mc__sheet { transform: translateY(0); }
     .mc__x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%;
@@ -125,11 +125,14 @@
     <p class="mc__arc" id="shArc"></p>
     <div class="mc__ms" id="shMs"></div>
     <div id="shLock"></div>
+    <div id="shProof"></div>
   </div>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/heat.js?v=__STAMP__"></script>
   <script>
     (function () {
@@ -268,6 +271,10 @@
         scale = Math.max(innerWidth / W, innerHeight / H) * 1.35 * dpr;
       }
       window.addEventListener("resize", resize); resize();
+      // iOS Safari collapsing/expanding its bars resizes the VISUAL
+      // viewport without always firing window.resize — without this the
+      // game paints for the wrong height when the chrome comes up
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
 
       /* NPC traffic: the city drives itself */
       var NPC = [];
@@ -368,8 +375,11 @@
       /* day/night: the city keeps the app's clock */
       var hour = new Date().getHours();
       var NIGHT = hour < 6 || hour >= 19;
-      var GROUND = NIGHT ? "#131010" : "#1b1714";
-      var ROAD = NIGHT ? "#231b17" : "#2a221d";
+      /* night must still READ: a new player's city is all locked, and a
+         locked block painted the color of the ground is a screen that
+         looks off. The dark stays; the shapes stay visible. */
+      var GROUND = NIGHT ? "#171312" : "#1b1714";
+      var ROAD = NIGHT ? "#2b211b" : "#2a221d";
 
       function draw(now) {
         var dt = Math.min(40, now - tPrev || 16); tPrev = now;
@@ -396,18 +406,29 @@
         var w = WORLD;
         D.forEach(function (b) {
           var open = b.unlock(w);
-          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : "#15100d";
-          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.14)";
+          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
+          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.28)";
           cx.lineWidth = 3;
           cx.beginPath(); cx.roundRect(b.x, b.y, b.w, b.h, 14); cx.fill(); cx.stroke();
           if (open && NIGHT) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
+          // night windows: the city sleeps lit, locked or not
+          if (NIGHT) {
+            for (var wi = b.x + 14; wi < b.x + b.w - 14; wi += 22) {
+              for (var wj = b.y + 26; wj < b.y + b.h - 18; wj += 20) {
+                if (((wi * 7 + wj * 13) | 0) % 3 === 0) {
+                  cx.fillStyle = open ? "rgba(255,236,170,0.5)" : "rgba(255,236,170,0.16)";
+                  cx.fillRect(wi, wj, 5, 7);
+                }
+              }
+            }
+          }
           var doorX = b.x + b.w / 2;
-          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.2)";
+          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.35)";
           cx.fillRect(doorX - 14, b.y + b.h - 5, 28, 10);
-          cx.fillStyle = open ? "#f4efe6" : "rgba(244,239,230,0.35)";
+          cx.fillStyle = open ? "#f4efe6" : "rgba(244,239,230,0.6)";
           cx.font = "700 17px system-ui"; cx.textAlign = "center";
           cx.fillText((open ? "" : "🔒 ") + b.name, b.x + b.w / 2, b.y + b.h / 2 + 3);
-          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.25)";
+          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.45)";
           cx.font = "800 9px system-ui";
           cx.fillText(b.k.toUpperCase(), b.x + b.w / 2, b.y + b.h / 2 + 22);
           // mission pips: green for done, district color for waiting
@@ -472,6 +493,44 @@
               try { localStorage.setItem("mcc_mcity_v1", JSON.stringify(v)); } catch (e) {}
             });
           });
+        }
+        /* the proof door: real-world missions stop running on the honor
+           system — a photo or clip goes to the private vault, the desk
+           (and its AI eyes) rule on it */
+        var pf = $("shProof");
+        pf.innerHTML = "";
+        if (open && window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+          pf.innerHTML = '<div class="mc__locknote" style="margin-top:0.7rem">📸 <b>Ran a mission in the real world?</b> ' +
+            'Turn in the proof — a photo or a short clip. The desk reviews every one; fakes get read.' +
+            '<div style="margin-top:0.6rem"><button class="btn btn--ghost" type="button" data-proof-btn style="font-size:0.72rem;padding:0.5em 1.1em">Upload the proof</button>' +
+            '<input type="file" accept="image/*,video/*" hidden data-proof-file></div>' +
+            '<span data-proof-msg style="display:block;margin-top:0.4rem;color:#d8ba7c"></span></div>';
+          var btn = pf.querySelector("[data-proof-btn]");
+          var inp = pf.querySelector("[data-proof-file]");
+          var msg = pf.querySelector("[data-proof-msg]");
+          btn.addEventListener("click", function () { inp.click(); });
+          inp.addEventListener("change", function () {
+            var f = inp.files && inp.files[0];
+            if (!f) return;
+            if (f.size > 8000000) { msg.textContent = "Keep it under 8 MB — a photo or a short clip."; return; }
+            msg.textContent = "Filing it in the vault…";
+            var ms = b.missions(WORLD);
+            var open1 = "";
+            for (var mi = 0; mi < ms.length; mi++) { if (!ms[mi][1]) { open1 = ms[mi][0]; break; } }
+            window.MCC_NET.proofFile(f, b.name + (open1 ? " — " + open1 : " — district mission"), "")
+              .then(function () {
+                msg.textContent = "Filed. The desk reviews it — the city marks it when it passes.";
+                track("mcity_proof_filed", { d: b.id });
+              })
+              .catch(function (e) {
+                msg.textContent = /signed out/.test(String(e)) ? "Your session blinked — sign in and retry." :
+                  /vault 4/.test(String(e)) ? "The vault isn't armed yet — the desk knows." :
+                  "It didn't take — try a smaller file.";
+              });
+          });
+        } else if (open) {
+          pf.innerHTML = '<div class="mc__locknote" style="margin-top:0.7rem">📸 Real-world missions pay when you can prove them — ' +
+            '<a href="market.html#yours" style="color:#d8ba7c">open your account</a> to turn in proof.</div>';
         }
         document.body.classList.add("mc-open");
         track("mcity_district", { d: b.id, open: open });
