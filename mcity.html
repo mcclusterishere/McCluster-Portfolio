@@ -56,12 +56,12 @@
     @media (hover: none) { .mc__stick { display: block; } }
 
     /* ---- the mission sheet ---- */
-    .mc__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.72); backdrop-filter: blur(4px); opacity: 0;
+    .mc__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.45); backdrop-filter: blur(3px); opacity: 0;
       pointer-events: none; transition: opacity 0.25s; z-index: 110; }
     .mc__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 32rem; margin: 0 auto;
       background: #14100e; border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0;
-      padding: 1.2rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom)); transform: translateY(105%);
-      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 82dvh; overflow-y: auto; }
+      padding: 1.2rem 1.3rem calc(1.6rem + var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 78dvh; overflow-y: auto; }
     body.mc-open .mc__veil { opacity: 1; pointer-events: auto; }
     body.mc-open .mc__sheet { transform: translateY(0); }
     .mc__x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%;
@@ -268,6 +268,10 @@
         scale = Math.max(innerWidth / W, innerHeight / H) * 1.35 * dpr;
       }
       window.addEventListener("resize", resize); resize();
+      // iOS Safari collapsing/expanding its bars resizes the VISUAL
+      // viewport without always firing window.resize — without this the
+      // game paints for the wrong height when the chrome comes up
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", resize);
 
       /* NPC traffic: the city drives itself */
       var NPC = [];
@@ -368,8 +372,11 @@
       /* day/night: the city keeps the app's clock */
       var hour = new Date().getHours();
       var NIGHT = hour < 6 || hour >= 19;
-      var GROUND = NIGHT ? "#131010" : "#1b1714";
-      var ROAD = NIGHT ? "#231b17" : "#2a221d";
+      /* night must still READ: a new player's city is all locked, and a
+         locked block painted the color of the ground is a screen that
+         looks off. The dark stays; the shapes stay visible. */
+      var GROUND = NIGHT ? "#171312" : "#1b1714";
+      var ROAD = NIGHT ? "#2b211b" : "#2a221d";
 
       function draw(now) {
         var dt = Math.min(40, now - tPrev || 16); tPrev = now;
@@ -396,18 +403,29 @@
         var w = WORLD;
         D.forEach(function (b) {
           var open = b.unlock(w);
-          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : "#15100d";
-          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.14)";
+          cx.fillStyle = open ? (NIGHT ? "#1d1613" : "#241d18") : (NIGHT ? "#1e1815" : "#15100d");
+          cx.strokeStyle = open ? b.c : "rgba(244,239,230,0.28)";
           cx.lineWidth = 3;
           cx.beginPath(); cx.roundRect(b.x, b.y, b.w, b.h, 14); cx.fill(); cx.stroke();
           if (open && NIGHT) { cx.save(); cx.shadowColor = b.c; cx.shadowBlur = 26; cx.stroke(); cx.restore(); }
+          // night windows: the city sleeps lit, locked or not
+          if (NIGHT) {
+            for (var wi = b.x + 14; wi < b.x + b.w - 14; wi += 22) {
+              for (var wj = b.y + 26; wj < b.y + b.h - 18; wj += 20) {
+                if (((wi * 7 + wj * 13) | 0) % 3 === 0) {
+                  cx.fillStyle = open ? "rgba(255,236,170,0.5)" : "rgba(255,236,170,0.16)";
+                  cx.fillRect(wi, wj, 5, 7);
+                }
+              }
+            }
+          }
           var doorX = b.x + b.w / 2;
-          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.2)";
+          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.35)";
           cx.fillRect(doorX - 14, b.y + b.h - 5, 28, 10);
-          cx.fillStyle = open ? "#f4efe6" : "rgba(244,239,230,0.35)";
+          cx.fillStyle = open ? "#f4efe6" : "rgba(244,239,230,0.6)";
           cx.font = "700 17px system-ui"; cx.textAlign = "center";
           cx.fillText((open ? "" : "🔒 ") + b.name, b.x + b.w / 2, b.y + b.h / 2 + 3);
-          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.25)";
+          cx.fillStyle = open ? b.c : "rgba(244,239,230,0.45)";
           cx.font = "800 9px system-ui";
           cx.fillText(b.k.toUpperCase(), b.x + b.w / 2, b.y + b.h / 2 + 22);
           // mission pips: green for done, district color for waiting

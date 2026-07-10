@@ -34,6 +34,27 @@
     if (mv && mv.content.indexOf("maximum-scale") === -1) {
       mv.content += ", maximum-scale=1, user-scalable=no";
     }
+    /* the real native feel: every page is installable. "Add to Home
+       Screen" from ANY page launches the app with zero browser chrome —
+       no Safari bars cutting the game or the floor. iOS reads these
+       tags from whatever page the visitor is standing on, so they ride
+       everywhere. */
+    function headTag(html) {
+      var t = document.createElement("template");
+      t.innerHTML = html;
+      document.head.appendChild(t.content.firstChild);
+    }
+    if (!document.querySelector('link[rel="manifest"]')) {
+      headTag('<link rel="manifest" href="manifest.webmanifest">');
+    }
+    if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+      headTag('<meta name="apple-mobile-web-app-capable" content="yes">');
+      headTag('<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">');
+      headTag('<meta name="apple-mobile-web-app-title" content="McCluster">');
+    }
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      headTag('<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">');
+    }
     ["gesturestart", "gesturechange", "gestureend"].forEach(function (ev) {
       document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
     });
