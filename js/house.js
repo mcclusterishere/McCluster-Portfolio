@@ -96,7 +96,7 @@
           act.innerHTML =
             '<p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">You\'ve earned ' + earned.toFixed(0) +
             " E⤴︎ — " + short + " short.</b> The shelf is earned-only: stack it for real by completing deals, running " +
-            '<a href="backend.html" style="color:#c99d45">the claim run</a>, or landing service pay. (The beta bankroll doesn\'t count here.)</p>' +
+            '<a href="backend.html" style="color:#c99d45">the claim run</a>, or landing service pay. (Granted mission credit doesn\'t count here.)</p>' +
             '<a class="btn btn--ghost" style="width:100%;justify-content:center" href="market.html#yours">Open the desk — stack it</a>';
         }
         host.appendChild(card);

@@ -66,7 +66,7 @@
     "New here? Tap the <b>M</b> — I'll show you around.",
     "Stuck? Ask me how to earn your first E⤴.",
     "Wanna get paid? Tap me — I'll walk you to the floor.",
-    "Ask me how <b>the Trap</b> pays 5 E⤴.",
+    "Ask me how <b>the Trap</b> pays up to 1,000 E⤴.",
     "Curious how the plug pays for life? Tap the <b>M</b>.",
   ];
   var tipI = 0, nudgeTimer = null;
