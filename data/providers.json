@@ -114,7 +114,8 @@
       "music": {
         "src": "assets/audio/vaunt.mp3",
         "title": "Vaunt (Acoustic) — Zakir on the six-string"
-      }
+      },
+      "claimed": false
     },
     {
       "id": "k-cohiba",
@@ -186,7 +187,8 @@
             3
           ]
         }
-      }
+      },
+      "claimed": false
     },
     {
       "id": "revent-lounge",
@@ -230,7 +232,8 @@
             2
           ]
         }
-      }
+      },
+      "claimed": false
     },
     {
       "id": "laire",
@@ -246,7 +249,8 @@
       "badgeColor": "#8b5cf6",
       "href": "onboard.html?role=provider",
       "book": "mailto:matthew@mccluster.org?subject=Booking%20%E2%80%94%20Laire%20via%20M%20Network&body=What%20I%20need%3A%0ADate%3A%0ALocation%3A%0A",
-      "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile."
+      "blurb": "Behind the camera on the M Network roster. Full page landing with his reel as onboarding completes — bookings route through the network desk meanwhile.",
+      "claimed": false
     },
     {
       "id": "mccluster-pullup",
@@ -263,7 +267,8 @@
       "href": "hire.html",
       "book": "mailto:matthew@mccluster.org?subject=The%20Pull-Up%20%E2%80%94%20mobile%20booking&body=What%20I%20need%20(record%20%2F%20shoot%20%2F%20edit)%3A%0AWhere%20(city%20%2F%20zone)%3A%0ADate%20and%20window%3A%0A",
       "blurb": "Mobile engineering and content: the kit pulls up to your spot. Travel is priced by zone and folded into one payment; you get an arrival window with a built-in buffer, and neither side's address is ever published.",
-      "profile": "hire.html"
+      "profile": "hire.html",
+      "claimed": false
     },
     {
       "id": "hitman-benji",
@@ -473,6 +478,39 @@
         "links": {
           "ig": "https://instagram.com/senadanielcano",
           "music": "https://linktr.ee/Senadanielcano"
+        }
+      }
+    },
+    {
+      "id": "shiloh-church",
+      "slug": "shiloh-church",
+      "name": "Shiloh Baptist Church",
+      "ticker": "SBC",
+      "headline": "A sanctuary & event hall for the community — Bridgeport",
+      "blurb": "Shiloh Baptist Church of Bridgeport. The sanctuary and hall are available to book for services, rehearsals, recordings, and community events — piano, screens, sound, seating.",
+      "area": "Bridgeport, CT",
+      "roles": [
+        "Stages"
+      ],
+      "badgeColor": "#6366f1",
+      "profile": "page.html?who=shiloh-church",
+      "href": "page.html?who=shiloh-church",
+      "claimed": false,
+      "space": {
+        "rate": 75,
+        "unit": "hour",
+        "amenities": [
+          "seating",
+          "piano",
+          "sound",
+          "screens",
+          "parking"
+        ]
+      },
+      "terms": {
+        "notes": "Unclaimed — the church claims it to manage bookings.",
+        "links": {
+          "web": "https://www.shilohchurchbpt.org"
         }
       }
     }
