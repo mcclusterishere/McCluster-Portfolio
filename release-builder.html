@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Release Metadata Engine · Equity Uprise</title>
+  <meta name="description" content="The metadata engine: batch every identifier a release needs — ISRC, ISWC, UPC, writers, splits, PRO/IPI, credits — attach it to your MP3, and export one clean JSON batch. Import to pick up where you left off.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .rb { max-width: 62rem; margin: 0 auto; padding: clamp(4.5rem,9vh,6rem) clamp(0.9rem,3vw,2rem) 8rem; }
+    .rb h1 { font-family: var(--display); text-transform: uppercase; font-size: clamp(2rem,7vw,3.2rem); line-height: 0.95; }
+    .rb__kick { font-family: var(--mono, monospace); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c99d45; }
+    .rb__sub { color: var(--cream-dim); line-height: 1.6; margin-top: 0.6rem; max-width: 60ch; }
+    .rb__sub b { color: var(--cream); }
+    .rb__panel { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6); padding: 1.1rem 1.15rem 1.25rem; margin-top: 1.1rem; }
+    .rb__panel h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.03em; margin-bottom: 0.5rem; }
+    .rb__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    @media (max-width: 620px) { .rb__grid { grid-template-columns: 1fr; } }
+    .rb__f { display: flex; flex-direction: column; gap: 0.2rem; }
+    .rb__f label { font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cream-dim); }
+    .rb__in, .rb__ta, .rb__sel { width: 100%; background: rgba(10,8,7,0.75); border: 1px solid rgba(244,239,230,0.22); border-radius: 9px;
+      color: var(--cream); font: inherit; font-size: max(16px,0.9rem); padding: 0.6em 0.7em; }
+    .rb__in:focus, .rb__ta:focus, .rb__sel:focus { outline: none; border-color: var(--ruby-hot); }
+    .rb__ta { min-height: 3.4em; resize: vertical; font-family: var(--mono, monospace); font-size: 0.82rem; }
+    .rb__track { border: 1px solid rgba(244,239,230,0.16); border-radius: 14px; padding: 1rem 1.05rem; margin-top: 0.9rem; background: rgba(10,8,7,0.4); }
+    .rb__track-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .rb__track-head b { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; }
+    .rb__x { background: none; border: 1px solid rgba(244,239,230,0.25); border-radius: 8px; color: var(--cream-dim); cursor: pointer; padding: 0.25em 0.6em; font-size: 0.75rem; }
+    .rb__hint { font-size: 0.72rem; color: rgba(244,239,230,0.5); margin-top: 0.2rem; }
+    .rb__bar { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem 0 0; background: linear-gradient(0deg, var(--ink) 60%, transparent); }
+    .rb__out { width: 100%; min-height: 8rem; margin-top: 0.8rem; background: #0a0706; border: 1px solid rgba(244,239,230,0.2); border-radius: 10px;
+      color: #c9d7c9; font-family: var(--mono, monospace); font-size: 0.76rem; padding: 0.8rem; white-space: pre; overflow: auto; }
+    .rb__msg { min-height: 1.2em; color: var(--cream); font-size: 0.82rem; margin-top: 0.4rem; }
+  </style>
+</head>
+<body class="songpage has-appbar">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="mission.html">Mission Control</a><a href="app.html">Only Us</a></nav>
+  </header>
+
+  <main class="rb">
+    <p class="rb__kick">Equity Uprise · The Metadata Engine</p>
+    <h1>Wear your <span style="color:var(--ruby-hot)">metadata.</span></h1>
+    <p class="rb__sub">Batch every identifier a release carries — <b>ISRC, ISWC, UPC, writers, splits, PRO/IPI, credits</b> — once.
+      The track holds it. <b>Export one clean JSON batch</b> to attach to your MP3, feed the ID3 tagger, or hand a distributor.
+      <b>Import</b> a batch to pick up where you left off. Your identifiers stay yours.</p>
+
+    <section class="rb__panel">
+      <h2>The release</h2>
+      <div class="rb__grid">
+        <div class="rb__f"><label>Release / project title</label><input class="rb__in" id="relTitle" placeholder="e.g. Here — EP"></div>
+        <div class="rb__f"><label>Label of record</label><input class="rb__in" id="relLabel" value="McCluster Corp"></div>
+        <div class="rb__f"><label>Recording artist of record</label><input class="rb__in" id="relArtist" placeholder="e.g. McCluster"></div>
+        <div class="rb__f"><label>ISRC prefix (registrant)</label><input class="rb__in" id="relPrefix" value="QT6KV"></div>
+        <div class="rb__f"><label>UPC / EAN (release barcode)</label><input class="rb__in" id="relUpc" placeholder="12–13 digits, if you have one"></div>
+        <div class="rb__f"><label>Release date</label><input class="rb__in" id="relDate" type="date"></div>
+        <div class="rb__f"><label>© line (composition)</label><input class="rb__in" id="relC" placeholder="© 2026 McCluster Corp"></div>
+        <div class="rb__f"><label>℗ line (recording)</label><input class="rb__in" id="relP" placeholder="℗ 2026 McCluster Corp"></div>
+      </div>
+    </section>
+
+    <section class="rb__panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Tracks</h2>
+        <button class="btn btn--ghost" id="rbAdd" type="button" style="padding:0.5em 1em;font-size:0.75rem">+ Add track</button>
+      </div>
+      <div id="rbTracks"></div>
+    </section>
+
+    <div class="rb__bar">
+      <button class="btn btn--ruby" id="rbExport" type="button">Export JSON batch &#8595;</button>
+      <button class="btn btn--ghost" id="rbCopy" type="button">Copy JSON</button>
+      <label class="btn btn--ghost" style="cursor:pointer">Import JSON &#8593;<input type="file" id="rbImport" accept="application/json,.json" style="display:none"></label>
+      <button class="btn btn--ghost" id="rbISRC" type="button">Import my ISRC locker</button>
+    </div>
+    <p class="rb__msg" id="rbMsg"></p>
+    <pre class="rb__out" id="rbOut" aria-live="polite">Your JSON batch appears here on export.</pre>
+  </main>
+
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { return String(s == null ? "" : s).replace(/"/g, "&quot;"); }
+      var GENRES = ["Hip-Hop/Rap", "R&B/Soul", "Pop", "Afrobeats", "Latin", "Gospel", "Electronic", "Rock", "Spoken Word", "Other"];
+      var tracks = [];
+
+      function blankTrack() {
+        return { title: "", artist: "", featuring: "", slug: "", isrc: "", iswc: "", year: String(new Date().getFullYear()),
+          genre: "Hip-Hop/Rap", language: "en", explicit: "no", length: "", mp3: "", producers: "", writers: "", credit: "" };
+      }
+      function slugify(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+      function trackHTML(t, i) {
+        function f(lbl, key, ph, wide) {
+          return '<div class="rb__f"' + (wide ? ' style="grid-column:1/-1"' : "") + '><label>' + lbl + '</label>' +
+            '<input class="rb__in" data-k="' + key + '" data-i="' + i + '" value="' + esc(t[key]) + '" placeholder="' + esc(ph || "") + '"></div>';
+        }
+        var gsel = '<div class="rb__f"><label>Genre</label><select class="rb__sel" data-k="genre" data-i="' + i + '">' +
+          GENRES.map(function (g) { return '<option' + (g === t.genre ? " selected" : "") + '>' + g + "</option>"; }).join("") + "</select></div>";
+        var xsel = '<div class="rb__f"><label>Explicit</label><select class="rb__sel" data-k="explicit" data-i="' + i + '">' +
+          ["no", "yes", "clean"].map(function (o) { return '<option' + (o === t.explicit ? " selected" : "") + ">" + o + "</option>"; }).join("") + "</select></div>";
+        return '<div class="rb__track">' +
+          '<div class="rb__track-head"><b>Track ' + (i + 1) + '</b><button class="rb__x" type="button" data-del="' + i + '">Remove</button></div>' +
+          '<div class="rb__grid">' +
+          f("Title", "title", "Song title") + f("Primary artist", "artist", "e.g. McCluster") +
+          f("Featuring", "featuring", "guests, comma-sep") + f("Slug (file base)", "slug", "auto from title") +
+          f("ISRC", "isrc", "QT6KV2500001") + f("ISWC (composition)", "iswc", "T-000.000.000-0") +
+          f("Year", "year", "2026") + f("Length", "length", "3:12") +
+          gsel + xsel +
+          f("Language", "language", "en") + f("MP3 filename", "mp3", "upset.mp3") +
+          '</div>' +
+          '<div class="rb__f" style="margin-top:0.5rem"><label>Writers &amp; splits — one per line: Name | IPI/CAE | role | split%</label>' +
+          '<textarea class="rb__ta" data-k="writers" data-i="' + i + '" placeholder="Matthew McCluster | 00000000000 | writer | 50\nCo-Writer | | writer | 50">' + esc(t.writers) + '</textarea>' +
+          '<span class="rb__hint">Splits should total 100. IPI optional. This is the publishing side (the song).</span></div>' +
+          '<div class="rb__f" style="margin-top:0.4rem"><label>Producers / performers (comma-sep)</label>' +
+          '<input class="rb__in" data-k="producers" data-i="' + i + '" value="' + esc(t.producers) + '" placeholder="Producer, engineer, features"></div>' +
+          '<div class="rb__f" style="margin-top:0.4rem"><label>Credit / notes</label>' +
+          '<input class="rb__in" data-k="credit" data-i="' + i + '" value="' + esc(t.credit) + '" placeholder="Written &amp; performed by …"></div>' +
+          '</div>';
+      }
+
+      function render() {
+        $("rbTracks").innerHTML = tracks.map(trackHTML).join("");
+        $("rbTracks").querySelectorAll("[data-k]").forEach(function (el) {
+          el.addEventListener("input", function () {
+            var i = +el.getAttribute("data-i"), k = el.getAttribute("data-k");
+            tracks[i][k] = el.value;
+          });
+        });
+        $("rbTracks").querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", function () { tracks.splice(+b.getAttribute("data-del"), 1); render(); });
+        });
+      }
+
+      function parseWriters(txt) {
+        return String(txt || "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean).map(function (l) {
+          var p = l.split("|").map(function (s) { return s.trim(); });
+          return { name: p[0] || "", ipi: p[1] || "", role: p[2] || "writer", split: p[3] ? +p[3] : null };
+        });
+      }
+
+      function build() {
+        return {
+          generated_at: new Date().toISOString(),
+          release: {
+            title: $("relTitle").value.trim(),
+            label: $("relLabel").value.trim(),
+            artist_of_record: $("relArtist").value.trim(),
+            isrc_prefix: $("relPrefix").value.trim(),
+            upc: $("relUpc").value.trim() || null,
+            release_date: $("relDate").value || null,
+            copyright_c: $("relC").value.trim() || null,
+            copyright_p: $("relP").value.trim() || null,
+          },
+          tracks: tracks.map(function (t) {
+            return {
+              slug: t.slug || slugify(t.title),
+              title: t.title, artist: t.artist || $("relArtist").value.trim(),
+              featuring: t.featuring || null,
+              isrc: t.isrc || null, iswc: t.iswc || null,
+              year: t.year || null, length: t.length || null,
+              genre: t.genre, language: t.language || "en", explicit: t.explicit || "no",
+              mp3: t.mp3 || (slugify(t.title) + ".mp3"),
+              writers: parseWriters(t.writers),
+              producers: t.producers ? t.producers.split(",").map(function (s) { return s.trim(); }).filter(Boolean) : [],
+              credit: t.credit || null,
+            };
+          }),
+        };
+      }
+
+      function show(obj) { $("rbOut").textContent = JSON.stringify(obj, null, 2); }
+
+      $("rbAdd").addEventListener("click", function () { tracks.push(blankTrack()); render(); });
+      $("rbExport").addEventListener("click", function () {
+        var data = build();
+        show(data);
+        var name = (slugify(data.release.title) || "release") + "-metadata.json";
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = name; a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        $("rbMsg").textContent = "Exported " + name + " — " + data.tracks.length + " track(s).";
+      });
+      $("rbCopy").addEventListener("click", function () {
+        var s = JSON.stringify(build(), null, 2); show(build());
+        if (navigator.clipboard) navigator.clipboard.writeText(s).then(function () { $("rbMsg").textContent = "Copied to clipboard."; });
+      });
+      $("rbImport").addEventListener("change", function (e) {
+        var file = e.target.files && e.target.files[0]; if (!file) return;
+        var r = new FileReader();
+        r.onload = function () {
+          try {
+            var d = JSON.parse(r.result);
+            if (d.release) {
+              $("relTitle").value = d.release.title || ""; $("relLabel").value = d.release.label || "McCluster Corp";
+              $("relArtist").value = d.release.artist_of_record || ""; $("relPrefix").value = d.release.isrc_prefix || "QT6KV";
+              $("relUpc").value = d.release.upc || ""; $("relDate").value = d.release.release_date || "";
+              $("relC").value = d.release.copyright_c || ""; $("relP").value = d.release.copyright_p || "";
+            }
+            tracks = (d.tracks || []).map(function (t) {
+              var b = blankTrack();
+              b.title = t.title || ""; b.artist = t.artist || ""; b.featuring = (t.featuring || ""); b.slug = t.slug || "";
+              b.isrc = t.isrc || ""; b.iswc = t.iswc || ""; b.year = t.year || b.year; b.length = t.length || "";
+              b.genre = t.genre || b.genre; b.language = t.language || "en"; b.explicit = t.explicit || "no"; b.mp3 = t.mp3 || "";
+              b.producers = (t.producers || []).join(", ");
+              b.writers = (t.writers || []).map(function (w) { return [w.name, w.ipi, w.role, w.split].join(" | "); }).join("\n");
+              b.credit = t.credit || "";
+              return b;
+            });
+            if (!tracks.length) tracks = [blankTrack()];
+            render(); show(d);
+            $("rbMsg").textContent = "Imported " + tracks.length + " track(s) — edit and re-export.";
+          } catch (err) { $("rbMsg").textContent = "That file didn't parse as a metadata batch."; }
+        };
+        r.readAsText(file);
+      });
+      // pull the ISRC locker straight in (data/isrc.json) so codes aren't retyped
+      $("rbISRC").addEventListener("click", function () {
+        fetch("data/isrc.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          if (!j) { $("rbMsg").textContent = "Couldn't reach the ISRC locker."; return; }
+          var added = 0;
+          Object.keys(j).forEach(function (slug) {
+            if (slug === "note") return;
+            var row = j[slug];
+            if (tracks.some(function (t) { return (t.slug || "") === slug; })) return;
+            var b = blankTrack();
+            b.slug = slug; b.title = slug.replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+            b.isrc = row.isrc || ""; b.year = row.year || b.year; b.artist = row.artist || "";
+            b.mp3 = slug + ".mp3";
+            tracks.push(b); added++;
+          });
+          render();
+          $("rbMsg").textContent = "Pulled " + added + " track(s) from your ISRC locker (prefix QT6KV). Fill in writers & splits.";
+        }).catch(function () { $("rbMsg").textContent = "Couldn't reach the ISRC locker."; });
+      });
+
+      tracks.push(blankTrack());
+      render();
+    })();
+  </script>
+</body>
+</html>

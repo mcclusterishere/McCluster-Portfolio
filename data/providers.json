@@ -513,6 +513,36 @@
           "web": "https://www.shilohchurchbpt.org"
         }
       }
+    },
+    {
+      "id": "coffee-cam",
+      "slug": "coffee-cam",
+      "name": "The Coffee Cam",
+      "ticker": "CAFE",
+      "headline": "A storefront café & creative space — book it for shoots, sessions & pop-ups",
+      "blurb": "The coffee shop from the shoots — a real storefront café and creative room. Book it by the hour for content shoots, acoustic sessions, interviews, and pop-up events. Rename/claim to run your own bookings.",
+      "area": "Bridgeport, CT",
+      "roles": [
+        "Stages"
+      ],
+      "badgeColor": "#a16207",
+      "profile": "page.html?who=coffee-cam",
+      "href": "page.html?who=coffee-cam",
+      "claimed": false,
+      "space": {
+        "rate": 60,
+        "unit": "hour",
+        "amenities": [
+          "counter",
+          "seating",
+          "storefront-light",
+          "wifi",
+          "coffee-bar"
+        ]
+      },
+      "terms": {
+        "notes": "Unclaimed café space — give me the real name/photos and I'll dress it fully."
+      }
     }
   ]
 }
