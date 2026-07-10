@@ -246,6 +246,40 @@
         .then(function (rows) { return rows && rows[0]; });
     },
 
+    /* the distro: members upload tracks; fans back the artist directly.
+       The bucket streams publicly; the row on the rack carries the ask. */
+    tracksFresh: function () {
+      return anon("tracks?order=at.desc&select=id,owner,slug,title,path,price,at&limit=24");
+    },
+    myTracks: function () {
+      return authed("tracks?owner=eq." + S.uid() + "&order=at.desc&select=*");
+    },
+    trackUrl: function (path) {
+      return S.url + "/storage/v1/object/public/tracks/" + path;
+    },
+    trackUpload: function (file, title, price) {
+      return window.MCC_NET.myListing().then(function (mine) {
+        if (!mine) throw new Error("no listing");
+        return S.token().then(function (t) {
+          if (!t) throw new Error("signed out");
+          var path = S.uid() + "/" + Date.now() + "-" +
+            String(file.name || "track").replace(/[^a-zA-Z0-9._-]/g, "_").slice(-64);
+          return fetch(S.url + "/storage/v1/object/tracks/" + path, {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": file.type || "audio/mpeg" },
+            body: file,
+          }).then(function (r) {
+            if (!r.ok) throw new Error("vault " + r.status);
+            return authed("tracks", { method: "POST", prefer: "return=representation",
+              body: { slug: mine.slug, title: title, path: path, price: +price || 0, kind: file.type || "" } });
+          }).then(function (rows) { return rows && rows[0]; });
+        });
+      });
+    },
+    trackKill: function (id) {
+      return authed("tracks?id=eq." + id, { method: "DELETE", prefer: "return=representation" });
+    },
+
     /* mission proofs: the file goes to the private vault (only the owner
        and the desk can ever read it), the row goes on the docket */
     proofFile: function (file, mission, note) {

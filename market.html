@@ -727,6 +727,7 @@
       <h2 class="mk__h2">What the floor is saying</h2>
       <div class="mk__card">
         <div id="wireCompose"></div>
+        <div id="wireTracks"></div>
         <div id="wireFeed"><p class="mk__note">Tapping the wire…</p></div>
       </div>
     </section>
@@ -2199,6 +2200,12 @@
         // the ticker sheet steps aside — the keypad is the room now
         document.body.classList.remove("xc-open");
       });
+      /* any "#pay" link carrying data-to presets the payee — the Wire's
+         "Back the artist" doors ride this into the keypad */
+      document.addEventListener("click", function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href="#pay"][data-to]') : null;
+        if (a && a !== payDoor) presetTo(a.getAttribute("data-to") || "");
+      });
 
       function renderPicker(q) {
         q = (q || "").toLowerCase();
@@ -2470,6 +2477,14 @@
                 '<p class="mp__note">Paid, booked, awarded, spoken to — the word reaches your lock screen even with the app closed.</p>'
               : '<p class="mp__note" style="margin-top:0.4rem">On iPhone: tap <b style="color:var(--cream)">Share → Add to Home Screen</b>, open the app from its icon, and this switch appears. Installed apps get the word on the lock screen.</p>');
           html += "</div>";
+          /* the distro: upload the record, keep everything */
+          html += '<div class="mp__card"><span class="mp__lblx">🎵 Your catalog — the distro</span>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0.5rem">Upload the record straight to the floor — no distributor, no upload fee, and you keep <b style="color:var(--cream)">100% of every backing</b>. Name a suggested support in E⤴︎, or 0 to just let it play.</p>' +
+            '<input class="mp__in" id="dkTrTitle" type="text" maxlength="80" placeholder="Track title">' +
+            '<input class="mp__in" id="dkTrPrice" type="number" min="0" step="1" placeholder="Suggested support in E⤴︎ — like 3 (0 = free)">' +
+            '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkTrBtn" type="button" style="flex:1">Upload the track</button>' +
+            '<input type="file" id="dkTrFile" accept="audio/*" hidden></div>' +
+            '<p class="mp__msg" id="dkTrMsg"></p><div id="dkTrList"></div></div>';
           if (face === "venue") {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
@@ -2563,6 +2578,51 @@
                 why === "unarmed" ? "The horn isn't armed yet — the desk knows." :
                 /signed out/.test(why) ? "Your session blinked — sign in again and retap." :
                 "It didn't take — retap in a moment.";
+            });
+          });
+        }
+        /* the distro: the catalog rides the desk */
+        var trBtn = body.querySelector("#dkTrBtn");
+        if (trBtn) {
+          var trList = body.querySelector("#dkTrList");
+          var trMsg = body.querySelector("#dkTrMsg");
+          var paintTr = function () {
+            window.MCC_NET.myTracks().then(function (rows) {
+              if (!rows || !rows.length) { trList.innerHTML = ""; return; }
+              trList.innerHTML = rows.map(function (t) {
+                return '<p class="mp__note" style="display:flex;align-items:center;gap:0.6rem;margin:0.35rem 0 0">' +
+                  '<b style="color:var(--cream);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(t.title) + "</b>" +
+                  (+t.price ? "<span>" + (+t.price).toFixed(0) + " E⤴︎</span>" : "<span>free</span>") +
+                  '<button class="btn btn--ghost" type="button" data-trkill="' + t.id + '" style="font-size:0.6rem;padding:0.4em 0.9em">Pull it</button></p>';
+              }).join("");
+              trList.querySelectorAll("[data-trkill]").forEach(function (b) {
+                b.addEventListener("click", function () {
+                  b.textContent = "…";
+                  window.MCC_NET.trackKill(b.getAttribute("data-trkill")).then(paintTr).catch(function () { b.textContent = "retry"; });
+                });
+              });
+            }).catch(function () {});
+          };
+          paintTr();
+          trBtn.addEventListener("click", function () { body.querySelector("#dkTrFile").click(); });
+          body.querySelector("#dkTrFile").addEventListener("change", function () {
+            var f = this.files && this.files[0];
+            if (!f) return;
+            var title = (body.querySelector("#dkTrTitle").value || "").trim() || String(f.name || "Untitled").replace(/\.[^.]+$/, "");
+            if (f.size > 25000000) { trMsg.textContent = "Keep it under 25 MB — export a 320 mp3."; return; }
+            trMsg.textContent = "Pressing the record…";
+            trBtn.disabled = true;
+            window.MCC_NET.trackUpload(f, title, body.querySelector("#dkTrPrice").value).then(function () {
+              trBtn.disabled = false;
+              trMsg.textContent = "Live on the rack — the Wire carries it now.";
+              body.querySelector("#dkTrTitle").value = "";
+              track("track_upload", {});
+              paintTr();
+            }).catch(function (e) {
+              trBtn.disabled = false;
+              trMsg.textContent = /no listing/.test(String(e)) ? "Save your listing first — the rack files under your ticker." :
+                /vault 4/.test(String(e)) ? "The rack isn't armed yet — one paste: docs/music-schema.sql." :
+                "It didn't take — try a smaller file or an mp3.";
             });
           });
         }
@@ -3060,7 +3120,35 @@
           });
         }).catch(function () {});
       }
+      /* the rack: fresh uploads, streaming, backing the artist direct */
+      function paintTracks() {
+        var host = $("wireTracks");
+        if (!host || !window.MCC_NET.tracksFresh) return;
+        Promise.all([
+          window.MCC_NET.tracksFresh().catch(function () { return null; }),
+          window.MCC_FLOOR.load().catch(function () { return { providers: [] }; }),
+        ]).then(function (r) {
+          var rows = r[0], byslug = {};
+          (r[1].providers || []).forEach(function (p) { byslug[p.slug || p.id] = p; });
+          if (!rows || !rows.length) { host.innerHTML = ""; return; }
+          host.innerHTML = '<p class="mk__k" style="margin:0 0 0.5rem">Fresh off the rack — straight from the artists</p>' +
+            rows.map(function (t) {
+              var p = byslug[t.slug] || {};
+              return '<div style="padding:0.7rem 0.2rem;border-bottom:1px dashed rgba(244,239,230,0.12)">' +
+                '<p style="margin:0 0 0.3rem;font-size:0.85rem"><b>' + esc(t.title) + "</b>" +
+                ' <span style="color:var(--cream-dim)">— ' + esc(p.name || t.slug) + "</span></p>" +
+                '<audio controls preload="none" style="width:100%;height:34px" src="' + esc(window.MCC_NET.trackUrl(t.path)) + '"></audio>' +
+                '<p style="margin:0.35rem 0 0;font-size:0.75rem"><a href="#pay" data-to="' + esc(t.slug) + '" style="color:#2fbf71;font-weight:700;text-decoration:none">Back the artist' +
+                (+t.price ? " — " + (+t.price).toFixed(0) + " E⤴︎" : "") + " →</a>" +
+                '<span style="color:var(--cream-dim)"> · every E⤴︎ lands on them, whole</span></p></div>';
+            }).join("") + '<div style="height:1.2rem"></div>';
+          host.querySelectorAll("audio").forEach(function (a) {
+            a.addEventListener("play", function () { if (window.MCC_TRACK) window.MCC_TRACK("track_play", {}); }, { once: true });
+          });
+        });
+      }
       mountCompose();
+      paintTracks();
       paintFeed();
     })();
   </script>
