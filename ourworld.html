@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Our World — the real map · Equity Uprise</title>
+  <meta name="description" content="Our World, on the real map: drive the actual streets of Bridgeport, New Haven, Hartford and Waterbury. Every member has a real place, the missions are real, and you can see everyone else driving live.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/maplibre-gl.css">
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    html, body { overscroll-behavior: none; }
+    body { background: #06080f; overflow: hidden; }
+    #owMap { position: fixed; inset: 0; background: #06080f; }
+    .maplibregl-ctrl-attrib { font-size: 9px; opacity: 0.5; }
+    /* the whip sits fixed at the camera centre; the map rotates under it */
+    .ow-car { position: fixed; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; z-index: 20;
+      pointer-events: none; transform: rotate(90deg); filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)); }
+    .ow-car.hidden { display: none; }
+
+    /* markers */
+    .ow-mk { cursor: pointer; transform: translate(-50%, -50%); }
+    .ow-dist { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 12px currentColor; }
+    .ow-dist b { display: none; }
+    .ow-face { width: 34px; height: 34px; border-radius: 50%; background-size: cover; background-position: center;
+      border: 2px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.6); display: grid; place-items: center;
+      font-weight: 800; color: #fff; font-size: 0.9rem; background-color: #1a1512; }
+    .ow-face.mine { box-shadow: 0 0 0 2px #c99d45, 0 0 14px #c99d45; }
+    .ow-trait { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #0a0807;
+      font-weight: 800; font-size: 0.85rem; border: 2px solid rgba(255,255,255,0.6); animation: owPulse 1.6s ease-in-out infinite; }
+    .ow-trait.got { animation: none; opacity: 0.4; }
+    @keyframes owPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 8px currentColor; } 50% { transform: scale(1.18); box-shadow: 0 0 20px currentColor; } }
+    @media (prefers-reduced-motion: reduce) { .ow-trait { animation: none; } }
+    .ow-peer { transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+    .ow-peer .car { width: 30px; height: 14px; border-radius: 5px; margin: 0 auto; box-shadow: 0 0 8px currentColor; }
+    .ow-peer .nm { font-size: 9px; font-weight: 800; color: #f4efe6; text-shadow: 0 1px 3px #000; margin-top: 2px; white-space: nowrap; }
+
+    /* HUD */
+    .ow-hud { position: fixed; top: calc(0.7rem + env(safe-area-inset-top)); left: 0.8rem; right: 0.8rem; z-index: 30;
+      display: flex; align-items: center; gap: 0.5rem; pointer-events: none; }
+    .ow-brand { display: flex; align-items: center; gap: 0.4rem; background: rgba(12,9,8,0.85); backdrop-filter: blur(10px);
+      border: 1px solid rgba(244,239,230,0.16); border-radius: 100px; padding: 0.4rem 0.85rem 0.4rem 0.5rem; }
+    .ow-brand img { width: 20px; } .ow-brand b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; }
+    .ow-traits { margin-left: auto; display: flex; gap: 0.3rem; }
+    .ow-traits span { background: rgba(12,9,8,0.85); backdrop-filter: blur(8px); border-radius: 100px; padding: 0.24rem 0.5rem;
+      font-size: 0.56rem; font-weight: 800; color: #f4efe6; border: 1px solid; }
+    .ow-live { position: fixed; top: calc(3.1rem + env(safe-area-inset-top)); left: 0.8rem; z-index: 30; pointer-events: none;
+      background: rgba(12,9,8,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(0,200,5,0.5); border-radius: 100px;
+      padding: 0.24rem 0.6rem; font-size: 0.6rem; font-weight: 800; color: #f4efe6; }
+    .ow-hint { position: fixed; bottom: calc(5.6rem + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
+      z-index: 30; background: rgba(12,9,8,0.88); border: 1px solid rgba(244,239,230,0.18); border-radius: 100px;
+      padding: 0.5rem 1.2rem; font-size: 0.7rem; color: var(--cream-dim); pointer-events: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
+    .ow-hint b { color: var(--cream); }
+    .ow-place { position: fixed; left: 0; right: 0; bottom: calc(7.5rem + env(safe-area-inset-bottom)); z-index: 28;
+      text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.5s, transform 0.5s; transform: translateY(10px); }
+    .ow-place .n { font-family: var(--display); text-transform: uppercase; font-size: 2.3rem; line-height: 0.9; color: #f4efe6; text-shadow: 0 3px 18px rgba(0,0,0,0.7); }
+    .ow-place .t { font-size: 0.66rem; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 800; margin-top: 0.3rem; }
+
+    /* the stick */
+    .ow-stick { position: fixed; left: 1.1rem; bottom: calc(8.2rem + env(safe-area-inset-bottom)); z-index: 25;
+      width: 108px; height: 108px; border-radius: 50%; border: 1.5px solid rgba(244,239,230,0.22); background: rgba(12,9,8,0.5);
+      backdrop-filter: blur(6px); touch-action: none; display: none; }
+    .ow-stick i { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(229,56,59,0.75); box-shadow: 0 0 18px rgba(229,56,59,0.5); transform: translate(-50%, -50%); }
+    @media (hover: none) { .ow-stick { display: block; } }
+
+    /* the door */
+    .ow-door { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background-size: cover; background-position: center;
+      transition: opacity 0.5s; }
+    .ow-door.is-gone { opacity: 0; pointer-events: none; }
+    .ow-din { text-align: center; max-width: 27rem; padding: 1.5rem; background: rgba(8,6,5,0.55); backdrop-filter: blur(2px); border-radius: 18px; }
+    .ow-din img { width: 58px; margin-bottom: 0.7rem; filter: drop-shadow(0 0 18px rgba(229,56,59,0.7)); }
+    .ow-din h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 2.6rem; line-height: 0.95; }
+    .ow-din .tag { color: #d8ba7c; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; margin-top: 0.4rem; }
+    .ow-din p { color: var(--cream-dim); font-size: 0.85rem; line-height: 1.6; margin: 0.9rem 0 0; } .ow-din p b { color: var(--cream); }
+    .ow-ctl { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.9rem; flex-wrap: wrap; }
+    .ow-ctl span { border: 1px solid rgba(244,239,230,0.25); border-radius: 10px; padding: 0.45em 0.8em; font-size: 0.66rem; color: var(--cream-dim); }
+    .ow-ctl b { color: var(--cream); }
+
+    /* the sheet (shared: districts + spaces) */
+    .ow-veil { position: fixed; inset: 0; background: rgba(5,4,3,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 110; }
+    .ow-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 32rem; margin: 0 auto; background: #14100e;
+      border: 1px solid rgba(244,239,230,0.16); border-bottom: 0; border-radius: 22px 22px 0 0;
+      padding: 1.2rem 1.3rem calc(1.6rem + var(--appbar-h, 3.7rem) + env(safe-area-inset-bottom)); transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 80dvh; overflow-y: auto; }
+    body.ow-open .ow-veil { opacity: 1; pointer-events: auto; } body.ow-open .ow-sheet { transform: translateY(0); }
+    .ow-x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; }
+    .ow-sheet .k { font-size: 0.56rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 800; }
+    .ow-sheet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; margin-top: 0.2rem; }
+    .ow-sheet .d { color: var(--cream-dim); font-size: 0.82rem; line-height: 1.6; margin-top: 0.4rem; }
+    .ow-ms { display: grid; gap: 0.5rem; margin-top: 0.9rem; }
+    .ow-m { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.7rem 0.85rem; text-decoration: none; color: var(--cream); }
+    .ow-m.is-done { border-color: rgba(47,191,113,0.55); background: rgba(47,191,113,0.06); }
+    .ow-m-ic { flex: none; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; border: 1.5px solid var(--dc, #e5383b); color: var(--dc, #e5383b); font-size: 0.8rem; font-weight: 800; }
+    .ow-m.is-done .ow-m-ic { border-color: #2fbf71; color: #2fbf71; }
+    .ow-m-mid { flex: 1; min-width: 0; } .ow-m-mid b { display: block; font-size: 0.84rem; } .ow-m-mid small { display: block; color: var(--cream-dim); font-size: 0.66rem; margin-top: 0.15rem; }
+    .ow-m-go { flex: none; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dc, #e5383b); }
+    .ow-toast { position: fixed; top: calc(3.6rem + env(safe-area-inset-top)); left: 50%; transform: translate(-50%, -140%); z-index: 260;
+      max-width: min(92vw, 26rem); border: 1px solid rgba(216,186,124,0.55); border-radius: 14px; background: rgba(16,12,10,0.96);
+      color: var(--cream-dim); padding: 0.75rem 1rem; font-size: 0.8rem; line-height: 1.5; box-shadow: 0 12px 34px rgba(0,0,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1); } .ow-toast b { color: #d8ba7c; } .ow-toast.is-in { transform: translate(-50%, 0); }
+    .ow-fail { position: fixed; inset: 0; z-index: 400; display: none; place-items: center; background: #0a0807; text-align: center; padding: 2rem; }
+    .ow-fail.on { display: grid; } .ow-fail p { color: var(--cream-dim); max-width: 26rem; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div id="owMap"></div>
+  <img class="ow-car hidden" id="owCar" src="assets/img/mcity-car.png" alt="">
+
+  <div class="ow-hud">
+    <span class="ow-brand"><img src="assets/img/m-mark.png" alt="M"><b>Our World</b></span>
+    <span class="ow-traits" id="owTraits"></span>
+  </div>
+  <span class="ow-live" id="owLive" style="display:none"></span>
+  <p class="ow-hint" id="owHint"></p>
+  <div class="ow-place" id="owPlace"></div>
+  <div class="ow-stick" id="owStick"><i id="owNub"></i></div>
+
+  <div class="ow-veil" id="owVeil"></div>
+  <div class="ow-sheet" id="owSheet" role="dialog" aria-modal="true">
+    <button class="ow-x" id="owXBtn" type="button" aria-label="Close">✕</button>
+    <p class="k" id="owK"></p><h2 id="owName"></h2><p class="d" id="owDesc"></p>
+    <div id="owArc"></div><div class="ow-ms" id="owMs"></div>
+  </div>
+
+  <div class="ow-door" id="owDoor">
+    <div class="ow-din">
+      <img src="assets/img/m-mark.png" alt="M"><h1>Our World</h1>
+      <p class="tag">The real map · Connecticut</p>
+      <p>Drive the actual streets of <b>Bridgeport, New Haven, Hartford and Waterbury</b>. Every member has a
+        real place on the map, the missions are real, and you can see everyone else driving <b>live</b>.</p>
+      <div class="ow-ctl" id="owCtl"></div>
+      <div class="finale__actions" style="justify-content:center;margin-top:1.2rem">
+        <button class="btn btn--ruby" id="owEnter" type="button">&#9654;&#xFE0E; Enter Our World</button>
+      </div>
+      <p style="margin-top:0.8rem;font-size:0.72rem"><a href="mcity.html" style="color:#9e9890">or the classic hand-painted city →</a></p>
+    </div>
+  </div>
+
+  <div class="ow-fail" id="owFail"><div>
+    <p><b style="color:var(--cream)">The live map couldn't load.</b><br>Check your connection, or drop into the
+      <a href="mcity.html" style="color:#e5383b">classic hand-painted city</a> — it runs fully offline.</p>
+  </div></div>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/heat.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
+  <script src="js/guide.js?v=__STAMP__"></script>
+  <script src="js/vendor/maplibre-gl.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      function J(k, fb) { try { return JSON.parse(localStorage.getItem(k)) || fb; } catch (e) { return fb; } }
+
+      /* ---------- the four real Connecticut downtowns ---------- */
+      var CITIES = [
+        { id: "bridgeport", name: "Bridgeport", tag: "The Harbor",    c: "#45b6ff", lng: -73.1894, lat: 41.1792 },
+        { id: "newhaven",   name: "New Haven",  tag: "The University", c: "#e5383b", lng: -72.9279, lat: 41.3083 },
+        { id: "hartford",   name: "Hartford",   tag: "The Gold Dome",  c: "#c99d45", lng: -72.6734, lat: 41.7658 },
+        { id: "waterbury",  name: "Waterbury",  tag: "Brass City",     c: "#a3e635", lng: -73.0515, lat: 41.5582 },
+      ];
+      function nearestCity(lng, lat) {
+        var best = CITIES[0], bd = 1e9;
+        CITIES.forEach(function (c) { var d = (c.lng - lng) * (c.lng - lng) + (c.lat - lat) * (c.lat - lat); if (d < bd) { bd = d; best = c; } });
+        return best;
+      }
+
+      /* ---------- the districts, on real ground ---------- */
+      var DOOR_KEYS = {
+        "app.html#music": "studio_heat", "song-dealer-plates.html": "lot_a", "song-dealer-plates-b.html": "lot_b", "vr-vaunt.html": "lot_jet",
+        "market.html#floor": "exchange_floor", "market.html#pay": "exchange_pay", "profile.html": "exchange_claim",
+        "market.html#scb": "bureau_file", "scb-paper.html": "bureau_paper", "docket-516.html": "hall_docket", "equity-uprise.html": "hall_eu",
+        "fellowship.html": "hall_fellow", "spaces.html": "blocks_browse", "list-your-space.html": "blocks_list",
+        "page.html?who=mccluster": "tower_page", "psychology-markers.html": "tower_persona", "onboard.html": "tower_onboard",
+        "chain.html": "vault_verify", "market.html#yours": "agency_desk", "welcome.html": "agency_walk", "market.html#build": "agency_build",
+        "reserve.html": "mint_books", "house.html": "mint_shelf", "agreement.html": "mint_law",
+        "market.html#wire": "plaza_wire", "market.html#providers": "plaza_dir", "grind-paper.html": "plaza_lab",
+      };
+      var D = [
+        { id: "studio",  name: "The Studio",  k: "Music district",     c: "#e5383b", lng: -72.9285, lat: 41.3125, d: "Where the records live. The city hears everything you play.",
+          ms: [["First spin", "app.html#music"], ["Study the charts", "app.html#music"]] },
+        { id: "lot",     name: "The Lot",     k: "Whip Equipped",      c: "#ff7a00", lng: -73.1850, lat: 41.1820, d: "Dealer plates on everything — the come-up on wheels.",
+          ms: [["Episode one", "song-dealer-plates.html"], ["The B-side film", "song-dealer-plates-b.html"], ["Board the jet", "vr-vaunt.html"]] },
+        { id: "exchange", name: "The Exchange", k: "The market floor", c: "#00c805", lng: -72.6735, lat: 41.7675, d: "The floor that never sleeps. Everybody trades on their own name.",
+          ms: [["Walk the floor", "market.html#floor"], ["Touch the money", "market.html#pay"], ["Claim your name", "profile.html"]] },
+        { id: "backlots", name: "The Back Lots", k: "The claim run",   c: "#8b5cf6", lng: -73.1960, lat: 41.1760, d: "Every door with somebody else's name on it — until you run the run.",
+          ms: [["Case the block", "backend.html"], ["Operator", "backend.html"]] },
+        { id: "bureau",  name: "The Bureau",  k: "Street Credit Bureau", c: "#d8ba7c", lng: -72.6800, lat: 41.7620, d: "Marble, gold, and a dial that only answers to your own books.",
+          ms: [["Open your file", "market.html#scb"], ["Read the doctrine", "scb-paper.html"], ["Check the vault door", "chain.html"]] },
+        { id: "cityhall", name: "City Hall",  k: "The political district", c: "#2f9e62", lng: -72.6670, lat: 41.7695, d: "Power, paper, and the public record. Something's wrong here — and it's documented.",
+          ms: [["The tip", "song-please-set-me-free.html"], ["The evidence room", "docket-516.html"], ["The movement", "equity-uprise.html"], ["Take the oath", "fellowship.html"]] },
+        { id: "blocks",  name: "The Blocks",  k: "Spaces district",    c: "#45b6ff", lng: -72.9210, lat: 41.3050, d: "Studios, stages, rooms with a pulse — the real-estate wing.",
+          ms: [["Scout the rooms", "spaces.html"], ["Put your name on a door", "list-your-space.html"]] },
+        { id: "tower",   name: "The Tower",   k: "The social district", c: "#f472b6", lng: -73.0510, lat: 41.5600, d: "Every name in the city has a page in the Tower.",
+          ms: [["Visit the penthouse", "page.html?who=mccluster"], ["Pick a side", "psychology-markers.html"], ["Get on the door list", "onboard.html"]] },
+        { id: "vault",   name: "The Vault",   k: "The M Chain",        c: "#2aa8a0", lng: -72.6760, lat: 41.7590, d: "Every record, badge and master — hashed, chained, verifiable forever.",
+          ms: [["Verify the chain", "chain.html"], ["Read the doctrine", "scb-paper.html"]] },
+        { id: "agency",  name: "The Agency",  k: "The provider district", c: "#ff9f43", lng: -72.9340, lat: 41.3030, d: "Where the work gets sold and the rate gets named.",
+          ms: [["Hang your shingle", "market.html#yours"], ["Finish the walk-in", "welcome.html"], ["Draft a deal", "market.html#build"]] },
+        { id: "mint",    name: "The Mint",    k: "The credit district", c: "#c99d45", lng: -72.6690, lat: 41.7635, d: "Where E⤴ is minted, backed, and cashed. The only bank that publishes its books.",
+          ms: [["Open the books", "reserve.html"], ["Case the shelf", "house.html"], ["Know the law", "agreement.html"]] },
+        { id: "plaza",   name: "The Plaza",   k: "The social square",  c: "#a3e635", lng: -73.0460, lat: 41.5560, d: "Where the city talks — the wire, the directory, the people who know the people.",
+          ms: [["Read the wire", "market.html#wire"], ["Meet the people", "market.html#providers"], ["Study the lab", "grind-paper.html"]] },
+      ];
+
+      /* ---------- the markers: your psychology, on the street ---------- */
+      var TSTATE = J("mcc_ow_traits", null) || { hustle: 50, heat: 50, focus: 50, got: [] };
+      if (!TSTATE.got) TSTATE.got = [];
+      function tsave() { try { localStorage.setItem("mcc_ow_traits", JSON.stringify(TSTATE)); } catch (e) {} }
+      var MARKERS = [
+        { id: "habit",      name: "Force of habit",           icon: "↻", lng: -73.130, lat: 41.230, c: "#e5383b", up: ["focus", 10], dn: ["hustle", 8],  line: "Routine over impulse." },
+        { id: "greener",    name: "Grass is greener",         icon: "⤢", lng: -72.980, lat: 41.290, c: "#a3e635", up: ["hustle", 12], dn: ["focus", 10], line: "Always chasing the next thing." },
+        { id: "joneses",    name: "Keeping up",               icon: "$", lng: -72.760, lat: 41.640, c: "#c99d45", up: ["heat", 12],   dn: ["focus", 8],  line: "Flash to match the room." },
+        { id: "tomorrow",   name: "Tomorrow never comes",     icon: "⏳", lng: -72.700, lat: 41.720, c: "#45b6ff", up: ["focus", 8],   dn: ["hustle", 12], line: "The plan is always for later." },
+        { id: "rug",        name: "Under the rug",            icon: "▤", lng: -73.150, lat: 41.150, c: "#8b5cf6", up: ["heat", 8],    dn: ["focus", 10], line: "Looks clean; nothing's resolved." },
+        { id: "safe",       name: "Better safe than sorry",   icon: "⛨", lng: -73.020, lat: 41.520, c: "#2aa8a0", up: ["focus", 12],  dn: ["heat", 8],   line: "Protect what you have." },
+        { id: "bottle",     name: "Bottling it up",           icon: "⧗", lng: -73.070, lat: 41.590, c: "#ff7a00", up: ["hustle", 10], dn: ["focus", 8],  line: "Grind through the pressure." },
+        { id: "moderation", name: "Everything in moderation", icon: "◐", lng: -72.900, lat: 41.440, c: "#f4efe6", up: ["focus", 6],   dn: ["heat", 4],   line: "Never the extreme." },
+        { id: "birds",      name: "Birds of a feather",       icon: "⋔", lng: -72.860, lat: 41.360, c: "#f472b6", up: ["hustle", 10], dn: ["focus", 6],  line: "Move with your people." },
+      ];
+      function paintTraits() {
+        function pill(l, v, c) { return '<span style="border-color:' + c + '"><span style="color:' + c + '">' + l + "</span> " + Math.round(v) + "</span>"; }
+        $("owTraits").innerHTML = pill("HUS", TSTATE.hustle, "#ff7a00") + pill("HEAT", TSTATE.heat, "#e5383b") + pill("FOC", TSTATE.focus, "#45b6ff");
+      }
+      function toast(html) {
+        var t = document.createElement("div"); t.className = "ow-toast"; t.innerHTML = html; document.body.appendChild(t);
+        requestAnimationFrame(function () { t.classList.add("is-in"); });
+        setTimeout(function () { t.classList.remove("is-in"); setTimeout(function () { t.remove(); }, 400); }, 3800);
+      }
+
+      /* ---------- boot the real map ---------- */
+      var map = null, ready = false;
+      var player = J("mcc_ow_pos", { lng: -73.1894, lat: 41.1792, h: 0 });
+      var speed = 0, keys = {}, stick = { x: 0, y: 0 }, entered = false, curCity = null;
+
+      try {
+        map = new maplibregl.Map({
+          container: "owMap",
+          style: "https://tiles.openfreemap.org/styles/dark",
+          center: [player.lng, player.lat], zoom: 15, pitch: 55, bearing: 0,
+          maxBounds: [[-73.45, 41.05], [-72.45, 41.90]],
+          attributionControl: { compact: true }, dragRotate: false, pitchWithRotate: false,
+        });
+        map.on("load", function () { ready = true; addMarkers(); });
+        map.on("error", function (e) { if (!ready) fail(); });
+        setTimeout(function () { if (!ready) fail(); }, 9000);
+      } catch (e) { fail(); }
+      function fail() { $("owFail").classList.add("on"); }
+
+      var markerEls = {};   // id -> maplibregl.Marker
+      function mk(el, lng, lat) { return new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map); }
+
+      function addMarkers() {
+        // districts
+        D.forEach(function (b) {
+          var el = document.createElement("div"); el.className = "ow-mk ow-dist"; el.style.background = b.c; el.style.color = b.c;
+          el.title = b.name; el.addEventListener("click", function () { openDistrict(b); });
+          mk(el, b.lng, b.lat);
+        });
+        // trait pickups
+        MARKERS.forEach(function (m) {
+          var el = document.createElement("div"); el.className = "ow-mk ow-trait" + (TSTATE.got.indexOf(m.id) !== -1 ? " got" : "");
+          el.style.background = m.c; el.style.color = m.c; el.textContent = TSTATE.got.indexOf(m.id) !== -1 ? "✓" : m.icon;
+          m._el = el; mk(el, m.lng, m.lat);
+        });
+        // members from the real floor directory
+        if (window.MCC_FLOOR) MCC_FLOOR.load().then(function (floor) {
+          (floor.providers || []).forEach(function (p) { addMember(p, false); });
+          var u = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
+          if (u && window.MCC_SUPA) MCC_SUPA.token().then(function (t) {
+            return fetch(MCC_SUPA.url + "/rest/v1/providers?owner=eq." + MCC_SUPA.uid() + "&select=slug,name,ticker,roles,photo,badge_color,headline&limit=1", { headers: { apikey: MCC_SUPA.key, Authorization: "Bearer " + t } });
+          }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+            var me = rows && rows[0]; if (me) { me.badgeColor = me.badge_color; addMember(me, true); PLAYER = { slug: me.slug, name: me.name, photo: me.photo }; }
+          }).catch(function () {});
+        });
+      }
+      function shash(s) { var h = 2166136261; s = String(s || ""); for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; } return h; }
+      var seen = {}, PLAYER = null;
+      var CHARACTERS = { "mccluster": "assets/img/char-mccluster.jpg", "ocho-gr8": "assets/img/char-ocho.jpg", "rahndrx": "assets/img/char-rahndrx.jpg" };
+      function addMember(p, mine) {
+        var slug = p.slug || p.id; if (!slug || seen[slug]) { if (mine && markerEls[slug]) markerEls[slug].getElement().classList.add("mine"); return; }
+        seen[slug] = 1;
+        var h = shash(slug), city = CITIES[h % 4];              // a real city, deterministic
+        var lng = city.lng + (((h >> 3) % 100) / 100 - 0.5) * 0.03;
+        var lat = city.lat + (((h >> 9) % 100) / 100 - 0.5) * 0.024;
+        var color = p.badgeColor || "#d8ba7c";
+        var el = document.createElement("div"); el.className = "ow-mk ow-face" + (mine ? " mine" : "");
+        el.style.borderColor = color;
+        if (p.photo) el.style.backgroundImage = "url(" + p.photo + ")"; else el.textContent = (p.name || slug).slice(0, 1).toUpperCase();
+        var info = { slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(), roles: p.roles || [], color: color,
+          href: p.href || p.profile || ("page.html?who=" + slug), photo: p.photo || null, blurb: p.blurb || p.headline || "",
+          mine: !!mine, char: CHARACTERS[slug] || null };
+        el.addEventListener("click", function () { openSpace(info); });
+        markerEls[slug] = mk(el, lng, lat);
+      }
+
+      /* ---------- the sheets ---------- */
+      var visits = J("mcc_mcity_v1", {});
+      function openDistrict(b) {
+        $("owSheet").style.setProperty("--dc", b.c);
+        $("owK").textContent = b.k; $("owK").style.color = b.c;
+        $("owName").textContent = b.name; $("owDesc").textContent = b.d;
+        $("owArc").innerHTML = "";
+        $("owMs").innerHTML = b.ms.map(function (m) {
+          var key = DOOR_KEYS[m[1]]; var done = key && visits[key];
+          return '<a class="ow-m' + (done ? " is-done" : "") + '" href="' + esc(m[1]) + '"' + (key ? ' data-v="' + key + '"' : "") + ' style="--dc:' + b.c + '">' +
+            '<span class="ow-m-ic">' + (done ? "✓" : "!") + '</span><span class="ow-m-mid"><b>' + esc(m[0]) + "</b></span><span class=\"ow-m-go\">go &#8594;</span></a>";
+        }).join("");
+        $("owMs").querySelectorAll("[data-v]").forEach(function (a) { a.addEventListener("click", function () { visits[a.getAttribute("data-v")] = 1; try { localStorage.setItem("mcc_mcity_v1", JSON.stringify(visits)); } catch (e) {} }); });
+        document.body.classList.add("ow-open"); track("ow_district", { d: b.id });
+      }
+      function openSpace(l) {
+        $("owSheet").style.setProperty("--dc", l.color);
+        $("owK").textContent = (l.roles || []).join(" · ") || "A space in Our World"; $("owK").style.color = l.color;
+        $("owName").textContent = l.name; $("owDesc").textContent = l.blurb || "Their own corner of the map.";
+        var av = l.photo ? '<img src="' + esc(l.photo) + '" alt="" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ' + l.color + ';vertical-align:middle;margin-right:0.5rem" onerror="this.remove()">' : "";
+        $("owArc").innerHTML = '<div style="margin-top:0.6rem">' + av + (l.ticker ? '<b style="font-size:1rem;color:' + l.color + '">$' + esc(l.ticker) + "</b>" : (l.mine ? "★ your space" : "")) + "</div>" +
+          (l.char ? '<img src="' + l.char + '" alt="" style="width:100%;margin-top:0.7rem;border-radius:14px;border:1px solid ' + l.color + '" onerror="this.remove()">' : "");
+        $("owMs").innerHTML =
+          '<a class="ow-m" href="' + esc(l.href) + '" style="--dc:' + l.color + '"><span class="ow-m-ic">→</span><span class="ow-m-mid"><b>Enter their space</b><small>Their page, their hustle, their record.</small></span><span class="ow-m-go">open</span></a>' +
+          (l.ticker && !l.mine ? '<a class="ow-m" href="market.html?to=' + esc(l.ticker) + '" style="--dc:' + l.color + '"><span class="ow-m-ic">$</span><span class="ow-m-mid"><b>Move on ' + esc(l.name) + '</b><small>The keypad, loaded with their ticker.</small></span><span class="ow-m-go">deal &#8594;</span></a>' : "") +
+          (l.mine ? '<a class="ow-m" href="market.html#yours" style="--dc:' + l.color + '"><span class="ow-m-ic">★</span><span class="ow-m-mid"><b>Run your desk</b></span><span class="ow-m-go">go &#8594;</span></a>' : "");
+        document.body.classList.add("ow-open"); track("ow_space", { slug: l.slug, mine: !!l.mine });
+      }
+      $("owVeil").addEventListener("click", function () { document.body.classList.remove("ow-open"); });
+      $("owXBtn").addEventListener("click", function () { document.body.classList.remove("ow-open"); });
+
+      /* ---------- driving on the real map ---------- */
+      addEventListener("keydown", function (e) { keys[e.key.toLowerCase()] = true; });
+      addEventListener("keyup", function (e) { keys[e.key.toLowerCase()] = false; });
+      (function () {
+        var el = $("owStick"), nub = $("owNub"), on = false, cxp = 0, cyp = 0;
+        if (!el) return;
+        el.addEventListener("pointerdown", function (e) { on = true; var r = el.getBoundingClientRect(); cxp = r.left + r.width / 2; cyp = r.top + r.height / 2; el.setPointerCapture(e.pointerId); mv(e); });
+        el.addEventListener("pointermove", mv);
+        el.addEventListener("pointerup", function () { on = false; stick.x = 0; stick.y = 0; nub.style.transform = "translate(-50%,-50%)"; });
+        function mv(e) { if (!on) return; var dx = e.clientX - cxp, dy = e.clientY - cyp, d = Math.hypot(dx, dy), m = Math.min(d, 38); if (d > 4) { stick.x = dx / d; stick.y = dy / d; } else { stick.x = 0; stick.y = 0; } nub.style.transform = "translate(calc(-50% + " + (d ? dx / d * m : 0) + "px), calc(-50% + " + (d ? dy / d * m : 0) + "px))"; }
+      })();
+
+      function collect() {
+        for (var i = 0; i < MARKERS.length; i++) { var m = MARKERS[i];
+          if (TSTATE.got.indexOf(m.id) !== -1) continue;
+          var dlng = (m.lng - player.lng) * Math.cos(player.lat * Math.PI / 180), dlat = m.lat - player.lat;
+          if (Math.sqrt(dlng * dlng + dlat * dlat) < 0.0016) {
+            TSTATE.got.push(m.id);
+            TSTATE[m.up[0]] = Math.max(0, Math.min(100, TSTATE[m.up[0]] + m.up[1]));
+            TSTATE[m.dn[0]] = Math.max(0, Math.min(100, TSTATE[m.dn[0]] - m.dn[1]));
+            tsave(); paintTraits();
+            if (m._el) { m._el.classList.add("got"); m._el.textContent = "✓"; }
+            toast(m.icon + " <b>" + m.name + "</b> — +" + m.up[1] + " " + m.up[0].toUpperCase() + ", −" + m.dn[1] + " " + m.dn[0].toUpperCase() + ". " + m.line);
+            track("ow_marker", { id: m.id });
+          }
+        }
+      }
+      var placeT = 0;
+      function showPlace(c) {
+        var el = $("owPlace");
+        el.innerHTML = '<div class="n">' + c.name + '</div><div class="t" style="color:' + c.c + '">' + c.tag + " · Connecticut</div>";
+        el.style.opacity = "1"; el.style.transform = "translateY(0)";
+        clearTimeout(placeT); placeT = setTimeout(function () { el.style.opacity = "0"; el.style.transform = "translateY(10px)"; }, 2600);
+      }
+
+      var last = 0;
+      function loop(now) {
+        var dt = Math.min(48, now - last || 16); last = now;
+        if (entered && ready && map) {
+          var thr = 0, steer = 0;
+          if (keys.w || keys.arrowup) thr += 1;
+          if (keys.s || keys.arrowdown) thr -= 1;
+          if (keys.a || keys.arrowleft) steer -= 1;
+          if (keys.d || keys.arrowright) steer += 1;
+          if (stick.x || stick.y) { thr = -stick.y; steer = stick.x; }
+          var maxSp = 0.30 + (TSTATE.hustle / 100) * 0.14;
+          speed += ((thr ? maxSp * (thr > 0 ? 1 : -0.6) : 0) - speed) * Math.min(1, dt / 150);
+          player.h = (player.h + steer * (0.16 * Math.min(1.4, Math.abs(speed) / maxSp + 0.2)) * dt) % 360;
+          var hr = player.h * Math.PI / 180;
+          var stepBase = 0.0000019 * dt;              // degrees per ms, tuned to feel like driving
+          var mvd = speed * stepBase * 100;
+          player.lat += Math.cos(hr) * mvd;
+          player.lng += Math.sin(hr) * mvd / Math.max(0.4, Math.cos(player.lat * Math.PI / 180));
+          player.lat = Math.max(41.06, Math.min(41.89, player.lat));
+          player.lng = Math.max(-73.44, Math.min(-72.46, player.lng));
+          map.jumpTo({ center: [player.lng, player.lat], bearing: player.h });
+          $("owCar").style.transform = "rotate(90deg)";   // fixed up; the map turns
+          collect();
+          var city = nearestCity(player.lng, player.lat);
+          if (city !== curCity) { curCity = city; showPlace(city); }
+          $("owHint").innerHTML = "<b>" + esc(curCity ? curCity.name : "Connecticut") + "</b> · drive to a glowing point" + (MP.count() ? " · " + MP.count() + " live" : "");
+          try { localStorage.setItem("mcc_ow_pos", JSON.stringify(player)); } catch (e) {}
+          MP.tick();
+        }
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      /* ---------- live multiplayer (Supabase Realtime broadcast) ---------- */
+      var MP = (function () {
+        var peers = {}, ws = null, hb = null, bc = null, live = false, t0 = 0;
+        var myId = (window.MCC_GRIND && MCC_GRIND.device && MCC_GRIND.device()) || ("g" + Math.random().toString(36).slice(2, 9));
+        function connect() {
+          if (ws || !window.MCC_SUPA || !MCC_SUPA.url) return;
+          try { ws = new WebSocket(MCC_SUPA.url.replace(/^http/, "ws") + "/realtime/v1/websocket?apikey=" + encodeURIComponent(MCC_SUPA.key) + "&vsn=1.0.0"); } catch (e) { return; }
+          ws.onopen = function () {
+            try { ws.send(JSON.stringify({ topic: "realtime:ourworld", event: "phx_join", payload: { config: { broadcast: { self: false } } }, ref: "1" })); } catch (e) {}
+            live = true;
+            hb = setInterval(function () { try { ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" })); } catch (e) {} }, 25000);
+          };
+          ws.onmessage = function (ev) {
+            try { var m = JSON.parse(ev.data);
+              if (m.event === "broadcast" && m.payload && m.payload.event === "pos") { var d = m.payload.payload; if (!d || d.id === myId) return; d.t = Date.now(); upsert(d); }
+            } catch (e) {}
+          };
+          ws.onclose = function () { clearInterval(hb); live = false; ws = null; };
+          ws.onerror = function () { try { ws.close(); } catch (e) {} };
+        }
+        function upsert(d) {
+          var p = peers[d.id];
+          if (!p) { var el = document.createElement("div"); el.className = "ow-peer";
+            el.innerHTML = '<div class="car" style="background:' + (d.c || "#c99d45") + ';color:' + (d.c || "#c99d45") + '"></div><div class="nm">' + esc(d.n || "driver") + "</div>";
+            p = { el: el, mk: map ? new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).addTo(map) : null }; peers[d.id] = p; }
+          p.t = d.t; if (p.mk) p.mk.setLngLat([d.lng, d.lat]);
+          var car = p.el.querySelector(".car"); if (car) car.style.transform = "rotate(" + ((d.h || 0)) + "deg)";
+        }
+        function tick() {
+          var now = Date.now();
+          if (live && entered && now - t0 > 160) { t0 = now;
+            var d = { id: myId, lng: +player.lng.toFixed(5), lat: +player.lat.toFixed(5), h: Math.round(player.h),
+              n: (PLAYER && PLAYER.name) ? String(PLAYER.name).slice(0, 18) : "A driver", c: (curCity && curCity.c) || "#c99d45" };
+            try { ws.send(JSON.stringify({ topic: "realtime:ourworld", event: "broadcast", payload: { type: "broadcast", event: "pos", payload: d }, ref: null })); } catch (e) {}
+          }
+          for (var id in peers) { if (now - peers[id].t > 6000) { if (peers[id].mk) peers[id].mk.remove(); delete peers[id]; } }
+          var n = Object.keys(peers).length;
+          var live_el = $("owLive"); if (n > 0) { live_el.style.display = ""; live_el.textContent = "● " + n + " driving live"; } else live_el.style.display = "none";
+        }
+        function count() { return Object.keys(peers).length; }
+        return { connect: connect, tick: tick, count: count };
+      })();
+
+      /* ---------- boot ---------- */
+      var touch = matchMedia("(hover: none)").matches;
+      $("owDoor").style.backgroundImage = "linear-gradient(rgba(6,8,15,0.66),rgba(6,8,15,0.9)), url(assets/img/mcity-loading.jpg)";
+      $("owCtl").innerHTML = touch
+        ? "<span><b>Left thumb</b> · drive</span><span><b>Tap a point</b> · open it</span>"
+        : "<span><b>W/S</b> · gas &amp; brake</span><span><b>A/D</b> · steer</span><span><b>Click a point</b> · open it</span>";
+      paintTraits();
+      $("owEnter").addEventListener("click", function () {
+        entered = true; $("owCar").classList.remove("hidden");
+        $("owDoor").classList.add("is-gone"); setTimeout(function () { $("owDoor").remove(); }, 600);
+        MP.connect(); track("ow_enter", { touch: touch });
+      });
+      track("ow_view", {});
+    })();
+  </script>
+</body>
+</html>
