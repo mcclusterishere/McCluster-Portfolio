@@ -2409,6 +2409,16 @@
         if (roles.some(function (r) { return SERVICE.indexOf(r) !== -1; })) return "provider";
         return "member";
       }
+      /* every personality a member carries — an artist who shoots and
+         runs a room wears all three faces, and the desk dresses for each */
+      function roleFaces(roles) {
+        roles = roles || [];
+        var out = [];
+        if (roles.some(function (r) { return MUSIC.indexOf(r) !== -1; })) out.push("artist");
+        if (roles.some(function (r) { return VENUE.indexOf(r) !== -1; })) out.push("venue");
+        if (roles.some(function (r) { return SERVICE.indexOf(r) !== -1; })) out.push("provider");
+        return out.length ? out : ["member"];
+      }
       var FACE_LABEL = { artist: "Artist", venue: "Venue operator", provider: "Service provider", member: "Member" };
       function tool(href, b, s) {
         return '<a class="mp__tool" href="' + href + '"><span><b>' + esc(b) + "</b><small>" + esc(s) + "</small></span><span class=\"mp__arw\">→</span></a>";
@@ -2435,6 +2445,7 @@
         var welcomeDue = false;
         try { welcomeDue = !!localStorage.getItem("mcc_welcome_pending"); } catch (e) {}
         var face = roleFace(ME && ME.roles);
+        var faces = roleFaces(ME && ME.roles);
         var tick = ME ? window.MCC_STOCK.ticker(ME.ticker, ME.name) : "MMBR";
         var color = (ME && ME.badgeColor) || "#e5383b";
         box.innerHTML =
@@ -2442,7 +2453,7 @@
           '<span class="mp__idtick">$' + esc(tick) + "</span>" +
           "<span><b>" + esc((ME && ME.name) || (window.MCC_SUPA.email() || "Your room")) + "</b>" +
           "<small>" + (ME ? esc(ME.status === "live" ? "● Live on the floor" : ME.status) : "No listing yet") + "</small>" +
-          '<span class="mp__role">' + esc(FACE_LABEL[face]) + "</span></span></div>" +
+          '<span class="mp__role">' + esc(faces.map(function (f) { return FACE_LABEL[f]; }).join(" · ")) + "</span></span></div>" +
           '<div id="youBody"></div>';
         var body = $("youBody"), html = "";
         if (welcomeDue) {
@@ -2453,18 +2464,21 @@
 
         if (!ME) {
           html += '<p class="mp__note">Set up your listing below and the whole network can find and book you — you keep 100% of your rate.</p>';
-        } else if (face === "artist") {
+        }
+        if (ME && faces.indexOf("artist") !== -1) {
           html += '<h2 class="mp__toolhead">Your artist tools</h2><div class="mp__tools">' +
             tool("market.html?with=" + esc(ME.slug || "") + "&kind=music_collab#build", "Sell a feature / split", "Set the price, split the song — signed before it drops") +
             tool("packet.html", "Log a show, get the packet", "ASCAP / BMI live packets — get paid for the stage") + "</div>";
-        } else if (face === "venue") {
+        }
+        if (ME && faces.indexOf("venue") !== -1) {
           var amKeys = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
           html += '<h2 class="mp__toolhead">Your space</h2><div class="mp__tools">' +
             tool("packet.html", "Log an event", "Put a booking on the record") + "</div>";
           if (amKeys.length) html += '<h2 class="mp__toolhead">Your amenities</h2>' +
             '<p class="mp__note" style="margin:0.2rem 0 0.5rem">What the room offers — not badges, amenities. <a href="amenities.html" style="color:var(--cream)">Manage on your listing →</a></p>' +
             '<div class="amenity-set" data-amenities="' + esc(amKeys.slice(0, 6).join(",")) + '" data-am-color="' + esc(color) + '"></div>';
-        } else if (face === "provider") {
+        }
+        if (ME && faces.indexOf("provider") !== -1) {
           html += '<h2 class="mp__toolhead">Your provider tools</h2><div class="mp__tools">' +
             tool("market.html?with=" + esc(ME.slug || "") + "&kind=service_booking#build", "Send a booking deal", "Name the job, the date, the rate") +
             tool("packet.html", "Log your work", "Build your record on the platform") + "</div>";
@@ -2480,7 +2494,7 @@
             tool("page.html?who=" + esc(slug),
             "Your page — the social you", "Post to your supporters, edit the vibe, export your fan book") +
             tool("backend.html", "Own your back end — the claim run", "Claim every artist page, open every API, export every number — level up, earn tokens") + "</div>";
-          if (face === "venue" || face === "provider") {
+          if (faces.indexOf("venue") !== -1 || faces.indexOf("provider") !== -1) {
             html += '<div class="mp__card"><span class="mp__lblx">Your booking link — send it, post it, put it in the bio</span>' +
               '<div class="mp__linkrow"><input class="mp__in" id="dkBook" readonly value="' + esc(base + "spaces.html?who=" + slug) + '">' +
               '<button class="btn btn--ghost" id="dkBookCopy" type="button">Copy</button></div>' +
@@ -2544,7 +2558,7 @@
             '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkTrBtn" type="button" style="flex:1">Upload the track</button>' +
             '<input type="file" id="dkTrFile" accept="audio/*" hidden></div>' +
             '<p class="mp__msg" id="dkTrMsg"></p><div id="dkTrList"></div></div>';
-          if (face === "venue") {
+          if (faces.indexOf("venue") !== -1) {
             var sp0 = ME.space || {};
             var amOn = sp0.amenities || [];
             var amOpts = (ME.roles || []).reduce(function (a, r) { return a.concat(AMEN_BY_ROLE[r] || []); }, []);
@@ -3201,8 +3215,11 @@
                 (+t.price ? " — " + (+t.price).toFixed(0) + " E⤴︎" : "") + " →</a>" +
                 '<span style="color:var(--cream-dim)"> · every E⤴︎ lands on them, whole</span></p></div>';
             }).join("") + '<div style="height:1.2rem"></div>';
-          host.querySelectorAll("audio").forEach(function (a) {
-            a.addEventListener("play", function () { if (window.MCC_TRACK) window.MCC_TRACK("track_play", {}); }, { once: true });
+          host.querySelectorAll("audio").forEach(function (a, ai) {
+            var t = rows[ai] || {};
+            a.addEventListener("play", function () {
+              if (window.MCC_TRACK) window.MCC_TRACK("track_play", { slug: t.slug || "", title: t.title || "" });
+            }, { once: true });
           });
         });
       }

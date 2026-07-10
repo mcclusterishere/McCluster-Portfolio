@@ -129,6 +129,7 @@
           stat((+m.page_views || 0).toLocaleString(), "landing-page visits") +
           stat((+m.floor_opens || 0).toLocaleString(), "ticker opens on the floor") +
           stat((+m.plug_landings || 0).toLocaleString(), "souls your plug brought") +
+          stat((+m.rack_plays || 0).toLocaleString(), "plays on your records") +
           stat((+m.followers || 0).toLocaleString(), "supporters") + "</div>" +
           '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Your landing page is <b>page.html?who=' + esc(m.slug || "") + "</b> — every visit counts here, nowhere else.</p></div>";
 
@@ -141,6 +142,7 @@
           stat((+m.balance || 0).toFixed(2) + " E⤴︎", "balance") +
           stat((+m.earned || 0).toFixed(2) + " E⤴︎", "earned by work") +
           stat((+m.active_days_30 || 0), "active days · 30d") +
+          stat((+m.proofs_passed || 0) + " / " + (+m.proofs_in || 0), "proofs passed · filed") +
           stat(esc(m.status || "—"), "listing status") + "</div>" +
           '<div class="finale__actions" style="margin-top:1rem">' +
           '<a class="btn btn--ruby" href="market.html#yours">Open the desk — wallet &amp; tools</a>' +

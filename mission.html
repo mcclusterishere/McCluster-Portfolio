@@ -114,6 +114,10 @@
         <button class="btn btn--ruby" id="brainRun" type="button">🧠 Run the deep brain</button>
         <p class="mc__msg" id="brainMsg"></p>
         <div id="mcBrain"><p class="mc__empty">Loading…</p></div>
+        <h2 style="margin-top:1.4rem">The People's Board — the floor's proposals</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem">What the members brought to the floor and how the room voted.
+          Approve an app proposal and it becomes a build order; city and policy proposals route to the Civic HQ's work.</p>
+        <div id="mcProps"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcListings">
@@ -745,6 +749,51 @@
         });
       })();
 
+      /* ---- THE PEOPLE'S BOARD: the floor proposes, the desk rules ---- */
+      function paintProps(rows) {
+        var el = $("mcProps");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The board needs one paste: docs/control-schema.sql — then the floor starts steering.</p>";
+          return;
+        }
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nothing from the floor yet.</p>"; return; }
+        el.innerHTML = rows.map(function (p) {
+          return '<div class="mc__row' + (p.status === "open" ? " is-hot" : "") + '"><div>' +
+            "<h3>" + esc(p.title) +
+            ' <span class="mc__tag">' + esc(p.kind) + "</span>" +
+            ' <span class="mc__tag">' + esc(p.status) + "</span>" +
+            (p.slug ? ' <span class="mc__tag" style="color:#c99d45">$' + esc(p.slug) + "</span>" : "") + "</h3>" +
+            (p.body ? "<p>" + esc(p.body) + "</p>" : "") +
+            (p.note ? "<p style='color:#8ab4f8'>Your word back: " + esc(p.note) + "</p>" : "") +
+            "<p style='font-size:0.72rem'>" + esc(new Date(p.at).toLocaleString()) + "</p>" +
+            '<span class="mc__acts">' +
+            (p.status === "open" || p.status === "parked"
+              ? '<button class="btn btn--ruby" type="button" data-prop="' + p.id + ':building">Build it</button>' +
+                '<button class="btn btn--ghost" type="button" data-prop="' + p.id + ':parked">Park</button>' +
+                '<button class="btn btn--ghost" type="button" data-prop="' + p.id + ':closed">Close</button>'
+              : p.status === "building"
+                ? '<button class="btn btn--ruby" type="button" data-prop="' + p.id + ':shipped">Mark shipped</button>' +
+                  '<button class="btn btn--ghost" type="button" data-prop="' + p.id + ':parked">Park</button>'
+                : '<button class="btn btn--ghost" type="button" data-prop="' + p.id + ':open">Reopen</button>') +
+            "</span></div></div>";
+        }).join("");
+        el.querySelectorAll("[data-prop]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var kv = b.getAttribute("data-prop").split(":");
+            var note;
+            if (kv[1] === "building" || kv[1] === "shipped" || kv[1] === "closed") {
+              note = prompt("Your word back to the floor (they see this):") || undefined;
+            }
+            b.textContent = "…";
+            A.setProposal(kv[0], kv[1], note).then(function (rows2) {
+              if (!rows2 || !rows2.length) { b.textContent = "database declined it"; return; }
+              A.proposals().then(paintProps);
+            }).catch(function () { b.textContent = "retry"; });
+          });
+        });
+      }
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -761,6 +810,7 @@
           A.pulseLog ? A.pulseLog().catch(function () { return null; }) : Promise.resolve(null),
           A.proofs ? A.proofs().catch(function () { return null; }) : Promise.resolve(null),
           A.brainPitches ? A.brainPitches().catch(function () { return null; }) : Promise.resolve(null),
+          A.proposals ? A.proposals().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5], r[0]);
@@ -771,6 +821,7 @@
           paintPeople(r[10]);
           paintProofs(r[12]);
           paintBrain(r[13]);
+          paintProps(r[14]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";

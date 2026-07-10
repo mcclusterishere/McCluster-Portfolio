@@ -321,6 +321,13 @@
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
       events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid,props&limit=" + (limit || 1500)); },
+      /* the People's Board: the floor's proposals, ruled from the desk */
+      proposals: function () { return authed("proposals?order=at.desc&select=*&limit=100"); },
+      setProposal: function (id, status, note) {
+        var body = { status: status };
+        if (note !== undefined) body.note = note;
+        return authed("proposals?id=eq." + id, { method: "PATCH", body: body, prefer: "return=representation" });
+      },
       /* the brain's docket: pitches from the algorithm and the AI */
       brainPitches: function () { return authed("brain_pitches?order=at.desc&select=*&limit=100"); },
       setBrainPitch: function (id, status) {

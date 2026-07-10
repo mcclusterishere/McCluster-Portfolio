@@ -90,7 +90,12 @@ begin
     'gauntlet_paid', coalesce((select sum(delta) from mtoken_ledger
                                where owner = auth.uid() and reason = 'gauntlet award'), 0),
     'active_days_30', (select count(distinct date(at)) from events
-                        where uid = auth.uid() and at > now() - interval '30 days')
+                        where uid = auth.uid() and at > now() - interval '30 days'),
+    'rack_plays', (select count(*) from events where name = 'track_play'
+                    and props ->> 'slug' = coalesce(me.slug, '')),
+    'proofs_in', (select count(*) from mission_proofs where owner = auth.uid()),
+    'proofs_passed', (select count(*) from mission_proofs
+                       where owner = auth.uid() and status = 'passed')
   ) into out;
   return out;
 end;
