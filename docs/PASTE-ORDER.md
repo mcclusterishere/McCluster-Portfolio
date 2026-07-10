@@ -70,6 +70,7 @@ matter what ran before.
 | `the-brain` | OFF (admin check inside) | ANTHROPIC_KEY |
 | `the-guide` | OFF (member check inside) | ANTHROPIC_KEY |
 | `signal-sweep` | OFF (desk/cron secret inside) | SPOTIFY_ID, SPOTIFY_SECRET, YOUTUBE_KEY, LASTFM_KEY, SWEEP_SECRET |
+| `the-intern` | OFF (desk/cron secret inside) | GEMINI_KEY, INTERN_SECRET |
 | `scan-proof` | OFF (member check inside) | ANTHROPIC_KEY |
 
 ## Dashboard switches
