@@ -20,6 +20,14 @@
   // stuck wearing a costume that no longer exists
   try { localStorage.removeItem("mcc_sandbox"); } catch (e) {}
 
+  /* the plug gets credit: a share link carries ?ref=TICKER, the door
+     banks it, and the listing files with referred_by so the back end
+     counts real finished accounts — never clicks */
+  try {
+    var refQ = new URLSearchParams(location.search).get("ref");
+    if (refQ) localStorage.setItem("mcc_ref", refQ.trim().toUpperCase().replace(/[^A-Z0-9-]/g, ""));
+  } catch (eRef) {}
+
   function track(ev, data) { if (window.MCC_TRACK) window.MCC_TRACK(ev, data || {}); }
 
   function el(tag, cls, txt) {
@@ -155,8 +163,18 @@
         // account (pending review), and the session stays on this device
         if (window.MCC_NET && window.MCC_NET.saveListing) {
           instant.textContent = "Filing your ticker on the floor…";
-          return window.MCC_NET.saveListing({ name: nm, ticker: tk || null, roles: [] })
-            .catch(function () {}); // the desk prefill catches anything the file misses
+          var fields = { name: nm, ticker: tk || null, roles: [] };
+          var ref = null;
+          try { ref = localStorage.getItem("mcc_ref"); } catch (eR) {}
+          if (ref) fields.referred_by = ref;
+          return window.MCC_NET.saveListing(fields)
+            .catch(function () {
+              // an older schema without referred_by must never cost the
+              // ticker — file it plain and let the credit go uncounted
+              if (!ref) return;
+              delete fields.referred_by;
+              return window.MCC_NET.saveListing(fields).catch(function () {});
+            });
         }
       }).then(function () { finish("instant"); }).catch(function (e) {
         instant.textContent = "Start instantly — no email needed";

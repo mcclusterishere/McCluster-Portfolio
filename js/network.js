@@ -236,6 +236,16 @@
     /* Mission Control: the admin surface. RLS (docs/admin-schema.sql) only
        answers these for the admin's own signed-in JWT — for anyone else
        every one of these comes back empty or refused. */
+    /* the Wire — the floor's open feed. Reads ride the same posts table
+       the pages use; writing requires a listing (RLS checks the slug). */
+    feed: function () {
+      return anon("posts?order=created_at.desc&select=id,slug,body,created_at&limit=60");
+    },
+    feedPost: function (slug, body) {
+      return authed("posts", { method: "POST", body: { slug: slug, body: body }, prefer: "return=representation" })
+        .then(function (rows) { return rows && rows[0]; });
+    },
+
     admin: {
       listings: function () { return authed("providers?order=created_at.desc&select=*"); },
       setListing: function (id, status, note) {
@@ -255,6 +265,10 @@
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
       events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid&limit=" + (limit || 1500)); },
+      /* the People room: one dossier per member, computed in the database */
+      dossier: function () { return authed("rpc/member_dossier", { method: "POST", body: {} }); },
+      /* the worker's nightly snapshots — platform history beyond event retention */
+      pulseLog: function () { return authed("pulse_log?order=day.desc&select=*&limit=120"); },
       intake: function () { return authed("intake?order=at.desc&select=*&limit=200"); },
       house: function () { return authed("house_claims?order=at.desc&select=*,house_offers(title,price)"); },
       cashouts: function () { return authed("cashout_requests?order=at.desc&select=*&limit=100"); },
