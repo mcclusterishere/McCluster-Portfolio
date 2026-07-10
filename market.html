@@ -23,10 +23,14 @@
       background: linear-gradient(180deg, rgba(10,8,7,0.97) 82%, transparent); }
     .mk__rail::-webkit-scrollbar { display: none; }
     .mk__jump { flex: none; border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 100px; cursor: pointer;
-      background: rgba(10, 8, 7, 0.5); color: var(--cream-dim); text-decoration: none;
-      font-size: clamp(0.78rem, 2.6vw, 0.95rem); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+      background: rgba(10, 8, 7, 0.5); color: var(--cream-dim); text-decoration: none; font-family: inherit;
+      font-size: clamp(0.85rem, 2.8vw, 0.98rem); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
       padding: 0.75em 1.35em; transition: border-color 0.2s, color 0.2s, background 0.2s; }
     .mk__jump:hover, .mk__jump.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
+    /* the money door stands as tall as the floor's — market green, full voice */
+    .mk__jump--pay { font-size: clamp(0.9rem, 3.2vw, 1.05rem); border-color: rgba(47, 191, 113, 0.65);
+      color: #eafff3; background: rgba(47, 191, 113, 0.16); }
+    .mk__jump--pay:hover, .mk__jump--pay.is-on { border-color: #2fbf71; background: rgba(47, 191, 113, 0.32); color: #fff; }
     .mk__jump--glow { border-color: var(--ruby-hot); color: #fff;
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
       animation: mkGlow 2s ease-in-out infinite; }
@@ -451,7 +455,7 @@
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
       <a class="mk__jump" href="#build">&#9889; Deal builder</a>
-      <a class="mk__jump" href="#pay">$ E-Up Pay</a>
+      <a class="mk__jump mk__jump--pay" href="#pay">$ E-Up Pay</a>
       <a class="mk__jump" href="#scb">&#127963;&#65038; SCB</a>
       <a class="mk__jump" href="#lanes">Lanes</a>
       <a class="mk__jump" href="#yours">Your desk</a>
