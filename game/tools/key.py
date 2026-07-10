@@ -16,7 +16,7 @@ OUT = os.path.join(GAME, "assets")
 os.makedirs(OUT, exist_ok=True)
 
 SPRITES = {  # name -> shipped square size
-    "runner": 128, "rusher": 128, "heavy": 144,
+    "whip": 256, "patrol": 256, "van": 288,
     "sedan": 512, "crate": 128, "package": 128,
 }
 
@@ -89,7 +89,7 @@ for x in range(0, 900, 256):
     sheet.paste(strip, (x, 0))
     sheet.paste(strip, (x, 256))
 x = 20
-order = [("runner", 70), ("rusher", 66), ("heavy", 84), ("crate", 72), ("package", 84), ("sedan", 220)]
+order = [("whip", 88), ("patrol", 88), ("van", 104), ("crate", 72), ("package", 84), ("sedan", 220)]
 for name, disp in order:
     im = Image.open(os.path.join(OUT, name + ".png")).convert("RGBA").resize((disp, disp), Image.LANCZOS)
     sheet.paste(im, (x, 150 - disp // 2), im)
