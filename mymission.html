@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Your Mission Control · Equity Uprise</title>
-  <meta name="description" content="Every member's own command room: the Trap that pays 5 E⤴ for running the whole app, your landing-page traffic, your listing data, your books — your numbers only.">
+  <meta name="description" content="Every member's own command room: the Trap that pays up to 1,000 E⤴ for doing literally everything in the app, your landing-page traffic, your listing data, your books — your numbers only.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -53,12 +53,13 @@
     <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Yours only — nobody else's numbers live here</p>
     <h1>Your Mission<br>Control.</h1>
     <p class="mm__sub">The same command room the house runs — scoped to <b>you</b>: your traffic, your listing,
-      your books, and <b>the Trap</b>: run every part of this app for real and the house pays you
-      <b>5 E⤴︎, flat, once</b>. Every milestone is verified against the record — the machine checks, not the honor system.</p>
+      your books, and <b>the Trap</b>: run literally everything in this app for real — identity, craft, business,
+      community, the academy — and the house pays you <b>up to 1,000 E⤴︎, once</b>. Every milestone is verified
+      against the record — the machine checks, not the honor system.</p>
 
     <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
 
-    <p class="mm__fine">The Trap pays 5.00 E⤴︎ maximum per member, ever — that is the law, enforced by the ledger.
+    <p class="mm__fine">The Trap pays 1,000 E⤴︎ maximum per member, ever — 975 across the missions plus 25 for the back-end claim run; that is the law, enforced by the ledger.
       Trap credit is granted-color: it spends everywhere on the floor and never cashes out. Traffic counts are your
       surfaces only; nobody's numbers but yours are readable from this room.</p>
   </main>
@@ -87,16 +88,38 @@
       }
 
       var GAUNTLET = [
-        ["walk_in", 0.50, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained."],
-        ["card_live", 0.50, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you."],
-        ["signed", 0.25, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one."],
-        ["first_post", 0.50, "Speak on the Wire", "market.html#wire", "One post to the whole floor."],
-        ["first_track", 0.75, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming."],
-        ["first_deal", 0.75, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record."],
-        ["civic_card", 0.50, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work."],
-        ["push_on", 0.25, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded."],
-        ["first_plug", 0.50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door."],
-        ["explorer", 0.50, "Move on five days", "mcity.html", "Show up five separate days — the city pays consistency."],
+        // THE WALK-IN · 100
+        ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained."],
+        ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you."],
+        ["signed", 15, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one."],
+        ["push_on", 10, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded."],
+        ["explorer", 35, "Move on five days", "mcity.html", "Show up five separate days — the city pays consistency."],
+        // THE IDENTITY · 150
+        ["ticker_claimed", 25, "Claim your ticker", "market.html#yours", "Your symbol on the floor — 2 to 5 letters, forever yours."],
+        ["first_id", 40, "Bank your first identifier", "distribution.html", "The IDs your category of work pays through — get one in the locker."],
+        ["id_stack", 45, "Stack three identifiers", "identifiers.html", "Three different kinds banked — the money lanes open."],
+        ["badge_applied", 40, "Apply for your seal", "distribution.html", "The multicolored M-Verified seal your category earns."],
+        // THE CRAFT · 150
+        ["first_post", 25, "Speak on the Wire", "market.html#wire", "One post to the whole floor."],
+        ["on_the_wire", 30, "Keep talking", "wire.html", "Three posts — the floor knows your voice."],
+        ["first_track", 45, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming."],
+        ["listing_live", 50, "Go live on the floor", "market.html#yours", "Your listing verified and live — bookable by the whole network."],
+        // THE BUSINESS · 255
+        ["first_deal", 40, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record."],
+        ["deal_signed", 60, "Sign a deal", "market.html#yours", "A deal signed, paid, or completed — money language on the record."],
+        ["distro_connected", 50, "Connect your distributor", "distribution.html", "Say where you distribute — the desk knows your lanes."],
+        ["earnings_filed", 60, "File an earnings report", "distribution.html", "Drop the CSV — your outside income joins your record."],
+        ["payouts_armed", 45, "Arm card payouts", "market.html#yours", "Set up payouts and buyers pay you by card, straight through."],
+        // THE COMMUNITY · 200
+        ["civic_card", 30, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work."],
+        ["first_vote", 40, "Cast a vote", "control.html", "One head, one vote — steer how the platform develops."],
+        ["proposal_filed", 40, "File a proposal", "control.html", "Put an idea on the floor for the members to vote."],
+        ["first_plug", 50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door."],
+        ["guide_talk", 40, "Talk to the Guide", "market.html", "Ask the concierge anything — it knows the whole floor."],
+        // THE SCHOLAR · 120
+        ["scholar_3", 50, "Start the academy", "academy.html", "Three lessons in — web3 without the hype."],
+        ["scholar_6", 40, "Finish the academy", "academy.html", "All six lessons — you know more than most of the internet."],
+        ["gas_wallet", 30, "Claim your gas grant", "academy.html", "A real wallet, real gas, on the house."],
       ];
 
       function auth(path, body) {
