@@ -41,6 +41,19 @@ Deno.serve(async (req) => {
         method: "PATCH", headers: H, body: JSON.stringify({ status: "paid" }),
       });
       if (!r.ok) console.error("deal flip failed", dealId, r.status);
+
+      // RECORD THE REAL MONEY. This row is the only thing that lets a
+      // later completion mint credit, and it's the base for the 1%
+      // equity draw. A browser can't forge it — only this webhook, on
+      // the service role, writes deal_payments. Replay-safe on ref.
+      const gross = Math.round(Number(session.amount_total || 0)) / 100;
+      if (gross > 0) {
+        const rp = await fetch(`${SB_URL}/rest/v1/deal_payments`, {
+          method: "POST", headers: H,
+          body: JSON.stringify({ deal_id: dealId, gross, ref: session.id }),
+        });
+        if (!rp.ok && rp.status !== 409) console.error("payment record failed", session.id, rp.status);
+      }
     }
 
     // an E-Up purchase mints — dollars in the reserve first, credit second.

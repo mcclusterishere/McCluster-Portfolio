@@ -81,6 +81,16 @@
         });
       }).then(function (r) { return r.ok ? r.json() : 0; }).catch(function () { return 0; });
     },
+    /* the member's stake in the equity pool — points, pool total, share % */
+    equity: function () {
+      return S.token().then(function (t) {
+        return fetch(S.url + "/rest/v1/rpc/my_equity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+          body: "{}",
+        });
+      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    },
     cashout: function (amt) {
       return S.token().then(function (t) {
         return fetch(S.url + "/rest/v1/rpc/request_cashout", {
@@ -102,6 +112,7 @@
       el.className = "mp__card";
       el.innerHTML = '<span class="mp__lblx">E-Up credit — come get your re-up</span>' +
         '<p style="font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0.2rem 0" id="mtkBal">…</p>' +
+        '<div id="mtkEquity"></div>' +
         '<div id="mtkRows"></div>' +
         '<div class="mp__linkrow" style="margin-top:0.5rem">' +
         '<input class="mp__in" id="mtkWho" type="text" placeholder="Ticker — like MCC" style="flex:1">' +
@@ -169,8 +180,21 @@
           });
         });
       }
+      function paintEquity() {
+        var eh = el.querySelector("#mtkEquity");
+        if (!eh) return;
+        window.MCC_TOKEN.equity().then(function (e) {
+          if (!e || !(+e.pool > 0)) { eh.innerHTML = ""; return; }
+          var pts = (+e.points || 0), pool = (+e.pool || 0), pct = (+e.stake_pct || 0);
+          eh.innerHTML = '<p style="font-size:0.78rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
+            'display:flex;justify-content:space-between;gap:0.6rem">' +
+            '<span>Equity stake <b style="color:#c99d45">' + pct.toFixed(3) + '%</b> of the pool</span>' +
+            '<span style="color:var(--cream-dim)">' + pts.toFixed(2) + ' pts · pool ' + pool.toFixed(2) + '</span></p>';
+        });
+      }
       function paint() {
         paintRedeem();
+        paintEquity();
       Promise.all([window.MCC_TOKEN.balance(), window.MCC_TOKEN.ledger(6)])
         .then(function (r) {
           el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
