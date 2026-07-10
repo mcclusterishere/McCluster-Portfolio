@@ -90,7 +90,10 @@ function check(name, cond, detail) {
   const provFetches = Object.entries(netCounts).filter(([u]) => u.endsWith("providers.json")).map(([, n]) => n)[0] || 0;
   check("market", provFetches === 1, `providers.json fetched ${provFetches}× — the cache should make it exactly 1`);
   check("market", (await page.$$(".xc__row")).length >= 6, "floor underpopulated");
-  check("market", (await page.$$(".xc__mover")).length >= 4, "movers strip missing");
+  // THE ONE TAPE: movers exist only for desks with real tape lines — an
+  // empty movers strip on a young tape is the honest state, not a bug
+  const dashRows = await page.evaluate(() => (window.MCC_ROWS || []).filter((r) => !r.onTape).length);
+  check("market", dashRows > 0 || (await page.$$(".xc__mover")).length > 0, "floor shows neither dashes nor movers");
   for (const pane of ["pay", "build", "yours", "providers"]) {
     await page.click(`a.mk__jump[href="#${pane}"]`);
     await page.waitForTimeout(300);

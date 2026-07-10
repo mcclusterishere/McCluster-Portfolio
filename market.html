@@ -1537,21 +1537,34 @@
       }
 
       function paintTape() {
-        var one = ROWS.map(function (r) {
-          return "<span><small>$" + esc(r.tick) + "</small><b class=\"" + (r.chg >= 0 ? "up" : "down") + "\">" +
-            fmt(r.val) + " " + (r.chg >= 0 ? "▲" : "▼") + Math.abs(r.chg).toFixed(2) + "%</b></span>";
-        }).join("");
+        /* only the real tape scrolls; unscored desks never fake a print */
+        var live = ROWS.filter(function (r) { return r.onTape; });
+        var one = live.length
+          ? live.map(function (r) {
+              return "<span><small>$" + esc(r.tick) + "</small><b class=\"" + (r.chg >= 0 ? "up" : "down") + "\">" +
+                fmt(r.val) + " " + (r.chg >= 0 ? "▲" : "▼") + Math.abs(r.chg).toFixed(2) + "%</b></span>";
+            }).join("")
+          : "<span><small>THE TAPE</small><b>writes nightly at 9:07 — claim a desk and get on it</b></span>";
         $("xcTape").innerHTML = one + one; // doubled for the seamless loop
       }
 
       function paintIndex() {
-        if (!ROWS.length) return;
-        var n = ROWS[0].stock.series.length;
+        var live = ROWS.filter(function (r) { return r.onTape && r.stock.series.length > 1; });
+        if (!live.length) {
+          $("xcIndexVal").textContent = "0 pts";
+          $("xcIndexChg").textContent = "the tape is young";
+          $("xcIndexChg").className = "xc__chg";
+          return;
+        }
+        var n = Math.max.apply(null, live.map(function (r) { return r.stock.series.length; }));
         var idx = [];
         for (var i = 0; i < n; i++) {
           var s = 0;
-          ROWS.forEach(function (r) { s += (r.stock.series[i] || r.stock.series[r.stock.series.length - 1]).v; });
-          idx.push({ v: s / ROWS.length });
+          live.forEach(function (r) {
+            var off = i - (n - r.stock.series.length);
+            s += (off >= 0 ? r.stock.series[off] : r.stock.series[0]).v;
+          });
+          idx.push({ v: s / live.length });
         }
         var last = idx[idx.length - 1].v, prev = idx[idx.length - 2] ? idx[idx.length - 2].v : last;
         var chg = prev ? ((last - prev) / prev) * 100 : 0;
@@ -1590,11 +1603,16 @@
             (r.p.claimed === false ? '<span class="xc__unclaimed">unclaimed</span>' : "") +
             "</b><small>" + esc(r.p.name) +
             " · " + esc((r.p.roles || [])[0] || "Member") + "</small></span>" +
-            '<canvas class="xc__spark" data-spark="' + i + '"></canvas>' +
-            '<span class="xc__quote" data-quote="' + i + '">' + quoteHTML(r) + "</span></button>";
+            (r.onTape
+              ? '<canvas class="xc__spark" data-spark="' + i + '"></canvas>' +
+                '<span class="xc__quote" data-quote="' + i + '">' + quoteHTML(r) + "</span>"
+              : '<span class="xc__quote" style="color:var(--cream-dim)"><b style="opacity:0.5">—</b>' +
+                '<span class="xc__pill" style="opacity:0.6">not scored yet</span></span>') +
+            "</button>";
         }).join("");
         ROWS.forEach(function (r, i) {
-          drawLine(document.querySelector('[data-spark="' + i + '"]'), r.stock.series, r.chg >= 0 ? UP : DN);
+          var cv = document.querySelector('[data-spark="' + i + '"]');
+          if (cv && r.stock.series.length > 1) drawLine(cv, r.stock.series, r.chg >= 0 ? UP : DN);
         });
         REAL.forEach(function (r, i) {
           var cv = document.querySelector('[data-rspark="' + i + '"]');
@@ -1610,8 +1628,9 @@
 
       /* today's movers: the loudest tickers, one tap deep */
       function paintMovers() {
-        if (!ROWS.length) return;
-        var top = ROWS.slice().sort(function (a, b) { return Math.abs(b.chg) - Math.abs(a.chg); }).slice(0, 8);
+        var live = ROWS.filter(function (r) { return r.onTape; });
+        if (!live.length) { $("xcMovers").innerHTML = ""; return; }
+        var top = live.slice().sort(function (a, b) { return Math.abs(b.chg) - Math.abs(a.chg); }).slice(0, 8);
         $("xcMovers").innerHTML = top.map(function (r) {
           var i = ROWS.indexOf(r);
           return '<button class="xc__mover" type="button" data-i="' + i + '"><b>$' + esc(r.tick) + "</b>" +
@@ -1621,33 +1640,6 @@
         $("xcMovers").querySelectorAll("[data-i]").forEach(function (b) {
           b.addEventListener("click", function () { openSheet(ROWS[+b.getAttribute("data-i")]); });
         });
-      }
-
-      /* the market breathes: small real-feeling moves, deterministic per minute */
-      function jitter() {
-        // theater only where there is no tape line: real prices never jitter
-        var live = ROWS.filter(function (x) { return !x.onTape; });
-        if (!live.length) return;
-        var slot = Math.floor(Date.now() / 2600);
-        var r = live[slot % live.length];
-        var i = ROWS.indexOf(r);
-        var h = 0;
-        var key = r.tick + slot;
-        for (var k = 0; k < key.length; k++) h = (h * 31 + key.charCodeAt(k)) >>> 0;
-        var move = ((h % 41) - 20) / 100 * 0.35; // ±0.07%-ish steps
-        r.val = Math.max(0.5, r.val * (1 + move / 100 * 8));
-        r.chg = r.open ? ((r.val - r.open) / r.open) * 100 : 0;
-        r.stock.series = r.stock.series.slice(1).concat([{ v: r.val }]);
-        var q = document.querySelector('[data-quote="' + i + '"]');
-        var row = q && q.closest(".xc__row");
-        if (q) q.innerHTML = quoteHTML(r);
-        drawLine(document.querySelector('[data-spark="' + i + '"]'), r.stock.series, r.chg >= 0 ? UP : DN);
-        if (row) {
-          row.classList.add(move >= 0 ? "is-tick-up" : "is-tick-dn");
-          setTimeout(function () { row.classList.remove("is-tick-up", "is-tick-dn"); }, 550);
-        }
-        paintTape(); paintIndex();
-        if (i === 0) paintMovers();
       }
 
       /* ---- detail sheet: the whole book, not just a line ---- */
@@ -1668,40 +1660,35 @@
         return pts.map(function (x) { return { v: +(x / last * endVal).toFixed(2) }; });
       }
       function hist(r, tf) {
-        var slug = r.p.slug || r.p.id;
-        if (tf === "1D") return walk(slug + "d", 26, 0.006, r.val);
-        if (tf === "1W") return walk(slug + "w", 34, 0.014, r.val);
-        if (tf === "1M") return r.stock.series;
-        return walk(slug + "a", 120, 0.03, r.val);
-      }
-      function book(r) {
-        var h = seed((r.p.slug || r.p.id) + "bk" + Math.floor(Date.now() / 60000));
-        var spread = Math.max(0.01, r.val * (0.002 + (h % 9) / 1000));
-        var bidQ = 40 + (h % 320), askQ = 40 + ((h >>> 5) % 320);
-        return { bid: r.val - spread / 2, ask: r.val + spread / 2, bidQ: bidQ, askQ: askQ };
-      }
-      function prints(r) {
-        var slug = r.p.slug || r.p.id, out = [], h = seed(slug + "pr" + Math.floor(Date.now() / 300000));
-        for (var i = 0; i < 6; i++) {
-          h = (h * 1664525 + 1013904223) >>> 0;
-          var qty = 1 + (h % 40);
-          var px = r.val * (1 + (((h >>> 8) % 30) - 15) / 4000);
-          var ago = 1 + (h % 44) + i * 9;
-          out.push({ qty: qty, px: px, side: (h >>> 3) % 2 ? "bought" : "sold", ago: ago < 60 ? ago + "m" : (ago / 60).toFixed(1) + "h" });
-        }
-        return out;
+        /* THE ONE TAPE: every timeframe is a slice of the real snapshot
+           history — no random walks, no invented intraday */
+        var s = r.stock.series;
+        if (tf === "1D") return s.slice(-2);
+        if (tf === "1W") return s.slice(-7);
+        return s;
       }
       function paintBook(r) {
-        var b = book(r);
-        $("xcBid").textContent = fmt(b.bid);
-        $("xcAsk").textContent = fmt(b.ask);
-        var t = b.bidQ + b.askQ;
-        $("xcBidBar").style.width = (b.bidQ / t * 100).toFixed(1) + "%";
-        $("xcAskBar").style.width = (b.askQ / t * 100).toFixed(1) + "%";
-        $("xcPrints").innerHTML = "<small style='font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream-dim)'>Time &amp; sales</small>" +
-          prints(r).map(function (p) {
-            return '<div class="xc__print"><span><b>' + p.side + "</b> " + p.qty + " @ " + fmt(p.px) + "</span><span>" + p.ago + " ago</span></div>";
-          }).join("");
+        /* no invented order book, no fake prints: the "prints" are the
+           real nightly tape moves — each one a day the engine actually
+           scored this desk. Unscored: dashes, honestly. */
+        var s = r.stock.series;
+        if (!r.onTape || s.length < 2) {
+          $("xcBid").textContent = "—"; $("xcAsk").textContent = "—";
+          $("xcBidBar").style.width = "0%"; $("xcAskBar").style.width = "0%";
+          $("xcPrints").innerHTML = "<small style='font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream-dim)'>Time &amp; sales</small>" +
+            '<div class="xc__print"><span>no real prints yet — the tape writes nightly at 9:07</span><span></span></div>';
+          return;
+        }
+        $("xcBid").textContent = fmt(s[s.length - 2].v);
+        $("xcAsk").textContent = fmt(r.val);
+        $("xcBidBar").style.width = "50%"; $("xcAskBar").style.width = "50%";
+        var rows = [];
+        for (var i = s.length - 1; i > 0 && rows.length < 8; i--) {
+          var d = +(s[i].v - s[i - 1].v).toFixed(2);
+          rows.push('<div class="xc__print"><span><b>' + (d >= 0 ? "▲" : "▼") + "</b> " +
+            (d >= 0 ? "+" : "") + d.toFixed(2) + " @ " + fmt(s[i].v) + "</span><span>" + esc(String(s[i].d || "")) + "</span></div>");
+        }
+        $("xcPrints").innerHTML = "<small style='font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream-dim)'>Time &amp; sales — the real tape</small>" + rows.join("");
       }
       function openSheet(r) {
         /* a real company: real dollars, no invented book, no fake prints —
@@ -1744,29 +1731,26 @@
         }
         current = r; curTF = "1D";
         $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1D"); });
-        $("xcDTick").textContent = "$" + r.tick + (r.onTape ? " · ON THE TAPE — every play, quiz and run moves it" : " · " + (r.chg >= 0 ? "up" : "down") + " today");
+        $("xcDTick").textContent = "$" + r.tick + (r.onTape ? " · ON THE TAPE — every play, quiz and run moves it" : " · not scored yet");
         /* the verified mark rides the name: a real ID (or Connect's own
            KYC) stands behind this listing */
         $("xcDName").innerHTML = esc(r.p.name) +
           (r.p.id_verified === true || r.p.charges_enabled === true
             ? ' <span style="color:#2fbf71;font-size:0.62em;letter-spacing:0.06em;vertical-align:0.15em;white-space:nowrap">✓ ID-VERIFIED</span>' : "");
-        $("xcDPrice").textContent = fmt(r.val);
+        $("xcDPrice").textContent = r.onTape ? fmt(r.val) : "—";
         var c = $("xcDChg");
-        c.textContent = (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%";
-        c.className = "xc__chg " + (r.chg >= 0 ? "up" : "down");
+        c.textContent = r.onTape ? (r.chg >= 0 ? "▲ " : "▼ ") + Math.abs(r.chg).toFixed(2) + "%" : "not scored yet";
+        c.className = "xc__chg" + (r.onTape ? (r.chg >= 0 ? " up" : " down") : "");
         var rate = (r.p.space && r.p.space.rate) || (r.p.terms && r.p.terms.floor) || null;
-        var lo = Math.min.apply(null, r.stock.series.map(function (p) { return p.v; }));
-        var hi = Math.max.apply(null, r.stock.series.map(function (p) { return p.v; }));
-        /* no theater in the stat grid: a tape row shows the real engine,
-           an unscored row says PROJECTION to your face */
+        /* one engine, real data only: a tape row shows the real engine;
+           an unscored row shows no numbers at all — just the door in */
         $("xcDStats").innerHTML =
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
           (r.onTape
             ? '<div class="xc__stat" style="border-color:rgba(0,200,5,0.45)"><small>This price</small><b style="color:#00c805">Real — the game tape</b></div>' +
               '<div class="xc__stat"><small>Game points</small><b>' + Math.round(r.val * 100).toLocaleString() + "</b></div>"
-            : '<div class="xc__stat" style="border-color:rgba(216,186,124,0.5)"><small>This chart</small><b style="color:#d8ba7c">Projection — not scored yet</b></div>' +
-              '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>") +
+            : '<div class="xc__stat" style="border-color:rgba(216,186,124,0.5)"><small>This desk</small><b style="color:#d8ba7c">Not scored yet — claim it, play, and the meter starts at $0</b></div>') +
           ((r.stock.dollars || 0) > 0 ? '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" : "") +
           (r.engage ? '<div class="xc__stat"><small>The crowd &middot; plays</small><b>' + r.engage.toLocaleString() + "</b></div>" : "");
         /* REAL STATS: the swept platform numbers ride the sheet for any
@@ -2089,10 +2073,12 @@
         }
       })();
 
-      /* ---- boot: one shared fetch feeds every engine on the page ----
-         THE TAPE IS THE AUTHORITY: desks with a real nightly score line
-         price from score_board(); the seeded spread survives only where
-         no tape line exists yet — placeholder, never over the record. */
+      /* ---- boot: THE ONE TAPE — one algorithm, real data only ----
+         A desk is on the chart only when the nightly engine has scored
+         it, and every chart is the actual snapshot history. No seeded
+         spread, no jitter, no play-lift theater: an unscored desk shows
+         a dash and the claim door. Nothing on a chart that didn't
+         actually happen. */
       var TAPE = {};
       var tapeReq = (window.MCC_SUPA && window.MCC_SUPA.url)
         ? fetch(window.MCC_SUPA.url + "/rest/v1/rpc/score_board", { method: "POST",
@@ -2107,68 +2093,17 @@
         var all = floor.providers;
         ROWS = all.map(function (p) {
           var slug = p.slug || p.id;
-          var stock = window.MCC_STOCK.build({
-            uid: slug,
-            listing: { status: "live", created_at: new Date(Date.now() - 14 * 864e5).toISOString(), updated_at: new Date().toISOString() },
-            marketN: Math.max(all.length, 3),
-          });
-          // every symbol gets its own level and its own day — a stable hash
-          // of the slug scales the series and bends the last move, so the
-          // floor reads like a real spread until live signals take over
-          var h = 0;
-          for (var k = 0; k < slug.length; k++) h = (h * 31 + slug.charCodeAt(k)) >>> 0;
-          var scale = 0.35 + (h % 260) / 100;           // 0.35x – 2.95x
-          var bend = (((h >>> 7) % 27) - 15) / 100;     // -15%..+11% — red lives here too
-          stock.series = stock.series.map(function (pt, i) {
-            var v = pt.v * scale;
-            if (i === stock.series.length - 1) v *= (1 + bend);
-            return { d: pt.d, v: +v.toFixed(2) };
-          });
-          stock.value = stock.series[stock.series.length - 1].v;
-          // a tape line overrides the theater: the whole series rescales to
-          // end exactly on the REAL nightly price, and the row is marked
           var line = TAPE[slug];
-          if (line && line.price != null && isFinite(+line.price)) {
-            var f = +line.price / stock.value;
-            stock.series = stock.series.map(function (pt) { return { d: pt.d, v: +(pt.v * f).toFixed(2) }; });
-            stock.value = +(+line.price).toFixed(2);
-          }
-          var open = stock.series[stock.series.length - 2] ? stock.series[stock.series.length - 2].v : stock.value;
-          return { p: p, stock: stock, tick: tickOf(p), val: stock.value, open: open, onTape: !!line,
-            chg: open ? ((stock.value - open) / open) * 100 : 0 };
-        }).sort(function (a, b) { return b.val - a.val; });
+          var series = ((line && line.series) || []).map(function (pt) { return { d: pt.d, v: +(+pt.v).toFixed(2) }; });
+          var val = line && line.price != null && isFinite(+line.price) ? +(+line.price).toFixed(2) : 0;
+          if (line && series.length === 1) series.push({ d: series[0].d, v: series[0].v }); // one honest day still draws
+          var open = series.length > 1 ? series[series.length - 2].v : val;
+          return { p: p, stock: { series: series, value: val, dollars: 0 }, tick: tickOf(p),
+            val: val, open: open, onTape: !!line,
+            chg: open ? ((val - open) / open) * 100 : 0 };
+        }).sort(function (a, b) { return (b.onTape - a.onTape) || (b.val - a.val); });
         paintTape(); paintIndex(); paintList(); paintMovers();
         window.MCC_ROWS = ROWS; // the pay pane reads prices from the same book
-        setInterval(jitter, 2600);
-
-        /* ---- the crowd moves the price: real plays bend the line ----
-           Programs (orgs like Equity Uprise) ride their crowd hard — content
-           interaction is a big share of their move. People get a nudge from
-           the same signal, never a shove. Streaming-platform plays join this
-           exact channel when the nightly snapshot lands (docs/programs.md). */
-        if (window.MCC_HEAT) {
-          window.MCC_HEAT.counts().then(function (plays) {
-            var changed = false;
-            ROWS.forEach(function (r) {
-              var tr = r.p.tracks || [];
-              if (!tr.length || r.onTape) return;   // tape rows already count plays server-side
-              var n = tr.reduce(function (s, t) { return s + (plays[window.MCC_HEAT.norm(t)] || 0); }, 0);
-              if (!n) return;
-              r.engage = n;
-              var isProg = r.p.entity === "program";
-              var cap = isProg ? 0.35 : 0.08;
-              var lift = Math.min(cap, Math.log10(1 + n) * (isProg ? 0.16 : 0.04));
-              r.val = +(r.val * (1 + lift)).toFixed(2);
-              r.chg = ((r.val - r.open) / r.open) * 100;
-              r.stock.series[r.stock.series.length - 1].v = r.val;
-              changed = true;
-            });
-            if (changed) {
-              ROWS.sort(function (a, b) { return b.val - a.val; });
-              paintTape(); paintIndex(); paintList(); paintMovers();
-            }
-          }).catch(function () {});
-        }
         track("xc_floor_view", { tickers: ROWS.length });
 
         /* the owner's eyes only: your row shows your TRUE dollar worth.
