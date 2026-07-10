@@ -105,6 +105,12 @@
         A.headline = ob.headline || ""; A.area = ob.area || ""; A.blurb = ob.blurb || "";
         A.ig = ob.ig || ""; A.music = ob.music || ""; A.web = ob.web || "";
         if (ob.roles && ob.roles.length) A.roles = ob.roles.slice();
+        // the intent door: ?as=space|artist|civic — they told us why they came
+        var AS = new URLSearchParams(location.search).get("as") || "";
+        if (!A.roles.length) {
+          if (AS === "space") A.roles = ["Studios", "Stages"];
+          if (AS === "artist") A.roles = ["Music"];
+        }
       } catch (e) {}
 
       // signed out? the door stands here too — then the walk begins
@@ -158,6 +164,14 @@
           'few taps dress your profile and show you exactly how you get paid. Quick, then the floor is yours.</p>' + goBtn("Walk me in"));
       }
       function sClaim() {
+        var AS = new URLSearchParams(location.search).get("as") || "";
+        if (AS === "space") {
+          card('<h2>Listing your space.</h2><p><b>We pre-picked the space paths for you</b> — the glowing picks are yours to adjust. ' +
+            'Run something else too (music, photo, video)? Tap it on and the walk adds those questions.</p>' +
+            chiprow(ROLES, A.roles, true) + goBtn("That\u2019s me — keep walking"));
+          wireChips(A.roles, true);
+          return;
+        }
         card('<h2>Claim what you are.</h2><p>Pick <b>everything</b> that fits — <b>each path adds a few of its own questions</b>, ' +
           'and each unlocks its own tools. One profile, many badges.</p>' +
           chiprow(ROLES, A.roles, true) + goBtn());
