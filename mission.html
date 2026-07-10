@@ -85,6 +85,7 @@
 
       <nav class="mc__tabs" id="mcTabs" aria-label="Mission Control sections">
         <button class="mc__tab is-on" data-tab="mcPulse" type="button">Pulse <b id="tabNPulse"></b></button>
+        <button class="mc__tab" data-tab="mcBrain" type="button">The Brain <b id="tabNBrain"></b></button>
         <button class="mc__tab" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
@@ -102,6 +103,17 @@
       <section class="mc__card" id="pane-mcPulse">
         <h2>The pulse — what needs you, computed</h2>
         <div id="mcPulse"><p class="mc__empty">Loading…</p></div>
+      </section>
+
+      <section class="mc__card mc__hidden" id="pane-mcBrain">
+        <h2>The Brain — the platform pitches, you decide</h2>
+        <p class="mc__empty" style="margin-bottom:0.8rem">Two minds file to this docket: the <b>algorithm</b> (pure
+          rules over the live tables, runs nightly on the worker) and the <b>AI strategist</b> (reads the whole
+          picture on demand and pitches upgrades with evidence). Nothing ships itself — approve a pitch and it
+          becomes the build order.</p>
+        <button class="btn btn--ruby" id="brainRun" type="button">🧠 Run the deep brain</button>
+        <p class="mc__msg" id="brainMsg"></p>
+        <div id="mcBrain"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcListings">
@@ -423,6 +435,15 @@
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>What they do</p>" + annaBars(top(byName, 14)) +
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it</p>" + annaBars(top(byPage, 10)) +
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Who moves the most</p>" + annaBars(top(bySoul, 8));
+        var bySrc = {};
+        rows.forEach(function (r) {
+          if (r.name === "acquired" && r.props && (now - new Date(r.at).getTime()) < R * day) {
+            var k = (r.props.src || "direct") + (r.props.plug ? " · plug $" + r.props.plug : "");
+            bySrc[k] = (bySrc[k] || 0) + 1;
+          }
+        });
+        var srcTop = top(bySrc, 10);
+        if (srcTop.length) html += "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where the new souls came from (first touch)</p>" + annaBars(srcTop);
         if (oldest && R > oldest + 1) html += "<p class='mc__empty' style='margin-top:0.5rem'>Raw events on hand reach back ~" +
           Math.ceil(oldest) + " day(s) — the pane shows what's banked.</p>";
         if (ANNA.pulse && ANNA.pulse.length) {
@@ -664,6 +685,66 @@
         });
       })();
 
+      /* ---- THE BRAIN: the pitch docket ---- */
+      function paintBrain(rows) {
+        var el = $("mcBrain");
+        if (!el) return;
+        if (rows === null) {
+          el.innerHTML = "<p class='mc__empty'>The docket needs one paste: docs/brain-schema.sql — then the algorithm starts thinking nightly.</p>";
+          return;
+        }
+        var fresh = rows.filter(function (r) { return r.status === "new"; });
+        var n = document.getElementById("tabNBrain");
+        if (n) n.textContent = fresh.length || "";
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nothing on the docket — the numbers are quiet. Run the deep brain or come back after the night shift.</p>"; return; }
+        el.innerHTML = rows.map(function (r) {
+          var tone = r.source === "ai" ? "#8ab4f8" : "#c99d45";
+          return '<div class="mc__row' + (r.status === "new" ? " is-hot" : "") + '"><div>' +
+            "<h3>" + esc(r.title) +
+            ' <span class="mc__tag" style="color:' + tone + ';border-color:' + tone + '55">' + (r.source === "ai" ? "AI" : "algorithm") + "</span>" +
+            ' <span class="mc__tag">' + esc(r.kind || "") + "</span>" +
+            ' <span class="mc__tag">' + esc(r.status) + "</span></h3>" +
+            "<p>" + esc(r.pitch) + "</p>" +
+            (r.evidence ? "<p style='color:#c99d45'>The evidence: " + esc(r.evidence) + "</p>" : "") +
+            "<p style='font-size:0.72rem'>" + (r.impact ? "Impact: " + esc(r.impact) + " · " : "") + (r.effort ? "effort: " + esc(r.effort) + " · " : "") +
+            esc(new Date(r.at).toLocaleString()) + "</p>" +
+            '<span class="mc__acts">' +
+            (r.status === "new"
+              ? '<button class="btn btn--ruby" type="button" data-brain="' + r.id + ':approved">Approve — build it</button>' +
+                '<button class="btn btn--ghost" type="button" data-brain="' + r.id + ':parked">Park</button>' +
+                '<button class="btn btn--ghost" type="button" data-brain="' + r.id + ':dismissed">Dismiss</button>'
+              : '<button class="btn btn--ghost" type="button" data-brain="' + r.id + ':new">Reopen</button>') +
+            "</span></div></div>";
+        }).join("");
+        el.querySelectorAll("[data-brain]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var kv = b.getAttribute("data-brain").split(":");
+            b.textContent = "…";
+            A.setBrainPitch(kv[0], kv[1]).then(function (rows2) {
+              if (!rows2 || !rows2.length) { b.textContent = "database declined it"; return; }
+              A.brainPitches().then(paintBrain);
+            }).catch(function () { b.textContent = "retry"; });
+          });
+        });
+      }
+      (function wireBrain() {
+        var go = $("brainRun");
+        if (!go) return;
+        go.addEventListener("click", function () {
+          go.disabled = true;
+          $("brainMsg").textContent = "The brain is reading the whole platform…";
+          A.runBrain().then(function (j) {
+            go.disabled = false;
+            if (j && j.error) {
+              $("brainMsg").textContent = /404|net 404/.test(j.error) ? "The brain isn't deployed yet — the-brain, exact name, JWT off, ANTHROPIC_KEY vaulted." : "The brain answered: " + j.error;
+              return;
+            }
+            $("brainMsg").textContent = "It thought of " + (j ? j.thought : 0) + " and filed " + (j ? j.filed : 0) + " pitch(es).";
+            A.brainPitches().then(paintBrain);
+          });
+        });
+      })();
+
       function loadAll() {
         Promise.all([
           A.listings().catch(function () { return null; }),
@@ -679,6 +760,7 @@
           A.dossier ? A.dossier().catch(function () { return null; }) : Promise.resolve(null),
           A.pulseLog ? A.pulseLog().catch(function () { return null; }) : Promise.resolve(null),
           A.proofs ? A.proofs().catch(function () { return null; }) : Promise.resolve(null),
+          A.brainPitches ? A.brainPitches().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
           paintGrind(r[5], r[0]);
@@ -688,6 +770,7 @@
           paintCashouts(r[9]);
           paintPeople(r[10]);
           paintProofs(r[12]);
+          paintBrain(r[13]);
           if (listings === null && reqs === null && members === null) {
             $("mcStats").innerHTML = "";
             $("mcListings").innerHTML = "<p class='mc__empty'>The database answered with silence — this sign-in isn't the admin's, or the admin schema hasn't been run yet.</p>";
@@ -818,7 +901,7 @@
         if (!t) return;
         this.querySelectorAll(".mc__tab").forEach(function (x) { x.classList.remove("is-on"); });
         t.classList.add("is-on");
-        ["mcPulse", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
+        ["mcPulse", "mcBrain", "mcListings", "mcRequests", "mcMembers", "mcPeople", "mcDeals", "mcGrind", "mcIntake", "mcHouse", "mcFund", "mcAnalytics", "mcSms", "mcCockpit"].forEach(function (id) {
           document.getElementById("pane-" + id).classList.toggle("mc__hidden", id !== t.getAttribute("data-tab"));
         });
       });

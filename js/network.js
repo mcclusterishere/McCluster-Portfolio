@@ -320,7 +320,26 @@
         return authed("members?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
       },
       sms: function () { return authed("sms_optins?order=created_at.desc&select=phone,source,created_at&limit=12"); },
-      events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid&limit=" + (limit || 1500)); },
+      events: function (limit) { return authed("events?order=at.desc&select=at,name,path,uid,props&limit=" + (limit || 1500)); },
+      /* the brain's docket: pitches from the algorithm and the AI */
+      brainPitches: function () { return authed("brain_pitches?order=at.desc&select=*&limit=100"); },
+      setBrainPitch: function (id, status) {
+        return authed("brain_pitches?id=eq." + id, { method: "PATCH", body: { status: status }, prefer: "return=representation" });
+      },
+      runBrain: function () {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/functions/v1/the-brain", {
+            method: "POST",
+            headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+            body: "{}",
+          }).then(function (r) {
+            return r.json().catch(function () { return null; }).then(function (j) {
+              if (r.ok) return j;
+              return { error: (j && (j.error || j.message)) || ("net " + r.status) };
+            });
+          });
+        });
+      },
       /* the People room: one dossier per member, computed in the database */
       dossier: function () { return authed("rpc/member_dossier", { method: "POST", body: {} }); },
       /* the worker's nightly snapshots — platform history beyond event retention */

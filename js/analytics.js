@@ -53,9 +53,34 @@ window.MCC_TRACK = (function () {
      key can insert an event, never read one back. Self-contained
      constants because this file loads before backend.js. */
   var SB_URL = "https://fxbkvcrfbbcmrrupdcjt.supabase.co";
+  /* acquisition, first-party: where every soul CAME from. Referrer +
+     UTM tags bank once (first touch), ride every event as props.acq,
+     and fire one 'acquired' event — the numbers Google used to keep
+     behind its own login now live in the platform's own table. */
+  var ACQ = null;
+  try {
+    ACQ = JSON.parse(localStorage.getItem("mcc_acq") || "null");
+    if (!ACQ) {
+      var qq = new URLSearchParams(location.search);
+      var refHost = "";
+      try { refHost = document.referrer ? new URL(document.referrer).hostname : ""; } catch (e3) {}
+      if (refHost === location.hostname) refHost = "";
+      ACQ = {
+        src: qq.get("utm_source") || refHost || "direct",
+        med: qq.get("utm_medium") || (refHost ? "referral" : "none"),
+        cmp: qq.get("utm_campaign") || "",
+        plug: qq.get("ref") || "",
+        at: new Date().toISOString().slice(0, 10),
+      };
+      localStorage.setItem("mcc_acq", JSON.stringify(ACQ));
+      setTimeout(function () { if (window.MCC_TRACK) window.MCC_TRACK("acquired", { src: ACQ.src, med: ACQ.med, cmp: ACQ.cmp, plug: ACQ.plug }); }, 500);
+    }
+  } catch (e4) { ACQ = null; }
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4Ymt2Y3JmYmJjbXJydXBkY2p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0Mjk5NzAsImV4cCI6MjA5OTAwNTk3MH0.ar1MYPC4gF9V7wn3UpTW0Q7PniGJdbBD1UmOKjNqJWU";
   function mirror(name, params) {
     try {
+      params = params || {};
+      if (ACQ && !params.acq) params.acq = ACQ.src + "/" + ACQ.med + (ACQ.cmp ? "/" + ACQ.cmp : "");
       var uid = null;
       try {
         var s = JSON.parse(localStorage.getItem("mccdb_session") || "null");
