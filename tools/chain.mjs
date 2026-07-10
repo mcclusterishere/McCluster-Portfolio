@@ -45,7 +45,7 @@ function trackedBadges() {
     .map((p) => ({
       type: "badge",
       subject: p.slug || p.id,
-      claim: "M-Verified · " + p.verified + " — issued on the M Network to " + p.name,
+      claim: "Verified · " + p.verified + " — issued under Equity Uprise to " + p.name,
     }));
 }
 
