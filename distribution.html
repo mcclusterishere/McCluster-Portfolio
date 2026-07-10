@@ -63,7 +63,16 @@
 
     <div class="ds__tabs" id="dsTabs"></div>
     <p class="ds__note" id="dsNote"></p>
+
+    <div id="dsBadge"></div>
+
+    <h2 class="ds__sec-h" style="font-size:1.2rem;margin:1.6rem 0 0.2rem">Your platforms</h2>
+    <p class="ds__note" style="margin:0 0 0.7rem">Pick who you distribute through — reports & bank one tap away.</p>
     <div class="ds__grid" id="dsGrid"></div>
+
+    <h2 class="ds__sec-h" style="font-size:1.2rem;margin:1.8rem 0 0.2rem">Your identifiers</h2>
+    <p class="ds__note" style="margin:0 0 0.7rem">The codes that prove and pay you in this category. Get them, then stock your locker.</p>
+    <div class="ds__grid" id="dsIdent"></div>
 
     <div id="dsMine"></div>
 
@@ -93,7 +102,7 @@
       "use strict";
       function $(id) { return document.getElementById(id); }
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-      var REG = null, MINE = null, industry = "music", connected = {};
+      var REG = null, MINE = null, industry = "music", connected = {}, BADGES = null, myBadges = {};
 
       function signedIn() { return !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()); }
 
@@ -111,6 +120,7 @@
             });
           });
           industry = (reg.industries[0] || {}).id || "music";
+          MCC_DIST.badges().then(function (b) { BADGES = b; paintBadge(); });
           refresh();
         });
       }
@@ -121,6 +131,61 @@
           MINE = m; connected = {};
           if (m && m.connections) m.connections.forEach(function (c) { connected[c.id] = c; });
           paintGrid(); paintMine();
+        });
+        if (signedIn()) MCC_DIST.myBadges().then(function (bs) { myBadges = {}; (bs || []).forEach(function (b) { myBadges[b.id] = b; }); paintBadge(); });
+      }
+      var LANEC = { recording: "#e5383b", publishing: "#c99d45", identity: "#8b5cf6", platform: "#45b6ff", business: "#2f9e62" };
+      function paintIdentifiers() {
+        var ind = (REG.industries || []).filter(function (x) { return x.id === industry; })[0] || {};
+        var ids = ind.identifiers || [];
+        $("dsIdent").innerHTML = ids.map(function (d) {
+          return '<div class="ds__card" style="cursor:default">' +
+            '<span class="ds__dot" style="background:' + (LANEC[d.lane] || "#c99d45") + '"></span><b>' + esc(d.name) + "</b>" +
+            '<span class="st" style="color:var(--cream-dim)">' + esc(d.help || "") + "</span>" +
+            '<div style="display:flex;gap:0.4rem;margin-top:0.55rem">' +
+            (d.url ? '<a class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.66rem" href="' + esc(d.url) + '" target="_blank" rel="noopener">Get it ↗</a>' : "") +
+            '<button class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.66rem" type="button" data-idk="' + esc(d.kind) + '" data-idn="' + esc(d.name) + '">+ locker</button></div></div>';
+        }).join("") || '<p class="ds__note">No standard code for this category — your platform accounts are your identity.</p>';
+        $("dsIdent").querySelectorAll("[data-idk]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (!signedIn()) { location.href = "market.html#yours"; return; }
+            var val = window.prompt("Your " + b.getAttribute("data-idn") + ":");
+            if (!val || !val.trim()) return;
+            MCC_DIST.saveIdentifier(b.getAttribute("data-idk"), val.trim(), b.getAttribute("data-idn")).then(function () {
+              b.textContent = "✓ in locker"; b.disabled = true;
+              if (window.MCC_TRACK) window.MCC_TRACK("dist_identifier", { kind: b.getAttribute("data-idk") });
+            }).catch(function (e) {
+              var s = String(e && e.message || e);
+              alert(/42P01|404|member_identifiers/.test(s) ? "One paste opens the locker: docs/identifiers-schema.sql (+ identifiers2)." : ("Couldn't save — " + s));
+            });
+          });
+        });
+      }
+      function paintBadge() {
+        var host = $("dsBadge"); if (!host || !BADGES) return;
+        var ind = (REG.industries || []).filter(function (x) { return x.id === industry; })[0] || {};
+        var seal = (BADGES.seals || []).filter(function (s) { return s.id === ind.badge; })[0];
+        if (!seal) { host.innerHTML = ""; return; }
+        var held = myBadges[seal.id];
+        var status = held ? held.status : null;
+        host.innerHTML = '<div style="border:1px solid ' + seal.color + ';border-radius:16px;background:rgba(20,16,14,0.55);padding:1rem 1.1rem;margin:0.4rem 0 0.2rem;display:flex;align-items:center;gap:0.9rem">' +
+          '<span style="flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:' + seal.color + '"><img src="assets/img/m-mark.png" alt="" style="width:22px"></span>' +
+          '<div style="flex:1;min-width:0"><b style="display:block;font-size:0.92rem">' + esc(seal.badge) + '</b><small style="color:var(--cream-dim);font-size:0.72rem">' + esc(seal.desc) + '</small></div>' +
+          (status === "verified" ? '<span style="color:#2fbf71;font-weight:800;font-size:0.78rem;white-space:nowrap">✓ verified</span>'
+            : status === "applied" ? '<span style="color:#d8ba7c;font-weight:800;font-size:0.78rem;white-space:nowrap">⏳ under review</span>'
+            : '<button class="btn btn--ruby" style="padding:0.5em 1em;font-size:0.72rem;white-space:nowrap" type="button" id="dsBadgeApply">Apply for the seal</button>') + "</div>";
+        var ab = host.querySelector("#dsBadgeApply");
+        if (ab) ab.addEventListener("click", function () {
+          if (!signedIn()) { location.href = "market.html#yours"; return; }
+          ab.textContent = "Applying…";
+          MCC_DIST.applyBadge(seal.id, seal.label, seal.color).then(function () {
+            if (window.MCC_TRACK) window.MCC_TRACK("badge_apply", { badge: seal.id });
+            refresh();
+          }).catch(function (e) {
+            var s = String(e && e.message || e);
+            ab.textContent = "Apply for the seal";
+            alert(/42P01|404|apply_badge|member_badges/.test(s) ? "One paste opens badges: docs/badges-schema.sql in Supabase." : ("Couldn't apply — " + s));
+          });
         });
       }
       function paintGrid() {
@@ -140,6 +205,7 @@
         $("dsGrid").querySelectorAll("[data-d]").forEach(function (b) {
           b.addEventListener("click", function () { openSheet(b.getAttribute("data-d")); });
         });
+        paintIdentifiers(); paintBadge();
       }
       function distById(id) { return (REG.distributors || []).filter(function (d) { return d.id === id; })[0]; }
 

@@ -34,6 +34,8 @@ matter what ran before.
 | 22 | `equity-schema.sql` | deal_payments + equity pool + safe mint | 7, 21 |
 | 23 | `records-schema.sql` | records + the relationship table + mint_profile | 3 |
 | 24 | `identifiers-schema.sql` | the identifier locker + identity power | 3 |
+| 24b | `identifiers2-schema.sql` | locker goes dynamic (any category's identifiers) | 24 |
+| 24c | `badges-schema.sql` | the multicolored M-Verified seals, held & verified | 3 |
 | 25 | `web3-schema.sql` | treasury + academy + gas grants | 24 |
 | 26 | `vault-schema.sql` | the reserve that only fills + my_wallet | 7, 22 |
 | 26b | `distribution-schema.sql` | member_connections + earnings_reports + my_distribution | 3 |

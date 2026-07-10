@@ -105,8 +105,34 @@
     });
   }
 
+  var badgeCache = null;
+  function badges() {
+    if (badgeCache) return Promise.resolve(badgeCache);
+    return fetch("data/badges.json", { cache: "no-cache" }).then(function (r) { return r.json(); })
+      .then(function (j) { badgeCache = j; return j; }).catch(function () { return { seals: [] }; });
+  }
+  // save the correct identifier for a category into the member's cloud locker
+  function saveIdentifier(kind, value, label) {
+    return authedFetch("member_identifiers", { method: "POST", prefer: "resolution=merge-duplicates,return=minimal",
+      body: { owner: S().uid(), kind: kind, value: value, label: label || "" } });
+  }
+  // apply for the multicolored M-Verified seal this category earns
+  function applyBadge(id, label, color) {
+    return S().token().then(function (t) {
+      return fetch(S().url + "/rest/v1/rpc/apply_badge", { method: "POST",
+        headers: { apikey: S().key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_badge: id, p_label: label || "", p_color: color || "" }) });
+    }).then(function (r) { return r.text().then(function (tx) { if (!r.ok) throw new Error(r.status + " " + tx.slice(0, 120)); return tx; }); });
+  }
+  function myBadges() {
+    return S().token().then(function (t) {
+      return fetch(S().url + "/rest/v1/rpc/my_badges", { method: "POST", headers: { apikey: S().key, Authorization: "Bearer " + t, "Content-Type": "application/json" }, body: "{}" });
+    }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
+  }
+
   window.MCC_DIST = {
     registry: registry, mine: mine, connect: connect, disconnect: disconnect,
     fileReport: fileReport, parseCsv: parseCsv, readFile: readFile,
+    badges: badges, saveIdentifier: saveIdentifier, applyBadge: applyBadge, myBadges: myBadges,
   };
 })();
