@@ -322,8 +322,8 @@
         "Music"
       ],
       "badgeColor": "#7c3aed",
-      "profile": "page.html?who=rahndrx",
-      "href": "page.html?who=rahndrx",
+      "profile": "profile-rahndrx.html",
+      "href": "profile-rahndrx.html",
       "claimed": false,
       "terms": {
         "notes": "Unclaimed artist profile — Rahndrx claims it to go live and route his plays here.",
@@ -332,7 +332,8 @@
           "music": "https://linktr.ee/rahndrx",
           "web": "https://linktr.ee/rahndrx"
         }
-      }
+      },
+      "photo": "assets/img/rahndrx-hero.jpg"
     }
   ]
 }
