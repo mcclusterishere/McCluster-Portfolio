@@ -135,11 +135,11 @@
         '<input class="mp__in" id="mtkBuyAmt" type="number" min="5" max="1000" step="1" placeholder="Re-up amount" style="max-width:8rem">' +
         '<button class="btn btn--ghost" id="mtkBuy" type="button" style="flex:1">Re-up — buy E⤴\uFE0E by card</button></div>' +
         '<div id="mtkRedeem" style="margin-top:0.5rem"></div>' +
-        '<p class="mp__note">The peg is sacred: 1 E⤴\uFE0E = $1, backed by the Equity Reserve — every purchased credit is a real ' +
+        '<p class="mp__note">The peg is sacred: 1 E⤴\uFE0E = $1 = 100 points, backed by the Equity Reserve — every purchased credit is a real ' +
         'dollar in the vault, every platform dollar feeds it. <b style="color:var(--cream)">Earned</b> credit (deals done, ' +
         'bounties won, services rendered) cashes out right here; purchased and gifted credit spends anywhere in the loop ' +
         'and stays in the loop. <a href="reserve.html" style="color:#c99d45">Watch the reserve &#8594;</a></p>' +
-        '<p class="mp__note" style="margin-top:0.4rem"><b style="color:var(--cream)">How you build it, from zero:</b> nothing is handed out. Complete a deal — the worker earns 5%, the payer 1%. Run <a href="backend.html" style="color:#c99d45">the claim run</a> — owning your back end pays 5. Show up, finish what you sign, keep your books clean — the same behavior that raises your <a href="#scb" style="color:#c99d45">Street Score</a> is what mints your credit.</p>';
+        '<p class="mp__note" style="margin-top:0.4rem"><b style="color:var(--cream)">How you build it, from zero:</b> nothing is handed out. Complete a deal — the worker earns 5%, the payer 1%. Run <a href="backend.html" style="color:#c99d45">the claim run</a> — owning your back end pays 25 (2,500 pts). Show up, finish what you sign, keep your books clean — the same behavior that raises your <a href="#scb" style="color:#c99d45">Street Score</a> is what mints your credit.</p>';
       host.appendChild(el);
       function repaint() {
         el.querySelector("#mtkRows").innerHTML = "";
@@ -223,7 +223,8 @@
         paintVault();
       Promise.all([window.MCC_TOKEN.balance(), window.MCC_TOKEN.ledger(6)])
         .then(function (r) {
-          el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
+          el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>' +
+            ' <span style="font-size:0.44em;color:#c99d45;font-weight:800;vertical-align:0.5em">' + Math.round(r[0] * 100).toLocaleString() + ' pts</span>';
           el.querySelector("#mtkRows").innerHTML = (r[1] || []).map(function (row) {
             return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.78rem;' +
               'border-bottom:1px dashed rgba(244,239,230,0.12);padding:0.35em 0">' +

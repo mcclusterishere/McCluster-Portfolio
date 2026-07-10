@@ -55,7 +55,8 @@ jobs:
           # NOTE: eu-favicon stays PNG on purpose — it carries alpha (transparent).
           for n in ourworld-map char-mccluster char-ocho char-rahndrx \
                    space-only-us space-shiloh space-coffee-cam space-privi \
-                   space-decibel space-revent-space space-revent-lounge; do
+                   space-decibel space-revent-space space-revent-lounge \
+                   mc-hero mc-walkin mc-identity mc-craft mc-business mc-community mc-scholar; do
             f="assets/img/${n}.png"
             [ -f "$f" ] || continue
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \

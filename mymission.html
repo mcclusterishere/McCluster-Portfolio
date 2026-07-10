@@ -40,6 +40,29 @@
     .mm__card.is-locked { opacity: 0.45; pointer-events: none; filter: grayscale(0.4); }
     .mm__lock { font-size: 0.76rem; color: #c99d45; margin: 1.2rem 0 -0.9rem; }
     .mm__lock a { color: #c99d45; }
+
+    /* the command room: the hero banner + the six arcs, each wearing
+       its own generated scene (gradient holds the room until art lands) */
+    .mm__hero { position: relative; border-radius: 20px; overflow: hidden; margin-top: 1.1rem;
+      min-height: 11rem; display: flex; align-items: flex-end;
+      background: linear-gradient(140deg, #1a1210, #0d0a08 60%, #14100e);
+      background-size: cover; background-position: center; border: 1px solid rgba(201,157,69,0.3); }
+    .mm__hero::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(10,8,7,0.15), rgba(10,8,7,0.88) 90%); }
+    .mm__hero > div { position: relative; z-index: 2; padding: 3rem 1.2rem 1rem; }
+    .mm__hero b { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+    .mm__hero small { display: block; color: var(--cream-dim); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 0.2rem; }
+    .mm__arc { position: relative; border-radius: 14px; overflow: hidden; margin-top: 1rem;
+      background: linear-gradient(140deg, rgba(201,157,69,0.14), rgba(20,16,14,0.5));
+      background-size: cover; background-position: center; min-height: 5.6rem; display: flex; align-items: flex-end;
+      border: 1px solid rgba(244,239,230,0.12); }
+    .mm__arc::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(10,8,7,0.1), rgba(10,8,7,0.86) 88%); }
+    .mm__arc > div { position: relative; z-index: 2; width: 100%; padding: 2.2rem 0.95rem 0.7rem;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 0.7rem; }
+    .mm__arc b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; }
+    .mm__arc span { flex: none; font-size: 0.7rem; font-weight: 800; color: #c99d45; font-variant-numeric: tabular-nums; }
+    .mm__pts { color: #c99d45; font-weight: 800; font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body class="songpage">
@@ -59,7 +82,7 @@
 
     <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
 
-    <p class="mm__fine">The Trap pays 1,000 E⤴︎ maximum per member, ever — 975 across the missions plus 25 for the back-end claim run; that is the law, enforced by the ledger.
+    <p class="mm__fine">The Trap pays 1,000 E⤴︎ — 100,000 points — maximum per member, ever: 97,500 across the missions plus 2,500 for the back-end claim run; that is the law, enforced by the ledger. The math is fixed at 1 E⤴︎ = 100 points, so the floor can read who's up and who's down at a glance.
       Trap credit is granted-color: it spends everywhere on the floor and never cashes out. Traffic counts are your
       surfaces only; nobody's numbers but yours are readable from this room.</p>
   </main>
@@ -87,40 +110,46 @@
         return;
       }
 
-      var GAUNTLET = [
-        // THE WALK-IN · 100
-        ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained."],
-        ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you."],
-        ["signed", 15, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one."],
-        ["push_on", 10, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded."],
-        ["explorer", 35, "Move on five days", "mcity.html", "Show up five separate days — the city pays consistency."],
-        // THE IDENTITY · 150
-        ["ticker_claimed", 25, "Claim your ticker", "market.html#yours", "Your symbol on the floor — 2 to 5 letters, forever yours."],
-        ["first_id", 40, "Bank your first identifier", "distribution.html", "The IDs your category of work pays through — get one in the locker."],
-        ["id_stack", 45, "Stack three identifiers", "identifiers.html", "Three different kinds banked — the money lanes open."],
-        ["badge_applied", 40, "Apply for your seal", "distribution.html", "The multicolored M-Verified seal your category earns."],
-        // THE CRAFT · 150
-        ["first_post", 25, "Speak on the Wire", "market.html#wire", "One post to the whole floor."],
-        ["on_the_wire", 30, "Keep talking", "wire.html", "Three posts — the floor knows your voice."],
-        ["first_track", 45, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming."],
-        ["listing_live", 50, "Go live on the floor", "market.html#yours", "Your listing verified and live — bookable by the whole network."],
-        // THE BUSINESS · 255
-        ["first_deal", 40, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record."],
-        ["deal_signed", 60, "Sign a deal", "market.html#yours", "A deal signed, paid, or completed — money language on the record."],
-        ["distro_connected", 50, "Connect your distributor", "distribution.html", "Say where you distribute — the desk knows your lanes."],
-        ["earnings_filed", 60, "File an earnings report", "distribution.html", "Drop the CSV — your outside income joins your record."],
-        ["payouts_armed", 45, "Arm card payouts", "market.html#yours", "Set up payouts and buyers pay you by card, straight through."],
-        // THE COMMUNITY · 200
-        ["civic_card", 30, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work."],
-        ["first_vote", 40, "Cast a vote", "control.html", "One head, one vote — steer how the platform develops."],
-        ["proposal_filed", 40, "File a proposal", "control.html", "Put an idea on the floor for the members to vote."],
-        ["first_plug", 50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door."],
-        ["guide_talk", 40, "Talk to the Guide", "market.html", "Ask the concierge anything — it knows the whole floor."],
-        // THE SCHOLAR · 120
-        ["scholar_3", 50, "Start the academy", "academy.html", "Three lessons in — web3 without the hype."],
-        ["scholar_6", 40, "Finish the academy", "academy.html", "All six lessons — you know more than most of the internet."],
-        ["gas_wallet", 30, "Claim your gas grant", "academy.html", "A real wallet, real gas, on the house."],
+      /* THE POINTS LAW: 1 E⤴ = 100 points. The Trap's 975 E⤴ = 97,500 pts;
+         the claim run's 25 E⤴ = 2,500 pts; the full run = 100,000 points. */
+      var PTS = 100;
+      var ARCS = [
+        ["walkin",    "The Walk-In",   "assets/img/mc-walkin.jpg",    100],
+        ["identity",  "The Identity",  "assets/img/mc-identity.jpg",  150],
+        ["craft",     "The Craft",     "assets/img/mc-craft.jpg",     150],
+        ["business",  "The Business",  "assets/img/mc-business.jpg",  255],
+        ["community", "The Community", "assets/img/mc-community.jpg", 200],
+        ["scholar",   "The Scholar",   "assets/img/mc-scholar.jpg",   120],
       ];
+      var GAUNTLET = [
+        ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained.", "walkin"],
+        ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you.", "walkin"],
+        ["signed", 15, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one.", "walkin"],
+        ["push_on", 10, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded.", "walkin"],
+        ["explorer", 35, "Move on five days", "mcity.html", "Show up five separate days — the city pays consistency.", "walkin"],
+        ["ticker_claimed", 25, "Claim your ticker", "market.html#yours", "Your symbol on the floor — 2 to 5 letters, forever yours.", "identity"],
+        ["first_id", 40, "Bank your first identifier", "distribution.html", "The IDs your category of work pays through — get one in the locker.", "identity"],
+        ["id_stack", 45, "Stack three identifiers", "identifiers.html", "Three different kinds banked — the money lanes open.", "identity"],
+        ["badge_applied", 40, "Apply for your seal", "distribution.html", "The multicolored M-Verified seal your category earns.", "identity"],
+        ["first_post", 25, "Speak on the Wire", "market.html#wire", "One post to the whole floor.", "craft"],
+        ["on_the_wire", 30, "Keep talking", "wire.html", "Three posts — the floor knows your voice.", "craft"],
+        ["first_track", 45, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming.", "craft"],
+        ["listing_live", 50, "Go live on the floor", "market.html#yours", "Your listing verified and live — bookable by the whole network.", "craft"],
+        ["first_deal", 40, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record.", "business"],
+        ["deal_signed", 60, "Sign a deal", "market.html#yours", "A deal signed, paid, or completed — money language on the record.", "business"],
+        ["distro_connected", 50, "Connect your distributor", "distribution.html", "Say where you distribute — the desk knows your lanes.", "business"],
+        ["earnings_filed", 60, "File an earnings report", "distribution.html", "Drop the CSV — your outside income joins your record.", "business"],
+        ["payouts_armed", 45, "Arm card payouts", "market.html#yours", "Set up payouts and buyers pay you by card, straight through.", "business"],
+        ["civic_card", 30, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work.", "community"],
+        ["first_vote", 40, "Cast a vote", "control.html", "One head, one vote — steer how the platform develops.", "community"],
+        ["proposal_filed", 40, "File a proposal", "control.html", "Put an idea on the floor for the members to vote.", "community"],
+        ["first_plug", 50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door.", "community"],
+        ["guide_talk", 40, "Talk to the Guide", "market.html", "Ask the concierge anything — it knows the whole floor.", "community"],
+        ["scholar_3", 50, "Start the academy", "academy.html", "Three lessons in — web3 without the hype.", "scholar"],
+        ["scholar_6", 40, "Finish the academy", "academy.html", "All six lessons — you know more than most of the internet.", "scholar"],
+        ["gas_wallet", 30, "Claim your gas grant", "academy.html", "A real wallet, real gas, on the house.", "scholar"],
+      ];
+      function pts(n) { return Math.round(n * PTS).toLocaleString(); }
 
       function auth(path, body) {
         return S.token().then(function (t) {
@@ -164,18 +193,32 @@
         }).join("") + '<a class="mm__badge is-add" href="welcome.html">+ add a personality</a>';
 
         var html = '<div class="mm__badges">' + badges + "</div>";
-        html += '<div class="mm__card"><p class="mm__k">The Trap · ' + done.length + "/10 · " +
-          paid.toFixed(2) + ' of 5.00 E⤴︎ claimed</p>' +
-          "<h2>Run the whole app, get paid for it.</h2>" +
-          '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 5 * 100) + '%"></i></div>' +
-          (minted > 0 ? '<p class="mm__msg">💰 ' + minted.toFixed(2) + " E⤴︎ just landed for what you've already done.</p>" : "") +
-          GAUNTLET.map(function (mi) {
-            var hit = done.indexOf(mi[0]) !== -1;
-            return '<a class="mm__mi' + (hit ? " is-done" : "") + '" href="' + mi[3] + '">' +
-              "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" + mi[4] + "</small></span>" +
-              '<span class="amt">' + (hit ? "paid" : mi[1].toFixed(2) + " E⤴︎") + "</span></a>";
+
+        /* the command room hero: your points on the board, big */
+        html += '<div class="mm__hero" data-mmbg="assets/img/mc-hero.jpg"><div>' +
+          '<b class="mm__pts">' + pts(paid) + " pts</b>" +
+          "<small>of 100,000 — the full run · 1 E⤴︎ = 100 points</small></div></div>";
+
+        html += '<div class="mm__card"><p class="mm__k">The Trap · ' + done.length + "/" + GAUNTLET.length + " missions · " +
+          pts(paid) + ' of 97,500 pts here (+2,500 on <a href="backend.html" style="color:#c99d45">the claim run</a>)</p>' +
+          "<h2>Do literally everything. 100,000 points.</h2>" +
+          '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 975 * 100) + '%"></i></div>' +
+          (minted > 0 ? '<p class="mm__msg">💰 +' + pts(minted) + " pts (" + minted.toFixed(2) + " E⤴︎) just landed for what you've already done.</p>" : "") +
+          ARCS.map(function (arc) {
+            var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
+            var got = mine2.reduce(function (a, mi) { return a + (done.indexOf(mi[0]) !== -1 ? mi[1] : 0); }, 0);
+            return '<div class="mm__arc" data-mmbg="' + arc[2] + '"><div><b>' + arc[1] + "</b>" +
+              "<span>" + pts(got) + " / " + pts(arc[3]) + " pts</span></div></div>" +
+              mine2.map(function (mi) {
+                var hit = done.indexOf(mi[0]) !== -1;
+                return '<a class="mm__mi' + (hit ? " is-done" : "") + '" href="' + mi[3] + '">' +
+                  "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" + mi[4] + "</small></span>" +
+                  '<span class="amt">' + (hit ? "✓ " + pts(mi[1]) + " pts" : "+" + pts(mi[1]) + " pts") + "</span></a>";
+              }).join("");
           }).join("") +
-          '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move.</p></div>';
+          '<p class="mm__sub" style="font-size:0.78rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move. ' +
+          "Points are the score of the granted economy: they spend on the floor as E⤴︎ and never cash out — like a credit union, " +
+          "the record of how you carry yourself IS the asset.</p></div>";
 
         html += lockLine("card_live", "dress your card", "market.html#yours");
         html += '<div class="mm__card' + lockCls("card_live") + '"><p class="mm__k">Your traffic — who came to YOU</p>' +
@@ -222,6 +265,13 @@
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
+        /* the art: each room wears its generated scene the moment the
+           asset exists — the gradient holds the frame until then */
+        host.querySelectorAll("[data-mmbg]").forEach(function (el) {
+          var im = new Image();
+          im.onload = function () { el.style.backgroundImage = "url(" + el.getAttribute("data-mmbg") + ")"; };
+          im.src = el.getAttribute("data-mmbg");
+        });
         track("mymission_view", { done: done.length });
       }).catch(function () {
         host.innerHTML = '<div class="mm__card"><h2>The room blinked.</h2><p class="mm__sub">Pull to refresh — or the paste (docs/gauntlet-schema.sql) hasn\'t run yet.</p></div>';

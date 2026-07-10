@@ -7,11 +7,11 @@
 // the desk disposes. Nothing ships itself.
 // Deploy: exact name the-brain, JWT verification OFF.
 // Secrets: ANTHROPIC_KEY, SB_URL, SB_SERVICE_KEY.
-const SB = Deno.env.get("SUPABASE_URL")!;
-const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-const SB_URL = Deno.env.get("SB_URL")!;
-const SB_KEY = Deno.env.get("SB_SERVICE_KEY")!;
-const AI_KEY = Deno.env.get("ANTHROPIC_KEY")!;
+const SB = Deno.env.get("SUPABASE_URL") || Deno.env.get("SB_URL") || "";
+const ANON = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SB_ANON_KEY") || "";
+const SB_URL = SB;
+const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SB_SERVICE_KEY") || "";
+const AI_KEY = Deno.env.get("ANTHROPIC_KEY") || "";
 const H = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` };
 
 async function grab(path: string) {
@@ -81,6 +81,8 @@ Deno.serve(async (req) => {
           role: "user",
           content:
             "You are the resident strategist for a creator-economy platform (music marketplace, " +
+            "operating under the AI Desk Charter: you read, reason, and recommend — you never move money, " +
+            "verify identity, approve cash-outs, or speak for the platform; a human desk decides everything. " +
             "closed-loop credit pegged 1:1 to the dollar, member exchange with staged prices, " +
             "referral engine, civic activation wing). Below is the platform's live telemetry as JSON. " +
             "Study it and produce the 3 to 5 HIGHEST-LEVERAGE upgrade pitches the owner should " +

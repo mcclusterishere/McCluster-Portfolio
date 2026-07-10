@@ -62,6 +62,21 @@ for (const page of pages) {
   if (!html.includes(VIEWPORT)) problems.push(`${page}: viewport meta is not the canonical no-zoom string`);
 }
 
+/* 6b · the positioning holds: retired copy can never sneak back.
+   The economy's law is 1,000 E⤴ (100,000 pts) for everything, the
+   bankroll is dead, and the fund never states a percentage. */
+const STALE = [
+  [/beta.?bankroll/i, "the beta bankroll is retired"],
+  [/One Percent Fund/i, "the fund is the Community Fund now — no percentages"],
+  [/(^|[^0-9.,])5(\.00)? ?E⤴[^0-9]*(flat|maximum|total|hard cap)/i, "the Trap pays 1,000 E⤴ now, not 5"],
+];
+for (const page of [...pages, ...jsFiles]) {
+  const src = readFileSync(join(ROOT, page), "utf8");
+  for (const [rx, why] of STALE) {
+    if (rx.test(src)) problems.push(`${page}: stale positioning (${why})`);
+  }
+}
+
 /* 7 · inline scripts parse too (extracted and checked as modules-ish) */
 for (const page of pages) {
   const html = readFileSync(join(ROOT, page), "utf8");
