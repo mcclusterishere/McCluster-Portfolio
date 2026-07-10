@@ -468,7 +468,13 @@
       });
       ride.audio.addEventListener("ended", function () { rideEnd(true); });
     }
-    ride.audio.play().then(function () { ride.mode = "audio"; playBtnPaint(); }).catch(function () { /* clock mode until the master lands */ });
+    ride.audio.play().then(function () {
+      ride.mode = "audio"; playBtnPaint();
+      // announce so the roaming radio (polish.js) yields the aux cord
+      window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
+        detail: { title: "Please Set Me Free", href: "#ride", playing: true },
+      }));
+    }).catch(function () { /* clock mode until the master lands */ });
     clearTimeout(ride.timer);
     rideStep();
     playBtnPaint();

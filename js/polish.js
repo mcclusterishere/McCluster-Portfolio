@@ -540,9 +540,17 @@
         radio.play().then(function () {
           announceRadio(st, true);
         }).catch(function () {
-          // the browser wants a fresh gesture — the tab offers it
+          // the browser wants a fresh gesture — the very next tap
+          // anywhere on the page is it, so the music never really stops
           announceRadio(st, false);
           if (label) label.textContent = "\u25B8 " + (st.title || "Resume");
+          var wake = function (ev) {
+            // tapping the Music tab keeps its own meaning
+            if (ev.target && ev.target.closest && ev.target.closest("#appbarNP")) return;
+            document.removeEventListener("pointerdown", wake, true);
+            radio.play().then(function () { announceRadio(st, true); rsave(); }).catch(function () {});
+          };
+          document.addEventListener("pointerdown", wake, true);
         });
         window.MCC_RADIO = {
           playing: function () { return !radio.paused; },

@@ -391,6 +391,26 @@
     window.addEventListener("pagehide", function () {
       if (playing && !audio.paused) track("song_stop", { song: window.SONG.key, page: "song", at_seconds: Math.round(audio.currentTime), reason: "left_page" });
     });
+    /* the radio: what plays HERE follows you out the door too — every
+       other page (polish.js) picks this up and keeps the sound rolling */
+    var RKEY = "mcc_radio_v1";
+    function radioSave() {
+      // a page merely passed through never touches the dial — only a
+      // player that actually ran takes over the roaming radio
+      if (!playing && !audio.currentTime) return;
+      try {
+        var title = (document.querySelector(".songhero__title") || {}).textContent || window.SONG.key;
+        localStorage.setItem(RKEY, JSON.stringify({
+          title: String(title).trim(), src: audio.currentSrc || audio.src,
+          pos: audio.currentTime || 0, playing: playing && !audio.paused, at: Date.now(),
+        }));
+      } catch (e) {}
+    }
+    var rtick = 0;
+    audio.addEventListener("timeupdate", function () { if (++rtick % 8 === 0) radioSave(); });
+    audio.addEventListener("play", radioSave);
+    audio.addEventListener("pause", radioSave);
+    window.addEventListener("pagehide", radioSave);
     // the deeper overlay (psychology markers) freezes the ride, then hands it back
     window.__MCC_PAUSE = function () {
       lenis.stop();

@@ -288,9 +288,14 @@
       function grindGrade(n) {
         return n >= 120 ? "S" : n >= 80 ? "A" : n >= 45 ? "B" : n >= 20 ? "C" : n >= 0 ? "D" : "F";
       }
-      function paintGrind(rows) {
+      function paintGrind(rows, listings) {
         var el = $("mcGrind");
         if (!el) return;
+        // the player wears their NAME: the listing behind the account
+        var who = {};
+        (listings || []).forEach(function (l) {
+          if (l.owner) who[l.owner] = l.name + (l.ticker ? " \u00b7 $" + String(l.ticker).toUpperCase() : "");
+        });
         // this device always shows, cloud rows follow
         var live = [];
         try {
@@ -316,7 +321,10 @@
             var g = row.g, sc = grindScore(g), gr = grindGrade(sc);
             var col = gr === "S" || gr === "A" ? "#00c805" : gr === "B" ? "#f8b40a" : "#ff5000";
             return "<tr style='border-top:1px solid rgba(244,239,230,0.1)'>" +
-              "<td style='padding:0.5em 0.6em'>" + esc(String(row.owner).slice(0, 8)) + "</td>" +
+              "<td style='padding:0.5em 0.6em'>" +
+              (row.owner === "this device" ? "this device"
+                : who[row.owner] ? "<b>" + esc(who[row.owner]) + "</b>"
+                : esc(String(row.owner).slice(0, 8)) + " <small style='color:var(--cream-dim)'>no card yet</small>") + "</td>" +
               "<td><b style='color:" + col + "'>" + sc + " · " + gr + "</b></td>" +
               "<td>" + (g.E || 0) + "</td><td>" + (g.streak || 0) + "</td>" +
               "<td>" + (g.boost >= 0 ? "+" : "") + (g.boost || 0) + "%</td>" +
@@ -673,7 +681,7 @@
           A.proofs ? A.proofs().catch(function () { return null; }) : Promise.resolve(null),
         ]).then(function (r) {
           var listings = r[0], reqs = r[1], members = r[2], sms = r[3], deals = r[4];
-          paintGrind(r[5]);
+          paintGrind(r[5], r[0]);
           paintAnalytics(r[6], r[0], r[11]);
           paintIntake(r[7]);
           paintHouse(r[8]);
