@@ -85,6 +85,12 @@
     .mc__locknote { margin-top: 0.9rem; border: 1px dashed rgba(216,186,124,0.5); border-radius: 12px;
       background: rgba(216,186,124,0.06); padding: 0.8rem 0.95rem; font-size: 0.78rem; line-height: 1.6; color: var(--cream-dim); }
     .mc__locknote b { color: #d8ba7c; }
+    .mc__toast { position: fixed; top: calc(3.6rem + env(safe-area-inset-top)); left: 50%; transform: translate(-50%, -140%);
+      z-index: 260; max-width: min(92vw, 26rem); border: 1px solid rgba(216,186,124,0.55); border-radius: 14px;
+      background: rgba(16,12,10,0.96); color: var(--cream-dim); padding: 0.75rem 1rem; font-size: 0.8rem; line-height: 1.5;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.5); transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1); }
+    .mc__toast b { color: #d8ba7c; }
+    .mc__toast.is-in { transform: translate(-50%, 0); }
   </style>
 </head>
 <body>
@@ -111,6 +117,7 @@
       <span class="mc__stat"><small>REP</small><span id="mcRep">0</span></span>
       <span class="mc__stat" id="mcRankPill"><small>RANK</small><span id="mcRank">Visitor</span></span>
       <span class="mc__stat"><small>MAP</small><span id="mcDist">1/9</span></span>
+      <span class="mc__stat"><small>🏅</small><span id="mcBadge">0</span></span>
     </span>
   </div>
   <p class="mc__hint" id="mcHint"></p>
@@ -156,7 +163,8 @@
       }
       function rep(w) {
         var visits = Object.keys(w.v).length;
-        return w.playN * 2 + w.claimN * 15 + w.cp + Math.round(w.E) + w.streak * 5 + visits * 8;
+        var badges = Object.keys(J("mcc_mcity_badges", {})).length;
+        return w.playN * 2 + w.claimN * 15 + w.cp + Math.round(w.E) + w.streak * 5 + visits * 8 + badges * 25;
       }
       var RANKS = [[0, "Visitor"], [60, "Resident"], [160, "Runner"], [320, "Operator"], [560, "Boss"], [900, "Mayor"]];
       function rankOf(r) { var out = RANKS[0]; RANKS.forEach(function (x) { if (r >= x[0]) out = x; }); return out[1]; }
@@ -240,6 +248,31 @@
             ["Verify the chain", !!w.v.vault_verify, "chain.html", "Your browser recomputes every hash. Don't trust — verify."],
             ["Read the doctrine", !!w.v.vault_paper, "scb-paper.html", "The blueprint, mapped to the city that built it."],
           ]; } },
+        { id: "agency", name: "The Agency", k: "The provider district", arc: "ARC · THE BUILDER", c: "#ff9f43", x: 1240, y: 830, w: 200, h: 150,
+          desc: "Shooters, editors, builders, rooms — the district where the work gets sold and the rate gets named.",
+          unlock: function (w) { return !!w.v.exchange_floor; }, lockLine: "Walk the Exchange floor once — then hang your shingle.",
+          missions: function (w) { return [
+            ["Hang your shingle", !!w.v.agency_desk, "market.html#yours", "Open your desk — the card the floor sees. Your name, your hustle."],
+            ["Finish the walk-in", !!w.v.agency_walk, "welcome.html", "Dress your card — hustles, rate, the whole economy explained."],
+            ["Draft a deal", !!w.v.agency_build, "market.html#build", "The deal builder — terms, date, rate. Send one and you're a closer in training."],
+          ]; } },
+        { id: "mint", name: "The Mint", k: "The credit district", arc: "ARC · THE RE-UP", c: "#c99d45", x: 1280, y: 180, w: 200, h: 140,
+          desc: "Where E⤴︎ is minted, backed, and cashed. The only bank in the city that publishes its books.",
+          unlock: function (w) { return !!w.v.exchange_pay; }, lockLine: "Touch the money once on the Exchange — the Mint opens.",
+          missions: function (w) { return [
+            ["Open the books", !!w.v.mint_books, "reserve.html", "The Equity Reserve, in public. Don't trust — verify."],
+            ["Case the shelf", !!w.v.mint_shelf, "house.html", "The House pays in credit — see what's sitting on the shelf."],
+            ["Know the law", !!w.v.mint_law, "agreement.html", "Two colors, one law — read what your credit really is."],
+          ]; } },
+        { id: "plaza", name: "The Plaza", k: "The social square", arc: "ARC · THE CONNECTOR", c: "#a3e635", x: 610, y: 830, w: 200, h: 150,
+          desc: "Where the city talks. The wire, the directory, the people who know the people.",
+          unlock: function (w) { return w.playN >= 1; }, lockLine: "One record in the Studio and the Plaza hears your name.",
+          missions: function (w) { return [
+            ["Read the wire", !!w.v.plaza_wire, "market.html#wire", "The floor's open feed — what the city is saying right now."],
+            ["Meet the people", !!w.v.plaza_dir, "market.html#providers", "The directory — every hustle, every name, every door."],
+            ["Study the lab", !!w.v.plaza_lab, "grind-paper.html", "The Behavior Lab — what this city measures, published in the open."],
+            ["Keep a streak", w.streak >= 3, "market.html", "Three days straight in the city. The Grind pays streaks. (day " + (w.streak || 0) + ")"],
+          ]; } },
       ];
       var DOOR_KEYS = {
         "app.html#music": "studio_heat",
@@ -250,9 +283,58 @@
         "spaces.html": "blocks_browse", "list-your-space.html": "blocks_list",
         "page.html?who=mccluster": "tower_page", "psychology-markers.html": "tower_persona", "onboard.html": "tower_onboard",
         "chain.html": "vault_verify",
+        "market.html#yours": "agency_desk", "welcome.html": "agency_walk", "market.html#build": "agency_build",
+        "reserve.html": "mint_books", "house.html": "mint_shelf", "agreement.html": "mint_law",
+        "market.html#wire": "plaza_wire", "market.html#providers": "plaza_dir", "grind-paper.html": "plaza_lab",
       };
       // one visit can satisfy two flavors of the same door
-      var TWINS = { blocks_browse: "blocks_room", exchange_floor: "exchange_eu" };
+      var TWINS = { blocks_browse: "blocks_room", exchange_floor: "exchange_eu", bureau_paper: "vault_paper" };
+
+      /* ---------- the badge case: clear an arc, wear the seal ----------
+         Every district arc pays a badge; every badge pays rep (25 each)
+         and rings the daily grind — the city IS the daily value now. */
+      var BADGE = {
+        studio: ["🎙", "The Sound"], lot: ["🏁", "Dealer Plates"], exchange: ["📈", "The Come-Up"],
+        backlots: ["🗝", "Keyholder"], bureau: ["🏛", "The Dial"], cityhall: ["⚖", "The Docket"],
+        blocks: ["🚪", "Keys to the City"], tower: ["🌟", "The Face"], vault: ["⛓", "Proof"],
+        agency: ["🧰", "The Builder"], mint: ["🪙", "The Re-Up"], plaza: ["🔌", "The Connector"],
+        mayor: ["🏆", "Mayor of the City"],
+      };
+      function myBadges() { return J("mcc_mcity_badges", {}); }
+      function toast(html) {
+        var t = document.createElement("div");
+        t.className = "mc__toast";
+        t.innerHTML = html;
+        document.body.appendChild(t);
+        requestAnimationFrame(function () { t.classList.add("is-in"); });
+        setTimeout(function () { t.classList.remove("is-in"); setTimeout(function () { t.remove(); }, 400); }, 3800);
+      }
+      function sweepBadges(w) {
+        var have = myBadges(), changed = false, doneN = 0;
+        D.forEach(function (b) {
+          if (!b.unlock(w)) return;
+          var ms = b.missions(w);
+          doneN += ms.filter(function (m) { return m[1]; }).length;
+          if (ms.length && ms.every(function (m) { return m[1]; }) && !have[b.id]) {
+            have[b.id] = Date.now(); changed = true;
+            toast(BADGE[b.id][0] + " <b>" + BADGE[b.id][1] + "</b> — arc cleared. The badge is yours; the board feels it.");
+            track("mcity_badge", { badge: b.id });
+          }
+        });
+        if (!have.mayor && D.every(function (b) { return have[b.id]; })) {
+          have.mayor = Date.now(); changed = true;
+          toast("🏆 <b>Mayor of the City</b> — every arc, every seal. The whole map answers to you.");
+          track("mcity_badge", { badge: "mayor" });
+        }
+        if (changed) try { localStorage.setItem("mcc_mcity_badges", JSON.stringify(have)); } catch (e) {}
+        // each newly cleared mission rings the grind: the city task on
+        // today's board — missions ARE the daily value going up
+        var prev = 0;
+        try { prev = +localStorage.getItem("mcc_mcity_done_n") || 0; } catch (e2) {}
+        if (doneN > prev && window.MCC_GRIND) window.MCC_GRIND.did("city");
+        try { localStorage.setItem("mcc_mcity_done_n", String(Math.max(doneN, prev))); } catch (e3) {}
+        return have;
+      }
 
       /* ---------- engine ---------- */
       var cv = $("mcCv"), cx = cv.getContext("2d");
@@ -438,6 +520,11 @@
               cx.fillStyle = i < doneN ? "#2fbf71" : "rgba(244,239,230,0.25)";
               cx.beginPath(); cx.arc(b.x + 16 + i * 13, b.y + 14, 4, 0, 7); cx.fill();
             }
+            // the seal: a cleared arc wears its badge on the roof
+            if (myBadges()[b.id]) {
+              cx.font = "16px system-ui";
+              cx.fillText(BADGE[b.id][0], b.x + b.w - 18, b.y + 20);
+            }
           }
         });
         // the whip: rotates into its heading, glows at speed
@@ -464,7 +551,12 @@
         $("shK").textContent = b.k; $("shK").style.color = b.c;
         $("shName").textContent = b.name;
         $("shDesc").textContent = b.desc;
-        $("shArc").textContent = open ? b.arc : "";
+        var worn = myBadges()[b.id];
+        $("shArc").innerHTML = open
+          ? esc(b.arc) + " · " + (worn
+            ? BADGE[b.id][0] + " " + esc(BADGE[b.id][1]) + " — worn"
+            : "clear the arc → " + BADGE[b.id][0] + " " + esc(BADGE[b.id][1]))
+          : "";
         if (!open) {
           $("shMs").innerHTML = "";
           $("shLock").innerHTML = '<div class="mc__locknote"><b>🔒 District locked.</b> ' + esc(b.lockLine) +
@@ -542,10 +634,12 @@
       var WORLD = worldState();
       function refreshHUD() {
         WORLD = worldState();
+        var have = sweepBadges(WORLD);
         var r = rep(WORLD);
         $("mcRep").textContent = r.toLocaleString();
         $("mcRank").textContent = rankOf(r);
         $("mcDist").textContent = D.filter(function (b) { return b.unlock(WORLD); }).length + "/" + D.length;
+        $("mcBadge").textContent = Object.keys(have).length + "/" + (D.length + 1);
       }
       refreshHUD();
       setInterval(refreshHUD, 4000);

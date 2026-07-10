@@ -59,6 +59,7 @@
     { id: "mpay", label: "Touch the money — open E-Up Pay", href: "market.html#pay" },
     { id: "worth", label: "Face your number — check your worth", href: "profile.html" },
     { id: "deal", label: "Move on somebody — send a deal or request", href: "market.html#build" },
+    { id: "city", label: "Run the city — clear a mission in M City", href: "mcity.html" },
   ];
   var DAILY_CAP = 3;
 
