@@ -45,6 +45,14 @@
       the line; no button can cross it.
     </div>
 
+    <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem;margin:2rem 0 0.3rem">The Vault</h2>
+    <p class="rv__sub" style="margin-top:0.3rem"><b>The reserve that only ever fills.</b> When a member spends earned
+      credit inside the loop, that value doesn't vanish — it flows into The Vault, a reserve with <b>no way out
+      written anywhere in the code</b>. Not for the desk, not for anyone. It only grows. It is the platform's
+      permanent backing, held in the open. If a backed digital asset is ever issued, this ledger is what stands
+      behind it, dollar for dollar.</p>
+    <div class="rv__grid" id="rvVault"><div class="rv__stat"><b>…</b><small>opening the vault</small></div></div>
+
     <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem;margin:2rem 0 0.3rem">The One Percent Fund</h2>
     <p class="rv__sub" style="margin-top:0.3rem"><b>One percent for the new one percent.</b> A slice of every deal
       flows into a community chest — taken from the house's own fee, never the paying side's price. It isn't any one
@@ -83,6 +91,22 @@
           stat("$" + (+j.redeemed_paid || 0).toFixed(0), "paid out for work, lifetime") +
           stat("$" + (+j.reserve_dollars || 0).toFixed(0), "reserve attested" + (j.attested_at ? " · " + new Date(j.attested_at).toLocaleDateString() : "")) +
           (cover === null ? stat("∞", "coverage — nothing owed yet") : stat(cover.toFixed(0) + "%", "coverage of redeemable"));
+      }).catch(function () {});
+
+      fetch(S.url + "/rest/v1/rpc/vault_stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+        body: "{}",
+      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        var g = document.getElementById("rvVault");
+        if (!g) return;
+        if (!j) { g.innerHTML = '<div class="rv__stat"><b>—</b><small>the vault opens after one paste: docs/vault-schema.sql</small></div>'; return; }
+        function stat(n, l) { return '<div class="rv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+        g.innerHTML =
+          stat((+j.reserve || 0).toFixed(0) + " E⤴︎", "locked in the vault, forever") +
+          stat((+j.fills || 0) + "", "in-loop spends that built it") +
+          stat("$" + (+j.backed_dollars || 0).toFixed(0), "attested dollars behind it") +
+          stat((+j.withdrawable || 0).toFixed(0) + " E⤴︎", "withdrawable — zero, by design");
       }).catch(function () {});
 
       fetch(S.url + "/rest/v1/rpc/fund_stats", {

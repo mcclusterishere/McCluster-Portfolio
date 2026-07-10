@@ -81,6 +81,17 @@
         });
       }).then(function (r) { return r.ok ? r.json() : 0; }).catch(function () { return 0; });
     },
+    /* the member's whole wallet in one call — balance, earned, what they've
+       fed into the Vault, equity stake, and the Vault's size behind it */
+    wallet: function () {
+      return S.token().then(function (t) {
+        return fetch(S.url + "/rest/v1/rpc/my_wallet", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+          body: "{}",
+        });
+      }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    },
     /* the member's stake in the equity pool — points, pool total, share % */
     equity: function () {
       return S.token().then(function (t) {
@@ -113,6 +124,7 @@
       el.innerHTML = '<span class="mp__lblx">E-Up credit — come get your re-up</span>' +
         '<p style="font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0.2rem 0" id="mtkBal">…</p>' +
         '<div id="mtkEquity"></div>' +
+        '<div id="mtkVault"></div>' +
         '<div id="mtkRows"></div>' +
         '<div class="mp__linkrow" style="margin-top:0.5rem">' +
         '<input class="mp__in" id="mtkWho" type="text" placeholder="Ticker — like MCC" style="flex:1">' +
@@ -192,9 +204,23 @@
             '<span style="color:var(--cream-dim)">' + pts.toFixed(2) + ' pts · pool ' + pool.toFixed(2) + '</span></p>';
         });
       }
+      function paintVault() {
+        var vh = el.querySelector("#mtkVault");
+        if (!vh) return;
+        window.MCC_TOKEN.wallet().then(function (w) {
+          if (!w) { vh.innerHTML = ""; return; }
+          var fed = (+w.contributed_to_vault || 0), res = (+w.vault_reserve || 0);
+          if (res <= 0 && fed <= 0) { vh.innerHTML = ""; return; }
+          vh.innerHTML = '<p style="font-size:0.78rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
+            'display:flex;justify-content:space-between;gap:0.6rem">' +
+            '<span>Fed into <a href="reserve.html" style="color:#c99d45">the Vault</a> <b style="color:#c99d45">' + fed.toFixed(2) + ' E⤴︎</b></span>' +
+            '<span style="color:var(--cream-dim)">reserve holds ' + res.toFixed(0) + '</span></p>';
+        });
+      }
       function paint() {
         paintRedeem();
         paintEquity();
+        paintVault();
       Promise.all([window.MCC_TOKEN.balance(), window.MCC_TOKEN.ledger(6)])
         .then(function (r) {
           el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>';
