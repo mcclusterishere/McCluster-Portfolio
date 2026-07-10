@@ -203,7 +203,7 @@
               var sw = +(w.worth * (1 + gb / 100)).toFixed(2);
               w.breakdown.push({ label: "The grind — showing up (" + (gb >= 0 ? "+" : "") + gb + "% today)", dollars: +(sw - w.worth).toFixed(2) });
               w.worth = sw;
-              $("pfWorthN").textContent = w.worth.toLocaleString() + " E⤴\uFE0E";
+              $("pfWorthN").textContent = w.worth.toLocaleString() + " E⤴︎\uFE0E";
               $("pfWorthRows").innerHTML = w.breakdown.map(function (b) {
                 return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.84rem;' +
                   'border-bottom:1px dashed rgba(244,239,230,0.12);padding:0.35em 0">' +

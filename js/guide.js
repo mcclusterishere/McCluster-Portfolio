@@ -64,9 +64,9 @@
   nudge.setAttribute("role", "status");
   var TIPS = [
     "New here? Tap the <b>M</b> — I'll show you around.",
-    "Stuck? Ask me how to earn your first E⤴.",
+    "Stuck? Ask me how to earn your first E⤴︎.",
     "Wanna get paid? Tap me — I'll walk you to the floor.",
-    "Ask me how <b>the Trap</b> pays up to 1,000 E⤴.",
+    "Ask me how <b>the Trap</b> pays up to 1,000 E⤴︎.",
     "Curious how the plug pays for life? Tap the <b>M</b>.",
   ];
   var tipI = 0, nudgeTimer = null;
@@ -152,7 +152,7 @@
     }).then(function (rows) {
       body.innerHTML = "";
       if (!rows || !rows.length) {
-        bubble("I'm the Guide — I know every corner of this platform. Ask me how E⤴ works, how to run the Trap, how the plug pays, how to climb the civic ladder… or just tell me what you're trying to do.", "ai");
+        bubble("I'm the Guide — I know every corner of this platform. Ask me how E⤴︎ works, how to run the Trap, how the plug pays, how to climb the civic ladder… or just tell me what you're trying to do.", "ai");
         return;
       }
       rows.forEach(function (m) { bubble(m.body, m.role === "guide" ? "ai" : "me"); });

@@ -755,7 +755,7 @@
         if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nobody cashing out yet.</p>"; return; }
         el.innerHTML = rows.map(function (c) {
           return '<div class="mc__row' + (c.status === "requested" ? " is-hot" : "") + '"><div>' +
-            "<b>" + (+c.amount).toFixed(2) + " E⤴\uFE0E → $" + (+c.amount).toFixed(2) + "</b>" +
+            "<b>" + (+c.amount).toFixed(2) + " E⤴︎\uFE0E → $" + (+c.amount).toFixed(2) + "</b>" +
             "<p style='margin:0.2em 0 0;font-size:0.72rem;color:var(--cream-dim)'>claimant " + esc(String(c.owner).slice(0, 8)) +
             " · " + esc(new Date(c.at).toLocaleString()) + " · " + esc(c.status) + "</p></div>" +
             rowActs("cashout", c.id, c.status === "requested"
