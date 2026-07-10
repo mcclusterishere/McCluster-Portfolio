@@ -39,6 +39,7 @@ matter what ran before.
 | 25 | `web3-schema.sql` | treasury + academy + gas grants | 24 |
 | 26 | `vault-schema.sql` | the reserve that only fills + my_wallet | 7, 22 |
 | 26b | `distribution-schema.sql` | member_connections + earnings_reports + my_distribution | 3 |
+| 26e | `desk-tools.sql` | the desk's eraser: unclaim/erase listings | 3 |
 | 26d | `signals-schema.sql` | external_signals + my_signals (the outside world) | 24b |
 | 26c | `rescale-schema.sql` | THE GREAT RESCALE — reset to zero (earned/purchased survive), bankroll retired, the 1,000 E⤴ Trap | all of 1–26 |
 | 27 | **`hardening-schema.sql`** | **SEAL #1 — re-asserts every safe function** | all |
