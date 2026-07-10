@@ -57,7 +57,7 @@ jobs:
                    space-only-us space-shiloh space-coffee-cam space-privi \
                    space-decibel space-revent-space space-revent-lounge \
                    mc-hero mc-walkin mc-identity mc-craft mc-business mc-community mc-scholar \
-                   fr-worship fr-solar fr-home fr-class; do
+                   fr-worship fr-solar fr-home fr-class fr-hall; do
             f="assets/img/${n}.png"
             [ -f "$f" ] || continue
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \
