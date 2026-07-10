@@ -186,6 +186,18 @@
           '<p class="mm__sub" style="margin-top:0.2rem">Your streaming numbers from the outside platforms merge into this room when the ' +
           "platform keys land — one place for everything your music does, here and out there. Dark until real, never fake.</p></div>";
 
+        /* the deck rack — BETA. Members get their own pitch decks built from
+           their numbers; until it stabilizes it ships behind a plain warning.
+           The admin's rack (the full-system version) lives in Mission Control. */
+        html += '<div class="mm__card' + (ADMIN ? "" : " is-locked") + '"><p class="mm__k">Pitch decks · <b style="color:#d98a1f">BETA</b></p>' +
+          "<h2>Your deck rack.</h2>" +
+          '<p class="mm__sub" style="margin-top:0.2rem">Auto-built decks that pitch <b>you</b> — your page, your numbers, your story — ' +
+          "ready to present from your phone.</p>" +
+          '<p class="mm__fine" style="margin-top:0.4rem">⚠️ <b>Beta warning:</b> member decks are experimental — layouts and ' +
+          "numbers may shift while we tune them, and a deck is only as current as last night's sweep. Don't quote a beta deck in a " +
+          "contract; the record on your desk is the source of truth." +
+          (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
+
         host.innerHTML = html;
         track("mymission_view", { done: done.length });
       }).catch(function () {
