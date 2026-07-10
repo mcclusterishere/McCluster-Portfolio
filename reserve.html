@@ -45,6 +45,13 @@
       the line; no button can cross it.
     </div>
 
+    <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem;margin:2rem 0 0.3rem">The One Percent Fund</h2>
+    <p class="rv__sub" style="margin-top:0.3rem"><b>One percent for the new one percent.</b> A slice of every deal
+      flows into a community chest — taken from the house's own fee, never the paying side's price. It isn't any one
+      member's money; it's the pool the desk awards to loyal members, contest winners, and the people carrying the
+      culture. Watch it grow.</p>
+    <div class="rv__grid" id="rvFund"><div class="rv__stat"><b>…</b><small>counting the chest</small></div></div>
+
     <p class="rv__fine">Reserve dollars are attested by the operator from the platform's bank and Stripe balances
       and updated with the books above. E-Up credit is closed-loop platform credit under the Equity Uprise
       nonprofit — not a deposit, not a security, not a floating asset. Coverage means attested dollars ÷
@@ -77,6 +84,23 @@
           stat("$" + (+j.reserve_dollars || 0).toFixed(0), "reserve attested" + (j.attested_at ? " · " + new Date(j.attested_at).toLocaleDateString() : "")) +
           (cover === null ? stat("∞", "coverage — nothing owed yet") : stat(cover.toFixed(0) + "%", "coverage of redeemable"));
       }).catch(function () {});
+
+      fetch(S.url + "/rest/v1/rpc/fund_stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+        body: "{}",
+      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        var g = document.getElementById("rvFund");
+        if (!g) return;
+        if (!j) { g.innerHTML = '<div class="rv__stat"><b>—</b><small>the chest opens after one paste: docs/fund-schema.sql</small></div>'; return; }
+        function stat(n, l) { return '<div class="rv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+        g.innerHTML =
+          stat((+j.balance || 0).toFixed(0) + " E⤴︎", "in the chest, right now") +
+          stat((+j.accrued || 0).toFixed(0) + " E⤴︎", "raised, all time — 1% of every deal") +
+          stat((+j.granted || 0).toFixed(0) + " E⤴︎", "awarded to the community") +
+          stat((+j.awards || 0) + "", "members awarded");
+      }).catch(function () {});
+
       if (window.MCC_TRACK) window.MCC_TRACK("reserve_view", {});
     })();
   </script>

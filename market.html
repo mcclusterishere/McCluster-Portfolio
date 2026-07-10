@@ -2436,6 +2436,21 @@
         }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
+        // the One Percent Fund: the community chest, visible to every member
+        if (ME) {
+          var fundHost = document.createElement("div");
+          fundHost.className = "mp__card";
+          fundHost.style.cssText = "border-color:rgba(201,157,69,0.4)";
+          fundHost.innerHTML = '<span class="mp__lblx" style="color:#c99d45">The One Percent Fund — one percent for the new one percent</span>' +
+            '<p style="font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0.2rem 0" id="fundBal">…</p>' +
+            '<p class="mp__note">A slice of every deal, from the house\'s own fee — the community chest you can\'t touch but can watch grow. The desk awards it to loyal members, contest winners, and the ones carrying the culture. <a href="reserve.html" style="color:#c99d45">See the books &#8594;</a></p>';
+          body.appendChild(fundHost);
+          fetch(window.MCC_SUPA.url + "/rest/v1/rpc/fund_stats", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key }, body: "{}" })
+            .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+              fundHost.querySelector("#fundBal").textContent = (j ? (+j.balance || 0).toFixed(0) : "0") + " E⤴︎";
+            }).catch(function () {});
+        }
         // the house shelf: services the house pays for in E-Up credit
         if (ME && window.MCC_HOUSE) {
           var hhHost = document.createElement("div");
