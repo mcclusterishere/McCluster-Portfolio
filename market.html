@@ -793,6 +793,26 @@
         </a>
       </div>
 
+      <!-- the engine room: the doors that turn a listing into an income record -->
+      <div class="mk__card">
+        <h3 class="mk__h3">Your engine room</h3>
+        <p class="mk__note" style="margin:0 0 0.7rem">The listing is the storefront — these run the books behind it.</p>
+        <div style="display:grid;gap:0.5rem">
+          <a class="mv" href="distribution.html" data-cta="mk-desk-distribution" style="--badge-c:#2aa8a0">
+            <span class="mv__seal" style="--badge-c:#2aa8a0"><img src="assets/img/eu-favicon.png" alt=""></span>
+            <span class="mv__txt"><small>The Distribution Desk</small><b>Link your distributors, drop earnings reports, watch the record grow &#8594;</b></span>
+          </a>
+          <a class="mv" href="identifiers.html" data-cta="mk-desk-identifiers" style="--badge-c:#d4a017">
+            <span class="mv__seal" style="--badge-c:#d4a017"><img src="assets/img/eu-favicon.png" alt=""></span>
+            <span class="mv__txt"><small>The identifier locker</small><b>The IDs your category of work pays through — get them, bank them &#8594;</b></span>
+          </a>
+          <a class="mv" href="ourworld.html" data-cta="mk-desk-ourworld" style="--badge-c:#45b6ff">
+            <span class="mv__seal" style="--badge-c:#45b6ff"><img src="assets/img/eu-favicon.png" alt=""></span>
+            <span class="mv__txt"><small>Afuera &middot; Our World</small><b>Your place on the real map — drive out and see it &#8594;</b></span>
+          </a>
+        </div>
+      </div>
+
       <div class="mk__card">
         <h3 class="mk__h3">The inbox</h3>
         <div id="tdReqs"><p class="mk__note">When someone books you from the directory, it lands here.</p></div>
@@ -865,6 +885,7 @@
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/distribution.js?v=__STAMP__"></script>
   <script src="js/mworth.js?v=__STAMP__"></script>
   <script src="js/mtoken.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
@@ -1650,7 +1671,7 @@
       function book(r) {
         var h = seed((r.p.slug || r.p.id) + "bk" + Math.floor(Date.now() / 60000));
         var spread = Math.max(0.01, r.val * (0.002 + (h % 9) / 1000));
-        var bidQ = 40 + (h % 320), askQ = 40 + ((h >> 5) % 320);
+        var bidQ = 40 + (h % 320), askQ = 40 + ((h >>> 5) % 320);
         return { bid: r.val - spread / 2, ask: r.val + spread / 2, bidQ: bidQ, askQ: askQ };
       }
       function prints(r) {
@@ -1658,9 +1679,9 @@
         for (var i = 0; i < 6; i++) {
           h = (h * 1664525 + 1013904223) >>> 0;
           var qty = 1 + (h % 40);
-          var px = r.val * (1 + (((h >> 8) % 30) - 15) / 4000);
+          var px = r.val * (1 + (((h >>> 8) % 30) - 15) / 4000);
           var ago = 1 + (h % 44) + i * 9;
-          out.push({ qty: qty, px: px, side: (h >> 3) % 2 ? "bought" : "sold", ago: ago < 60 ? ago + "m" : (ago / 60).toFixed(1) + "h" });
+          out.push({ qty: qty, px: px, side: (h >>> 3) % 2 ? "bought" : "sold", ago: ago < 60 ? ago + "m" : (ago / 60).toFixed(1) + "h" });
         }
         return out;
       }
@@ -1737,7 +1758,7 @@
           '<div class="xc__stat"><small>Open</small><b>' + fmt(r.open) + "</b></div>" +
           '<div class="xc__stat"><small>Range · 30d</small><b>' + fmt(lo) + "–" + fmt(hi) + "</b></div>" +
           '<div class="xc__stat"><small>Volume</small><b>' + ((hs % 90) + 12) + " prints</b></div>" +
-          '<div class="xc__stat"><small>Backers</small><b>' + ((hs >> 6) % 34 + 3) + "</b></div>" +
+          '<div class="xc__stat"><small>Backers</small><b>' + ((hs >>> 6) % 34 + 3) + "</b></div>" +
           '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" +
           '<div class="xc__stat"><small>Session</small><b>14 days</b></div>' +
           (r.engage ? '<div class="xc__stat"><small>The crowd &middot; plays</small><b>' + r.engage.toLocaleString() + "</b></div>" : "");
@@ -1749,6 +1770,18 @@
             '<a class="btn btn--xc" href="claim.html?who=' + encodeURIComponent(r.p.slug || r.p.id) + '" data-cta="xc-claim-self" style="width:100%;justify-content:center">This is me — claim the ticker</a></div>'
           : "";
         paintBook(r);
+        /* the multicolored seals: verified credentials, straight from the
+           record — painted in as extra stats when the desk has stamped any */
+        if (window.MCC_DIST && MCC_DIST.badgesFor) {
+          var sealSlug = r.p.slug || r.p.id;
+          MCC_DIST.badgesFor(sealSlug).then(function (seals) {
+            if (!seals.length || !current || (current.p.slug || current.p.id) !== sealSlug) return;
+            $("xcDStats").innerHTML += seals.map(function (s) {
+              return '<div class="xc__stat" style="border-color:' + esc(s.color || "#d8ba7c") + '"><small>M-Verified</small><b style="color:' +
+                esc(s.color || "#d8ba7c") + '">' + esc(s.label || s.id) + "</b></div>";
+            }).join("");
+          });
+        }
         if (r.worth) {
           $("xcDPrice").textContent = r.worth.worth.toLocaleString() + " E⤴︎";
           c.textContent = "your true worth · only you see this";
@@ -2043,7 +2076,7 @@
           var h = 0;
           for (var k = 0; k < slug.length; k++) h = (h * 31 + slug.charCodeAt(k)) >>> 0;
           var scale = 0.35 + (h % 260) / 100;           // 0.35x – 2.95x
-          var bend = (((h >> 7) % 27) - 15) / 100;      // -15%..+11% — red lives here too
+          var bend = (((h >>> 7) % 27) - 15) / 100;     // -15%..+11% — red lives here too
           stock.series = stock.series.map(function (pt, i) {
             var v = pt.v * scale;
             if (i === stock.series.length - 1) v *= (1 + bend);

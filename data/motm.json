@@ -1,0 +1,6 @@
+{
+  "note": "MEMBER OF THE MONTH \u2014 the landing takeover. Set slug to any floor member (their providers slug, e.g. 'ocho-gr8') and the whole app's front door becomes THEIR fan page (motm.html) until the next name goes in. Empty slug = the McCluster landing runs as normal. One-line change, takes effect on deploy.",
+  "slug": "",
+  "month": "",
+  "line": ""
+}

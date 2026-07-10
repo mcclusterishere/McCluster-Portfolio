@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Member of the Month · Equity Uprise</title>
+  <meta name="description" content="The member of the month runs the front door. Their name, their chart, their record — the whole platform salutes one of its own.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    body { background: #0a0807; }
+    .mo { min-height: 100dvh; padding: 0 0 8rem; }
+    .mo__inner { max-width: 44rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2rem); }
+
+    /* the marquee: their face fills the door */
+    .mo__hero { position: relative; min-height: 92dvh; display: flex; align-items: flex-end; overflow: hidden; }
+    .mo__hero-img { position: absolute; inset: 0; background: #14100e center/cover no-repeat; filter: saturate(1.06); }
+    .mo__hero::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(10,8,7,0.5) 0%, rgba(10,8,7,0.08) 30%, rgba(10,8,7,0.55) 68%, #0a0807 100%); }
+    .mo__hero-in { position: relative; z-index: 2; width: 100%; max-width: 44rem; margin: 0 auto;
+      padding: 0 clamp(1rem, 4vw, 2rem) 3rem; text-align: left; }
+    .mo__crest { display: inline-flex; align-items: center; gap: 0.55rem; border: 1px solid rgba(216,186,124,0.65);
+      background: rgba(10,8,7,0.72); backdrop-filter: blur(8px); border-radius: 100px; padding: 0.45rem 1rem 0.45rem 0.5rem;
+      box-shadow: 0 0 26px rgba(216,186,124,0.3); }
+    .mo__crest img { width: 26px; height: 26px; padding: 3px; background: #f4efe6; border-radius: 7px; }
+    .mo__crest b { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: #d8ba7c; font-weight: 800; }
+    .mo h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.9; font-size: clamp(3.4rem, 15vw, 7.5rem);
+      margin-top: 1rem; text-shadow: 0 12px 60px rgba(0,0,0,0.65); }
+    .mo__tick { font-family: var(--micro); color: #d8ba7c; font-size: 0.8rem; letter-spacing: 0.22em; margin-top: 0.6rem; font-weight: 800; }
+    .mo__line { color: var(--cream-dim); margin-top: 0.8rem; line-height: 1.65; max-width: 44ch; font-size: 0.98rem; }
+    .mo__line b { color: var(--cream); }
+    .mo__seals { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+    .mo__seal { border: 1px solid var(--sc, #d8ba7c); color: var(--sc, #d8ba7c); border-radius: 100px;
+      padding: 0.32em 0.9em; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em; background: rgba(10,8,7,0.55); }
+
+    .mo__k { font-size: 0.58rem; letter-spacing: 0.34em; text-transform: uppercase; color: #d8ba7c; font-weight: 800; margin: 2.6rem 0 0.8rem; }
+    .mo__card { border: 1px solid rgba(244,239,230,0.13); border-radius: 18px; background: rgba(18,14,12,0.72); padding: 1.1rem 1.2rem; }
+    .mo__doors { display: grid; gap: 0.55rem; margin-top: 0.4rem; }
+    .mo__door { display: flex; align-items: center; gap: 0.8rem; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px;
+      padding: 0.9rem 1rem; text-decoration: none; color: var(--cream); background: rgba(16,13,11,0.6);
+      transition: border-color 0.25s, transform 0.2s; }
+    .mo__door:hover { border-color: #d8ba7c; transform: translateY(-2px); }
+    .mo__door .ic { flex: none; width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
+      border: 1.5px solid var(--dc, #d8ba7c); color: var(--dc, #d8ba7c); font-size: 1rem; font-weight: 800; }
+    .mo__door b { display: block; font-size: 0.92rem; }
+    .mo__door small { display: block; color: var(--cream-dim); font-size: 0.7rem; margin-top: 0.2rem; }
+    .mo__foot { text-align: center; margin-top: 3rem; }
+    .mo__foot a { color: var(--cream-dim); font-size: 0.78rem; }
+    .mo__empty { min-height: 70dvh; display: grid; place-items: center; text-align: center; padding: 2rem; }
+    .mo__empty p { color: var(--cream-dim); line-height: 1.7; max-width: 30rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <main class="mo">
+    <div id="moEmpty" class="mo__empty" style="display:none"><div>
+      <p><b style="color:var(--cream)">No member holds the front door yet.</b><br>
+      Member of the Month takes over this page — and the whole app's landing — the day the desk names them.
+      Until then, the floor is the show.</p>
+      <p style="margin-top:1rem"><a class="btn btn--ruby" href="market.html">Walk the floor &#8594;</a></p>
+    </div></div>
+
+    <section class="mo__hero" id="moHero" style="display:none">
+      <div class="mo__hero-img" id="moFace" aria-hidden="true"></div>
+      <div class="mo__hero-in">
+        <span class="mo__crest"><img src="assets/img/eu-favicon.png" alt=""><b id="moMonth">Member of the Month</b></span>
+        <h1 id="moName">—</h1>
+        <p class="mo__tick" id="moTick"></p>
+        <p class="mo__line" id="moLine"></p>
+        <div class="mo__seals" id="moSeals"></div>
+      </div>
+    </section>
+
+    <div class="mo__inner" id="moBody" style="display:none">
+      <p class="mo__k">The tape</p>
+      <div class="mo__card"><div id="moStock"></div></div>
+
+      <p class="mo__k">The doors</p>
+      <div class="mo__doors" id="moDoors"></div>
+
+      <p class="mo__foot"><a href="index.html?stay=1" data-cta="motm-fullsite">Enter the full site &#8594;</a></p>
+    </div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/mgrind.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/mstock.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
+  <script src="js/distribution.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      var who = new URLSearchParams(location.search).get("who");
+
+      function empty() { $("moEmpty").style.display = ""; track("motm_empty", {}); }
+
+      function show(p, meta) {
+        var slug = p.slug || p.id, tick = (p.ticker || "").toUpperCase();
+        document.title = p.name + " · Member of the Month · Equity Uprise";
+        $("moHero").style.display = ""; $("moBody").style.display = "";
+        if (meta && meta.month) $("moMonth").textContent = "Member of the Month · " + meta.month;
+        $("moName").textContent = p.name;
+        $("moTick").textContent = (tick ? "$" + tick + " · " : "") + ((p.roles || []).join(" · ") || "Member") + (p.area ? " · " + p.area : "");
+        $("moLine").innerHTML = esc((meta && meta.line) || p.blurb || p.headline || "One of ours, holding the front door.");
+        var face = p.photo || p.hero || "";
+        if (face) $("moFace").style.backgroundImage = "url(" + face + ")";
+
+        // the verified seals, in their colors
+        if (window.MCC_DIST && MCC_DIST.badgesFor) MCC_DIST.badgesFor(slug).then(function (seals) {
+          $("moSeals").innerHTML = seals.map(function (s) {
+            return '<span class="mo__seal" style="--sc:' + esc(s.color || "#d8ba7c") + '">&#10003; ' + esc(s.label || s.id) + "</span>";
+          }).join("");
+        });
+
+        // the live tape — same engine as the floor
+        if (window.MCC_STOCK && MCC_STOCK.build && MCC_STOCK.mount) {
+          try { MCC_STOCK.mount($("moStock"), MCC_STOCK.build({ uid: slug, listing: p }), { public: true }); } catch (e) {}
+        }
+
+        $("moDoors").innerHTML =
+          '<a class="mo__door" style="--dc:#f472b6" href="page.html?who=' + encodeURIComponent(slug) + '"><span class="ic">&#9733;</span><span><b>Their page</b><small>The feed, the music, the record — straight from them.</small></span></a>' +
+          (tick ? '<a class="mo__door" style="--dc:#00c805" href="market.html?to=' + encodeURIComponent(tick) + '"><span class="ic">$</span><span><b>Back them on the floor</b><small>The keypad opens loaded with $' + esc(tick) + ".</small></span></a>" : "") +
+          '<a class="mo__door" style="--dc:#45b6ff" href="ourworld.html"><span class="ic">&#9654;&#xFE0E;</span><span><b>Find them in Our World</b><small>Their spot on the real map — drive out and pull up.</small></span></a>';
+
+        track("motm_view", { slug: slug });
+      }
+
+      function bySlug(slug) {
+        return window.MCC_FLOOR ? MCC_FLOOR.load().then(function (floor) {
+          return (floor.providers || []).filter(function (p) { return (p.slug || p.id) === slug; })[0] || null;
+        }) : Promise.resolve(null);
+      }
+
+      fetch("data/motm.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return {}; })
+        .then(function (meta) {
+          var slug = who || (meta && meta.slug) || "";
+          if (!slug) return empty();
+          bySlug(slug).then(function (p) { p ? show(p, meta) : empty(); });
+        });
+    })();
+  </script>
+</body>
+</html>

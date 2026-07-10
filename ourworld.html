@@ -325,8 +325,8 @@
           lng = pin.lng; lat = pin.lat;
         } else {
           var h = shash(slug), city = CITIES[h % 4];            // a real city, deterministic
-          lng = city.lng + (((h >> 3) % 100) / 100 - 0.5) * 0.03;
-          lat = city.lat + (((h >> 9) % 100) / 100 - 0.5) * 0.024;
+          lng = city.lng + (((h >>> 3) % 100) / 100 - 0.5) * 0.03;
+          lat = city.lat + (((h >>> 9) % 100) / 100 - 0.5) * 0.024;
         }
         var color = p.badgeColor || "#d8ba7c";
         var el = document.createElement("div"); el.className = "ow-mk ow-face" + (mine ? " mine" : "");
