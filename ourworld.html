@@ -121,6 +121,35 @@
       transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1); } .ow-toast b { color: #d8ba7c; } .ow-toast.is-in { transform: translate(-50%, 0); }
     .ow-fail { position: fixed; inset: 0; z-index: 400; display: none; place-items: center; background: #0a0807; text-align: center; padding: 2rem; }
     .ow-fail.on { display: grid; } .ow-fail p { color: var(--cream-dim); max-width: 26rem; line-height: 1.7; }
+    /* THE ROLODEX — the contacts book of every spot in the nation */
+    .ow-rolo-btn { position: fixed; left: 0.8rem; top: 50%; transform: translateY(-50%); z-index: 40;
+      width: 56px; height: 56px; border-radius: 16px; border: 1.5px solid #c99d45; background: rgba(16,12,10,0.92);
+      color: #e8c877; font-size: 1.35rem; display: grid; place-items: center; cursor: pointer;
+      box-shadow: 0 0 18px rgba(201,157,69,0.4); }
+    .ow-rolo-btn small { position: absolute; bottom: -1.25rem; left: 50%; transform: translateX(-50%);
+      font-size: 0.72rem; letter-spacing: 0.12em; color: var(--cream-dim); text-transform: uppercase; font-weight: 800; }
+    .ow-rolo { position: fixed; left: 0; top: 0; bottom: 0; z-index: 150; width: min(88vw, 22rem);
+      background: rgba(14,11,9,0.98); border-right: 1px solid rgba(201,157,69,0.4); transform: translateX(-103%);
+      transition: transform 0.3s cubic-bezier(0.2,0.9,0.2,1); display: flex; flex-direction: column;
+      padding: calc(1rem + env(safe-area-inset-top)) 0.9rem calc(1rem + env(safe-area-inset-bottom)); }
+    .ow-rolo.is-open { transform: translateX(0); }
+    .ow-rolo h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.2rem; color: #e8c877; }
+    .ow-rolo input { width: 100%; margin-top: 0.7rem; background: rgba(10,8,7,0.8); border: 1px solid rgba(244,239,230,0.25);
+      border-radius: 10px; color: var(--cream); font: inherit; font-size: max(16px, 1rem); padding: 0.65em 0.9em; }
+    .ow-rolo-list { flex: 1; overflow-y: auto; margin-top: 0.7rem; }
+    .ow-rolo-row { display: flex; align-items: center; gap: 0.6rem; width: 100%; text-align: left; font: inherit;
+      background: none; border: 0; border-bottom: 1px solid rgba(244,239,230,0.08); color: var(--cream);
+      padding: 0.75rem 0.2rem; cursor: pointer; }
+    .ow-rolo-row b { display: block; font-size: 0.94rem; }
+    .ow-rolo-row small { display: block; color: var(--cream-dim); font-size: 0.8rem; margin-top: 0.1rem; }
+    .ow-rolo-row .km { margin-left: auto; flex: none; color: #c99d45; font-weight: 800; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+    .ow-arrive { position: fixed; left: 50%; transform: translate(-50%, 170%); bottom: calc(5.4rem + env(safe-area-inset-bottom));
+      z-index: 160; width: min(94vw, 26rem); background: rgba(16,12,10,0.97); border: 1.5px solid #c99d45; border-radius: 16px;
+      padding: 0.9rem 1rem; transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1); box-shadow: 0 14px 44px rgba(0,0,0,0.6); }
+    .ow-arrive.is-in { transform: translate(-50%, 0); }
+    .ow-arrive b.t { color: #e8c877; font-size: 0.95rem; }
+    .ow-arrive .acts { display: flex; gap: 0.45rem; margin-top: 0.7rem; flex-wrap: wrap; align-items: center; }
+    .ow-arrive .acts .btn { font-size: 0.78rem; padding: 0.55em 1em; }
   </style>
 </head>
 <body>
@@ -135,6 +164,16 @@
   <p class="ow-hint" id="owHint"></p>
   <div class="ow-place" id="owPlace"></div>
   <div class="ow-stick" id="owStick"><i id="owNub"></i></div>
+
+  <button class="ow-rolo-btn hidden" id="owRoloBtn" type="button" aria-label="Places">📇<small>Places</small></button>
+  <div class="ow-rolo" id="owRolo">
+    <h3>The Rolodex</h3>
+    <p style="color:var(--cream-dim);font-size:0.84rem;margin-top:0.2rem;line-height:1.5">Every spot in the nation.
+      Tap one — the whip covers <b style="color:#e8c877">any distance in under three seconds</b>.</p>
+    <input id="owRoloQ" type="search" placeholder="Search a name, a ticker, a block…">
+    <div class="ow-rolo-list" id="owRoloList"></div>
+  </div>
+  <div class="ow-arrive" id="owArrive"></div>
 
   <div class="ow-veil" id="owVeil"></div>
   <div class="ow-sheet" id="owSheet" role="dialog" aria-modal="true">
@@ -338,6 +377,7 @@
         var info = { slug: slug, name: p.name || slug, ticker: (p.ticker || "").toUpperCase(), roles: p.roles || [], color: color,
           href: p.href || p.profile || ("page.html?who=" + slug), photo: p.photo || null, blurb: p.blurb || p.headline || "",
           mine: !!mine, char: CHARACTERS[slug] || null, addr: (pin && pin.addr) || (p.area || ""), lng: lng, lat: lat };
+        INFO[slug] = info;
         el.addEventListener("click", function () { openSpace(info); });
         markerEls[slug] = mk(el, lng, lat);
       }
@@ -550,6 +590,123 @@
         function hud() { return tgt ? " · <b style='color:#c99d45'>◎ " + Math.round(mDist(player, tgt)) + "m</b>" : ""; }
         return { go: go, clear: clear, hud: hud, get: function () { return tgt; } };
       })();
+      /* THE LOOK: a slow cinematic orbit of the block you pulled up on —
+         the chase cam lets go until you touch the wheel. */
+      var LOOK = (function () {
+        var until = 0;
+        function start(sp) {
+          if (!map) return;
+          until = Date.now() + 6600;
+          map.easeTo({ center: [sp.lng, sp.lat], zoom: 17.6, pitch: 62,
+            bearing: (map.getBearing() + 140) % 360, duration: 3200 });
+          setTimeout(function () {
+            if (Date.now() < until) map.easeTo({ bearing: (map.getBearing() + 150) % 360, duration: 3200 });
+          }, 3260);
+          track("ow_look", { s: sp.slug || "" });
+        }
+        return { start: start, on: function () { return Date.now() < until; }, off: function () { until = 0; } };
+      })();
+
+      /* THE WARP: rolodex fast-travel — the whip covers ANY distance in
+         under three seconds; the camera lifts Google-Earth style, rides
+         the flight, and lands on the block. */
+      var WARP = (function () {
+        var run = null;
+        function to(spot, then) {
+          if (!player || !map) return;
+          NAV.clear();
+          LOOK.off();
+          $("owArrive").classList.remove("is-in");
+          run = { a: { lng: player.lng, lat: player.lat }, t0: performance.now(), dur: 2400, spot: spot, then: then };
+          toast("⚡ Rolling to <b>" + esc(spot.name) + "</b> — hold on.");
+          track("ow_warp", { to: spot.slug || "" });
+        }
+        function step(now, dt) {
+          var t = Math.min(1, (now - run.t0) / run.dur);
+          var e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+          player.lng = run.a.lng + (run.spot.lng - run.a.lng) * e;
+          player.lat = run.a.lat + (run.spot.lat - run.a.lat) * e;
+          if (t < 0.97) {
+            var brg = mBearing(player, run.spot);
+            if (brg != null && !isNaN(brg)) player.h = brg;
+          }
+          camH += angTo(camH, player.h) * Math.min(1, dt / 240);
+          var lift = Math.sin(t * Math.PI);
+          map.jumpTo({ center: [player.lng, player.lat], bearing: camH,
+            pitch: 52 - lift * 24, zoom: 16.1 - lift * 2.8 });
+          $("owCar").style.transform = "rotate(" + (90 + angTo(camH, player.h)) + "deg)";
+          if (t >= 1) {
+            var r = run;
+            run = null;
+            vel = 0;
+            toast("<b style='color:#00c805'>PULLED UP.</b> You're outside " + esc(r.spot.name) + ".");
+            if (r.then) r.then(r.spot);
+          }
+        }
+        return { to: to, step: step, on: function () { return !!run; } };
+      })();
+
+      /* the arrival card: buzz them, message them, or look around */
+      function arrive(sp) {
+        var inf = INFO[sp.slug] || {};
+        var host = $("owArrive");
+        host.innerHTML = '<b class="t">PULLED UP — ' + esc(sp.name) + "</b>" +
+          (inf.addr ? '<small style="display:block;color:var(--cream-dim);font-size:0.8rem;margin-top:0.15rem">📍 ' + esc(inf.addr) + "</small>" : "") +
+          '<div class="acts">' +
+          '<button class="btn btn--ruby" type="button" data-buzz>🔔 Buzz the spot</button>' +
+          '<a class="btn btn--ghost" href="' + (inf.ticker ? "market.html?to=" + esc(inf.ticker) : esc(inf.href || ("page.html?who=" + sp.slug))) + '">✉️ Message</a>' +
+          '<button class="btn btn--ghost" type="button" data-look>👀 Look around</button>' +
+          '<button class="btn btn--ghost" type="button" data-shut style="margin-left:auto;padding:0.55em 0.8em">✕</button></div>';
+        host.classList.add("is-in");
+        host.querySelector("[data-buzz]").addEventListener("click", function (ev) {
+          delete pinged[sp.slug];              // a deliberate buzz beats the session guard
+          pingVisit(sp.slug);
+          ev.target.textContent = "🔔 Buzzed — their pocket rang";
+          ev.target.disabled = true;
+          track("ow_buzz", { s: sp.slug || "" });
+        });
+        host.querySelector("[data-look]").addEventListener("click", function () { LOOK.start(sp); });
+        host.querySelector("[data-shut]").addEventListener("click", function () { host.classList.remove("is-in"); });
+      }
+
+      /* THE ROLODEX: the contacts book — every spot, nearest first */
+      var INFO = {};
+      var ROLO = (function () {
+        var open = false;
+        function paint() {
+          var q = ($("owRoloQ").value || "").toLowerCase();
+          var rows = SPOTS.slice();
+          if (player) rows.sort(function (a, b) { return mDist(player, a) - mDist(player, b); });
+          $("owRoloList").innerHTML = rows.filter(function (sp) {
+            if (!q) return true;
+            var inf = INFO[sp.slug] || {};
+            return (sp.name + " " + (inf.ticker || "") + " " + (inf.addr || "")).toLowerCase().indexOf(q) !== -1;
+          }).slice(0, 80).map(function (sp) {
+            var inf = INFO[sp.slug] || {};
+            var d = player ? mDist(player, sp) : 0;
+            var km = d > 950 ? (d / 1000).toFixed(1) + " km" : Math.round(d) + " m";
+            return '<button class="ow-rolo-row" type="button" data-go="' + esc(sp.slug) + '">' +
+              "<span><b>" + esc(sp.name) + "</b><small>" +
+              esc((inf.ticker ? "$" + inf.ticker + " · " : "") + (inf.addr || "on the map")) + "</small></span>" +
+              '<span class="km">' + km + "</span></button>";
+          }).join("") || '<p style="color:var(--cream-dim);font-size:0.85rem;padding:0.8rem 0.2rem">Nobody matches that — clear the search.</p>';
+          $("owRoloList").querySelectorAll("[data-go]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var sp = null, want = b.getAttribute("data-go");
+              for (var i = 0; i < SPOTS.length; i++) if (SPOTS[i].slug === want) { sp = SPOTS[i]; break; }
+              if (!sp) return;
+              hide();
+              WARP.to(sp, arrive);
+            });
+          });
+        }
+        function show() { open = true; paint(); $("owRolo").classList.add("is-open"); track("ow_rolodex", {}); }
+        function hide() { open = false; $("owRolo").classList.remove("is-open"); }
+        $("owRoloBtn").addEventListener("click", function () { if (open) hide(); else show(); });
+        $("owRoloQ").addEventListener("input", paint);
+        return { hide: hide };
+      })();
+
       if (map) map.on("click", function (e) {
         if (!entered) return;
         var t = e.originalEvent && e.originalEvent.target;
@@ -564,6 +721,7 @@
         if (entered && ready && map) {
           var top = 26 + (TSTATE.hustle / 100) * 14;    // 26–40 m/s: HUSTLE is horsepower
           // the compass: keys and pad point SCREEN directions
+          if (WARP.on()) { WARP.step(now, dt); } else {
           var ix = 0, iy = 0;
           if (keys.w || keys.arrowup) iy -= 1;
           if (keys.s || keys.arrowdown) iy += 1;
@@ -573,6 +731,7 @@
           var aim = null, want = 0, nav = NAV.get();
           if (ix || iy) {
             NAV.clear();                                 // hands on the wheel beat the pin
+            LOOK.off();
             aim = camH + Math.atan2(ix, -iy) * 180 / Math.PI;
             want = Math.min(1, Math.hypot(ix, iy));
           } else if (nav) {
@@ -597,9 +756,12 @@
           // the chase cam: trails the whip, breathes with speed
           camH += angTo(camH, player.h) * Math.min(1, dt / 430);
           var f = Math.min(1, vel / top);
-          map.jumpTo({ center: [player.lng, player.lat], bearing: camH,
-            pitch: 50 + f * 12, zoom: 16.1 - f * 1.0 });
+          if (!LOOK.on()) {
+            map.jumpTo({ center: [player.lng, player.lat], bearing: camH,
+              pitch: 50 + f * 12, zoom: 16.1 - f * 1.0 });
+          }
           $("owCar").style.transform = "rotate(" + (90 + angTo(camH, player.h)) + "deg)"; // the whip leans into the lag
+          }
           collect();
           var city = nearestCity(player.lng, player.lat);
           if (city !== curCity) { curCity = city; showPlace(city); }
@@ -693,7 +855,7 @@
         curCity = pickedCity;
         if (map && ready) { try { map.jumpTo({ center: [player.lng, player.lat], bearing: 0, zoom: 16.1 }); } catch (e) {} }
         showPlace(pickedCity);
-        entered = true; $("owCar").classList.remove("hidden");
+        entered = true; $("owCar").classList.remove("hidden"); $("owRoloBtn").classList.remove("hidden");
         $("owDoor").classList.add("is-gone"); setTimeout(function () { $("owDoor").remove(); }, 600);
         MP.connect(); track("ow_enter", { touch: touch, city: pickedCity.id });
       });
