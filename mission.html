@@ -47,6 +47,25 @@
     .mc__tab.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
     .mc__tab b { color: var(--ruby-hot); font-weight: 800; }
     .mc__tab.is-on b { color: #fff; }
+    .mc__tgrp { flex: none; align-self: center; font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(244, 239, 230, 0.42); padding-left: 0.7em; margin-left: 0.3em; border-left: 1px solid rgba(244, 239, 230, 0.18); }
+    .mc__hero { display: block; width: 100%; border-radius: 16px; border: 1px solid rgba(244, 239, 230, 0.16);
+      margin-top: 1.15rem; box-shadow: 0 12px 50px rgba(0, 0, 0, 0.55); }
+    .mc__obj { font-size: 0.76rem; color: #e8c877; line-height: 1.55; margin: -0.35rem 0 0.9rem; }
+    .mc__obj b { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; margin-right: 0.35em; }
+    /* THE ADMIN WALK — a bottom-sheet stepper that drives the tabs */
+    .aw { position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+      padding: 0 0.8rem calc(0.9rem + env(safe-area-inset-bottom)); pointer-events: none; }
+    .aw__card { pointer-events: auto; max-width: 34rem; margin: 0 auto; background: rgba(16, 12, 10, 0.97);
+      border: 1px solid #c99d45; border-radius: 16px; padding: 1rem 1.15rem 1.05rem; box-shadow: 0 -8px 44px rgba(0, 0, 0, 0.65); }
+    .aw__count { font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: #e8c877; }
+    .aw__title { font-family: var(--display); text-transform: uppercase; font-size: 1.05rem; margin-top: 0.3rem; }
+    .aw__body { font-size: 0.82rem; color: var(--cream-dim); line-height: 1.62; margin-top: 0.4rem; }
+    .aw__body b { color: var(--cream); }
+    .aw__acts { display: flex; gap: 0.5rem; margin-top: 0.85rem; align-items: center; }
+    .aw__acts .btn { font-size: 0.66rem; padding: 0.6em 1.4em; }
+    .aw__end { margin-left: auto; font-size: 0.64rem; color: var(--cream-dim); background: none; border: 0;
+      cursor: pointer; text-decoration: underline; font-family: inherit; }
   </style>
 </head>
 <body class="songpage">
@@ -114,6 +133,8 @@
     <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> THE HOUSE DESK · admin only — members run Your Mission Control</p>
     <h1>Mission<br>Control.</h1>
     <p class="mc__sub">Everything the platform knows, one screen. Only the admin's sign-in opens it — for anyone else, the database answers with silence.</p>
+    <img class="mc__hero" alt="" src="assets/img/mission-hero.jpg"
+      onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260711_072726_a59e2c07-1c68-4a2c-b969-adad0fd4460e.png';}else{this.style.display='none';}">
 
     <section class="mc__card" id="mcAuth">
       <h2>Step in</h2>
@@ -132,6 +153,7 @@
       <div class="mc__bar">
         <span class="mc__who" id="mcWho"></span>
         <span class="mc__barbtns">
+          <button class="btn btn--ghost" id="mcWalkGo" type="button">&#10022; The walk</button>
           <button class="btn btn--ghost" id="mcRefresh" type="button">&#8635; Refresh</button>
           <button class="btn btn--ghost" id="mcOut" type="button">Sign out</button>
         </span>
@@ -140,18 +162,22 @@
 
       <nav class="mc__tabs" id="mcTabs" aria-label="Mission Control sections">
         <button class="mc__tab is-on" data-tab="mcPulse" type="button">Pulse <b id="tabNPulse"></b></button>
+        <span class="mc__tgrp" aria-hidden="true">Review</span>
         <button class="mc__tab" data-tab="mcBrain" type="button">The Brain <b id="tabNBrain"></b></button>
         <button class="mc__tab" data-tab="mcListings" type="button">Listings <b id="tabNListings"></b></button>
         <button class="mc__tab" data-tab="mcRequests" type="button">Requests <b id="tabNRequests"></b></button>
         <button class="mc__tab" data-tab="mcMembers" type="button">Members <b id="tabNMembers"></b></button>
+        <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
+        <span class="mc__tgrp" aria-hidden="true">People &amp; money</span>
         <button class="mc__tab" data-tab="mcPeople" type="button">People <b id="tabNPeople"></b></button>
         <button class="mc__tab" data-tab="mcDeals" type="button">Deals <b id="tabNDeals"></b></button>
         <button class="mc__tab" data-tab="mcGrind" type="button">The Grind <b id="tabNGrind"></b></button>
-        <button class="mc__tab" data-tab="mcIntake" type="button">Intake <b id="tabNIntake"></b></button>
         <button class="mc__tab" data-tab="mcHouse" type="button">The House <b id="tabNHouse"></b></button>
         <button class="mc__tab" data-tab="mcFund" type="button">The Fund</button>
+        <span class="mc__tgrp" aria-hidden="true">Reach</span>
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
         <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
+        <span class="mc__tgrp" aria-hidden="true">Tools</span>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
         <button class="mc__tab" data-tab="mcMint" type="button">Mint</button>
         <button class="mc__tab" data-tab="mcDecks" type="button">Decks</button>
@@ -159,6 +185,7 @@
 
       <section class="mc__card" id="pane-mcPulse">
         <h2>The pulse — what needs you, computed</h2>
+        <p class="mc__obj"><b>Objective</b> Clear this list, then read the floor. Start every session here — when the pulse is empty, the machine is current.</p>
         <div id="mcPulse"><p class="mc__empty">Loading…</p></div>
         <h2 style="margin-top:1.6rem">The floor, live — every member's moves</h2>
         <div id="mcLive"><p class="mc__empty">Reading the tape…</p></div>
@@ -166,6 +193,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcBrain">
         <h2>The Brain — the platform pitches, you decide</h2>
+        <p class="mc__obj"><b>Objective</b> Decide. The platform pitches, the floor proposes — approve what serves the mission, decline the rest, never let a pitch sit.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">Two minds file to this docket: the <b>algorithm</b> (pure
           rules over the live tables, runs nightly on the worker) and the <b>AI strategist</b> (reads the whole
           picture on demand and pitches upgrades with evidence). Nothing ships itself — approve a pitch and it
@@ -181,21 +209,25 @@
 
       <section class="mc__card mc__hidden" id="pane-mcListings">
         <h2>Listings to review</h2>
+        <p class="mc__obj"><b>Objective</b> Keep the floor honest. Every new listing lands here in review — approve it and it goes live on the market; until you do, the member waits.</p>
         <div id="mcListings"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcRequests">
         <h2>Booking requests</h2>
+        <p class="mc__obj"><b>Objective</b> Answer fast. A booking request is money knocking — confirm or decline it the same day.</p>
         <div id="mcRequests"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcMembers">
         <h2>Member applications</h2>
+        <p class="mc__obj"><b>Objective</b> Open the door. Read who's applying to ride and let the real ones in.</p>
         <div id="mcMembers"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcPeople">
         <h2>People — the whole person, one card</h2>
+        <p class="mc__obj"><b>Objective</b> Know the whole person. One card per human across every engine — and seat real people into the civic appointments from here.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">Every member's full picture: what they answered at the door,
           how they move, what they hold, who they deal with, and the archetype their behavior is building. Computed
           fresh from the database on every load — nothing typed by hand.</p>
@@ -214,11 +246,13 @@
 
       <section class="mc__card mc__hidden" id="pane-mcDeals">
         <h2>The deal ledger</h2>
+        <p class="mc__obj"><b>Objective</b> Watch the paper trail. Approving and signing move paper only — money moves when a buyer pays by card on a signed deal.</p>
         <div id="mcDeals"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcGrind">
         <h2>The Grind — who's really playing</h2>
+        <p class="mc__obj"><b>Objective</b> Grade the players. The score reads energy, streaks and tasks — push the S players, nudge the ones going quiet.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">The staging model's whole picture: visible tasks, the shadow board
           nobody is shown, streaks, silence, and an admin score per player. Every row is a synced account;
           the exhaust behind it lives in Analytics tagged <b>model:grind_v2</b> with its device id.</p>
@@ -227,6 +261,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcIntake">
         <h2>The intake — every ask, on the record</h2>
+        <p class="mc__obj"><b>Objective</b> Nothing asked gets lost. Every ask lands on the record; every mission proof gets stamped in the docket.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">Fellowship sign-ups, quote requests, notify-me taps —
           everything that used to vanish into the inbox files here now, tagged by kind. The kind is the hook the
           back-end algorithms route on.</p>
@@ -239,6 +274,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcHouse">
         <h2>The house — claims to deliver</h2>
+        <p class="mc__obj"><b>Objective</b> Deliver what the house owes. Claims to fulfil and earned credit cashing out — keep both columns current.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">Every claim here is someone who stacked the credit and paid
           the house — the prize is now a booking you owe. Claimed → booked → done.</p>
         <div id="mcHouse"><p class="mc__empty">Loading…</p></div>
@@ -250,6 +286,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcFund">
         <h2>The Community Fund — award the chest</h2>
+        <p class="mc__obj"><b>Objective</b> Award the chest with a reason attached. Every grant lands on the member's record and moves their tape.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem" id="fundStat">Counting the chest…</p>
         <input class="mc__in" id="fundWho" type="text" placeholder="Ticker of the member to award — like AFRO">
         <input class="mc__in" id="fundAmt" type="number" min="1" step="1" placeholder="Amount in E⤴︎">
@@ -261,6 +298,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
         <h2>Analytics — the platform's own eyes</h2>
+        <p class="mc__obj"><b>Objective</b> See what the platform sees. Read the traffic and the behavior before you change anything.</p>
         <div id="mcAnna"><p class="mc__empty">Loading…</p></div>
         <p class="mc__empty" style="margin-top:0.9rem">The outside eyes, one tap each:
           <a href="https://analytics.google.com/" target="_blank" rel="noopener" style="color:var(--ruby-hot)">Google Analytics</a> ·
@@ -273,6 +311,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcSms">
         <h2>Push — speak to every pocket</h2>
+        <p class="mc__obj"><b>Objective</b> Reach every pocket. Push speaks to installed devices in one shot; the text list below is the fallback line.</p>
         <p class="mc__empty" style="margin-bottom:0.6rem" id="pushCount">Counting the armed devices…</p>
         <input class="mc__in" id="pushTitle" type="text" maxlength="80" placeholder="Title — e.g. The shelf just restocked">
         <input class="mc__in" id="pushBody" type="text" maxlength="240" placeholder="The word — one or two sentences">
@@ -286,6 +325,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcCockpit">
         <h2>The rest of the cockpit</h2>
+        <p class="mc__obj"><b>Objective</b> One hop to the outside tools — until each one lives in here, this is the shortest path.</p>
         <p class="mc__empty">Until the Worker lands, these open in their own tabs:</p>
         <div class="mc__links">
           <a class="btn btn--ghost" href="https://analytics.google.com" target="_blank" rel="noopener">Google Analytics</a>
@@ -299,6 +339,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcMint">
         <h2>Mint a profile</h2>
+        <p class="mc__obj"><b>Objective</b> Pitch anyone their own page. Mint an unclaimed profile, put the link in their hand — they claim it later and take it over.</p>
         <p class="mc__empty">Spin up an unclaimed profile on the live floor — pitch anyone their page before they sign up. They claim it later to take it over.</p>
         <input class="mc__in" id="mintName" type="text" placeholder="Name — e.g. Ocho Gr8">
         <div class="mc__row" style="display:flex;gap:0.5rem">
@@ -320,6 +361,7 @@
 
       <section class="mc__card mc__hidden" id="pane-mcDecks">
         <h2>The deck rack &#127911;</h2>
+        <p class="mc__obj"><b>Objective</b> Never pitch empty-handed. Present any of these from the phone, across the table.</p>
         <p class="mc__empty">Your pitch arsenal — present any of these from the phone, across the table. Every unclaimed
           profile also carries its own built-in pitch (the gold card), so the profile link IS a deck.</p>
         <div class="mc__links">
@@ -1199,6 +1241,81 @@
         }
         loadAll();
       }
+    })();
+  </script>
+  <script>
+    /* THE ADMIN WALK — the owner's own onboarding. A bottom-sheet stepper
+       that drives the tab rail room by room, teaches the objective of each,
+       and closes on the house-vs-member law. Runs once on first sign-in
+       (mcc_admin_walk_done remembers), relaunches from ✦ The walk. */
+    (function () {
+      "use strict";
+      var KEY = "mcc_admin_walk_done";
+      var STEPS = [
+        { tab: null, t: "This is the house desk.", b: "Mission Control is <b>yours alone</b> — the whole platform on one screen. Members never see this room; they run <b>Your Mission Control</b>, the member desk, with their own numbers only. Sixteen rooms in four groups — this walk takes you through every one." },
+        { tab: "mcPulse", t: "The pulse.", b: "The platform computes what's waiting on you — listings in review, requests unanswered, deals mid-flight. Below it, <b>the floor live</b>: every member's move as it lands. Open here every session; clear the list, read the tape." },
+        { tab: "mcBrain", t: "The Brain.", b: "The platform pitches you moves, and <b>the People's Board</b> carries the floor's proposals. Yours is the only vote that ships anything — approve or decline, and never let a pitch age." },
+        { tab: "mcListings", t: "Listings — the review gate.", b: "Every listing a member creates lands here in <b>review</b> — nothing reaches the market floor until you approve it. When somebody says &ldquo;my listing didn't go through,&rdquo; this room is why. Approve it and it goes live with a price tape of its own." },
+        { tab: "mcRequests", t: "Requests.", b: "Booking requests off the floor — real people asking for real dates. Confirm or decline the same day; a stale request is a lost deal." },
+        { tab: "mcMembers", t: "Members.", b: "Applications to go deeper on the floor. You read them, you open the door — the card at the front gate is self-serve, but this room is yours." },
+        { tab: "mcIntake", t: "The intake.", b: "Every ask on the record, plus the mission-proof docket. If anyone asked the platform for anything, it sits here until you deal with it — nothing asked gets lost." },
+        { tab: "mcPeople", t: "People.", b: "The whole person on one card — every engine's read on each human. And the civic chairs: seat real people into the Street Cred Portal's appointments from right here." },
+        { tab: "mcDeals", t: "The deal ledger.", b: "Every offer, signature and payment on the floor. The money law: approving and signing move <b>paper</b> — money only moves when a buyer pays by card on a signed deal." },
+        { tab: "mcGrind", t: "The Grind.", b: "Who's really playing. Every account graded S to F off energy, streaks, tasks and idle days — push the S players, catch the quiet ones before they go cold." },
+        { tab: "mcHouse", t: "The House.", b: "What the house owes: claims members are waiting on, and earned credit cashing out. Keep both columns current — this room is the platform's word." },
+        { tab: "mcFund", t: "The Fund.", b: "The community chest. Award it with a reason attached — every grant lands on the member's record and moves their tape." },
+        { tab: "mcAnalytics", t: "Analytics.", b: "The platform's own eyes — traffic, behavior, what's landing. Read it before you change anything; THE COACH reads these same signals when it guides members." },
+        { tab: "mcSms", t: "Texts &amp; push.", b: "Speak to every pocket — push hits every installed device in one shot, and the text list underneath is the fallback line." },
+        { tab: "mcCockpit", t: "The cockpit.", b: "One hop to the outside tools — Analytics, Stripe, Supabase, the repo, the Metadata Engine. Until each one lives in here, this is the shortest path out and back." },
+        { tab: "mcMint", t: "Mint.", b: "Mint an unclaimed profile for anyone you're pitching — their page is live before they ever sign up. They claim it later and take it over. The pitch IS the product." },
+        { tab: "mcDecks", t: "Decks.", b: "The pitch arsenal — present any of these from the phone, across any table. Every unclaimed profile doubles as its own deck." },
+        { tab: null, t: "Two desks, one law.", b: "<b>This room</b>: every member, every deal, review powers, the whole tape. <b>The member desk (Your Mission Control)</b>: one member's own numbers, own listings, own path — nobody else's. Same platform, opposite ends of the telescope. Never send a member here — for them the database answers with silence anyway." },
+        { tab: "mcPulse", t: "The daily loop.", b: "Pulse &rarr; Listings &rarr; Requests &rarr; Deals. Clear those four and the house is run — everything else is on demand. Walk this again any time from <b>&#10022; The walk</b> up top." },
+      ];
+      var i = 0, host = null;
+      function tabBtn(id) { return document.querySelector('.mc__tab[data-tab="' + id + '"]'); }
+      function paint() {
+        var st = STEPS[i];
+        if (st.tab) {
+          var tb = tabBtn(st.tab);
+          if (tb) { tb.click(); if (tb.scrollIntoView) tb.scrollIntoView({ inline: "center", block: "nearest" }); }
+        }
+        host.innerHTML = '<div class="aw__card"><p class="aw__count">The admin walk &middot; ' + (i + 1) + " / " + STEPS.length + "</p>" +
+          '<h3 class="aw__title">' + st.t + "</h3>" +
+          '<p class="aw__body">' + st.b + "</p>" +
+          '<div class="aw__acts">' +
+          (i > 0 ? '<button class="btn btn--ghost" data-awback type="button">Back</button>' : "") +
+          '<button class="btn btn--ruby" data-awnext type="button">' + (i === STEPS.length - 1 ? "I run this room" : "Next") + "</button>" +
+          '<button class="aw__end" data-awend type="button">End the walk</button></div></div>';
+        host.querySelector("[data-awnext]").addEventListener("click", function () {
+          if (i === STEPS.length - 1) end(true); else { i++; paint(); }
+        });
+        var bk = host.querySelector("[data-awback]");
+        if (bk) bk.addEventListener("click", function () { i = Math.max(0, i - 1); paint(); });
+        host.querySelector("[data-awend]").addEventListener("click", function () { end(false); });
+      }
+      function end(finished) {
+        try { localStorage.setItem(KEY, JSON.stringify({ at: new Date().toISOString(), finished: !!finished })); } catch (e) {}
+        if (host) { host.remove(); host = null; }
+        if (window.MCC_TRACK) window.MCC_TRACK(finished ? "admin_walk_done" : "admin_walk_skip", { step: i + 1 });
+        var p = tabBtn("mcPulse");
+        if (finished && p) p.click();
+      }
+      function start() {
+        if (host) { i = 0; paint(); return; }
+        i = 0;
+        host = document.createElement("div");
+        host.className = "aw";
+        document.body.appendChild(host);
+        if (window.MCC_TRACK) window.MCC_TRACK("admin_walk_start", {});
+        paint();
+      }
+      var go = document.getElementById("mcWalkGo");
+      if (go) go.addEventListener("click", start);
+      var IN = document.getElementById("mcIn");
+      var seen = null;
+      try { seen = localStorage.getItem(KEY); } catch (e) {}
+      if (IN && !IN.classList.contains("mc__hidden") && !seen) setTimeout(start, 900);
     })();
   </script>
 </body>

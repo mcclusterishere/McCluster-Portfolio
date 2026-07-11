@@ -56,7 +56,7 @@ jobs:
           for n in ourworld-map char-mccluster char-ocho char-rahndrx \
                    space-only-us space-shiloh space-coffee-cam space-privi \
                    space-decibel space-revent-space space-revent-lounge \
-                   mc-hero mc-walkin mc-identity mc-craft mc-business mc-community mc-scholar \
+                   mission-hero mc-hero mc-walkin mc-identity mc-craft mc-business mc-community mc-scholar \
                    fr-worship fr-solar fr-home fr-class fr-hall; do
             f="assets/img/${n}.png"
             [ -f "$f" ] || continue
