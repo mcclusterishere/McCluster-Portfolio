@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Your Mission Control · Equity Uprise</title>
-  <meta name="description" content="Every member's own command room: the Trap that pays up to 1,000 E⤴︎ for doing literally everything in the app, your landing-page traffic, your listing data, your books — your numbers only.">
+  <meta name="description" content="Every member's own command room: T.R.A.P.S. that pays up to 1,000 E⤴︎ for doing literally everything in the app, your landing-page traffic, your listing data, your books — your numbers only.">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -117,12 +117,12 @@
     <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> THE MEMBER DESK · yours only — nobody else's numbers live here</p>
     <h1>Your Mission<br>Control.</h1>
     <p class="mm__sub">The house's command room, scoped to <b>you</b>. Pick your face up top — the whole desk
-      sorts to it and <b>stays</b> sorted, on your account, every device. Run <b>the Trap</b> and the house pays
+      sorts to it and <b>stays</b> sorted, on your account, every device. Run <b>T.R.A.P.S.</b> and the house pays
       <b>up to 1,000 E⤴︎, once</b> — every milestone verified against the record.</p>
 
     <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
 
-    <p class="mm__fine">The Trap pays <b>up to 1,000 E&#10548; per member, ever</b> — 100,000 points, verified by the ledger (1 E&#10548; = 100 points).
+    <p class="mm__fine">T.R.A.P.S. pays <b>up to 1,000 E&#10548; per member, ever</b> — 100,000 points, verified by the ledger (1 E&#10548; = 100 points).
       Trap credit spends everywhere on Our Street and never cashes out. Only your own numbers are readable from this room.</p>
   </main>
 
@@ -149,7 +149,7 @@
         return;
       }
 
-      /* THE POINTS LAW: 1 E⤴︎ = 100 points. The Trap's 975 E⤴︎ = 97,500 pts;
+      /* THE POINTS LAW: 1 E⤴︎ = 100 points. T.R.A.P.S.'s 975 E⤴︎ = 97,500 pts;
          the claim run's 25 E⤴︎ = 2,500 pts; the full run = 100,000 points. */
       var PTS = 100;
       var ARCS = [
@@ -262,7 +262,7 @@
                 '<p class="mm__sub card-call" style="padding:0.7rem 0.85rem;margin-bottom:0.7rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
                 '<span style="font-size:0.9rem">It deals your E⤴ Card and lines these missions up to your path.</span></p>') +
               "<h2>Your numbers are waking up.</h2>" +
-              '<p class="mm__sub" style="margin-top:0.2rem">The Trap loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p>' +
+              '<p class="mm__sub" style="margin-top:0.2rem">T.R.A.P.S. loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p>' +
               '<p class="mm__sub" style="font-size:0.84rem">Zeros below after a refresh? Your key may have gone stale — <a href="#" id="mmRekey" style="color:#e8c877">sign back in fresh &#8594;</a></p></div>';
           m = {};
         }
@@ -372,9 +372,10 @@
           '<b class="mm__pts">' + pts(paid) + " pts</b>" +
           "<small>of 100,000 — the full run · 1 E⤴︎ = 100 points</small></div></div>";
 
-        html += '<div class="mm__card"><p class="mm__k">The Trap · ' + done.length + "/" + GAUNTLET.length + " missions · " +
+        html += '<div class="mm__card"><p class="mm__k">T.R.A.P.S. · ' + done.length + "/" + GAUNTLET.length + " missions · " +
           pts(paid) + ' of 97,500 pts here (+2,500 on <a href="backend.html" style="color:#c99d45">the claim run</a>)</p>' +
           "<h2>Do literally everything. 100,000 points.</h2>" +
+          '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.2rem;color:#e8c877"><b>T</b>ake <b>R</b>isk <b>A</b>nd <b>P</b>rosper — <b>S</b>ystem.</p>' +
           '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 975 * 100) + '%"></i></div>' +
           (minted > 0 ? '<p class="mm__msg">💰 +' + pts(minted) + " pts (" + minted.toFixed(2) + " E⤴︎) just landed for what you've already done.</p>" : "") +
           /* YOUR NEXT MOVES: the desk reads your E⤴ Card and puts the
