@@ -2907,7 +2907,10 @@
              ["github", "⌥ Connect GitHub", "#6e7681,#24292f", "#fff"],
              ["twitch", "⏵ Connect Twitch", "#a970ff,#6441a5", "#fff"],
              ["reddit", "◉ Connect Reddit", "#ff6a2c,#d93a00", "#fff"],
-             ["x", "𝕏 Connect X", "#3a3a3a,#111", "#fff"]].map(function (c) {
+             ["x", "𝕏 Connect X", "#3a3a3a,#111", "#fff"]].filter(function (c) {
+              /* Spotify rides the admin desk only while in dev mode */
+              return c[0] !== "spotify" || (window.MCC_SUPA.email && window.MCC_SUPA.email()) === "matthew@mccluster.org";
+            }).map(function (c) {
               return '<button class="btn btn--xc" data-oauth="' + c[0] + '" style="justify-content:center;background:linear-gradient(180deg,' + c[2] + ');color:' + c[3] + '">' + c[1] + " — log in &amp; done</button>";
             }).join("") + "</div>" +
             '<p class="mp__note" style="margin:0 0 0.6rem">Or paste links by hand — same machine, same nightly 8:17 sweep:</p>' +

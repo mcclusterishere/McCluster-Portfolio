@@ -684,6 +684,9 @@
           identity: "identity", world: "the world outside", sales: "sales book · declared",
           trust: "street credit → trust" };
         document.getElementById("pgOpenParts").innerHTML =
+          /* TWO TAPES: the listing's price is above; the PERSON behind it
+             carries their own price and street credit — different stocks */
+          (line.person_price != null ? cell("$" + (+line.person_price).toFixed(2), "the person · their own price", "#e8c877") : "") +
           (line.score != null ? cell((+line.score).toLocaleString() + " / 1000", "street credit score", "#2fbf71") : "") +
           Object.keys(LBL).map(function (k) {
             return P2[k] != null ? cell((+P2[k]).toLocaleString() + " pts", LBL[k], "#e8c877") : "";
