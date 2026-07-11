@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>The Street Cred Portal · Equity Uprise</title>
-  <meta name="description" content="The Street Cred Portal: your street credit score in the open, the accounts that verify you, your civic card and vote — the reputation engine of Equity Uprise, run in public.">
+  <meta name="description" content="The Street Cred Portal: your street credit score in the open, the accounts that verify you, your E⤴ Card and vote — the reputation engine of Equity Uprise, run in public.">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -76,7 +76,9 @@
     </section>
 
     <section class="cv__card">
-      <p class="cv__k">Your civic card</p>
+      <p class="cv__k">Your E⤴ Card</p>
+      <p class="cv__sub" style="margin-top:0.2rem"><b>Low key, this is your credit card.</b> Your price, your street
+        cred, and your buying power all ride it — and you pay for services with it, straight off the desk.</p>
       <h2>Pick your side of the work.</h2>
       <div id="cvCardHost"><p class="cv__sub" style="margin-top:0.2rem">Checking your card…</p></div>
     </section>
@@ -161,7 +163,7 @@
       <div id="cvBills"><p class="cv__sub" style="margin-top:0.2rem">Opening the docket…</p></div>
     </section>
 
-    <p class="cv__fine">Your civic card is self-reported and <b>private by design</b>: party, registration, district,
+    <p class="cv__fine">Your E⤴ Card is self-reported and <b>private by design</b>: party, registration, district,
       and voting history are visible only to you and the desk — never on a public profile, never sold, never shared.
       The public numbers above are counts only. The docket is pulled from official legislative records
       (openstates.org) on a fixed schedule; its git history is the archive.</p>
@@ -470,13 +472,13 @@
           var g = $("cvPulse");
           function stat(n, l) { return '<div class="cv__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
           if (!j) { g.innerHTML = stat("—", "arms after one paste: docs/civic-schema.sql"); return; }
-          g.innerHTML = stat(+j.members || 0, "civic cards filed") +
+          g.innerHTML = stat(+j.members || 0, "E⤴ Cards filed") +
             stat(+j.policy_accounts || 0, "policy accounts") +
             stat(+j.registered || 0, "registered to vote") +
             stat(+j.states || 0, "states in the room");
         }).catch(function () {});
 
-      /* ---- the civic card: self-reported, private, one save ---- */
+      /* ---- the E⤴ Card: self-reported, private, one save ---- */
       var CARD = { mode: "fan", modes: ["fan"], focus: [], issues: [], country: "US" };
       var COUNTRIES = [
         ["US", "United States", "Congress · statehouse · city council — your three arenas."],
@@ -517,7 +519,7 @@
           ["2026", "2024", "2022", "2020", "before 2020", "never yet"].map(function (v) { return '<option value="' + v + '"' + (CARD.last_voted === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
           '<select class="cv__in" id="cvParty"><option value="">Party status? (optional — stays private)</option>' +
           ["Democrat", "Republican", "Independent", "Other", "None", "keep private"].map(function (v) { return '<option value="' + v + '"' + (CARD.party === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
-          '<button class="btn btn--ruby" id="cvSave" type="button" style="width:100%;justify-content:center">Save my civic card</button>' +
+          '<button class="btn btn--ruby" id="cvSave" type="button" style="width:100%;justify-content:center">Save my E⤴ Card</button>' +
           '<p class="cv__msg" id="cvMsg"></p>' +
           '<p class="cv__sub" style="font-size:0.84rem;margin-top:0.4rem">Only you and the desk ever see this card. The public sees counts.</p>';
         host.querySelector("#cvMode").addEventListener("click", function (e) {

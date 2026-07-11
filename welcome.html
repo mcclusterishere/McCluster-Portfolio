@@ -122,7 +122,7 @@
         return;
       }
 
-      var ROLES = [["Music", "Artist / Music"], ["Beats", "Producer"], ["Photo", "Photographer"], ["Social", "Creator / Social"],
+      var ROLES = [["Music", "Artist / Music"], ["Beats", "Producer"], ["Photo", "Photographer"], ["Social", "Creator / Social"], ["Rides", "Driver / Rides"],
         ["Video", "Videographer"], ["Web", "Web / Software"], ["Studios", "Studio"],
         ["Stages", "Venue / Space"], ["Brand", "Brand / Business"], ["Programs", "Civic / Community"]];
       var GOALS = [["booked", "Get booked & paid"], ["music", "Put my music on"], ["collab", "Find collaborators"],
@@ -177,6 +177,14 @@
       }
       function sClaim() {
         var AS = new URLSearchParams(location.search).get("as") || "";
+        if (AS === "driver") {
+          if (A.roles.indexOf("Rides") === -1) A.roles.push("Rides");
+          card('<h2>Driving on your own terms.</h2><p><b>We pre-picked the Rides lane</b> — adjust anything. ' +
+            'Name your rate about 10% over the meter apps: the rider taps your phone, pays through the desk, and <b>your whole fare arrives — no 25–40% cut.</b></p>' +
+            chiprow(ROLES, A.roles, true) + goBtn("That\u2019s me — keep walking"));
+          wireChips(A.roles, true);
+          return;
+        }
         if (AS === "space") {
           card('<h2>Listing your space.</h2><p><b>We pre-picked the space paths for you</b> — the glowing picks are yours to adjust. ' +
             'Run something else too (music, photo, video)? Tap it on and the walk adds those questions.</p>' +
@@ -223,7 +231,7 @@
         wireChips(A.amen, true);
       }
       function sCivic() {
-        card('<h2>Your civic lane.</h2><p>The Uprise gives you a real seat — you can file your full civic card later.</p>' +
+        card('<h2>Your civic lane.</h2><p>The Uprise gives you a real seat — you can file your full E⤴ Card later.</p>' +
           '<span class="wl__lbl">What you care about most</span>' +
           '<input class="wl__in" id="wlIssue" type="text" placeholder="e.g. housing, youth, environmental justice" value="' + esc(A.issue) + '">' +
           '<span class="wl__lbl">Your district / city</span>' +
@@ -272,6 +280,7 @@
           '<div class="wl__ex"><b>2 · Spend gold on reach</b><small>Ads, features, placement — the network working for you (next step).</small></div>' +
           '<div class="wl__ex"><b>3 · Take the deal</b><small>Somebody books you. They pay one price; your ask arrives whole — <b style="color:#00c805">green</b>.</small></div>' +
           '<div class="wl__ex"><b>4 · Repeat until the flip is real</b><small>50 gold &#8594; reach &#8594; deals &#8594; <b style="color:#00c805">1,000+ green</b> — earned off other members, cashable, yours.</small></div>' +
+          '<div class="wl__ex" style="border-left:3px solid #e5383b"><b style="color:#e5383b">The risk is real — this is a LOAN, not a gift</b><small>Make one real move inside <b>30 days</b> — your listing live, or your first earn — or the house calls the <b>whole stake back</b>. One stake per lifetime: no restarts, no re-deals, no second walk-in stake. Take Risk And Prosper — or hand it back.</small></div>' +
           goBtn("Show me the ads →"));
       }
       function sBillboard() {
@@ -380,7 +389,7 @@
             fields.space = { type: A.spaceType || null, rate: A.rate ? +A.rate : null,
                              capacity: A.capacity ? +A.capacity : null, amenities: A.amen.slice() };
           }
-          // civic Chasers: park their lane so the civic card can pick it up
+          // civic Chasers: park their lane so the E⤴ Card can pick it up
           if (A.issue || A.district || A.reg) {
             terms.civic = { issue: A.issue || null, district: A.district || null, registered: A.reg || null };
           }
