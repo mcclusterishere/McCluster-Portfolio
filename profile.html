@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Your Profile · Equity Uprise</title>
-  <meta name="description" content="One profile, two sides: the public face the floor sees, and the private rooms where you work — filtered to the path you chase.">
+  <meta name="description" content="One profile, two sides: the public face Our Street sees, and the private rooms where you work — filtered to the path you chase.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -83,7 +83,7 @@
         ["mymission.html", "🎯", "Your missions", "The Trap: 100,000 points of real moves, filtered by your path.", "command"],
         ["civic.html", "🪪", "Street Cred Portal", "Your street credit score, verified accounts, civic card and vote.", "justice"],
         ["distribution.html", "🎛", "Distribution & identifiers", "The locker: the IDs your work pays through, seals, earnings.", "infra"],
-        ["market.html#wire", "💬", "The Wire", "Speak to the whole floor.", "signal"],
+        ["market.html#wire", "💬", "The Wire", "Speak to all of Our Street.", "signal"],
         ["academy.html", "🎓", "The Academy", "Six lessons, a real wallet, gas on the house.", "culture"],
         ["ourworld.html", "🕹", "The Game", "Uprise Nation and BLOCK OPS — plays that move your ticker.", "access"],
         ["crews.html", "🧩", "Your crew", "Ride with a unit — collective score, one board, no lies.", "command"],
@@ -101,7 +101,7 @@
       function paintOut() {
         main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
           "<h1>Your<br>Profile.</h1>" +
-          '<p class="pf__sub"><b>Two sides to every member:</b> the public face the floor sees, and the private rooms where you work. ' +
+          '<p class="pf__sub"><b>Two sides to every member:</b> the public face Our Street sees, and the private rooms where you work. ' +
           "It starts with your card.</p>" +
           '<div class="pf__card card-call"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
           '<span style="font-size:0.9rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
@@ -143,14 +143,14 @@
           '<div style="margin-top:0.6rem">' + archLine + "</div>" +
           '<div id="pfHero" aria-hidden="true" style="border-radius:18px;border:1px solid rgba(244,239,230,0.16);min-height:8.5rem;background:linear-gradient(140deg,#1a1210,#0d0a08);background-size:cover;background-position:center;margin-top:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)"></div>' +
           '<div class="pf__sides">' +
-          '<button class="pf__side is-on" type="button" data-side="pub">🌍 Public — the floor sees</button>' +
+          '<button class="pf__side is-on" type="button" data-side="pub">🌍 Public — Our Street sees</button>' +
           '<button class="pf__side" type="button" data-side="priv">🔒 Private — your rooms</button></div>' +
 
           '<div class="pf__pane is-on" data-pane="pub">' +
           (slug
             ? '<div class="pf__doors">' +
               '<a class="pf__door" href="page.html?who=' + esc(slug) + '" style="--dc:#e8c877"><span class="ic">📄</span><span style="flex:1"><b>Your public page</b><small>Films, music, receipts, your ticker — what any visitor sees.</small></span><span class="go">&#8594;</span></a>' +
-              '<a class="pf__door" href="market.html?to=' + esc((mine.ticker || slug)) + '" style="--dc:#00c805"><span class="ic">📈</span><span style="flex:1"><b>Your ticker on the floor</b><small>The real chart, real prints, real stats.</small></span><span class="go">&#8594;</span></a>' +
+              '<a class="pf__door" href="market.html?to=' + esc((mine.ticker || slug)) + '" style="--dc:#00c805"><span class="ic">📈</span><span style="flex:1"><b>Your ticker on Our Street</b><small>The real chart, real prints, real stats.</small></span><span class="go">&#8594;</span></a>' +
               '<button class="pf__door" type="button" id="pfShare" style="--dc:#45b6ff;font:inherit;text-align:left;cursor:pointer;background:rgba(18,14,11,0.85)"><span class="ic">🔗</span><span style="flex:1"><b>Share your page</b><small id="pfShareNote">One link carries all of it: page.html?who=' + esc(slug) + "</small></span><span class=\"go\">&#8594;</span></button></div>" +
               '<div class="pf__stats" id="pfStats"></div>'
             : '<p class="pf__sub">No listing yet — <a href="welcome.html" style="color:#e8c877">finish the walk-in</a> and your public page, ticker and chart go up together.</p>') +

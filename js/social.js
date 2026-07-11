@@ -98,7 +98,7 @@
       });
     },
 
-    /* ---- THE WIRE: the whole floor's posts in one public feed ---- */
+    /* ---- THE WIRE: all of Our Street's posts in one public feed ---- */
     wire: function (limit) {
       return rest("rpc/wire_feed", { method: "POST", body: { p_limit: limit || 40 } })
         .then(function (rows) { return rows || []; }).catch(function () { return []; });

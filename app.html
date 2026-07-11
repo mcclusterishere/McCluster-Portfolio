@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
     body { background: #0a0807; }
-    /* the floor clears the appbar AND the mini player — no CTA ever sits under the bar */
+    /* Our Street clears the appbar AND the mini player — no CTA ever sits under the bar */
     .sp { max-width: 60rem; margin: 0 auto; padding: 0 0 calc(12.5rem + env(safe-area-inset-bottom)); position: relative; }
     .sp__stats-empty { grid-column: 1 / -1; color: var(--cream-dim); font-size: 0.9rem; line-height: 1.55;
       border: 1px dashed rgba(244, 239, 230, 0.18); border-radius: 12px; padding: 0.9rem 1rem; }
@@ -337,7 +337,7 @@
 
     <!-- the heat: what the whole network is playing, right now -->
     <section class="sprow" data-cat="song" id="heatRow">
-      <div class="sprow__t"><div><p class="sprow__k">Live plays &middot; the whole floor</p><h2>The Heat</h2></div>
+      <div class="sprow__t"><div><p class="sprow__k">Live plays &middot; all of Our Street</p><h2>The Heat</h2></div>
         <span class="sprow__n" id="heatNote">warming up&hellip;</span></div>
       <div class="heat" id="heat"></div>
       <label class="heat__priv"><input type="checkbox" id="heatPub" checked>
@@ -763,7 +763,7 @@
         if (HASH2F[location.hash]) applyFilter(HASH2F[location.hash]);
       });
 
-      /* ---------- the heat: live plays across the floor, hot to cold ----------
+      /* ---------- the heat: live plays across Our Street, hot to cold ----------
          Real numbers: the cloud counter (every listener, every device) plus
          this device's plays. GA gets the same events for the deep analytics;
          this is the number the room can read RIGHT NOW. */

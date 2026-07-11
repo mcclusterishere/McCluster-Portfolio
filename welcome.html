@@ -172,7 +172,7 @@
             '<span style="color:var(--cream-dim);font-size:0.9rem">It deals your E⤴ Card, pre-fills this walk, and pays your first game points.</span></p>';
         card('<h2>Welcome, Chaser.</h2>' +
           '<p><b>You&rsquo;re in.</b> Real deals, real records, your own ticker — moved by real work.<br>' +
-          'A few taps dress your card, then the floor is yours.</p>' +
+          'A few taps dress your card, then Our Street is yours.</p>' +
           riseLine + goBtn("Walk me in"));
       }
       function sClaim() {
@@ -190,7 +190,7 @@
         wireChips(A.roles, true);
       }
       function sCard() {
-        card('<h2>The card the floor sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
+        card('<h2>The card Our Street sees.</h2><p>One line on what you do, where you work, and your rate if you have one.</p>' +
           '<span class="wl__lbl">Your one-liner</span>' +
           '<input class="wl__in" id="wlHead" type="text" placeholder="e.g. CT artist — Leader by Voice" value="' + esc(A.headline) + '">' +
           '<span class="wl__lbl">Where you work</span>' +
@@ -236,7 +236,7 @@
         });
       }
       function sGoals() {
-        card('<h2>What are you here for?</h2><p>This tunes what the floor shows you first.</p>' +
+        card('<h2>What are you here for?</h2><p>This tunes what Our Street shows you first.</p>' +
           chiprow(goalsFor(), A.goals, true) + goBtn());
         wireChips(A.goals, true);
       }
@@ -247,7 +247,7 @@
           'The platform\'s cut is baked into the buyer\'s number on the back end, so <b>you never eat a processing fee. Ever.</b> ' +
           'Not on a booking, not on a beat, not on a drop.</p>' +
           '<div class="wl__ex"><b>E⤴︎ credit — earned, then cashed out</b><small>1 E⤴︎ = $1, backed by the Equity Reserve. ' +
-          'Finish a deal and you earn credit on top of your pay. Credit you <b>earned by work cashes out</b>; credit you buy or get gifted spends on the floor. Nothing is fake — nothing mints unbacked.</small></div>' +
+          'Finish a deal and you earn credit on top of your pay. Credit you <b>earned by work cashes out</b>; credit you buy or get gifted spends on Our Street. Nothing is fake — nothing mints unbacked.</small></div>' +
           '<div class="wl__ex"><b>The equity pool — a stake for building the house</b><small>Every real deal draws 1% into a pool, and you accrue a stake that grows the more you move. It\'s a membership benefit, not a bill — it never comes out of your rate.</small></div>' +
           goBtn("Almost done →"));
       }
@@ -259,7 +259,7 @@
           'light up your card and unlock archetypes. Your daily value goes up when you play.</small></div>' +
           '<div class="wl__ex"><b>The Plug — get paid for life</b><small>Every Chaser has a share link. Bring 3 real signups and earn 1 E⤴︎ — ' +
           'plus a <b>lifetime 1%</b> of everything the people you bring ever earn here. Build your team, eat forever.</small></div>' +
-          goBtn("Save my card & open the floor") +
+          goBtn("Save my card & open Our Street") +
           '<button class="wl__skip" type="button" data-tour>…or take the guided tour first</button>' +
           '<p class="wl__msg" id="wlMsg"></p>');
       }

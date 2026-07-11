@@ -65,7 +65,7 @@
   var TIPS = [
     "New here? Tap the <b>M</b> — I'll show you around.",
     "Stuck? Ask me how to earn your first E⤴︎.",
-    "Wanna get paid? Tap me — I'll walk you to the floor.",
+    "Wanna get paid? Tap me — I'll walk you to Our Street.",
     "Ask me how <b>the Trap</b> pays up to 1,000 E⤴︎.",
     "Curious how the plug pays for life? Tap the <b>M</b>.",
   ];
@@ -86,7 +86,7 @@
   var panel = document.createElement("div");
   panel.className = "gd__panel";
   panel.innerHTML =
-    '<div class="gd__head"><b>THE GUIDE</b><small>knows the whole floor</small>' +
+    '<div class="gd__head"><b>THE GUIDE</b><small>knows all of Our Street</small>' +
     '<button type="button" class="gd__hbtn" data-gd="voice" aria-label="Voice replies">🔈</button>' +
     '<button type="button" class="gd__hbtn" data-gd="close" aria-label="Close">✕</button></div>' +
     '<div class="gd__body" data-gd="body"></div>' +
@@ -141,7 +141,7 @@
       body.innerHTML =
         '<div class="gd__door">The Guide talks to members. ' +
         '<a href="market.html#yours">Open your account</a> — it takes one tap — and I\'ll walk you through everything: ' +
-        "the floor, the missions, Uprise Nation, the civic route, all of it.</div>";
+        "Our Street, the missions, Uprise Nation, the civic route, all of it.</div>";
       return;
     }
     bubble("Pulling up our thread…", "ai", true);
@@ -211,7 +211,7 @@
     }).then(function () { busy = false; });
   }
 
-  /* the mic: the browser's own ears — free, and only while you hold the floor */
+  /* the mic: the browser's own ears — free, and only while you hold Our Street */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var rec = null;
   if (!SR) micBtn.style.display = "none";

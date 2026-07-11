@@ -10,7 +10,7 @@
   var META = {
     signal: { name: "The Signal Chaser", world: "The Signal District", ic: "📡", color: "#45b6ff",
       line: "You turn information into attention — the block hears about it because you said it.",
-      turf: ["market.html#wire", "The Wire", "Your home turf: speak once and the whole floor hears it."] },
+      turf: ["market.html#wire", "The Wire", "Your home turf: speak once and all of Our Street hears it."] },
     infra: { name: "The Infrastructure Chaser", world: "The Infrastructure Yard", ic: "🏗", color: "#c99d45",
       line: "You own or redesign the part everyone else depends on.",
       turf: ["distribution.html", "The Locker", "Your home turf: rails, identifiers, the plumbing money moves through."] },

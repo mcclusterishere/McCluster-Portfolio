@@ -1,7 +1,7 @@
-/* MCC_TOUR — the walk of the floor.
+/* MCC_TOUR — the walk of Our Street.
    The sandbox personas are gone; this is what replaced them. A real
    spotlight tour over the REAL market — no fake identity, no costume,
-   just the room shown properly: the floor, a live ticker, the pay
+   just the room shown properly: Our Street, a live ticker, the pay
    door, the keypad, the desk. Each step spotlights the actual control
    and either the visitor taps it themselves or Next performs the move.
 
@@ -61,7 +61,7 @@
   var STEPS = [
     {
       target: null,
-      kick: "The floor",
+      kick: "Our Street",
       title: "Everybody trades.",
       body: "Every artist, room, and operator here runs under a ticker — moved by real work: deals kept, ratings earned, plays counted. This is the whole city on one screen.",
       img: "assets/img/floor-scene.png",
@@ -106,7 +106,7 @@
       target: function () { return q(".gd__fab"); },
       kick: "The glowing M",
       title: "Your guide lives up here.",
-      body: "Tap the M any time, on any page — it knows the floor, your card, and the fastest route to whatever you're trying to do. Ask it anything in plain words.",
+      body: "Tap the M any time, on any page — it knows Our Street, your card, and the fastest route to whatever you're trying to do. Ask it anything in plain words.",
     },
     {
       target: null,
@@ -190,7 +190,7 @@
         return '<a href="' + d[0] + '">' + d[1] + "</a>";
       }).join("") + "</div>" : "") +
       '<div class="tour__acts">' +
-      '<button class="tour__next" type="button" data-tour-next>' + (current === STEPS.length - 1 ? "Walk the floor" : "Next") + "</button>" +
+      '<button class="tour__next" type="button" data-tour-next>' + (current === STEPS.length - 1 ? "Walk Our Street" : "Next") + "</button>" +
       '<button class="tour__skip" type="button" data-tour-skip>Skip the tour</button></div>';
     card.querySelector("[data-tour-next]").addEventListener("click", next);
     card.querySelector("[data-tour-skip]").addEventListener("click", end);
@@ -243,7 +243,7 @@
     chip.textContent = "✦ Tour";
     chip.addEventListener("click", start);
     rail.appendChild(chip);
-    // the Wire and the Academy ride the same rail — one tap off the floor
+    // the Wire and the Academy ride the same rail — one tap off Our Street
     [["market.html#wire", "⚡ The Wire"], ["academy.html", "⛓ Academy"]].forEach(function (d) {
       var a = document.createElement("a");
       a.className = "mk__jump";
@@ -253,7 +253,7 @@
     });
   }
 
-  /* first visit, signed out, standing on the floor → the walk begins */
+  /* first visit, signed out, standing on Our Street → the walk begins */
   var forced = /(^|[?&])tour=1/.test(location.search) || location.hash === "#tour";
   var done = false;
   try { done = !!localStorage.getItem(DONE_KEY); } catch (e) {}

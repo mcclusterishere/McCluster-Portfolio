@@ -276,7 +276,7 @@
    "name": "Hitman Benji",
    "ticker": "BENJI",
    "headline": "The masked operator · platform lore legend",
-   "blurb": "Never a face, always the work. Visuals, sound, and direction delivered masked. Two lines on the floor — the operator and the brand. Put him on a job; it goes on the record.",
+   "blurb": "Never a face, always the work. Visuals, sound, and direction delivered masked. Two lines on Our Street — the operator and the brand. Put him on a job; it goes on the record.",
    "area": "Everywhere · masked",
    "roles": [
     "Video",
@@ -291,7 +291,7 @@
    "terms": {
     "floor": 50,
     "feature": 500,
-    "notes": "Book the operator on the floor. Signed, masked, delivered — the desk runs this line until Benji claims it."
+    "notes": "Book the operator on Our Street. Signed, masked, delivered — the desk runs this line until Benji claims it."
    }
   },
   {
@@ -300,7 +300,7 @@
    "name": "Hitman Gear",
    "ticker": "GEAR",
    "headline": "Masked streetwear for operators",
-   "blurb": "Tactical black, crimson insignia, no traceable logos. The apparel line the whole gang wears — masks, vests, and the no-face hoodie. The storefront on the floor is open.",
+   "blurb": "Tactical black, crimson insignia, no traceable logos. The apparel line the whole gang wears — masks, vests, and the no-face hoodie. The storefront on Our Street is open.",
    "area": "Hitman Gear · the brand",
    "roles": [
     "Merch"
@@ -312,7 +312,7 @@
    "lore": true,
    "terms": {
     "floor": 45,
-    "notes": "The gear drop — masks from $45, vests, hoodies. Cop it on the floor."
+    "notes": "The gear drop — masks from $45, vests, hoodies. Cop it on Our Street."
    }
   },
   {
@@ -382,7 +382,7 @@
    "href": "profile-ocho.html",
    "claimed": false,
    "terms": {
-    "notes": "Only Us Radio — Ocho's business on the floor, unclaimed."
+    "notes": "Only Us Radio — Ocho's business on Our Street, unclaimed."
    }
   },
   {

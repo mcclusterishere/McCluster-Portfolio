@@ -45,7 +45,7 @@
     <h1>Claim Your<br>Account.</h1>
     <p class="cl__sub" id="clSub">No password, no waiting. <b>One tap opens a real account in the network</b> — your ticker, your desk, your listing, your deals.</p>
 
-    <!-- the named claim: ?who= matched a ticker on the floor -->
+    <!-- the named claim: ?who= matched a ticker on Our Street -->
     <div class="cl__card cl__hidden" id="clWhoCard">
       <div class="cl__who">
         <img id="clPhoto" src="assets/img/m-mark.png" alt="">
@@ -66,7 +66,7 @@
     <!-- already signed in -->
     <div class="cl__card cl__hidden" id="clInCard">
       <p class="cl__note" style="margin-top:0"><b>You're already in.</b> The desk is where the claim finishes —
-        the listing form is prefilled and one Save puts you on the floor.</p>
+        the listing form is prefilled and one Save puts you on Our Street.</p>
       <a class="cl__big" id="clDeskGo" href="market.html#yours" style="text-align:center;text-decoration:none">Open your desk →</a>
     </div>
 
@@ -135,7 +135,7 @@
         });
       }
 
-      /* ---- boot: the floor (cloud + seed) answers every name ---- */
+      /* ---- boot: Our Street (cloud + seed) answers every name ---- */
       if (AUTHED && !who) {
         $("clInCard").classList.remove("cl__hidden");
       } else {
@@ -149,7 +149,7 @@
             track("claim_view", { who: who });
           } else {
             if (who && !p) {
-              $("clErr").textContent = "That name isn't on the floor yet — no problem, the door still opens.";
+              $("clErr").textContent = "That name isn't on Our Street yet — no problem, the door still opens.";
               track("claim_miss", { who: who });
             }
             if (legacy && legacy.ticker) {

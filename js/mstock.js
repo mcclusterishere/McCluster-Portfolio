@@ -70,7 +70,7 @@
     var standing = inp.listing && inp.listing.status === "live";
 
     /* walk the last 30 days: labor compounds, quiet days cool toward par,
-       and the market's size sets how hard the floor pushes back */
+       and the market's size sets how hard Our Street pushes back */
     var series = [];
     var v = 100;
     var now = Date.now();
@@ -86,7 +86,7 @@
     var dmean = dsum / DAYS;
     keys.forEach(function (k, idx) {
       var earned = (pts[k] || 0) + (standing ? W.standing : 0);
-      var pressure = 0.35 * Math.log(marketN + 1);      // more live players, faster the floor moves
+      var pressure = 0.35 * Math.log(marketN + 1);      // more live players, faster Our Street moves
       v = v + earned - (pts[k] ? 0 : pressure * 0.4) + (drifts[idx] - dmean) * 0.9;
       v = Math.max(38, v);
       series.push({ d: k, v: +v.toFixed(2) });
@@ -129,7 +129,7 @@
       '<p style="font-size:0.78rem;color:var(--cream-dim);letter-spacing:0.08em;margin-top:0.2rem">' +
       (opts.public
         ? "The public index \u2014 moves with the record: verified standing, the market's pace, the daily floor. Dollars stay private unless the holder shows them.</p>"
-        : "Your labor vs the market's pace \u2014 bookings done, deals signed, shows logged move it up; the floor never sleeps.</p>");
+        : "Your labor vs the market's pace \u2014 bookings done, deals signed, shows logged move it up; Our Street never sleeps.</p>");
 
     var cv = el.querySelector("#mstockCv");
     var cx = cv.getContext("2d");

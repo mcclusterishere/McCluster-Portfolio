@@ -236,7 +236,7 @@
     /* Mission Control: the admin surface. RLS (docs/admin-schema.sql) only
        answers these for the admin's own signed-in JWT — for anyone else
        every one of these comes back empty or refused. */
-    /* the Wire — the floor's open feed. Reads ride the same posts table
+    /* the Wire — Our Street's open feed. Reads ride the same posts table
        the pages use; writing requires a listing (RLS checks the slug). */
     feed: function () {
       return anon("posts?order=created_at.desc&select=id,slug,body,created_at&limit=60");
@@ -339,7 +339,7 @@
       revokeCivicRole: function (id) {
         return authed("civic_roles?id=eq." + id, { method: "PATCH", body: { active: false }, prefer: "return=representation" });
       },
-      /* the People's Board: the floor's proposals, ruled from the desk */
+      /* the People's Board: Our Street's proposals, ruled from the desk */
       proposals: function () { return authed("proposals?order=at.desc&select=*&limit=100"); },
       setProposal: function (id, status, note) {
         var body = { status: status };

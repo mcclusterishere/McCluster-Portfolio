@@ -36,7 +36,7 @@
     }
     /* the real native feel: every page is installable. "Add to Home
        Screen" from ANY page launches the app with zero browser chrome —
-       no Safari bars cutting the game or the floor. iOS reads these
+       no Safari bars cutting the game or Our Street. iOS reads these
        tags from whatever page the visitor is standing on, so they ride
        everywhere. */
     function headTag(html) {

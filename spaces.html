@@ -304,7 +304,7 @@
       function isSpace(p) { return (p.roles || []).some(function (r) { return SPACE_ROLES.indexOf(r) !== -1; }); }
 
       function load() {
-        // the floor paints from the local seed IMMEDIATELY — the cloud
+        // Our Street paints from the local seed IMMEDIATELY — the cloud
         // directory merges in when (and if) it answers. Nobody stares at
         // "Loading…" because a network call is thinking.
         var seen = {};
@@ -321,7 +321,7 @@
         ]).then(function (r) {
           (r[0].providers || []).forEach(function (p) { if (isSpace(p)) { ALL.push(p); seen[p.id] = 1; } });
           (r[1].amenities || []).forEach(function (a) { AMEN[a.id] = a; });
-          // promoted rooms lead the floor — self-serve advertising from the operator hub
+          // promoted rooms lead Our Street — self-serve advertising from the operator hub
           ALL.sort(function (a, b) { return (promoOf(b) ? 1 : 0) - (promoOf(a) ? 1 : 0); });
           renderChips(); renderGrid();
           // the booking link: spaces.html?who=slug drops the visitor straight

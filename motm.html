@@ -58,8 +58,8 @@
     <div id="moEmpty" class="mo__empty" style="display:none"><div>
       <p><b style="color:var(--cream)">No member holds the front door yet.</b><br>
       Member of the Month takes over this page — and the whole app's landing — the day the desk names them.
-      Until then, the floor is the show.</p>
-      <p style="margin-top:1rem"><a class="btn btn--ruby" href="market.html">Walk the floor &#8594;</a></p>
+      Until then, Our Street is the show.</p>
+      <p style="margin-top:1rem"><a class="btn btn--ruby" href="market.html">Walk Our Street &#8594;</a></p>
     </div></div>
 
     <section class="mo__hero" id="moHero" style="display:none">
@@ -121,14 +121,14 @@
           }).join("");
         });
 
-        // the live tape — same engine as the floor
+        // the live tape — same engine as Our Street
         if (window.MCC_STOCK && MCC_STOCK.build && MCC_STOCK.mount) {
           try { MCC_STOCK.mount($("moStock"), MCC_STOCK.build({ uid: slug, listing: p }), { public: true }); } catch (e) {}
         }
 
         $("moDoors").innerHTML =
           '<a class="mo__door" style="--dc:#f472b6" href="page.html?who=' + encodeURIComponent(slug) + '"><span class="ic">&#9733;</span><span><b>Their page</b><small>The feed, the music, the record — straight from them.</small></span></a>' +
-          (tick ? '<a class="mo__door" style="--dc:#00c805" href="market.html?to=' + encodeURIComponent(tick) + '"><span class="ic">$</span><span><b>Back them on the floor</b><small>The keypad opens loaded with $' + esc(tick) + ".</small></span></a>" : "") +
+          (tick ? '<a class="mo__door" style="--dc:#00c805" href="market.html?to=' + encodeURIComponent(tick) + '"><span class="ic">$</span><span><b>Back them on Our Street</b><small>The keypad opens loaded with $' + esc(tick) + ".</small></span></a>" : "") +
           '<a class="mo__door" style="--dc:#45b6ff" href="ourworld.html"><span class="ic">&#9654;&#xFE0E;</span><span><b>Find them in Uprise Nation</b><small>Their spot on the real map — drive out and pull up.</small></span></a>';
 
         track("motm_view", { slug: slug });

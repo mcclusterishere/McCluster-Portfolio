@@ -1,5 +1,5 @@
 {
- "note": "The distribution + identity registry, keyed by CATEGORY of work. Every category a member can onboard carries three linked things: (1) the correct IDENTIFIERS for that kind of work (the codes that prove and pay you), (2) the PLATFORMS you distribute/earn through (deep-linked to their reports/bank), and (3) the multicolored M-Verified BADGE that category earns. Distributable categories have external platforms; service/org categories earn through deals on the floor and still carry their own identifiers + badge. 'Other' is always offered in the UI. Extend freely \u2014 the flow is dynamic per category.",
+ "note": "The distribution + identity registry, keyed by CATEGORY of work. Every category a member can onboard carries three linked things: (1) the correct IDENTIFIERS for that kind of work (the codes that prove and pay you), (2) the PLATFORMS you distribute/earn through (deep-linked to their reports/bank), and (3) the multicolored M-Verified BADGE that category earns. Distributable categories have external platforms; service/org categories earn through deals on Our Street and still carry their own identifiers + badge. 'Other' is always offered in the UI. Extend freely \u2014 the flow is dynamic per category.",
  "industries": [
   {
    "id": "music",
@@ -322,7 +322,7 @@
    "kind": "org",
    "verb": "host",
    "badge": "venue",
-   "blurb": "Recording / photo studios & event spaces. You earn through bookings on the floor \u2014 no external distributor \u2014 but you carry a venue's identifiers.",
+   "blurb": "Recording / photo studios & event spaces. You earn through bookings on Our Street \u2014 no external distributor \u2014 but you carry a venue's identifiers.",
    "identifiers": [
     {
      "kind": "ein",
@@ -360,7 +360,7 @@
    "kind": "org",
    "verb": "host",
    "badge": "venue",
-   "blurb": "Live venues & stages. Earn through bookings on the floor; carry a venue's identifiers.",
+   "blurb": "Live venues & stages. Earn through bookings on Our Street; carry a venue's identifiers.",
    "identifiers": [
     {
      "kind": "ein",
@@ -429,7 +429,7 @@
    "kind": "service",
    "verb": "shoot",
    "badge": "creator",
-   "blurb": "Photographers, videographers & media pros. You earn through deals on the floor; carry your creator identity.",
+   "blurb": "Photographers, videographers & media pros. You earn through deals on Our Street; carry your creator identity.",
    "identifiers": [
     {
      "kind": "isni",
@@ -453,7 +453,7 @@
    "kind": "service",
    "verb": "build",
    "badge": "creator",
-   "blurb": "Web, design & tech builders. Earn through deals on the floor; carry your creator identity.",
+   "blurb": "Web, design & tech builders. Earn through deals on Our Street; carry your creator identity.",
    "identifiers": [
     {
      "kind": "isni",

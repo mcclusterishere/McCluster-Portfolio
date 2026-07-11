@@ -123,7 +123,7 @@
     <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
 
     <p class="mm__fine">The Trap pays <b>up to 1,000 E&#10548; per member, ever</b> — 100,000 points, verified by the ledger (1 E&#10548; = 100 points).
-      Trap credit spends everywhere on the floor and never cashes out. Only your own numbers are readable from this room.</p>
+      Trap credit spends everywhere on Our Street and never cashes out. Only your own numbers are readable from this room.</p>
   </main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
@@ -181,18 +181,18 @@
         scholar_3: "culture", scholar_6: "infra", gas_wallet: "capital" };
       var GAUNTLET = [
         ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained.", "walkin"],
-        ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you.", "walkin"],
+        ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how Our Street finds you.", "walkin"],
         ["signed", 15, "Sign the Member Agreement", "agreement.html", "Joining is signing — most members already wear this one.", "walkin"],
         ["push_on", 10, "Arm notifications", "market.html#yours", "The app taps you — paid, booked, awarded.", "walkin"],
         ["explorer", 35, "Move on five days", "ourworld.html", "Show up five separate days — the city pays consistency.", "walkin"],
-        ["ticker_claimed", 25, "Claim your ticker", "market.html#yours", "Your symbol on the floor — 2 to 5 letters, forever yours.", "identity"],
+        ["ticker_claimed", 25, "Claim your ticker", "market.html#yours", "Your symbol on Our Street — 2 to 5 letters, forever yours.", "identity"],
         ["first_id", 40, "Bank your first identifier", "distribution.html", "The IDs your category of work pays through — get one in the locker.", "identity"],
         ["id_stack", 45, "Stack three identifiers", "identifiers.html", "Three different kinds banked — the money lanes open.", "identity"],
         ["badge_applied", 40, "Apply for your seal", "distribution.html", "The multicolored M-Verified seal your category earns.", "identity"],
-        ["first_post", 25, "Speak on the Wire", "market.html#wire", "One post to the whole floor.", "craft"],
-        ["on_the_wire", 30, "Keep talking", "market.html#wire", "Three posts — the floor knows your voice.", "craft"],
+        ["first_post", 25, "Speak on the Wire", "market.html#wire", "One post to all of Our Street.", "craft"],
+        ["on_the_wire", 30, "Keep talking", "market.html#wire", "Three posts — Our Street knows your voice.", "craft"],
         ["first_track", 45, "Rack a record", "market.html#yours", "Upload a track to the Distro — free, yours, streaming.", "craft"],
-        ["listing_live", 50, "Go live on the floor", "market.html#yours", "Your listing verified and live — bookable by the whole network.", "craft"],
+        ["listing_live", 50, "Go live on Our Street", "market.html#yours", "Your listing verified and live — bookable by the whole network.", "craft"],
         ["first_deal", 40, "Send a deal", "market.html#build", "Terms, date, rate — put one on the record.", "business"],
         ["deal_signed", 60, "Sign a deal", "market.html#yours", "A deal signed, paid, or completed — money language on the record.", "business"],
         ["distro_connected", 50, "Connect your distributor", "distribution.html", "Say where you distribute — the desk knows your lanes.", "business"],
@@ -200,9 +200,9 @@
         ["payouts_armed", 45, "Arm card payouts", "market.html#yours", "Set up payouts and buyers pay you by card, straight through.", "business"],
         ["civic_card", 30, "File your civic card", "civic.html", "Fan account or policy account — pick your side of the work.", "community"],
         ["first_vote", 40, "Cast a vote", "control.html", "One head, one vote — steer how the platform develops.", "community"],
-        ["proposal_filed", 40, "File a proposal", "control.html", "Put an idea on the floor for the members to vote.", "community"],
+        ["proposal_filed", 40, "File a proposal", "control.html", "Put an idea on Our Street for the members to vote.", "community"],
         ["first_plug", 50, "Bring one in", "market.html#yours", "Your plug link puts your ticker on their door.", "community"],
-        ["guide_talk", 40, "Talk to the Guide", "market.html", "Ask the concierge anything — it knows the whole floor.", "community"],
+        ["guide_talk", 40, "Talk to the Guide", "market.html", "Ask the concierge anything — it knows all of Our Street.", "community"],
         ["scholar_3", 50, "Start the academy", "academy.html", "Three lessons in — web3 without the hype.", "scholar"],
         ["scholar_6", 40, "Finish the academy", "academy.html", "All six lessons — you know more than most of the internet.", "scholar"],
         ["gas_wallet", 30, "Claim your gas grant", "academy.html", "A real wallet, real gas, on the house.", "scholar"],
@@ -423,14 +423,14 @@
               }).join("") + "</div>";
           }).join("") +
           '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move. ' +
-          "Points are the score of the granted economy: they spend on the floor as E⤴︎ and never cash out — like a credit union, " +
+          "Points are the score of the granted economy: they spend on Our Street as E⤴︎ and never cash out — like a credit union, " +
           "the record of how you carry yourself IS the asset.</p></div>";
 
         html += lockLine("card_live", "dress your card", "market.html#yours");
         html += '<div class="mm__card' + lockCls("card_live") + '"><p class="mm__k">Your traffic — who came to YOU</p>' +
           "<h2>The numbers on your name.</h2><div class=\"mm__grid\">" +
           stat((+m.page_views || 0).toLocaleString(), "landing-page visits") +
-          stat((+m.floor_opens || 0).toLocaleString(), "ticker opens on the floor") +
+          stat((+m.floor_opens || 0).toLocaleString(), "ticker opens on Our Street") +
           stat((+m.plug_landings || 0).toLocaleString(), "souls your plug brought") +
           stat((+m.rack_plays || 0).toLocaleString(), "plays on your records") +
           stat((+m.followers || 0).toLocaleString(), "supporters") + "</div>" +
