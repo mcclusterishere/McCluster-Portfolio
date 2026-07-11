@@ -318,6 +318,11 @@
         if (note !== undefined) body.review_note = note;
         return authed("providers?id=eq." + id, { method: "PATCH", body: body, prefer: "return=representation" });
       },
+      /* THE PEN: the desk messages a member about what they did —
+         lands on their bell (docs/green-light.sql) */
+      noteMember: function (owner, msg) {
+        return authed("rpc/admin_note_member", { method: "POST", body: { p_owner: owner, p_msg: msg } });
+      },
       deals: function () { return authed("deals?order=updated_at.desc&select=*"); },
       grind: function () { return authed("device_state?select=owner,model,updated_at&order=updated_at.desc"); },
       requests: function () { return authed("booking_requests?order=created_at.desc&select=*"); },
