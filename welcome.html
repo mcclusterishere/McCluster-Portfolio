@@ -179,8 +179,8 @@
         var AS = new URLSearchParams(location.search).get("as") || "";
         if (AS === "driver") {
           if (A.roles.indexOf("Rides") === -1) A.roles.push("Rides");
-          card('<h2>Driving on your own terms.</h2><p><b>We pre-picked the Rides lane</b> — adjust anything. ' +
-            'Name your rate about 10% over the meter apps: the rider taps your phone, pays through the desk, and <b>your whole fare arrives — no 25–40% cut.</b></p>' +
+          card('<h2>Getting Whip Equipped.</h2><p><b>We pre-picked the Rides lane</b> — adjust anything. ' +
+            'The WE meter names the fare, the rider pays 10% on top, and <b>the whole thing lands on you — no 25–40% cut.</b> They tap your phone; it’s paid.</p>' +
             chiprow(ROLES, A.roles, true) + goBtn("That\u2019s me — keep walking"));
           wireChips(A.roles, true);
           return;

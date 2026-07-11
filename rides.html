@@ -3,85 +3,213 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>The Curb · Rides on Equity Uprise</title>
-  <meta name="description" content="Your city, your driver, your price. Drivers keep the whole fare — riders pay about 10% over the meter apps and every dollar lands on the driver, on the record.">
-  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <title>Whip Equipped · WE Rides on Equity Uprise</title>
+  <meta name="description" content="Whip Equipped — the WE tab. Run the meter, see the fare before you ride, tap the driver's phone to pay. Riders pay 10% on the meter; every dollar rides to the driver.">
+  <link rel="icon" type="image/png" href="assets/img/we-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
     .rd { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 36rem; margin: 0 auto; }
-    .rd h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 3.8rem); }
-    .rd__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; font-size: 1.02rem; }
+    .rd__plate { background: var(--cream, #f4efe6); border-radius: 18px; padding: 1.1rem 1.3rem; margin-top: 0.4rem;
+      box-shadow: 0 0 28px rgba(255, 92, 46, 0.22); }
+    .rd__plate img { display: block; width: min(100%, 19rem); margin: 0 auto; }
+    .rd__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.9rem; font-size: 1.02rem; }
     .rd__sub b { color: var(--cream); }
     .rd__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 18px; background: rgba(20,16,14,0.7);
-      padding: 1.2rem 1.15rem 1.3rem; margin-top: 1.2rem; border-left: 4px solid var(--rc, #c99d45); }
+      padding: 1.2rem 1.15rem 1.3rem; margin-top: 1.2rem; border-left: 4px solid var(--rc, #ff5c2e); }
     .rd__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.4rem; }
-    .rd__k { font-size: 0.74rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--rc, #c99d45); font-weight: 800; }
+    .rd__k { font-size: 0.74rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--rc, #ff5c2e); font-weight: 800; }
     .rd__row { display: flex; gap: 0.7rem; align-items: baseline; padding: 0.55rem 0; border-top: 1px dashed rgba(244,239,230,0.12); font-size: 0.95rem; }
     .rd__row:first-of-type { border-top: 0; }
-    .rd__row b { flex: none; width: 5.2rem; color: var(--rc, #c99d45); font-variant-numeric: tabular-nums; }
+    .rd__row b { flex: none; width: 5.2rem; color: var(--rc, #ff5c2e); font-variant-numeric: tabular-nums; }
     .rd__math { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.9rem; }
     .rd__m { border: 1px solid rgba(244,239,230,0.14); border-radius: 12px; padding: 0.85rem; text-align: center; }
     .rd__m b { display: block; font-family: var(--display); font-size: 1.5rem; }
     .rd__m small { color: var(--cream-dim); font-size: 0.74rem; line-height: 1.4; display: block; margin-top: 0.2rem; }
+    /* THE METER */
+    .rd__in { width: 100%; box-sizing: border-box; background: rgba(244,239,230,0.06); color: var(--cream);
+      border: 1px solid rgba(244,239,230,0.22); border-radius: 12px; padding: 0.8rem 0.95rem; font: inherit;
+      font-size: 1rem; margin-top: 0.6rem; }
+    .rd__in::placeholder { color: rgba(244,239,230,0.45); }
+    .rd__in:focus { outline: none; border-color: #ff5c2e; }
+    .rd__tape { margin-top: 1rem; border: 1px dashed rgba(244,239,230,0.25); border-radius: 12px; padding: 0.9rem 1rem; display: none; }
+    .rd__tape.is-on { display: block; }
+    .rd__tl { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.3rem 0; font-size: 0.92rem;
+      color: var(--cream-dim); font-variant-numeric: tabular-nums; }
+    .rd__tl b { color: var(--cream); font-weight: 700; }
+    .rd__tl.rd__tl--total { border-top: 1px solid rgba(244,239,230,0.2); margin-top: 0.4rem; padding-top: 0.65rem; font-size: 1.06rem; }
+    .rd__tl.rd__tl--total b { color: #ff5c2e; font-family: var(--display); font-size: 1.35rem; }
+    .rd__tl.rd__tl--eup b { color: #e8c877; }
+    .rd__err { color: #ff5000; font-size: 0.9rem; margin-top: 0.7rem; min-height: 1.2em; }
+    /* drivers */
+    .rd__drv { display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 0; border-top: 1px dashed rgba(244,239,230,0.12); }
+    .rd__drv:first-of-type { border-top: 0; }
+    .rd__drv-face { flex: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: rgba(255,92,46,0.16);
+      display: grid; place-items: center; font-family: var(--display); color: #ff5c2e; font-size: 1.1rem; overflow: hidden; }
+    .rd__drv-face img { width: 100%; height: 100%; object-fit: cover; }
+    .rd__drv-txt { flex: 1; min-width: 0; }
+    .rd__drv-txt b { display: block; font-size: 0.98rem; }
+    .rd__drv-txt small { color: var(--cream-dim); font-size: 0.8rem; }
   </style>
 </head>
 <body class="songpage">
   <div class="grain" aria-hidden="true"></div>
   <header class="site-head">
     <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav"><a href="market.html">Our Street</a><a href="ourworld.html">The Game</a></nav>
+    <nav class="site-head__nav"><a href="market.html">Our Street</a><a href="mymission.html">Your desk</a></nav>
   </header>
 
   <main class="rd">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> AFUERA · rides, on your own terms</p>
-    <h1>The<br>Curb.</h1>
-    <p class="rd__sub"><b>Your city, your driver, your price.</b> No dispatcher in the middle taking a third of the night.
-      The driver names the fare; the rider taps their phone; the money lands whole, on the record.</p>
+    <p class="kicker"><img class="kicker__mark" src="assets/img/we-mark.png" alt="" style="filter:none;border-radius:6px"> The WE tab · rides</p>
+    <div class="rd__plate"><img src="assets/img/we-logo.png" alt="WE — Whip Equipped. In this together."></div>
+    <p class="rd__sub"><b>Whip Equipped.</b> Real drivers, one honest meter, no dispatcher eating the night.
+      Run the fare before you ride; at the curb you tap the driver's phone and it's paid.</p>
 
-    <div class="rd__card" style="--rc:#00c805">
-      <p class="rd__k">Drivers — keep the whole fare</p>
-      <h2>The math that flips people.</h2>
-      <div class="rd__math">
-        <div class="rd__m"><b style="color:#ff5000">25–40%</b><small>what the meter apps take from every fare you drive</small></div>
-        <div class="rd__m"><b style="color:#00c805">0%</b><small>what leaves YOUR fare here — the platform's cut rides on the rider's side</small></div>
+    <div class="rd__card" style="--rc:#ff5c2e">
+      <p class="rd__k">The meter</p>
+      <h2>Know the fare before the wheels move.</h2>
+      <input class="rd__in" id="weFrom" type="text" placeholder="Pickup — address or place" autocomplete="off">
+      <input class="rd__in" id="weTo" type="text" placeholder="Drop-off — address or place" autocomplete="off">
+      <div class="finale__actions" style="margin-top:0.9rem">
+        <button class="btn btn--ruby" id="weRun" type="button">Run the meter &#8594;</button>
       </div>
-      <p class="rd__sub" style="font-size:0.95rem"><b>The play:</b> set your price about 10% over the meter apps.
-        The rider barely feels it — you feel all of it. Your ask arrives <b>whole</b>, every ride.</p>
-      <div class="finale__actions" style="margin-top:1rem">
-        <a class="btn btn--ruby" href="welcome.html?as=driver">Drive — put your name on the Curb &#8594;</a>
+      <p class="rd__err" id="weErr"></p>
+      <div class="rd__tape" id="weTape">
+        <div class="rd__tl"><span>Pull-off</span><b>$2.50</b></div>
+        <div class="rd__tl"><span id="weMiLbl">Distance</span><b id="weMi">—</b></div>
+        <div class="rd__tl"><span id="weMinLbl">Time</span><b id="weMin">—</b></div>
+        <div class="rd__tl"><span>Meter fare<span id="weFloor" style="display:none"> · $8 floor</span></span><b id="weFare">—</b></div>
+        <div class="rd__tl"><span>The raise — 10%, rides to your driver</span><b id="weTip">—</b></div>
+        <div class="rd__tl rd__tl--total"><span>You pay</span><b id="weTotal">—</b></div>
+        <div class="rd__tl rd__tl--eup"><span>Or in E&#10548; — 33% off, like everything here</span><b id="weEup">—</b></div>
       </div>
     </div>
 
     <div class="rd__card" style="--rc:#c99d45">
+      <p class="rd__k">Drivers on the road</p>
+      <h2>Ride with somebody real.</h2>
+      <div id="weDrivers"><p class="rd__sub" style="font-size:0.92rem;margin-top:0.4rem">Checking who's on the road…</p></div>
+    </div>
+
+    <div class="rd__card" style="--rc:#00c805">
+      <p class="rd__k">Drivers — keep it all</p>
+      <h2>The math that flips people.</h2>
+      <div class="rd__math">
+        <div class="rd__m"><b style="color:#ff5000">25–40%</b><small>what the meter apps take from every fare you drive</small></div>
+        <div class="rd__m"><b style="color:#00c805">0%</b><small>what leaves your fare here — meter plus the 10% raise, all yours</small></div>
+      </div>
+      <p class="rd__sub" style="font-size:0.95rem"><b>The play:</b> the meter names the fare, the rider pays 10% on top,
+        and the whole thing lands on <b>you</b> — whole, on the record, every ride.</p>
+      <div class="finale__actions" style="margin-top:1rem">
+        <a class="btn btn--ruby" href="welcome.html?as=driver">Drive — get Whip Equipped &#8594;</a>
+      </div>
+    </div>
+
+    <div class="rd__card" style="--rc:#e8c877">
       <p class="rd__k">How a ride pays</p>
       <h2>Tap the phone. That's it.</h2>
       <div class="rd__row"><b>1 · Ride</b><span>Your driver drives — same as any night.</span></div>
       <div class="rd__row"><b>2 · Tap</b><span>At the curb, they show their payment code — it opens the pay desk with their name loaded.</span></div>
-      <div class="rd__row"><b>3 · Pay</b><span>Card or E⤴ — one price, no fee lines. The deal goes on the record; both sides keep the receipt.</span></div>
-      <p class="rd__sub" style="font-size:0.9rem">Every driver's code lives on their desk — text it, AirDrop it, tape it to the dashboard.</p>
+      <div class="rd__row"><b>3 · Pay</b><span>Card or E&#10548; — one price, no fee lines. The deal goes on the record; both sides keep the receipt.</span></div>
     </div>
-
-    <div class="rd__card" style="--rc:#e8c877">
-      <p class="rd__k">Riders</p>
-      <h2>Why pay ~10% more?</h2>
-      <p class="rd__sub" style="font-size:0.95rem;margin-top:0.3rem">Because it's <b>your driver's app</b>, not a meter app —
-        your extra dollar goes to the person driving, not a dispatcher. Rides land on the record, your driver builds street
-        cred you can check, and paying in <b>E⤴ runs cheaper than cash</b> — like everything on the network.</p>
-      <div class="finale__actions" style="margin-top:0.9rem">
-        <a class="btn btn--ghost" href="market.html#providers">Find a driver on Our Street &#8594;</a>
-      </div>
-    </div>
-
-    <p class="rd__sub" style="font-size:0.88rem;margin-top:1.4rem">Looking for the game? <a href="ourworld.html" style="color:#e8c877;font-weight:800">Uprise Nation lives here &#8594;</a></p>
   </main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/floorcache.js?v=__STAMP__"></script>
   <script src="js/guide.js?v=__STAMP__"></script>
   <script>
-    if (window.MCC_TRACK) window.MCC_TRACK("curb_view", {});
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function usd(n) { return "$" + n.toFixed(2); }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p || {}); }
+
+      /* THE METER — the pricing law, in one place.
+         fare  = max($8, $2.50 pull-off + $1.60/mile + $0.35/minute)
+         rider = fare × 1.10   (the 10% raise rides ON TOP of the meter)
+         E⤴    = rider × 0.67  (network money runs 33% cheaper, rounded) */
+      function meter(miles, minutes) {
+        var raw = 2.5 + 1.6 * miles + 0.35 * minutes;
+        var fare = Math.max(8, raw);
+        var total = fare * 1.10;
+        return { fare: fare, floored: raw < 8, raise: total - fare, total: total, eup: Math.round(total * 0.67) };
+      }
+      window.WE_METER = meter; /* one law, testable */
+
+      function geocode(q) {
+        return fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q), {
+          headers: { Accept: "application/json" } })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (j) { return j && j[0] ? { lat: +j[0].lat, lon: +j[0].lon, name: j[0].display_name } : null; });
+      }
+      function route(a, b) {
+        return fetch("https://router.project-osrm.org/route/v1/driving/" + a.lon + "," + a.lat + ";" + b.lon + "," + b.lat + "?overview=false")
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            var r0 = j && j.routes && j.routes[0];
+            return r0 ? { miles: r0.distance / 1609.344, minutes: r0.duration / 60 } : null;
+          });
+      }
+
+      $("weRun").addEventListener("click", function () {
+        var from = $("weFrom").value.trim(), to = $("weTo").value.trim();
+        var err = $("weErr"), btn = $("weRun");
+        err.textContent = "";
+        if (!from || !to) { err.textContent = "Both ends of the ride — pickup and drop-off."; return; }
+        btn.disabled = true; btn.textContent = "Running…";
+        Promise.all([geocode(from), geocode(to)]).then(function (pts) {
+          if (!pts[0]) throw "Couldn't place the pickup — add a city or zip.";
+          if (!pts[1]) throw "Couldn't place the drop-off — add a city or zip.";
+          return route(pts[0], pts[1]);
+        }).then(function (leg) {
+          if (!leg) throw "No drivable route between those two — check the addresses.";
+          var m = meter(leg.miles, leg.minutes);
+          $("weMiLbl").textContent = leg.miles.toFixed(1) + " mi × $1.60";
+          $("weMi").textContent = usd(1.6 * leg.miles);
+          $("weMinLbl").textContent = Math.round(leg.minutes) + " min × $0.35";
+          $("weMin").textContent = usd(0.35 * leg.minutes);
+          $("weFloor").style.display = m.floored ? "" : "none";
+          $("weFare").textContent = usd(m.fare);
+          $("weTip").textContent = usd(m.raise);
+          $("weTotal").textContent = usd(m.total);
+          $("weEup").textContent = m.eup.toLocaleString() + " E⤴";
+          $("weTape").classList.add("is-on");
+          track("we_meter", { mi: +leg.miles.toFixed(1), min: Math.round(leg.minutes), total: +m.total.toFixed(2) });
+        }).catch(function (e) {
+          err.textContent = typeof e === "string" ? e : "The meter hiccuped — try again in a second.";
+        }).then(function () { btn.disabled = false; btn.innerHTML = "Run the meter &#8594;"; });
+      });
+
+      /* DRIVERS ON THE ROAD — anyone on Our Street carrying the Rides lane */
+      function paintDrivers(floor) {
+        var drivers = (floor.providers || []).filter(function (p) {
+          return (p.roles || []).some(function (r) { return /rid|driv/i.test(String(r)); });
+        });
+        var host = $("weDrivers");
+        if (!drivers.length) {
+          host.innerHTML = '<p class="rd__sub" style="font-size:0.92rem;margin-top:0.4rem">No drivers on the road in your city yet — ' +
+            '<a href="welcome.html?as=driver" style="color:#ff5c2e;font-weight:800">be the first</a>.</p>';
+          return;
+        }
+        host.innerHTML = drivers.map(function (p) {
+          var face = p.photo ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy">' : esc((p.name || "?").charAt(0));
+          return '<div class="rd__drv">' +
+            '<span class="rd__drv-face">' + face + "</span>" +
+            '<span class="rd__drv-txt"><b>' + esc(p.name) + "</b><small>" + esc(p.area || p.headline || "On the road") + "</small></span>" +
+            '<a class="btn btn--ghost" style="font-size:0.76rem;padding:0.5em 1.1em" href="market.html?to=' + esc(p.slug || p.id) + '">Book &#8594;</a>' +
+            "</div>";
+        }).join("");
+      }
+      if (window.MCC_FLOOR) {
+        window.MCC_FLOOR.load().then(paintDrivers).catch(function () { paintDrivers({ providers: [] }); });
+      } else { paintDrivers({ providers: [] }); }
+
+      track("we_view", {});
+    })();
   </script>
 </body>
 </html>
