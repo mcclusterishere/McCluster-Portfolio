@@ -141,7 +141,7 @@
       body.innerHTML =
         '<div class="gd__door">The Guide talks to members. ' +
         '<a href="market.html#yours">Open your account</a> — it takes one tap — and I\'ll walk you through everything: ' +
-        "the floor, the missions, Our World, the civic route, all of it.</div>";
+        "the floor, the missions, Uprise Nation, the civic route, all of it.</div>";
       return;
     }
     bubble("Pulling up our thread…", "ai", true);
