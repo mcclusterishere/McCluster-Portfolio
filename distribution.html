@@ -61,13 +61,19 @@
 
     <div id="dsGate"></div>
 
+    <!-- THE INTERVIEW: three questions before a single upload is asked
+         for — the desk learns who pays you, then shows ONLY your doors -->
+    <div id="dsQuiz" style="display:none"></div>
+
+    <div id="dsDesk">
     <div class="ds__tabs" id="dsTabs"></div>
     <p class="ds__note" id="dsNote"></p>
 
     <div id="dsBadge"></div>
 
     <h2 class="ds__sec-h" style="font-size:1.2rem;margin:1.6rem 0 0.2rem">Your platforms</h2>
-    <p class="ds__note" style="margin:0 0 0.7rem">Pick who you distribute through — reports & bank one tap away.</p>
+    <p class="ds__note" style="margin:0 0 0.7rem">Pick who you distribute through — reports & bank one tap away.
+      <button type="button" id="dsRetune" style="background:none;border:0;color:#c99d45;font:inherit;font-weight:700;cursor:pointer;padding:0">🔁 Retake the interview</button></p>
     <div class="ds__grid" id="dsGrid"></div>
 
     <h2 class="ds__sec-h" style="font-size:1.2rem;margin:1.8rem 0 0.2rem">Your identifiers</h2>
@@ -75,6 +81,7 @@
     <div class="ds__grid" id="dsIdent"></div>
 
     <div id="dsMine"></div>
+    </div><!-- /dsDesk -->
 
     <p class="ds__fine">Your uploaded earnings are your own self-reported income — a signal the desk can verify, and the
       backbone of your standing on the platform. It is <b>not</b> platform credit and never enters the cash-out rail;
@@ -120,16 +127,109 @@
             });
           });
           industry = (reg.industries[0] || {}).id || "music";
+          var qd0 = quizDone();
+          if (qd0 && qd0.ind) {
+            industry = qd0.ind;
+            $("dsTabs").querySelectorAll(".ds__tab").forEach(function (x) { x.classList.toggle("is-on", x.getAttribute("data-ind") === industry); });
+          }
           MCC_DIST.badges().then(function (b) { BADGES = b; paintBadge(); });
           refresh();
         });
       }
+
+      /* ---- THE INTERVIEW: three questions before a single upload is
+         asked for. The desk learns what you make and who pays you,
+         then shows only YOUR doors — DistroKid asks never reach a
+         BMI writer, and nobody meets a locker they can't fill. ---- */
+      function quizDone() {
+        try { return JSON.parse(localStorage.getItem("mcc_distro")); } catch (e) { return null; }
+      }
+      function showDesk(show) {
+        $("dsDesk").style.display = show ? "" : "none";
+        $("dsQuiz").style.display = show ? "none" : "";
+      }
+      function runQuiz() {
+        var q = $("dsQuiz");
+        showDesk(false);
+        var picked = { ind: null, dists: [], names: {}, statements: null, at: new Date().toISOString() };
+        function panel(step, title, note, inner) {
+          return '<div class="ds__stat" style="text-align:left;display:block">' +
+            '<p class="kicker" style="margin:0">The interview · ' + step + ' of 3</p>' +
+            '<h2 style="margin:0.3rem 0 0.2rem;font-size:1.3rem">' + title + "</h2>" +
+            '<p class="ds__note" style="margin:0 0 0.7rem;text-transform:none;letter-spacing:0">' + note + "</p>" + inner + "</div>";
+        }
+        function step1() {
+          q.innerHTML = panel(1, "What do you make?", "The desk only ever asks for what your world can actually produce.",
+            '<div class="ds__tabs" style="margin:0">' + (REG.industries || []).map(function (ind) {
+              return '<button class="ds__tab" type="button" data-q1="' + esc(ind.id) + '">' + esc(ind.name) + "</button>";
+            }).join("") + "</div>");
+          q.querySelectorAll("[data-q1]").forEach(function (b) {
+            b.addEventListener("click", function () { picked.ind = b.getAttribute("data-q1"); step2(); });
+          });
+        }
+        function step2() {
+          var list = (REG.distributors || []).filter(function (d) { return d.industry === picked.ind; });
+          q.innerHTML = panel(2, "Who sends it out — who pays you?",
+            "Tap everyone that applies. This is how the desk knows which reports exist for you and where they live.",
+            '<div class="ds__tabs" style="margin:0">' + list.map(function (d) {
+              return '<button class="ds__tab" type="button" data-q2="' + esc(d.id) + '" data-q2n="' + esc(d.name) + '">' + esc(d.name) + "</button>";
+            }).join("") +
+            '<button class="ds__tab" type="button" data-q2="__other__" data-q2n="Other">Somebody else</button>' +
+            '<button class="ds__tab" type="button" data-q2="__none__" data-q2n="Nobody yet">Nobody yet</button></div>' +
+            '<button class="btn btn--ruby" id="dsQ2Next" type="button" style="margin-top:0.9rem">Next &#8594;</button>');
+          q.querySelectorAll("[data-q2]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var id = b.getAttribute("data-q2");
+              if (id === "__none__") { picked.dists = []; picked.names = {}; step3(); return; }
+              b.classList.toggle("is-on");
+              var i = picked.dists.indexOf(id);
+              if (i === -1) { picked.dists.push(id); picked.names[id] = b.getAttribute("data-q2n"); }
+              else picked.dists.splice(i, 1);
+            });
+          });
+          q.querySelector("#dsQ2Next").addEventListener("click", step3);
+        }
+        function step3() {
+          q.innerHTML = panel(3, "Do you get statements?",
+            "Earnings reports, royalty statements, backend CSVs — however they reach you.",
+            '<div class="ds__tabs" style="margin:0">' +
+            '<button class="ds__tab" type="button" data-q3="csv">Yes — CSV files / emails</button>' +
+            '<button class="ds__tab" type="button" data-q3="portal">Yes — I download from a portal</button>' +
+            '<button class="ds__tab" type="button" data-q3="none">Not yet</button></div>');
+          q.querySelectorAll("[data-q3]").forEach(function (b) {
+            b.addEventListener("click", function () { picked.statements = b.getAttribute("data-q3"); finishQuiz(picked); });
+          });
+        }
+        step1();
+        if (window.MCC_TRACK) window.MCC_TRACK("distro_interview_start", {});
+      }
+      function finishQuiz(picked) {
+        try { localStorage.setItem("mcc_distro", JSON.stringify(picked)); } catch (e) {}
+        industry = picked.ind || industry;
+        $("dsTabs").querySelectorAll(".ds__tab").forEach(function (x) { x.classList.toggle("is-on", x.getAttribute("data-ind") === industry); });
+        // the chosen platforms connect themselves — the desk knows you now
+        if (signedIn()) {
+          picked.dists.filter(function (id) { return id !== "__other__" && !connected[id]; }).forEach(function (id) {
+            var d = distById(id);
+            MCC_DIST.connect({ distributor_id: id, distributor: (d && d.name) || picked.names[id] || id,
+              industry: picked.ind, reports_url: (d && d.reports) || "" }).catch(function () {});
+          });
+        }
+        if (window.MCC_TRACK) window.MCC_TRACK("distro_interview", { ind: picked.ind, n: picked.dists.length, st: picked.statements });
+        showDesk(true);
+        refresh();
+      }
+
       function refresh() {
         if (!signedIn()) { $("dsGate").innerHTML = '<div class="ds__stat" style="border-color:rgba(229,56,59,0.4)"><b style="font-size:1.1rem">Open your account to connect your platforms</b><small style="text-transform:none;letter-spacing:0">One tap, no email. <a href="market.html#yours" style="color:#e5383b">Start here →</a> — you can still browse the list below.</small></div>'; }
         else $("dsGate").innerHTML = "";
         (signedIn() ? MCC_DIST.mine() : Promise.resolve(null)).then(function (m) {
           MINE = m; connected = {};
           if (m && m.connections) m.connections.forEach(function (c) { connected[c.id] = c; });
+          // the law: questions before uploads — a fresh desk gets the
+          // interview; an answered one (or existing connections) opens
+          if (!quizDone() && !(m && m.connections && m.connections.length)) runQuiz();
+          else showDesk(true);
           paintGrid(); paintMine();
         });
         if (signedIn()) MCC_DIST.myBadges().then(function (bs) { myBadges = {}; (bs || []).forEach(function (b) { myBadges[b.id] = b; }); paintBadge(); });
@@ -192,6 +292,14 @@
         var ind = (REG.industries || []).filter(function (x) { return x.id === industry; })[0] || {};
         $("dsNote").textContent = ind.blurb || "";
         var list = (REG.distributors || []).filter(function (d) { return d.industry === industry; });
+        // YOUR platforms first: connected, then interview picks, then the rest
+        var qd = quizDone() || {};
+        var pickSet = {};
+        (qd.dists || []).forEach(function (id) { pickSet[id] = 1; });
+        list = list.slice().sort(function (a, b) {
+          function w(d) { return connected[d.id] ? 2 : pickSet[d.id] ? 1 : 0; }
+          return w(b) - w(a);
+        });
         var html = list.map(function (d) {
           var on = !!connected[d.id];
           return '<button class="ds__card' + (on ? " is-on" : "") + '" type="button" data-d="' + esc(d.id) + '">' +
@@ -308,6 +416,10 @@
 
       $("dsVeil").addEventListener("click", function () { document.body.classList.remove("ds-open"); });
       $("dsX").addEventListener("click", function () { document.body.classList.remove("ds-open"); });
+      $("dsRetune").addEventListener("click", function () {
+        try { localStorage.removeItem("mcc_distro"); } catch (e) {}
+        runQuiz();
+      });
       boot();
       if (window.MCC_TRACK) window.MCC_TRACK("dist_view", {});
     })();
