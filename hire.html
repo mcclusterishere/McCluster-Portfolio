@@ -58,6 +58,10 @@
         Recognized by two governments. The work below speaks.
       </p>
 
+      <figure class="offer-hero" aria-hidden="true">
+        <img src="assets/img/offer-hero.jpg" alt="" loading="lazy" onerror="this.parentNode.style.display='none'">
+      </figure>
+
       <!-- PRIMARY ACTION -->
       <div class="finale__actions" style="margin-top:1.8rem" id="book">
         <a class="btn btn--ruby" data-book href="#" data-cta="book-call">Book a Paid Call</a>
@@ -65,13 +69,14 @@
       </div>
       <p class="bexp__section" style="margin-top:0.8rem;color:var(--cream-dim);letter-spacing:0.1em">The deposit applies to your project · replies within 24 hours · if we're not a fit, I'll tell you</p>
 
-      <!-- RECOGNITION STRIP -->
+      <!-- RECOGNITION STRIP — tap any seal and the document pops up in place -->
       <div class="hire__trust">
-        <span class="hire__pill">State of Georgia — Proclamation</span>
-        <span class="hire__pill">City of Bridgeport — Proclamation</span>
-        <span class="hire__pill">CT Public Charity — McCluster Corp</span>
-        <span class="hire__pill">CompTIA Certified</span>
+        <button class="hire__pill" type="button" data-lens="assets/credentials/img/georgia-youth-innovation-civic-leadership-week-proclamation.jpg" data-lens-doc="assets/credentials/georgia-youth-innovation-civic-leadership-week-proclamation.pdf" data-lens-cap="State of Georgia Proclamation — Gov. Brian P. Kemp · Dec 2025">State of Georgia — Proclamation</button>
+        <button class="hire__pill" type="button" data-lens="assets/credentials/img/bridgeport-human-rights-day-proclamation.jpg" data-lens-doc="assets/credentials/bridgeport-human-rights-day-proclamation.pdf" data-lens-cap="City of Bridgeport Proclamation — Equity Uprise Human Rights Day · Mayor Ganim · Dec 2025">City of Bridgeport — Proclamation</button>
+        <button class="hire__pill" type="button" data-lens="assets/credentials/img/mccluster-corp-public-charity-registration.jpg" data-lens-doc="assets/credentials/mccluster-corp-public-charity-registration.pdf" data-lens-cap="CT Public Charity Registration — McCluster Corp · CHR.0069693">CT Public Charity — McCluster Corp</button>
+        <button class="hire__pill" type="button" data-lens="assets/credentials/img/comptia-itf-plus.jpg" data-lens-doc="assets/credentials/comptia-itf-plus.pdf" data-lens-cap="CompTIA ITF+ Certification — Matthew McCluster">CompTIA Certified</button>
       </div>
+      <p class="bexp__section" style="margin-top:0.5rem;color:var(--cream-dim);letter-spacing:0.08em;font-size:0.74rem">Tap any seal — the real document pops up right here.</p>
 
       <!-- CREDIBILITY STATS -->
       <div class="hire__stats">
@@ -92,12 +97,11 @@
         <div class="bexp__card"><span><b>Live &amp; Broadcast Production</b><small>Streaming, multi-cam, and event production run from the booth.</small></span></div>
       </div>
 
-      <!-- PACKAGES -->
-      <h2 class="bexp__section" style="margin:3rem 0 0.6rem">Ways to work together</h2>
-      <!-- Set a "from $X" anchor in each .hire__price when you're ready; scopes stay the same. -->
-      <div class="hire__pkgs">
-        <div class="hire__pkg hire__pkg--feature">
-          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer</p>
+      <!-- THE OFFER STAGE: one card, three ways — read one at a time -->
+      <h2 class="bexp__section" style="margin:3rem 0 0.6rem">Ways to work together — one at a time</h2>
+      <div class="ostage" id="ostage">
+        <div class="hire__pkg hire__pkg--feature ostage__card" data-way="0">
+          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer · way 1 of 3</p>
           <h3>The Limited Offer</h3>
           <p class="hire__price">$14,400 <small style="font-weight:400;color:var(--cream-dim)">/ year · or $1,200 × 12 monthly · 3 seats ever</small></p>
           <ul>
@@ -109,19 +113,8 @@
           <a class="btn btn--ruby" href="mailto:matthew@mccluster.org?subject=The%20Limited%20Offer%20%E2%80%94%20%2414%2C400&body=I%20want%20a%20seat.%0AWho%20I%20am%3A%0AWhat%20I%20do%3A%0A" data-cta="quote-limited">Claim a seat — $14,400</a>
           <p style="margin-top:0.6rem;font-size:0.84rem;color:var(--cream-dim)">or pay in E&#10548; — <b style="color:#00c805">33% off every rate</b>: <a href="market.html?to=mccluster" data-cta="limited-eup" style="color:#00c805;font-weight:800;text-decoration:none">9,648 E&#10548; on Our Street, deal on the record &#8594;</a></p>
         </div>
-        <div class="hire__pkg">
-          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer</p>
-          <h3>Shoot Day</h3>
-          <p class="hire__price">Custom quote</p>
-          <ul>
-            <li>A full day of photo or video capture</li>
-            <li>Directed, lit, and shot end to end</li>
-            <li>Edited selects delivered — same-day available</li>
-          </ul>
-          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Shoot%20Day%20Quote%20%E2%80%94%20McCluster&body=What%20I%20want%20to%20shoot%3A%0ADate%3A%0ALocation%3A%0A" data-cta="quote-shoot-day">Get a quote</a>
-        </div>
-        <div class="hire__pkg">
-          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer</p>
+        <div class="hire__pkg ostage__card" data-way="1" hidden>
+          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer · way 2 of 3</p>
           <h3>Full Campaign</h3>
           <p class="hire__price">$14,400 <small style="font-weight:400;color:var(--cream-dim)">flat · monthly plans available · the standing camera rate, no seat limit</small></p>
           <ul>
@@ -130,19 +123,23 @@
             <li>Social + web assets, cut for every channel</li>
             <li>The soup-to-nuts package I run best</li>
           </ul>
-          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Full%20Campaign%20%E2%80%94%20%2414%2C400%20%E2%80%94%20McCluster&body=The%20goal%3A%0ATimeline%3A%0A" data-cta="quote-campaign">Book it — $14,400</a>
+          <a class="btn btn--ruby" href="mailto:matthew@mccluster.org?subject=Full%20Campaign%20%E2%80%94%20%2414%2C400%20%E2%80%94%20McCluster&body=The%20goal%3A%0ATimeline%3A%0A" data-cta="quote-campaign">Book it — $14,400</a>
           <p style="margin-top:0.6rem;font-size:0.84rem;color:var(--cream-dim)">or <b style="color:#00c805">33% off in E&#10548;</b>: <a href="market.html?to=mccluster" data-cta="campaign-eup" style="color:#00c805;font-weight:800;text-decoration:none">9,648 E&#10548; on Our Street &#8594;</a></p>
         </div>
-        <div class="hire__pkg">
-          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer</p>
-          <h3>Web Build &amp; Manage</h3>
-          <p class="hire__price">Custom quote</p>
+        <div class="hire__pkg ostage__card" data-way="2" hidden>
+          <p style="font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:#c99d45;font-weight:800;margin-bottom:0.3rem">The Offer · way 3 of 3</p>
+          <h3>Your Custom Lane</h3>
+          <p class="hire__price">Custom quote <small style="font-weight:400;color:var(--cream-dim)">· a shoot day, a web build, or both</small></p>
           <ul>
-            <li>Designed and built from scratch</li>
-            <li>Cinematic or fast-and-clean — your call</li>
-            <li>Optional ongoing management &amp; updates</li>
+            <li><b>Shoot Day</b> — a full day of photo or video, directed and lit end to end, same-day selects available</li>
+            <li><b>Web Build &amp; Manage</b> — designed from scratch, cinematic or fast-and-clean, ongoing management optional</li>
+            <li>Scoped on the call, priced straight, no surprises</li>
           </ul>
-          <a class="btn btn--ghost" href="mailto:matthew@mccluster.org?subject=Web%20Build%20Quote%20%E2%80%94%20McCluster&body=About%20the%20project%3A%0ATimeline%3A%0A" data-cta="quote-web">Get a quote</a>
+          <a class="btn btn--ruby" href="mailto:matthew@mccluster.org?subject=Custom%20Lane%20Quote%20%E2%80%94%20McCluster&body=What%20I%20want%3A%0ADate%20or%20timeline%3A%0A" data-cta="quote-custom">Get my quote</a>
+        </div>
+        <div class="ostage__nav">
+          <span class="ostage__dots" id="oDots"><i class="is-lit"></i><i></i><i></i></span>
+          <button class="btn btn--ghost" id="oNext" type="button">See the next way &#8594;</button>
         </div>
       </div>
       <p class="bexp__section" style="margin-top:0.8rem;color:var(--cream-dim);letter-spacing:0.06em">Every offer, two lanes: <b style="color:var(--cream)">cash — monthly payment plans available on all of it</b> · or <b style="color:#00c805">E&#10548; on Our Street at 33% off every rate</b>, with the deal on the record. Retainers and multi-month engagements too — ask on the call.</p>
@@ -214,6 +211,21 @@
       "use strict";
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       var pay = window.PAYMENTS || {};
+
+      /* THE OFFER STAGE: one card on stage, the button turns the page */
+      (function () {
+        var cards = document.querySelectorAll(".ostage__card");
+        var dots = document.querySelectorAll("#oDots i");
+        var next = document.getElementById("oNext");
+        if (!cards.length || !next) return;
+        var way = 0;
+        next.addEventListener("click", function () {
+          way = (way + 1) % cards.length;
+          cards.forEach(function (c, i) { c.hidden = i !== way; });
+          dots.forEach(function (d, i) { d.className = i === way ? "is-lit" : ""; });
+          track("offer_way", { way: way });
+        });
+      })();
 
       var bookMail = "mailto:matthew@mccluster.org?subject=" +
         encodeURIComponent("Book a Paid Call — McCluster") +
