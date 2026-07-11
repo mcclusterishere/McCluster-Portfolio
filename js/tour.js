@@ -115,7 +115,7 @@
       body: "Deals build your street credit. Plays move your ticker. Everything you do here becomes yours to keep — and these doors are all one tap away.",
       img: "assets/img/wire-scene.png",
       doors: [
-        ["wire.html", "The Wire"],
+        ["market.html#wire", "The Wire"],
         ["academy.html", "The Academy"],
         ["house.html", "The House"],
         ["spaces.html", "Spaces"],
@@ -244,7 +244,7 @@
     chip.addEventListener("click", start);
     rail.appendChild(chip);
     // the Wire and the Academy ride the same rail — one tap off the floor
-    [["wire.html", "⚡ The Wire"], ["academy.html", "⛓ Academy"]].forEach(function (d) {
+    [["market.html#wire", "⚡ The Wire"], ["academy.html", "⛓ Academy"]].forEach(function (d) {
       var a = document.createElement("a");
       a.className = "mk__jump";
       a.href = d[0];
