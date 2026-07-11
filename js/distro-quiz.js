@@ -84,10 +84,12 @@
               industry: picked.ind, reports_url: (d && d.reports) || "" }).catch(function () {});
           });
         }
+        try { var cD = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (cD && cD.kind === "distro") localStorage.removeItem("mcc_cart"); } catch (eD) {}
         if (window.MCC_TRACK) window.MCC_TRACK("distro_interview", { ind: picked.ind, n: picked.dists.length, st: picked.statements });
         if (opts.onDone) opts.onDone(picked);
       }
       step1();
+      try { localStorage.setItem("mcc_cart", JSON.stringify({ kind: "distro", label: "Your distribution interview is mid-question", href: "distribution.html", at: Date.now() })); } catch (eC) {}
       if (window.MCC_TRACK) window.MCC_TRACK("distro_interview_start", { from: opts.from || "" });
     });
   }
