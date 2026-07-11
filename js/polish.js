@@ -615,7 +615,7 @@
     "docket-516.html": 1, "dekalb.html": 1, "deluxe-516r.html": 1, "grind-paper.html": 1,
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
-    "offline.html": 1, "mission.html": 1, "walkthrough-qt6kv-2847.html": 1 };
+    "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "walkthrough-qt6kv-2847.html": 1 };
   if (OPEN[here] || here.indexOf("song-") === 0) return;
   try {
     var card = JSON.parse(localStorage.getItem("mcc_rise") || "null");
