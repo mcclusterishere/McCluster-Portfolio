@@ -1748,8 +1748,29 @@
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
           (r.onTape
-            ? '<div class="xc__stat" style="border-color:rgba(0,200,5,0.45)"><small>This price</small><b style="color:#00c805">Real — the game tape</b></div>' +
-              '<div class="xc__stat"><small>Game points</small><b>' + Math.round(r.val * 100).toLocaleString() + "</b></div>"
+            ? (function () {
+                /* THE HISTORY MARKERS: every number below is a real day
+                   the engine scored — 1d/7d/30d moves, the all-time
+                   high, and the day the tape first saw this desk */
+                var s = r.stock.series;
+                function chgN(n) {
+                  var a = s[Math.max(0, s.length - 1 - n)], b2 = s[s.length - 1];
+                  return a && a.v ? ((b2.v - a.v) / a.v) * 100 : 0;
+                }
+                function chip(l, v) {
+                  return '<div class="xc__stat"><small>' + l + '</small><b style="color:' + (v >= 0 ? "#00c805" : "#ff5000") + '">' +
+                    (v >= 0 ? "▲ " : "▼ ") + Math.abs(v).toFixed(1) + "%</b></div>";
+                }
+                var ath = 0, athD = "";
+                s.forEach(function (pt) { if (pt.v >= ath) { ath = pt.v; athD = pt.d; } });
+                return '<div class="xc__stat" style="border-color:rgba(0,200,5,0.45)"><small>This price</small><b style="color:#00c805">Real — the game tape</b></div>' +
+                  '<div class="xc__stat"><small>Game points</small><b>' + Math.round(r.val * 100).toLocaleString() + "</b></div>" +
+                  (s.length > 1 ? chip("1 day", chgN(1)) : "") +
+                  (s.length > 2 ? chip("7 days", chgN(7)) : "") +
+                  (s.length > 8 ? chip("30 days", chgN(30)) : "") +
+                  (s.length > 1 ? '<div class="xc__stat"><small>All-time high</small><b>' + fmt(ath) + (athD ? " · " + esc(String(athD)) : "") + "</b></div>" : "") +
+                  (s[0] && s[0].d ? '<div class="xc__stat"><small>On the tape since</small><b>' + esc(String(s[0].d)) + "</b></div>" : "");
+              })()
             : '<div class="xc__stat" style="border-color:rgba(216,186,124,0.5)"><small>This desk</small><b style="color:#d8ba7c">Not scored yet — claim it, play, and the meter starts at $0</b></div>') +
           ((r.stock.dollars || 0) > 0 ? '<div class="xc__stat"><small>On the books</small><b>$' + (r.stock.dollars || 0).toLocaleString() + "</b></div>" : "") +
           (r.engage ? '<div class="xc__stat"><small>The crowd &middot; plays</small><b>' + r.engage.toLocaleString() + "</b></div>" : "");
@@ -2810,6 +2831,36 @@
               Math.round((+s.confidence || 0) * 100) + "% — verify more and the cap lifts. The tape writes nightly.</p>";
           }).catch(function () {});
         })();
+        // CLAIM YOUR PLAYS: paste your channel and artist links once —
+        // the 8:17 sweep pulls the real numbers nightly off the Google
+        // and Spotify APIs, they print on your ticker sheet, and they
+        // feed your price through the one algorithm.
+        if (ME && window.MCC_DIST && window.MCC_DIST.saveIdentifier) {
+          var pl = document.createElement("div");
+          pl.className = "mp__card";
+          pl.style.cssText = "border-color:rgba(255,0,0,0.35)";
+          pl.innerHTML = '<span class="mp__lblx" style="color:#ff6b6b">Claim your plays — the outside numbers</span>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0.6rem">Paste your links once. The machine pulls your <b>real</b> YouTube views and subscribers and Spotify followers every night at 8:17, prints them on your ticker sheet, and feeds your price. Nothing manual, nothing invented.</p>' +
+            '<input class="mk__in" data-pk="youtube_channel" placeholder="YouTube channel link (youtube.com/@you or /channel/…)" style="margin-bottom:0.45rem">' +
+            '<input class="mk__in" data-pk="spotify_artist" placeholder="Spotify artist link (open.spotify.com/artist/…)" style="margin-bottom:0.45rem">' +
+            '<input class="mk__in" data-pk="lastfm_user" placeholder="Last.fm username (optional)" style="margin-bottom:0.6rem">' +
+            '<button class="btn btn--xc" data-pgo="1" style="width:100%;justify-content:center">Claim my plays — start tracking</button>' +
+            '<p class="mp__note" data-pmsg="1" style="min-height:1.2em;margin-top:0.5rem"></p>';
+          body.appendChild(pl);
+          pl.querySelector("[data-pgo]").addEventListener("click", function () {
+            var jobs = [], msg = pl.querySelector("[data-pmsg]");
+            pl.querySelectorAll("[data-pk]").forEach(function (inp) {
+              var v = inp.value.trim();
+              if (v) jobs.push(window.MCC_DIST.saveIdentifier(inp.getAttribute("data-pk"), v, "claimed from the desk"));
+            });
+            if (!jobs.length) { msg.textContent = "Paste at least one link first."; return; }
+            msg.textContent = "Banking…";
+            Promise.all(jobs).then(function () {
+              msg.innerHTML = "<b style='color:#00c805'>✓ Banked.</b> The sweep pulls your real numbers tonight — they print on your sheet and move your price.";
+              track("plays_claimed", { n: jobs.length });
+            }).catch(function () { msg.textContent = "The bank blinked — try again."; });
+          });
+        }
         // the wallet: the M Token ledger rides the desk
         if (ME && window.MCC_TOKEN) window.MCC_TOKEN.card(body);
         // the Community Fund: the platform's fees at work, visible to every member
