@@ -425,22 +425,57 @@
     var dock = document.querySelector(".appbar");
     if (!dock) return;
     function ic(g) { return '<span class="dk-ic" aria-hidden="true">' + g + "</span>"; }
+
+    /* THE MISSION TAB: command rides the bar like everything else.
+       The admin's tab lands in Mission Control; every member's lands
+       in their own mission desk — same seat, same grammar. */
+    var ADM = false;
+    try {
+      var s0 = JSON.parse(localStorage.getItem("mccdb_session") || "null");
+      var seg0 = s0 && s0.access_token && s0.access_token.split(".")[1];
+      if (seg0) {
+        var pay0 = JSON.parse(atob(seg0.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - seg0.length % 4) % 4)));
+        ADM = (pay0.email || "") === "matthew@mccluster.org";
+      }
+    } catch (e) {}
+    var MISSION_HOME = ADM ? "mission.html" : "mymission.html";
+    if (!dock.querySelector('[data-appnav="mission"]')) {
+      var hereM = location.pathname.split("/").pop() || "index.html";
+      var mtab = document.createElement("a");
+      mtab.className = "appbar__tab" + (hereM === MISSION_HOME ? " is-active" : "");
+      mtab.href = MISSION_HOME;
+      mtab.setAttribute("data-appnav", "mission");
+      mtab.innerHTML = ic("🎛") + "<span>Mission</span>";
+      dock.insertBefore(mtab, dock.querySelector('[data-appnav="profile"]'));
+    }
     var WINGS = {
       we: { home: "rides.html", label: "WE", slots: [
         ["rides.html#meter", "🧮", "Meter"], ["rides.html#drivers", "🚗", "Drivers"],
-        ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"]] },
+        ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"],
+        ["market.html#yours", "🏦", "Your desk"]] },
       music: { home: "app.html", label: "Only Us", slots: [
         ["mccluster.html", "🌇", "Penthouse"], ["index.html", "🎬", "Front door"],
-        ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"]] },
+        ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"],
+        ["market.html#wire", "💬", "The Wire"]] },
       market: { home: "market.html", label: "Market", slots: [
         ["market.html#pay", "💸", "Pay"], ["market.html#yours", "🏦", "Your desk"],
-        ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"]] },
+        ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"],
+        ["hire.html", "🎥", "Hire"]] },
       spaces: { home: "spaces.html", label: "Spaces", slots: [
         ["list-your-space.html", "📋", "List yours"], ["ourworld.html", "🗺", "The Game"],
-        ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"]] },
+        ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"],
+        ["market.html#pay", "💸", "Pay"]] },
+      mission: { home: MISSION_HOME, label: "Mission", slots: ADM
+        ? [["mission.html", "🎛", "The room"], ["mymission.html", "🎯", "My missions"],
+           ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"],
+           ["civic.html", "🪪", "Street cred"]]
+        : [["mymission.html", "🎯", "Missions"], ["rise.html", "🃏", "Your card"],
+           ["shelf.html", "🥇", "Gold Shelf"], ["civic.html", "🪪", "Street cred"],
+           ["market.html#yours", "🏦", "Your desk"]] },
       profile: { home: "profile.html", label: "Profile", slots: [
         ["rise.html", "🃏", "Your card"], ["mymission.html", "🎯", "Missions"],
-        ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"]] },
+        ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"],
+        ["shelf.html", "🥇", "Gold Shelf"]] },
     };
     /* THE METER LAW + the geo desks — ONE source, shared by the rides
        page and the meter tool the dock pops on any page */
@@ -511,6 +546,7 @@
       "amenities.html": ["🛋", "Amenities", "What rides with every space — the standard of the house."],
       "hire.html": ["🎥", "Hire the desk", "Photo, video, web — THE OFFER on every package, priced straight."],
       "profile.html": ["🪪", "Your profile", "Your E⤴ Card, big — face, name, colors, credit — and the mirror to edit it."],
+      "mission.html": ["🎛", "Mission Control", "The whole system: the Green Tape, the Megaphone, the pulse, the fund — the desk's command room."],
       "rise.html": ["🃏", "Your card", "WHAT MAKES YOU RISE? Two minutes; it deals your card and shapes the whole house to you."],
       "mymission.html": ["🎯", "Your missions", "T.R.A.P.S. — Take Risk And Prosper. Your walk, your points, your next move."],
       "civic.html": ["🪪", "Street Cred Portal", "Your street credit score, verified accounts, the E⤴ Card behind it all."],
@@ -666,7 +702,7 @@
       setTimeout(function () { if (peekAway) document.addEventListener("pointerdown", peekAway, true); }, 0);
       emit("mcc:dock-peek", { dest: dest });
     }
-    var ORDER = ["we", "music", "market", "spaces", "profile"];
+    var ORDER = ["we", "music", "market", "spaces", "mission", "profile"];
     function morph(key) {
       var w = WINGS[key];
       if (!w || wingOn === key) return;
@@ -791,26 +827,6 @@
     dwBtn.addEventListener("click", function () { lesson(at + 1); });
     if (window.MCC_TRACK) window.MCC_TRACK("dockwalk_start", {});
     lesson(0);
-  })();
-
-  /* ---------- the command door: the workstation is never far ----------
-     One floating chip on every page: members land in THEIR Mission
-     Control; the desk's own email lands in the full command room. */
-  (function () {
-    var here = location.pathname.split("/").pop() || "index.html";
-    if (here === "mission.html" || here === "mymission.html" || here === "index.html") return;
-    var email = "";
-    try { email = (JSON.parse(localStorage.getItem("mccdb_session") || "null") || {}).access_token ? (window.MCC_SUPA && window.MCC_SUPA.email && window.MCC_SUPA.email()) || "" : ""; } catch (e) {}
-    var c = document.createElement("a");
-    c.href = email === "matthew@mccluster.org" ? "mission.html" : "mymission.html";
-    c.setAttribute("aria-label", "Your command room");
-    c.style.cssText = "position:fixed;right:0.9rem;bottom:calc(5.4rem + env(safe-area-inset-bottom));z-index:60;" +
-      "display:flex;align-items:center;gap:0.35rem;background:rgba(12,9,8,0.88);backdrop-filter:blur(8px);" +
-      "border:1px solid rgba(201,157,69,0.55);border-radius:100px;padding:0.5rem 0.9rem;text-decoration:none;" +
-      "color:#c99d45;font-size:0.78rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;" +
-      "box-shadow:0 6px 22px rgba(0,0,0,0.45)";
-    c.innerHTML = "&#9670; Command";
-    document.body.appendChild(c);
   })();
 
   /* ---------- the way back: every room has a door out ----------
