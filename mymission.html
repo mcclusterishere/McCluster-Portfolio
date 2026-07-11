@@ -247,28 +247,25 @@
         window.MCC_NET.myListing().catch(function () { return null; }),
         auth("my_imprint").catch(function () { return null; })]).then(function (r) {
         var m = r[0], g = r[1], mine = r[2], imp = r[3] || {};
+        /* NOTHING EVER BLANKS: when my_mission can't answer (paste not
+           run yet, key gone stale), the room still paints — faces, the
+           Trap, every card, zeros and all — with one honest notice on
+           top instead of a dead screen. */
+        var notice = "";
         if (!m) {
-          // paste talk is for the admin ONLY — a member gets a human
-          // answer and the card call keeps flashing even here
           var rz0 = null;
           try { rz0 = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e0) {}
-          host.innerHTML = ADMIN
-            ? '<div class="mm__card"><h2>The room arms with one paste.</h2>' +
-              '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live.</p></div>'
+          notice = ADMIN
+            ? '<div class="mm__card" style="border-color:rgba(229,56,59,0.5)"><h2>The numbers arm with one paste.</h2>' +
+              '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live. The room works meanwhile.</p></div>'
             : '<div class="mm__card">' +
               (rz0 && rz0.arch ? "" :
                 '<p class="mm__sub card-call" style="padding:0.7rem 0.85rem;margin-bottom:0.7rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
                 '<span style="font-size:0.8rem">It deals your E⤴ Card and lines these missions up to your path.</span></p>') +
               "<h2>Your numbers are waking up.</h2>" +
               '<p class="mm__sub" style="margin-top:0.2rem">The Trap loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p>' +
-              '<p class="mm__sub" style="font-size:0.78rem">Still blank after a refresh? Your key may have gone stale — <a href="#" id="mmRekey" style="color:#e8c877">sign back in fresh &#8594;</a></p></div>';
-          var rk = document.getElementById("mmRekey");
-          if (rk) rk.addEventListener("click", function (ev) {
-            ev.preventDefault();
-            try { localStorage.removeItem("mccdb_session"); } catch (e3) {}
-            location.reload();
-          });
-          return;
+              '<p class="mm__sub" style="font-size:0.78rem">Zeros below after a refresh? Your key may have gone stale — <a href="#" id="mmRekey" style="color:#e8c877">sign back in fresh &#8594;</a></p></div>';
+          m = {};
         }
         /* THE IMPRINT SYNC: the account beats the device. A card claimed
            on this device rides UP to the account; an account that already
@@ -328,7 +325,7 @@
         var fOn = FACE_ON ? faceMeta(FACE_ON) : null;
         var railRoles = roles.slice();
         if (FACE_ON && railRoles.indexOf(FACE_ON) === -1) railRoles.push(FACE_ON);
-        var html = '<div class="mm__faces" id="mmFaces">' + railRoles.map(function (rr) {
+        var html = notice + '<div class="mm__faces" id="mmFaces">' + railRoles.map(function (rr) {
           var fm = faceMeta(rr);
           return '<button class="mm__face' + (FACE_ON === rr ? " is-on" : "") + '" type="button" data-face="' + esc(rr) +
             '" style="--fc:' + fm[2] + '">' + fm[1] + " " + esc(fm[0]) + "</button>";
@@ -440,6 +437,12 @@
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
+        var rk = document.getElementById("mmRekey");
+        if (rk) rk.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          try { localStorage.removeItem("mccdb_session"); } catch (e3) {}
+          location.reload();
+        });
         /* THE FACES: rail taps + the pick walk (photo cards) */
         (function () {
           var rail = $("mmFaces");

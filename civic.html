@@ -50,6 +50,15 @@
   <main class="cv">
     <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · reputation, in the open</p>
     <h1>The Street<br>Cred Portal.</h1>
+    <div id="svHero" aria-hidden="true" style="border-radius:18px;border:1px solid rgba(244,239,230,0.16);min-height:8.5rem;background:linear-gradient(140deg,#1a1210,#0d0a08);background-size:cover;background-position:center;margin-top:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)"></div>
+    <script>
+      (function () {
+        var h = document.getElementById("svHero");
+        var im = new Image();
+        im.onload = function () { h.style.backgroundImage = "url(assets/img/chaser-signal.jpg)"; };
+        im.src = "assets/img/chaser-signal.jpg";
+      })();
+    </script>
     <div id="svCred"></div>
     <p class="cv__sub"><b>Two ways to ride:</b> a <b>fan account</b> is here for the music and the movement — a
       <b>policy account</b> is here to work: state law, federal law, trade policy, and the local organizing that

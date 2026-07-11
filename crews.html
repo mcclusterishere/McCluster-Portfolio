@@ -47,6 +47,16 @@
     <p class="cw__sub"><b>A crew is a unit with a collective score</b> — the sum of every member's real game points
       off the tape. One crew per member; the roster is public; the board never lies. Build one or join one.</p>
 
+    <div id="cwHero" aria-hidden="true" style="border-radius:18px;border:1px solid rgba(244,239,230,0.16);min-height:8.5rem;background:linear-gradient(140deg,#1a1210,#0d0a08);background-size:cover;background-position:center;margin-top:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)"></div>
+    <script>
+      (function () {
+        var h = document.getElementById("cwHero");
+        var im = new Image();
+        im.onload = function () { h.style.backgroundImage = "url(assets/img/chaser-command.jpg)"; };
+        im.src = "assets/img/chaser-command.jpg";
+      })();
+    </script>
+
     <div id="cwMine"></div>
 
     <div class="cw__card" style="--cc:#e8c877">
