@@ -339,8 +339,14 @@
           if (!modes || !bar) return;
           var mode = "arc", pick = "all";
           try {
-            mode = localStorage.getItem("mcc_mm_mode") || "arc";
-            pick = localStorage.getItem("mcc_mm_pick") || "all";
+            /* CHASER WORLDS: a card holder's first visit opens on THEIR
+               path — universal, whoever is holding the card. A saved
+               choice always wins over the default. */
+            var rz = null;
+            try { rz = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e2) {}
+            var prim = rz && rz.arch && rz.arch[0];
+            mode = localStorage.getItem("mcc_mm_mode") || (prim ? "path" : "arc");
+            pick = localStorage.getItem("mcc_mm_pick") || (prim && mode === "path" ? prim : "all");
           } catch (e) {}
           function chipsFor(m) {
             if (m === "arc") {

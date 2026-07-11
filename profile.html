@@ -55,6 +55,7 @@
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/door.js?v=__STAMP__"></script>
+  <script src="js/chaser.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -113,9 +114,20 @@
         var name = (mine && mine.name) || "Chaser";
         var slug = mine && mine.slug;
         var tick = mine && mine.ticker ? "$" + String(mine.ticker).toUpperCase() : "";
+        var CH = window.MCC_CHASER;
+        var prim = CH && CH.primary();
+        var pc = prim && PATH_META[prim] ? PATH_META[prim][1] : "#e8c877";
         var archLine = myPaths.length
-          ? '<span class="pf__arch">🃏 ' + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ") + "</span>"
+          ? '<span class="pf__arch" style="border-color:' + pc + ";color:" + pc + '">🃏 ' + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ") + "</span>"
           : '<a class="pf__arch" href="rise.html" style="text-decoration:none">🃏 no card yet — play RISE &#8594;</a>';
+        /* CHASER WORLDS: the private side opens on YOUR district — the
+           banner is a door to your home turf, whoever you are */
+        var worldDoor = "";
+        if (prim && CH.meta(prim)) {
+          var wm = CH.meta(prim);
+          worldDoor = '<a href="' + wm.turf[0] + '" style="text-decoration:none;display:block;margin-top:1rem">' +
+            CH.banner(prim, { sub: wm.turf[2] }) + "</a>";
+        }
         // your paths float their rooms to the top
         var rooms = ROOMS.slice().sort(function (a, b) {
           return (myPaths.indexOf(b[4]) !== -1 ? 1 : 0) - (myPaths.indexOf(a[4]) !== -1 ? 1 : 0);
@@ -141,7 +153,7 @@
             : '<p class="pf__sub">No listing yet — <a href="welcome.html" style="color:#e8c877">finish the walk-in</a> and your public page, ticker and chart go up together.</p>') +
           "</div>" +
 
-          '<div class="pf__pane" data-pane="priv"><div class="pf__doors">' + privateDoors + "</div></div>" +
+          '<div class="pf__pane" data-pane="priv">' + worldDoor + '<div class="pf__doors">' + privateDoors + "</div></div>" +
           '<button class="pf__out" id="pfSignOut" type="button">Sign out</button>';
 
         main.querySelectorAll(".pf__side").forEach(function (b) {

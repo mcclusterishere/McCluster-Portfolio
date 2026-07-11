@@ -89,6 +89,7 @@
   <script src="js/guide.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
   <script src="js/door.js?v=__STAMP__"></script>
+  <script src="js/chaser.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -164,7 +165,8 @@
         var rise = null;
         try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
         var riseLine = rise && rise.arch
-          ? '<p style="color:#e8c877;font-weight:800;font-size:0.92rem">🃏 Your E⤴ Card came with you: <b>' +
+          ? (window.MCC_CHASER ? '<div style="margin:0.4rem 0 0.8rem">' + window.MCC_CHASER.banner(rise.arch[0]) + "</div>" : "") +
+            '<p style="color:#e8c877;font-weight:800;font-size:0.92rem">🃏 Your E⤴ Card came with you: <b>' +
             esc(rise.arch.join(" × ")) + "</b> — your answers below start pre-picked from it.</p>"
           : '<p style="font-size:0.92rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 Two minutes first: play WHAT MAKES YOU RISE? &#8594;</a><br>' +
             '<span style="color:var(--cream-dim);font-size:0.82rem">It deals your E⤴ Card, pre-fills this walk, and pays your first game points.</span></p>';

@@ -63,7 +63,15 @@ jobs:
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \
               && rm -f "$f" && echo "converted $n -> jpg"
           done
-          ls -la assets/img/ourworld-map.jpg assets/img/char-*.jpg assets/img/space-*.jpg 2>/dev/null || true
+          # CHASER WORLDS district heroes: convert whatever extension the
+          # model delivered (png/jpeg) to a capped web-light .jpg
+          for f in assets/img/chaser-*.png assets/img/chaser-*.jpeg; do
+            [ -f "$f" ] || continue
+            n="${f%.*}"
+            ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(1600,iw)':-1" -q:v 4 "${n}.jpg" \
+              && rm -f "$f" && echo "converted $(basename "$f") -> jpg"
+          done
+          ls -la assets/img/ourworld-map.jpg assets/img/char-*.jpg assets/img/space-*.jpg assets/img/chaser-*.jpg 2>/dev/null || true
 
       - name: Extract scroll-scrub frame sequences
         run: |
