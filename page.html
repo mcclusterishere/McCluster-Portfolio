@@ -592,7 +592,7 @@
       /* ---- boot ---- */
       window.MCC_FLOOR.load().then(function (floor) {
         P = floor.providers.filter(function (x) { return (x.slug || x.id) === WHO; })[0];
-        if (!P) { $("pgName").textContent = "No page here yet"; $("pgFeed").innerHTML = '<p class="pg__note">This slug isn’t on the floor. <a href="onboard.html">Get on the platform &#8594;</a></p>'; return; }
+        if (!P) { $("pgName").textContent = "No page here yet"; $("pgFeed").innerHTML = '<p class="pg__note">This slug isn’t on the floor. <a href="welcome.html">Get on the platform &#8594;</a></p>'; return; }
         PAGE = P.page || {};
         vibe(); paintHead(); paintAbout(); paintMusic(); paintDoors(); paintFeed();
         // the owner unlocks the editor + composer

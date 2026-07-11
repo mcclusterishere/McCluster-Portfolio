@@ -3,119 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Equity Uprise — Choose your experience</title>
-  <meta name="description" content="Two doors, one world. Hire McCluster the creative director, or enter Equity Uprise — the platform where talent, venues, and brands book, sell, and build.">
+  <title>The entry moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Enter through RISE — the playable front door.">
+  <meta http-equiv="refresh" content="0; url=rise.html">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/rise.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .fk { min-height: 100dvh; display: flex; flex-direction: column; background: #060404; overflow: hidden; }
-    .fk__top { text-align: center; padding: clamp(1.6rem, 5vh, 3rem) 1.2rem 0.6rem; position: relative; z-index: 4; }
-    .fk__wm { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.06em;
-      font-size: clamp(1.5rem, 5.5vw, 2.6rem); line-height: 1; color: var(--cream); }
-    .fk__wm em { color: var(--ruby-hot); font-style: normal; }
-    .fk__tag { font-family: var(--body); font-size: clamp(0.68rem, 2.4vw, 0.82rem); letter-spacing: 0.32em;
-      text-transform: uppercase; color: rgba(244,239,230,0.5); margin-top: 0.6rem; }
-
-    .fk__doors { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: clamp(0.8rem,3vh,1.6rem); }
-    @media (max-width: 760px) { .fk__doors { grid-template-columns: 1fr; } }
-
-    .fk__door { position: relative; isolation: isolate; overflow: hidden; border-radius: 18px; display: flex; flex-direction: column;
-      justify-content: flex-end; padding: clamp(1.4rem, 4vw, 2.6rem); min-height: 42vh; text-decoration: none;
-      border: 1px solid rgba(244,239,230,0.1); transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), border-color 0.4s; }
-    .fk__door:hover, .fk__door:focus-visible { transform: translateY(-4px); border-color: rgba(229,56,59,0.6); outline: none; }
-    .fk__bg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%;
-      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); }
-    .fk__door:hover .fk__bg, .fk__door:focus-visible .fk__bg { transform: scale(1.06); }
-    .fk__scrim { position: absolute; inset: 0; z-index: 2; }
-    .fk__kick, .fk__h, .fk__list, .fk__go { position: relative; z-index: 3; }
-
-    /* HIRE side — cinematic, human, McCluster in his element */
-    .fk--hire .fk__scrim {
-      background: linear-gradient(200deg, rgba(6,4,4,0.15) 0%, rgba(6,4,4,0.7) 55%, rgba(6,4,4,0.97) 100%); }
-    /* PLATFORM side — systemic, crimson, the exchange */
-    .fk--plat { background: #0b0806; }
-    .fk--plat .fk__scrim {
-      background:
-        radial-gradient(120% 90% at 75% 15%, rgba(193,18,31,0.32), transparent 55%),
-        linear-gradient(200deg, rgba(6,4,4,0.2) 0%, rgba(6,4,4,0.75) 60%, rgba(6,4,4,0.98) 100%); }
-    .fk--plat .fk__eu { position: absolute; top: 6%; left: 50%; transform: translateX(-50%); z-index: 1;
-      width: min(34%, 8.5rem); opacity: 0.72; mix-blend-mode: screen;
-      filter: drop-shadow(0 0 30px rgba(193,18,31,0.5)); }
-    .fk--plat .fk__tape { position: absolute; top: 46%; left: 0; right: 0; z-index: 1; overflow: hidden;
-      opacity: 0.5; white-space: nowrap; border-top: 1px solid rgba(244,239,230,0.1); border-bottom: 1px solid rgba(244,239,230,0.1); padding: 0.4rem 0; }
-    .fk--plat .fk__tape span { font-family: var(--mono, monospace); font-size: 0.72rem; letter-spacing: 0.1em;
-      color: rgba(201,157,69,0.8); display: inline-block; animation: fktape 18s linear infinite; }
-    @keyframes fktape { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    .fk__kick { font-family: var(--body); font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
-      color: var(--ruby-hot); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-    .fk__kick::before { content: ""; width: 1.4rem; height: 2px; background: var(--ruby); }
-    .fk__h { font-family: var(--display); text-transform: uppercase; line-height: 0.88; letter-spacing: 0.01em;
-      font-size: clamp(2.4rem, 7vw, 4.4rem); color: var(--cream); margin: 0.5rem 0 0.4rem; text-wrap: balance; }
-    .fk__list { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; margin: 0.4rem 0 1.3rem; }
-    .fk__list span { font-size: 0.8rem; color: rgba(244,239,230,0.72); }
-    .fk__list span::before { content: "·"; color: var(--ruby-hot); margin-right: 0.5rem; }
-    .fk__go { display: inline-flex; align-items: center; gap: 0.6rem; align-self: flex-start;
-      font-family: var(--body); font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.82rem;
-      color: var(--cream); background: var(--ruby); border-radius: 100px; padding: 0.85em 1.6em;
-      box-shadow: 0 0 40px rgba(193,18,31,0.35); transition: background 0.3s, box-shadow 0.3s, transform 0.3s; }
-    .fk__door:hover .fk__go, .fk__door:focus-visible .fk__go {
-      background: var(--ruby-hot); box-shadow: 0 0 70px rgba(229,56,59,0.5); }
-    .fk--plat .fk__go { background: transparent; border: 1px solid rgba(244,239,230,0.5); box-shadow: none; }
-    .fk--plat .fk__door:hover .fk__go, .fk--plat .fk__door:focus-visible .fk__go {
-      background: rgba(244,239,230,0.1); border-color: var(--cream); }
-
-    .fk__foot { text-align: center; padding: 0.8rem 1.2rem clamp(1rem, 3vh, 1.8rem); position: relative; z-index: 4; }
-    .fk__foot p { font-family: var(--body); font-size: 0.7rem; letter-spacing: 0.14em; color: rgba(244,239,230,0.4); }
-    .fk__foot b { color: rgba(201,157,69,0.8); font-weight: 600; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .fk__door, .fk__bg, .fk__go { transition: none; }
-      .fk--plat .fk__tape span { animation: none; }
-    }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
 <body>
-  <main class="fk">
-    <div class="fk__top">
-      <h1 class="fk__wm">EQUITY <em>UPRISE</em></h1>
-      <p class="fk__tag">Two doors · one world · choose your experience</p>
-    </div>
-
-    <div class="fk__doors">
-      <a class="fk__door fk--hire" href="index.html" aria-label="Hire McCluster — enter the studio">
-        <img class="fk__bg" src="assets/frames/keynote_0001.jpg" alt="McCluster directing a shoot">
-        <div class="fk__scrim"></div>
-        <span class="fk__kick">The creative director</span>
-        <h2 class="fk__h">Hire<br>McCluster</h2>
-        <div class="fk__list">
-          <span>Creative direction</span><span>Photography</span><span>Video</span>
-          <span>Web systems</span><span>Campaigns</span>
-        </div>
-        <span class="fk__go">Enter the studio &#8594;</span>
-      </a>
-
-      <a class="fk__door fk--plat" href="market.html" aria-label="Enter Equity Uprise — the platform">
-        <img class="fk__bg" src="assets/img/floor-scene.png" alt="The creator-economy trading floor" style="opacity:0.78"
-          onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_124701_f0d4e67f-32e9-4b0a-a1df-468fcc5fac07.png';}else{this.style.display='none';}">
-        <img class="fk__eu" src="assets/img/equity-uprise-logo.png" alt="" aria-hidden="true">
-        <div class="fk__tape" aria-hidden="true"><span>$MCC &#9650; &nbsp; $BENJI &#9650; &nbsp; $GEAR &#9660; &nbsp; $LRE &#9650; &nbsp; $KCHB &#9660; &nbsp; $DCB &#9650; &nbsp; $VAUNT &#8599; &nbsp; $MCC &#9650; &nbsp; $BENJI &#9650; &nbsp; $GEAR &#9660; &nbsp; $LRE &#9650; &nbsp; $KCHB &#9660; &nbsp; $DCB &#9650; &nbsp; $VAUNT &#8599; &nbsp;</span></div>
-        <div class="fk__scrim"></div>
-        <span class="fk__kick">The platform</span>
-        <h2 class="fk__h">Enter<br>the floor</h2>
-        <div class="fk__list">
-          <span>Book talent</span><span>List your venue</span><span>Sell services</span>
-          <span>Find collaborators</span><span>Build your profile</span>
-        </div>
-        <span class="fk__go">Enter the platform &#8594;</span>
-      </a>
-    </div>
-
-    <div class="fk__foot">
-      <p>A private member association under McCluster Corp · <b>In McCluster We Trust</b></p>
-    </div>
-  </main>
-  <script src="js/analytics.js?v=__STAMP__"></script>
+  <p>The entry is a game now — <a href="rise.html">WHAT MAKES YOU RISE?</a><br>Taking you there&hellip;</p>
+  <script>location.replace("rise.html");</script>
 </body>
 </html>

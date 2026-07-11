@@ -80,7 +80,7 @@
   (function catchMagicAnywhere() {
     if (location.hash.indexOf("access_token=") === -1) return;
     var here = location.pathname.split("/").pop() || "index.html";
-    if (["mission.html", "talent.html", "members.html", "app.html"].indexOf(here) !== -1) return;
+    if (["mission.html", "talent.html", "market.html#providers", "app.html"].indexOf(here) !== -1) return;
     var q = {};
     location.hash.slice(1).split("&").forEach(function (kv) {
       var p = kv.split("="); q[p[0]] = decodeURIComponent(p[1] || "");
@@ -438,13 +438,13 @@
   (function autopilot() {
     if (!window.MCC_MODEL) return;
     var here = location.pathname.split("/").pop() || "index.html";
-    var APPS = ["mission.html", "talent.html", "members.html", "app.html", "collab.html", "packet.html", "offline.html"];
+    var APPS = ["mission.html", "talent.html", "market.html#providers", "app.html", "collab.html", "packet.html", "offline.html"];
 
     /* the signal dot: the appbar tab nearest the model's pick carries a
        quiet pulse — a pointer, not a shout */
     try {
       var s0 = window.MCC_MODEL.suggest();
-      var TAB = { "app.html": "music", "market.html": "market", "providers.html": "market", "talent.html": "market", "collab.html": "market", "onboard.html": "market", "spaces.html": "spaces", "list-your-space.html": "spaces" };
+      var TAB = { "app.html": "music", "market.html": "market", "providers.html": "market", "talent.html": "market", "collab.html": "market", "welcome.html": "market", "spaces.html": "spaces", "list-your-space.html": "spaces" };
       var wing = TAB[s0.href];
       if (wing) {
         var tab = document.querySelector('.appbar__tab[data-appnav="' + wing + '"]');

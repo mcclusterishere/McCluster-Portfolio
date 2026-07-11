@@ -3,198 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Hitman Benji — Masked Legend · Equity Uprise</title>
-  <meta name="description" content="Hitman Benji: the masked operator, a platform lore legend. Two tickers on the floor — $BENJI the creative and $GEAR the brand. Never a face, always the work.">
-  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/profile-benji.html">
+  <title>The page moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Hitman Benji's live page — this page moved into the live Equity Uprise platform; you are being taken there now.">
+  <meta http-equiv="refresh" content="0; url=page.html?who=hitman-benji">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/page.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <meta property="og:type" content="profile">
-  <meta property="og:title" content="Hitman Benji — Masked Legend">
-  <meta property="og:description" content="The masked operator. Two tickers on the floor — $BENJI and $GEAR. Never a face, always the work.">
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    /* Hitman Benji rides the McCluster palette but leans all the way
-       into black-on-crimson menace. Face never shown — the mask is
-       the brand, so the whole page treats concealment as luxury. */
-    .hb { --hb-red: #c1121f; --hb-hot: #e5383b; }
-    .hb-hero {
-      position: relative; min-height: 92dvh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: clamp(6rem, 12vh, 8rem) clamp(1.2rem, 5vw, 3.5rem) clamp(2.4rem, 7vh, 4rem); overflow: hidden;
-      background: #060404;
-    }
-    .hb-hero__bg {
-      position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover;
-      object-position: 50% 30%; filter: contrast(1.12) saturate(1.08) brightness(1.12);
-    }
-    .hb-hero__crest { position: absolute; inset: 0; z-index: -4; display: grid; place-items: center; opacity: 0.5; }
-    .hb-hero__crest svg { width: min(60vw, 26rem); height: auto; }
-    .hb-hero__scrim {
-      position: absolute; inset: 0; z-index: -1;
-      background:
-        radial-gradient(120% 80% at 70% 22%, rgba(193,18,31,0.30), transparent 52%),
-        linear-gradient(190deg, rgba(6,4,4,0.10) 0%, rgba(6,4,4,0.30) 42%, rgba(6,4,4,0.86) 82%, rgba(6,4,4,0.98) 100%);
-    }
-    .hb-badge {
-      display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.62rem; letter-spacing: 0.26em;
-      text-transform: uppercase; color: var(--hb-hot); font-weight: 800;
-    }
-    .hb-badge::before { content: ""; width: 1.4rem; height: 2px; background: var(--hb-red); }
-    .hb-hero__h1 {
-      font-family: var(--display); text-transform: uppercase; line-height: 0.86; letter-spacing: 0.01em;
-      font-size: clamp(3.2rem, 15vw, 8rem); margin-top: 0.5rem; text-wrap: balance;
-    }
-    .hb-hero__h1 em { color: var(--hb-hot); font-style: normal; }
-    .hb-hero__sub { max-width: 46ch; color: var(--cream-dim); font-size: clamp(1rem, 3vw, 1.18rem); line-height: 1.6; margin-top: 1rem; }
-    .hb-hero__sub b { color: var(--cream); }
-    .hb-tickers { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.6rem; }
-    .hb-tk {
-      display: inline-flex; flex-direction: column; gap: 0.1rem; border: 1px solid rgba(244,239,230,0.22);
-      background: rgba(10,8,7,0.5); border-radius: 12px; padding: 0.7rem 1.1rem;
-    }
-    .hb-tk b { font-family: var(--display); font-size: 1.5rem; letter-spacing: 0.04em; }
-    .hb-tk span { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim); }
-    .hb-cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.8rem; }
-
-    .hb-sec { max-width: 60rem; margin: 0 auto; padding: clamp(2.6rem, 8vh, 4.4rem) clamp(1.2rem, 5vw, 3.5rem); }
-    .hb-sec h2 { font-family: var(--display); text-transform: uppercase; font-size: clamp(1.8rem, 6vw, 3rem); line-height: 1; margin-bottom: 1rem; text-wrap: balance; }
-    .hb-sec h2 em { color: var(--hb-hot); font-style: normal; }
-    .hb-sec p { color: var(--cream-dim); font-size: 1.05rem; line-height: 1.7; max-width: 60ch; }
-    .hb-sec p + p { margin-top: 1rem; }
-    .hb-sec p b { color: var(--cream); }
-    .hb-kick { font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--hb-hot); font-weight: 800; margin-bottom: 0.8rem; }
-
-    .hb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.4rem; }
-    @media (max-width: 680px) { .hb-two { grid-template-columns: 1fr; } }
-    .hb-card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; padding: 1.4rem 1.5rem; background: linear-gradient(180deg, rgba(20,16,14,0.9), rgba(6,4,4,0.9)); }
-    .hb-card h3 { font-family: var(--display); text-transform: uppercase; font-size: 1.5rem; letter-spacing: 0.03em; display: flex; align-items: baseline; gap: 0.5rem; }
-    .hb-card h3 small { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--hb-hot); }
-    .hb-card p { font-size: 0.95rem; margin-top: 0.5rem; }
-
-    .hb-drop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin-top: 1.4rem; }
-    @media (max-width: 680px) { .hb-drop { grid-template-columns: 1fr; } }
-    .hb-item { border: 1px solid rgba(244,239,230,0.12); border-radius: 14px; padding: 1.2rem; background: rgba(10,8,7,0.6); }
-    .hb-item .tag { font-family: var(--mono, monospace); font-size: 0.66rem; letter-spacing: 0.1em; color: var(--hb-hot); text-transform: uppercase; }
-    .hb-item h4 { font-family: var(--display); text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.02em; margin: 0.3rem 0; }
-    .hb-item p { font-size: 0.86rem; color: var(--cream-dim); line-height: 1.5; }
-    .hb-item .price { margin-top: 0.6rem; font-weight: 800; color: var(--cream); }
-
-    .hb-code { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.2rem; }
-    .hb-code li { padding-left: 1.4rem; position: relative; color: var(--cream-dim); line-height: 1.6; }
-    .hb-code li::before { content: "✕"; position: absolute; left: 0; color: var(--hb-hot); font-weight: 800; }
-    .hb-code li b { color: var(--cream); }
-
-    .hb-foot { text-align: center; padding: clamp(3rem, 10vh, 5rem) 1.3rem; border-top: 1px solid rgba(244,239,230,0.1); }
-    .hb-foot h2 { font-family: var(--display); text-transform: uppercase; font-size: clamp(2rem, 8vw, 3.6rem); line-height: 0.95; text-wrap: balance; }
-    .hb-foot h2 em { color: var(--hb-hot); font-style: normal; }
-    .hb-foot p { color: var(--cream-dim); margin: 0.8rem auto 1.6rem; max-width: 40ch; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
-<body class="hb has-appbar">
-
-  <header class="hb-hero">
-    <!-- Featured portrait: the repo-permanent copy (fetched from the
-         manifest by the production Action) with the live Higgsfield CDN
-         render as an immediate fallback, then the crest below both. -->
-    <img class="hb-hero__bg" alt="Hitman Benji — masked operator"
-      src="assets/img/benji-hero.png"
-      onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='https://d8j0ntlcm91z4.cloudfront.net/user_3G3F7jiUHPTPLSNf3XP0bAYtQmG/hf_20260710_124647_95f38818-13a4-4126-a29c-119a8bf59b99.png';}else{this.style.display='none';}">
-    <div class="hb-hero__crest" aria-hidden="true">
-      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="100" cy="100" r="94" stroke="#c1121f" stroke-width="2" opacity="0.7"/>
-        <path d="M52 88 Q100 60 148 88 L148 104 Q100 92 52 104 Z" fill="#c1121f"/>
-        <rect x="70" y="98" width="24" height="14" rx="3" fill="#0a0807"/>
-        <rect x="106" y="98" width="24" height="14" rx="3" fill="#0a0807"/>
-        <path d="M52 104 Q100 150 148 104" stroke="#e5383b" stroke-width="3" opacity="0.8"/>
-        <text x="100" y="176" text-anchor="middle" fill="#e5383b" font-family="Anton, Impact, sans-serif" font-size="15" letter-spacing="3">HITMAN</text>
-      </svg>
-    </div>
-    <div class="hb-hero__scrim"></div>
-
-    <span class="hb-badge">Equity Uprise · Lore Legend</span>
-    <h1 class="hb-hero__h1">Hitman <em>Benji</em></h1>
-    <p class="hb-hero__sub">The masked operator. Never a face — <b>always the work</b>. He runs two lines on the floor and moves quiet: the creative and the brand, one hand feeding the other.</p>
-
-    <div class="hb-tickers">
-      <span class="hb-tk"><b>$BENJI</b><span>the operator · creative</span></span>
-      <span class="hb-tk"><b>$GEAR</b><span>Hitman Gear · the brand</span></span>
-    </div>
-
-    <div class="hb-cta">
-      <a class="btn btn--ruby" href="market.html?to=BENJI">Put Benji on a job</a>
-      <a class="btn btn--ghost" href="market.html?to=GEAR">Cop the gear</a>
-    </div>
-  </header>
-
-  <section class="hb-sec">
-    <div class="hb-kick">The Legend</div>
-    <h2>Nobody's seen his face. <em>Everybody's seen his work.</em></h2>
-    <p>Benji doesn't do the internet the way the internet wants him to. No selfies, no reveal, no press run. The mask isn't hiding anything — it <b>is</b> the point. You judge the man by the drop, not the face.</p>
-    <p>He came up with the Hitmen — a whole gang of masked operators moving product and pressure across the map. Benji's the one who turned the crew into a <b>business</b>: gear on the backs, deals on the record, every move on the floor. He's a permanent fixture of the platform's lore — the standard the young operators measure themselves against.</p>
-    <p>On the exchange he's the proof of concept for the whole game: <b>be somebody without ever showing who you are.</b> Let the equity rise on the strength of the work alone.</p>
-  </section>
-
-  <section class="hb-sec">
-    <div class="hb-kick">The Operation</div>
-    <h2>Two tickers. <em>One machine.</em></h2>
-    <p>Every operator on this platform can run more than one line. Benji runs two, and they feed each other — the creative pulls attention, the brand converts it, and both climb together.</p>
-    <div class="hb-two">
-      <div class="hb-card">
-        <h3>$BENJI <small>THE OPERATOR</small></h3>
-        <p>The creative line — visuals, sound, direction. Book him for a job and it goes on the record, signed, delivered masked. This is the account the desk operates until the man himself claims it.</p>
-      </div>
-      <div class="hb-card">
-        <h3>$GEAR <small>HITMAN GEAR</small></h3>
-        <p>The brand — masked streetwear built for operators. Tactical black, crimson insignia, no logos you can trace. The apparel line the whole gang wears; the storefront on the floor is open.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="hb-sec">
-    <div class="hb-kick">The Drop</div>
-    <h2>Hitman Gear — <em>the first rack</em></h2>
-    <div class="hb-drop">
-      <div class="hb-item">
-        <div class="tag">Mask · signature</div>
-        <h4>The Operator Balaclava</h4>
-        <p>Matte-black tactical knit, crimson stitch at the temple. The face you'll never see, on your own.</p>
-        <div class="price">$45</div>
-      </div>
-      <div class="hb-item">
-        <div class="tag">Outerwear</div>
-        <h4>Pressure Vest</h4>
-        <p>Utility vest, ten pockets, embroidered Hitman insignia. Built to carry, built to move.</p>
-        <div class="price">$120</div>
-      </div>
-      <div class="hb-item">
-        <div class="tag">Staple</div>
-        <h4>No-Face Hoodie</h4>
-        <p>Heavyweight black hoodie, crimson interior, a hood that sits like a shadow. The uniform.</p>
-        <div class="price">$85</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="hb-sec">
-    <div class="hb-kick">The Code</div>
-    <h2>How Benji moves</h2>
-    <ul class="hb-code">
-      <li><b>Face stays off.</b> The mask never comes down — not for a deal, not for a camera.</li>
-      <li><b>The work talks.</b> No hype he can't back. Every drop earns its own noise.</li>
-      <li><b>On the record.</b> Every job signed on the floor. Money moves clean, the ledger carries it.</li>
-      <li><b>Feed the gang.</b> He brings his people on — their equity rises when his does.</li>
-    </ul>
-  </section>
-
-  <footer class="hb-foot">
-    <h2>Put the Hitmen <em>on it.</em></h2>
-    <p>Book the operator or cop the gear — both lines are live on the floor.</p>
-    <div class="hb-cta" style="justify-content:center">
-      <a class="btn btn--ruby" href="market.html?to=BENJI">Put Benji on a job</a>
-      <a class="btn btn--ghost" href="market.html?to=GEAR">Shop Hitman Gear</a>
-    </div>
-  </footer>
-
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/backend.js?v=__STAMP__"></script>
-  <script src="js/guide.js?v=__STAMP__"></script>
+<body>
+  <p>This profile is live at <a href="page.html?who=hitman-benji">the Page</a>.<br>Taking you there&hellip;</p>
+  <script>location.replace("page.html?who=hitman-benji");</script>
 </body>
 </html>

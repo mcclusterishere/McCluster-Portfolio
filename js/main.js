@@ -588,10 +588,10 @@
           // pinned on the flight console between the pilots, and on the DSLR
           // standing in the aisle — both measured off the equirect frame
           { yaw: -77, pitch: -13, label: "The cockpit · fly with Vaunt", href: "https://vauntapi.flyvaunt.com/referral/nuao1K", blank: true },
-          { yaw: 111, pitch: -32, label: "The camera · book photography", href: "book-photo.html" },
-          { yaw: 131, pitch: -29, label: "The bag · get back to it", href: "offer.html" },
-          { yaw: -140, pitch: -40, label: "McCluster · the artist", href: "profile-mccluster.html" },
-          { yaw: 71, pitch: -56, label: "Zakir · the six-string", href: "profile-zakir.html" },
+          { yaw: 111, pitch: -32, label: "The camera · book photography", href: "hire.html" },
+          { yaw: 131, pitch: -29, label: "The bag · get back to it", href: "hire.html" },
+          { yaw: -140, pitch: -40, label: "McCluster · the artist", href: "page.html?who=mccluster" },
+          { yaw: 71, pitch: -56, label: "Zakir · the six-string", href: "page.html?who=zakir" },
         ],
       });
       window.__MCC_VR = workVR; // debug/verification handle

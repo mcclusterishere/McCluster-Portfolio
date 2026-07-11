@@ -3,140 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Provider Profile · Equity Uprise · McCluster</title>
-  <meta name="description" content="A verified provider on Equity Uprise — their work, their music, their terms, and their deal, one page. Book direct; providers keep 100% of their rate.">
+  <title>Profiles moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Every profile is a Page now — this page moved into the live Equity Uprise platform; you are being taken there now.">
+  <meta http-equiv="refresh" content="0; url=page.html">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/page.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .pv { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1.2rem, 5vw, 3.5rem) 8rem; max-width: 52rem; margin: 0 auto; }
-    .pv__seal { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(10, 8, 7, 0.7); border: 3px solid var(--badge-c, var(--ruby-hot));
-      box-shadow: 0 0 26px color-mix(in srgb, var(--badge-c, #e5383b) 55%, transparent); margin-bottom: 1rem; }
-    .pv__seal img { width: 52%; }
-    .pv h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.92; font-size: clamp(2.6rem, 11vw, 5rem); }
-    .pv__head { color: var(--ruby-hot); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; margin-top: 0.5rem; }
-    .pv__sub { color: var(--cream-dim); margin-top: 0.8rem; line-height: 1.65; max-width: 54ch; }
-    .pv__roles { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
-    .pv__role { border: 1px solid rgba(244, 239, 230, 0.25); border-radius: 100px; padding: 0.4em 1em;
-      font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-dim); }
-    .pv__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
-      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.6rem; }
-    .pv__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.7rem; }
-    .pv__offer { border-color: rgba(229, 56, 59, 0.5); background: linear-gradient(160deg, rgba(30, 14, 14, 0.92), var(--ink-2)); }
-    .pv__note { font-size: 0.8rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
-    .pv__play { display: inline-flex; align-items: center; gap: 0.6em; border: none; cursor: pointer;
-      border-radius: 100px; padding: 0.85em 1.7em; font-family: var(--display); font-size: 1.05rem;
-      letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
-      background: linear-gradient(120deg, var(--ruby), var(--ruby-hot));
-      box-shadow: 0 10px 34px rgba(229, 56, 59, 0.45); }
-    .pv__play svg { width: 1em; height: 1em; fill: currentColor; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
-<body class="songpage">
-  <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="market.html#providers">← The Market</a>
-      <a class="head-cta" id="pvDealTop" href="market.html#build">Make a deal</a>
-    </nav>
-  </header>
-  <main class="pv" id="pvMain">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Equity Uprise &middot; verified</p>
-    <div id="pvBody"><p class="pv__note">Finding them on the wall…</p></div>
-  </main>
-
-  <audio id="pvAudio" preload="none"></audio>
-
-  <script src="js/analytics.js?v=__STAMP__"></script>
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/backend.js?v=__STAMP__"></script>
-  <script src="js/network.js?v=__STAMP__"></script>
-  <script src="js/mstock.js?v=__STAMP__"></script>
-  <script>
-    (function () {
-      "use strict";
-      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
-      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
-      var who = new URLSearchParams(location.search).get("who") || "";
-      var au = document.getElementById("pvAudio");
-
-      Promise.all([
-        fetch("data/providers.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).catch(function () { return { providers: [] }; }),
-        window.MCC_NET ? window.MCC_NET.listProviders().catch(function () { return []; }) : Promise.resolve([]),
-      ]).then(function (both) {
-        var all = both[0].providers || [];
-        (both[1] || []).forEach(function (c) {
-          if (all.some(function (p) { return (p.slug || p.id) === c.slug; })) return;
-          all.push({ id: c.slug, slug: c.slug, name: c.name, headline: c.headline, blurb: c.blurb,
-            area: c.area, roles: c.roles || [], badgeColor: c.badge_color, href: c.href, terms: c.terms });
-        });
-        var p = all.filter(function (x) { return (x.slug || x.id) === who; })[0];
-        var body = document.getElementById("pvBody");
-        if (!p) {
-          body.innerHTML = '<h1>Not on<br>the wall.</h1><p class="pv__sub">No verified profile under that name — the floor is always growing.</p>' +
-            '<p style="margin-top:1.4rem"><a class="btn btn--ruby" href="market.html#providers">Back to the Market</a></p>';
-          return;
-        }
-        document.title = p.name + " · Equity Uprise · McCluster";
-        var slug = p.slug || p.id;
-        var dealHref = "market.html?with=" + encodeURIComponent(slug) + "#build";
-        document.getElementById("pvDealTop").href = dealHref;
-        var t = p.terms || {};
-        var bits = [];
-        if (t.feature) bits.push("<b>$" + t.feature + "</b> for a feature");
-        if (t.floor != null) bits.push("<b>" + t.floor + "%</b> writing floor");
-        if (t.engineering) bits.push("engineering: <b>" + esc(String(t.engineering).replace(/-/g, " ")) + "</b>");
-
-        body.innerHTML =
-          '<span class="pv__seal" style="--badge-c:' + esc(p.badgeColor || "#e5383b") + '"><img src="assets/img/m-mark.png" alt="M-Verified"></span>' +
-          "<h1>" + esc(p.name) + "</h1>" +
-          '<p class="pv__head">' + esc(p.headline || "M-Verified provider") + "</p>" +
-          '<div class="pv__roles">' + (p.roles || []).map(function (r) { return '<span class="pv__role">' + esc(r) + "</span>"; }).join("") + "</div>" +
-          '<p class="pv__sub">' + esc(p.blurb || "") + (p.area ? " · " + esc(p.area) : "") + "</p>" +
-          (p.music ? '<div class="pv__card"><h2>The sound</h2>' +
-            '<button class="pv__play" id="pvPlay" type="button"><svg viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.79-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14z"/></svg> <span>Play — ' + esc(p.music.title) + "</span></button>" +
-            '<p class="pv__note">Their music rides the Music tab — it follows you through the whole site.</p></div>' : "") +
-          (bits.length || t.notes ? '<div class="pv__card pv__offer"><h2>Their offer</h2>' +
-            (bits.length ? "<p>" + bits.join(" · ") + "</p>" : "") +
-            (t.notes ? '<p class="pv__note">' + esc(t.notes) + "</p>" : "") + "</div>" : "") +
-          '<div class="pv__card"><h2>The M Stock <span style="font-size:0.58rem;letter-spacing:0.2em;color:var(--cream-dim);font-family:var(--body)">PUBLIC INDEX</span></h2><div id="pvStock"></div></div>' +
-          '<div class="pv__card"><h2>The deal</h2>' +
-          '<p class="pv__note" style="margin:0 0 1rem">One engine: propose, counter, lock, sign — every percentage on the record. Signed out, it\u2019s a quick request straight to their inbox.</p>' +
-          '<div class="finale__actions"><a class="btn btn--ruby" href="' + dealHref + '" data-cta="pv-deal">Make a deal with ' + esc(p.name.split(" ")[0]) + " →</a>" +
-          (p.href ? '<a class="btn btn--ghost" href="' + esc(p.href) + '" data-cta="pv-work">The work</a>' : "") + "</div></div>";
-
-        if (p.music) {
-          var playing = false;
-          var btn = document.getElementById("pvPlay");
-          function announce() {
-            window.dispatchEvent(new CustomEvent("mcc:nowplaying", {
-              detail: { title: p.music.title, href: "#", playing: playing },
-            }));
-          }
-          window.MCC_NP_PLAY = function () { au.play().catch(function () {}); };
-          window.MCC_NP_PAUSE = function () { au.pause(); };
-          au.src = p.music.src;
-          au.addEventListener("play", function () { playing = true; announce(); btn.querySelector("span").textContent = "Playing — tap Music below to pause"; });
-          au.addEventListener("pause", function () { playing = false; announce(); btn.querySelector("span").textContent = "Play — " + p.music.title; });
-          btn.addEventListener("click", function () {
-            if (au.paused) au.play().catch(function () {}); else au.pause();
-            track("provider_music", { who: slug, playing: !au.paused });
-          });
-        }
-        // standard issue: every profile carries its public index from day one
-        if (window.MCC_STOCK) {
-          var stock = window.MCC_STOCK.build({
-            uid: slug,
-            listing: { status: "live", created_at: new Date(Date.now() - 14 * 864e5).toISOString(), updated_at: new Date().toISOString() },
-            marketN: Math.max(all.length, 3),
-          });
-          window.MCC_STOCK.mount(document.getElementById("pvStock"), stock, { public: true });
-        }
-        track("provider_profile_view", { who: slug });
-      });
-    })();
-  </script>
+<body>
+  <p>Profiles are <a href="page.html">Pages</a> now.<br>Taking you there&hellip;</p>
+  <script>location.replace("page.html" + location.search);</script>
 </body>
 </html>
