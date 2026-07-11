@@ -536,9 +536,10 @@
       <div class="xc__bigprice"><span id="xcDPrice">—</span> <span class="xc__chg" id="xcDChg"></span></div>
       <canvas class="xc__bigchart" id="xcDChart"></canvas>
       <div class="xc__tf" id="xcTF" role="tablist" aria-label="Timeframe">
-        <button type="button" class="is-on" data-tf="1D">1D</button>
-        <button type="button" data-tf="1W">1W</button>
+        <button type="button" class="is-on" data-tf="1W">1W</button>
         <button type="button" data-tf="1M">1M</button>
+        <button type="button" data-tf="3M">3M</button>
+        <button type="button" data-tf="1Y">1Y</button>
         <button type="button" data-tf="ALL">All</button>
       </div>
       <div class="xc__book">
@@ -1641,7 +1642,7 @@
       }
 
       /* ---- detail sheet: the whole book, not just a line ---- */
-      var current = null, curTF = "1D";
+      var current = null, curTF = "1W";
 
       /* deterministic depth: every symbol carries its own history, book and
          prints, seeded from the slug so the floor reads the same for everyone
@@ -1661,8 +1662,10 @@
         /* THE ONE TAPE: every timeframe is a slice of the real snapshot
            history — no random walks, no invented intraday */
         var s = r.stock.series;
-        if (tf === "1D") return s.slice(-2);
         if (tf === "1W") return s.slice(-7);
+        if (tf === "1M") return s.slice(-30);
+        if (tf === "3M") return s.slice(-90);
+        if (tf === "1Y") return s.slice(-365);
         return s;
       }
       function paintBook(r) {
@@ -1727,8 +1730,8 @@
           track("xc_real_open", { tick: r.tick });
           return;
         }
-        current = r; curTF = "1D";
-        $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1D"); });
+        current = r; curTF = "1W";
+        $("xcTF").querySelectorAll("button").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-tf") === "1W"); });
         $("xcDTick").textContent = "$" + r.tick + (r.onTape ? " · ON THE TAPE — every play, quiz and run moves it" : " · not scored yet");
         /* the verified mark rides the name: a real ID (or Connect's own
            KYC) stands behind this listing */
@@ -1743,6 +1746,8 @@
         /* one engine, real data only: a tape row shows the real engine;
            an unscored row shows no numbers at all — just the door in */
         $("xcDStats").innerHTML =
+          '<div class="xc__stat" style="border-color:rgba(232,200,119,0.55)"><small>The profile</small><b><a href="page.html?who=' +
+          esc(r.p.slug || r.p.id) + '" style="color:#e8c877">the score, in the open &#8594;</a></b></div>' +
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
           (r.onTape
