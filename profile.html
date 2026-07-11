@@ -141,6 +141,7 @@
         main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
           "<h1>" + esc(name) + (tick ? ' <span style="color:#e8c877;font-size:0.5em;vertical-align:0.4em">' + esc(tick) + "</span>" : "") + "</h1>" +
           '<div style="margin-top:0.6rem">' + archLine + "</div>" +
+          '<div id="pfHero" aria-hidden="true" style="border-radius:18px;border:1px solid rgba(244,239,230,0.16);min-height:8.5rem;background:linear-gradient(140deg,#1a1210,#0d0a08);background-size:cover;background-position:center;margin-top:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)"></div>' +
           '<div class="pf__sides">' +
           '<button class="pf__side is-on" type="button" data-side="pub">🌍 Public — the floor sees</button>' +
           '<button class="pf__side" type="button" data-side="priv">🔒 Private — your rooms</button></div>' +
@@ -158,6 +159,12 @@
           '<div class="pf__pane" data-pane="priv">' + worldDoor + '<div class="pf__doors">' + privateDoors + "</div></div>" +
           '<button class="pf__out" id="pfSignOut" type="button">Sign out</button>';
 
+        (function () {
+          var h = document.getElementById("pfHero");
+          if (h) { var im = new Image();
+            im.onload = function () { h.style.backgroundImage = "url(assets/img/mc-hero.jpg)"; };
+            im.src = "assets/img/mc-hero.jpg"; }
+        })();
         main.querySelectorAll(".pf__side").forEach(function (b) {
           b.addEventListener("click", function () {
             main.querySelectorAll(".pf__side").forEach(function (x) { x.classList.toggle("is-on", x === b); });
