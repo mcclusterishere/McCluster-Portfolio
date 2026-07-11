@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Gold Shelf · Equity Uprise</title>
+  <meta name="description" content="What gold is FOR: spend granted E⤴ with the house on reach, polish, and partner deals. Gold in to the house, value out from the house.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .gs { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 34rem; margin: 0 auto; }
+    .gs h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 3.6rem); }
+    .gs__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.8rem; font-size: 0.98rem; }
+    .gs__sub b { color: var(--cream); }
+    .gs__wallet { display: flex; gap: 0.6rem; margin-top: 1.1rem; }
+    .gs__w { flex: 1; border: 1.5px solid var(--wc, #e8c877); border-radius: 14px; padding: 0.85rem; text-align: center; }
+    .gs__w b { display: block; font-family: var(--display); font-size: 1.5rem; color: var(--wc, #e8c877); font-variant-numeric: tabular-nums; }
+    .gs__w small { color: var(--cream-dim); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .gs__offer { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.7);
+      padding: 1.05rem 1.1rem; margin-top: 0.9rem; border-left: 4px solid #e8c877; }
+    .gs__offer.is-arming { opacity: 0.6; border-left-color: rgba(244,239,230,0.3); }
+    .gs__offer h3 { font-size: 1.05rem; }
+    .gs__offer p { color: var(--cream-dim); font-size: 0.88rem; line-height: 1.6; margin-top: 0.3rem; }
+    .gs__row { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.7rem; }
+    .gs__price { font-weight: 800; color: #e8c877; font-variant-numeric: tabular-nums; font-size: 1rem; }
+    .gs__msg { color: #2fbf71; font-size: 0.88rem; min-height: 1.2em; margin-top: 0.8rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="mymission.html">Your desk</a><a href="market.html">Our Street</a></nav>
+  </header>
+
+  <main class="gs">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> What gold is FOR</p>
+    <h1>The Gold<br>Shelf.</h1>
+    <p class="gs__sub"><b>Gold in to the house, value out from the house.</b> Spend granted E⤴ on reach, polish,
+      and partner deals — no partner ever touches your credit. Take Risk And Prosper, Slick.</p>
+
+    <div class="gs__wallet">
+      <div class="gs__w" style="--wc:#e8c877"><b id="gsGold">—</b><small>Gold · spends here</small></div>
+      <div class="gs__w" style="--wc:#00c805"><b id="gsGreen">—</b><small>Green · cashes out</small></div>
+    </div>
+    <p class="gs__msg" id="gsMsg"></p>
+
+    <div id="gsShelf"><p class="gs__sub">Stocking the shelf…</p></div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/guide.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p || {}); }
+      var S = window.MCC_SUPA;
+      var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+
+      function rpc(name, body) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/" + name, { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + (t || S.key) },
+            body: JSON.stringify(body || {}) }).then(function (r) { return r.ok ? r.json() : null; });
+        }).catch(function () { return null; });
+      }
+
+      function wallet() {
+        if (!authed) {
+          $("gsMsg").textContent = "Sign in on your desk and your wallet paints here.";
+          return;
+        }
+        rpc("my_colors", {}).then(function (c) {
+          if (!c) { $("gsMsg").textContent = "The wallet arms with one paste on the back end (two-color-law)."; return; }
+          $("gsGold").textContent = (+c.gold || 0).toLocaleString();
+          $("gsGreen").textContent = (+c.green || 0).toLocaleString();
+        });
+      }
+
+      function paint(data) {
+        var host = $("gsShelf");
+        host.innerHTML = (data.offers || []).map(function (o) {
+          var arming = o.status !== "live";
+          return '<div class="gs__offer' + (arming ? " is-arming" : "") + '">' +
+            "<h3>" + esc(o.name) + ' <small style="color:var(--cream-dim);font-weight:400">· ' + esc(o.partner) + "</small></h3>" +
+            "<p>" + esc(o.blurb) + "</p>" +
+            '<div class="gs__row">' +
+            (arming
+              ? '<span class="gs__price" style="color:var(--cream-dim)">arming</span>'
+              : '<span class="gs__price">' + (+o.gold).toLocaleString() + " E&#10548; gold</span>" +
+                '<button class="btn btn--ruby" type="button" data-claim="' + esc(o.id) + '" data-gold="' + (+o.gold) + '" data-name="' + esc(o.name) + '" style="margin-left:auto;font-size:0.78rem;padding:0.55em 1.2em">Claim it</button>') +
+            "</div></div>";
+        }).join("");
+        host.querySelectorAll("[data-claim]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (!authed) { $("gsMsg").textContent = "Sign in first — the shelf sells to members."; return; }
+            var id = b.getAttribute("data-claim"), amt = +b.getAttribute("data-gold");
+            if (!confirm("Burn " + amt.toLocaleString() + " E⤴ gold on “" + b.getAttribute("data-name") + "”? Gold spent never comes back.")) return;
+            b.disabled = true; b.textContent = "Burning…";
+            rpc("eup_pay", { p_to_slug: "mccluster", p_amt: amt, p_note: "shelf:" + id }).then(function (j) {
+              if (j && j.ok) {
+                b.textContent = "Claimed ✓";
+                $("gsMsg").textContent = "Done — " + amt.toLocaleString() + " gold burned. The desk delivers within 24h; your bell rings when it lands.";
+                track("shelf_claim", { id: id, gold: amt });
+                wallet();
+              } else {
+                b.disabled = false; b.textContent = "Claim it";
+                $("gsMsg").textContent = (j && j.why) || "The shelf arms with the two-color paste — or your gold is short.";
+              }
+            });
+          });
+        });
+      }
+
+      fetch("data/gold-shelf.json", { cache: "no-cache" })
+        .then(function (r) { return r.json(); })
+        .then(paint)
+        .catch(function () { $("gsShelf").innerHTML = '<p class="gs__sub">The shelf didn’t load — refresh.</p>'; });
+      wallet();
+      track("shelf_view", {});
+    })();
+  </script>
+</body>
+</html>

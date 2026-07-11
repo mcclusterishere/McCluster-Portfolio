@@ -1,0 +1,41 @@
+{
+  "law": "Gold in to the house, value out from the house. No partner ever holds or receives E⤴ — offers that would break this are never listed.",
+  "offers": [
+    {
+      "id": "billboard-mini",
+      "partner": "The house",
+      "name": "Billboard mini-run",
+      "blurb": "Three days of your card pushed across Our Street and Uprise Nation — the network carrying your name.",
+      "gold": 300,
+      "fulfil": "house",
+      "status": "live"
+    },
+    {
+      "id": "wire-spotlight",
+      "partner": "The house",
+      "name": "Wire spotlight",
+      "blurb": "Your drop pinned at the top of the Wire for 48 hours — the first thing Our Street reads.",
+      "gold": 150,
+      "fulfil": "house",
+      "status": "live"
+    },
+    {
+      "id": "deck-polish",
+      "partner": "The house",
+      "name": "Pitch-deck polish",
+      "blurb": "The desk tunes your auto-built deck by hand — copy, order, one sharpened story.",
+      "gold": 250,
+      "fulfil": "house",
+      "status": "live"
+    },
+    {
+      "id": "partner-slot-1",
+      "partner": "Partner network",
+      "name": "Partner deals — arming",
+      "blurb": "Real brand discounts land here as partner-network approvals clear: gear, software, phone plans, car care. Gold buys the code; the partner never touches E⤴.",
+      "gold": 0,
+      "fulfil": "code",
+      "status": "arming"
+    }
+  ]
+}
