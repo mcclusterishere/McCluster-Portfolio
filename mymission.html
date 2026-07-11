@@ -138,6 +138,23 @@
       ];
       var ARC_C = { walkin: "#45b6ff", identity: "#d8ba7c", craft: "#e5383b",
         business: "#00c805", community: "#f472b6", scholar: "#2aa8a0" };
+      /* THE PATHS: every mission also belongs to a Chaser path — the
+         same eight from RISE — so the desk filters by the path you're
+         chasing right now, and your E⤴ Card picks your default lane. */
+      var PATH_META = {
+        signal: ["Signal", "#45b6ff"], infra: ["Infrastructure", "#c99d45"],
+        capital: ["Capital", "#00c805"], culture: ["Culture", "#e5383b"],
+        justice: ["Justice", "#8b5cf6"], access: ["Access", "#a3e635"],
+        proof: ["Proof", "#2aa8a0"], command: ["Command", "#ff7a00"] };
+      var PATH_OF = {
+        walk_in: "access", card_live: "signal", signed: "proof", push_on: "infra", explorer: "command",
+        ticker_claimed: "capital", first_id: "proof", id_stack: "infra", badge_applied: "proof",
+        first_post: "signal", on_the_wire: "signal", first_track: "culture", listing_live: "infra",
+        first_deal: "capital", deal_signed: "capital", distro_connected: "infra",
+        earnings_filed: "proof", payouts_armed: "capital",
+        civic_card: "justice", first_vote: "justice", proposal_filed: "justice",
+        first_plug: "access", guide_talk: "access",
+        scholar_3: "culture", scholar_6: "infra", gas_wallet: "capital" };
       var GAUNTLET = [
         ["walk_in", 20, "Finish the walk-in", "welcome.html", "The five steps — your card dressed, the economy explained.", "walkin"],
         ["card_live", 20, "Dress your card", "market.html#yours", "A headline on your listing — how the floor finds you.", "walkin"],
@@ -221,15 +238,35 @@
           "<h2>Do literally everything. 100,000 points.</h2>" +
           '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 975 * 100) + '%"></i></div>' +
           (minted > 0 ? '<p class="mm__msg">💰 +' + pts(minted) + " pts (" + minted.toFixed(2) + " E⤴︎) just landed for what you've already done.</p>" : "") +
-          /* the filter row: pick the hustle, see only its checklist */
-          '<div class="mm__filts" id="mmFilts">' +
-          '<button class="mm__filt" type="button" data-f="all" style="--fc:#c99d45">⚡ All hustles</button>' +
-          ARCS.map(function (arc) {
-            var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
-            var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
-            return '<button class="mm__filt" type="button" data-f="' + arc[0] + '" style="--fc:' + ARC_C[arc[0]] + '">' +
-              arc[1] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
-          }).join("") + "</div>" +
+          /* YOUR NEXT MOVES: the desk reads your E⤴ Card and puts the
+             three moves on YOUR path up top — no card yet, it invites
+             you to go earn one in RISE */
+          (function () {
+            var rise = null; try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
+            var myPaths = rise && rise.arch ? rise.arch : null;
+            var undone = GAUNTLET.filter(function (mi) { return done.indexOf(mi[0]) === -1; });
+            var next = myPaths ? undone.filter(function (mi) { return myPaths.indexOf(PATH_OF[mi[0]]) !== -1; }) : [];
+            undone.forEach(function (mi) { if (next.length < 3 && next.indexOf(mi) === -1) next.push(mi); });
+            next = next.slice(0, 3);
+            if (!next.length) return "";
+            return '<div style="border:1.5px solid rgba(201,157,69,0.55);border-radius:14px;padding:0.85rem 0.9rem;margin-top:1rem;background:rgba(201,157,69,0.06)">' +
+              '<p class="mm__k" style="color:#e8c877">Chase your path — next 3 moves' +
+              (myPaths ? " · " + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ")
+                       : ' · <a href="rise.html" style="color:#e8c877">find your path — play RISE →</a>') + "</p>" +
+              next.map(function (mi) {
+                var pm = PATH_META[PATH_OF[mi[0]]] || ["", "#c99d45"];
+                return '<a class="mm__mi" href="' + mi[3] + '" style="border-color:' + pm[1] + '55">' +
+                  '<span style="color:' + pm[1] + '">▶</span><span style="flex:1"><b style="font-size:0.88rem">' + mi[2] + "</b><small>" +
+                  pm[0] + " path · " + mi[4] + '</small></span><span class="amt">+' + pts(mi[1]) + " pts</span></a>";
+              }).join("") + "</div>";
+          })() +
+          /* the filter desk: one row of modes, one row of lanes — scope
+             the checklist by HUSTLE (the six arcs) or by PATH (the
+             eight Chaser lanes from RISE) */
+          '<div class="mm__filts" id="mmModes" style="padding-bottom:0">' +
+          '<button class="mm__filt" type="button" data-mode="arc" style="--fc:#f4efe6">By hustle</button>' +
+          '<button class="mm__filt" type="button" data-mode="path" style="--fc:#e8c877">By path</button></div>' +
+          '<div class="mm__filts" id="mmFilts"></div>' +
           ARCS.map(function (arc) {
             var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
             var got = mine2.reduce(function (a, mi) { return a + (done.indexOf(mi[0]) !== -1 ? mi[1] : 0); }, 0);
@@ -238,8 +275,10 @@
               "<span>" + pts(got) + " / " + pts(arc[3]) + " pts</span></div></div>" +
               mine2.map(function (mi) {
                 var hit = done.indexOf(mi[0]) !== -1;
-                return '<a class="mm__mi' + (hit ? " is-done" : "") + '" href="' + mi[3] + '">' +
-                  "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" + mi[4] + "</small></span>" +
+                var pm = PATH_META[PATH_OF[mi[0]]] || ["", "#c99d45"];
+                return '<a class="mm__mi' + (hit ? " is-done" : "") + '" data-path="' + PATH_OF[mi[0]] + '" href="' + mi[3] + '">' +
+                  "<span>" + (hit ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + mi[2] + "</b><small>" +
+                  '<i style="font-style:normal;color:' + pm[1] + '">' + pm[0] + "</i> · " + mi[4] + "</small></span>" +
                   '<span class="amt">' + (hit ? "✓ " + pts(mi[1]) + " pts" : "+" + pts(mi[1]) + " pts") + "</span></a>";
               }).join("") + "</div>";
           }).join("") +
@@ -292,28 +331,67 @@
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
-        /* the hustle filter: one tap scopes the checklist; the pick
-           survives the visit so the room reopens on your lane */
+        /* THE FILTER DESK: two modes, one law. BY HUSTLE scopes whole
+           arcs; BY PATH scopes individual missions to a Chaser lane.
+           Both picks survive the visit. */
         (function () {
-          var bar = $("mmFilts");
-          if (!bar) return;
-          function apply(f) {
-            bar.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-f") === f); });
+          var modes = $("mmModes"), bar = $("mmFilts");
+          if (!modes || !bar) return;
+          var mode = "arc", pick = "all";
+          try {
+            mode = localStorage.getItem("mcc_mm_mode") || "arc";
+            pick = localStorage.getItem("mcc_mm_pick") || "all";
+          } catch (e) {}
+          function chipsFor(m) {
+            if (m === "arc") {
+              return '<button class="mm__filt" type="button" data-f="all" style="--fc:#c99d45">⚡ All hustles</button>' +
+                ARCS.map(function (arc) {
+                  var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
+                  var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
+                  return '<button class="mm__filt" type="button" data-f="' + arc[0] + '" style="--fc:' + ARC_C[arc[0]] + '">' +
+                    arc[1] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
+                }).join("");
+            }
+            return '<button class="mm__filt" type="button" data-f="all" style="--fc:#e8c877">⚡ All paths</button>' +
+              Object.keys(PATH_META).map(function (p) {
+                var mine2 = GAUNTLET.filter(function (mi) { return PATH_OF[mi[0]] === p; });
+                var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
+                return '<button class="mm__filt" type="button" data-f="' + p + '" style="--fc:' + PATH_META[p][1] + '">' +
+                  PATH_META[p][0] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
+              }).join("");
+          }
+          function apply() {
+            modes.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-mode") === mode); });
+            bar.innerHTML = chipsFor(mode);
+            bar.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-f") === pick); });
             host.querySelectorAll(".mm__arcwrap").forEach(function (w) {
-              w.classList.toggle("is-hid", f !== "all" && w.getAttribute("data-arcw") !== f);
+              if (mode === "arc") {
+                w.querySelectorAll(".mm__mi").forEach(function (mi) { mi.style.display = ""; });
+                w.classList.toggle("is-hid", pick !== "all" && w.getAttribute("data-arcw") !== pick);
+              } else {
+                var vis = 0;
+                w.querySelectorAll(".mm__mi").forEach(function (mi) {
+                  var on = pick === "all" || mi.getAttribute("data-path") === pick;
+                  mi.style.display = on ? "" : "none"; if (on) vis++;
+                });
+                w.classList.toggle("is-hid", vis === 0);
+              }
             });
           }
-          var saved = "all";
-          try { saved = localStorage.getItem("mcc_mm_arc") || "all"; } catch (e) {}
-          if (!bar.querySelector('[data-f="' + saved + '"]')) saved = "all";
-          apply(saved);
-          bar.addEventListener("click", function (e) {
-            var b = e.target.closest(".mm__filt"); if (!b) return;
-            var f = b.getAttribute("data-f");
-            apply(f);
-            try { localStorage.setItem("mcc_mm_arc", f); } catch (e2) {}
-            track("mm_filter", { arc: f });
+          function save() {
+            try { localStorage.setItem("mcc_mm_mode", mode); localStorage.setItem("mcc_mm_pick", pick); } catch (e) {}
+          }
+          modes.addEventListener("click", function (e) {
+            var b = e.target.closest("[data-mode]"); if (!b) return;
+            mode = b.getAttribute("data-mode"); pick = "all"; save(); apply();
+            track("mm_filter_mode", { mode: mode });
           });
+          bar.addEventListener("click", function (e) {
+            var b = e.target.closest("[data-f]"); if (!b) return;
+            pick = b.getAttribute("data-f"); save(); apply();
+            track("mm_filter", { mode: mode, pick: pick });
+          });
+          apply();
         })();
         /* the art: each room wears its generated scene the moment the
            asset exists — the gradient holds the frame until then */
