@@ -83,6 +83,41 @@
       <p class="cv__sub" id="cvConnMsg" style="min-height:1.2em;font-size:0.82rem;margin-top:0.5rem"></p>
     </section>
 
+    <section class="cv__card" style="border-color:rgba(232,200,119,0.45)">
+      <p class="cv__k" style="color:#e8c877">The One Chart — every platform, one picture</p>
+      <h2>Your socials, merged.</h2>
+      <p class="cv__sub" style="margin-top:0.2rem">Connected accounts stream in on their own — the sweep pulls four
+        times a day. Platforms the machine can't reach yet (the Meta products, mainly) come in below by a quick
+        number or their analytics export. Machine pulls draw <b>solid</b>; declared imports draw <b>dotted</b> —
+        the floor always knows which is which. Each line rides its own scale: the shape is the story.</p>
+      <div id="svRange" style="display:flex;gap:0.4rem;margin-top:0.8rem"></div>
+      <canvas id="svChart" style="width:100%;height:180px;margin-top:0.6rem"></canvas>
+      <div id="svLegend" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem"></div>
+      <div style="margin-top:1rem;border-top:1px dashed rgba(244,239,230,0.15);padding-top:0.9rem">
+        <p class="cv__sub" style="font-weight:700;color:var(--cream);margin:0 0 0.5rem">Import — until their review clears, their export is the rail</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.45rem">
+          <select id="svSrc" style="background:rgba(10,8,7,0.75);border:1px solid rgba(244,239,230,0.3);border-radius:10px;color:#f4efe6;font:inherit;font-size:max(16px,0.9rem);padding:0.7em 0.8em">
+            <option value="instagram">Instagram</option><option value="facebook">Facebook</option>
+            <option value="tiktok">TikTok</option><option value="threads">Threads</option>
+            <option value="snapchat">Snapchat</option><option value="linkedin">LinkedIn</option>
+            <option value="x">X</option><option value="youtube">YouTube</option>
+          </select>
+          <select id="svKind" style="background:rgba(10,8,7,0.75);border:1px solid rgba(244,239,230,0.3);border-radius:10px;color:#f4efe6;font:inherit;font-size:max(16px,0.9rem);padding:0.7em 0.8em">
+            <option value="followers">Followers</option><option value="reach">Reach</option>
+            <option value="views">Views</option><option value="likes">Likes</option>
+          </select>
+        </div>
+        <input id="svVal" type="number" min="0" placeholder="Today's number — e.g. 4821"
+          style="width:100%;background:rgba(10,8,7,0.75);border:1px solid rgba(244,239,230,0.3);border-radius:10px;color:#f4efe6;font:inherit;font-size:max(16px,0.9rem);padding:0.7em 0.8em;margin-top:0.45rem">
+        <div style="display:flex;gap:0.45rem;margin-top:0.55rem">
+          <button class="btn btn--ruby" id="svFile" type="button" style="flex:1;justify-content:center">File it</button>
+          <button class="btn btn--ghost" id="svCsv" type="button">⬆ Drop the export CSV</button>
+          <input type="file" id="svCsvFile" accept=".csv,text/csv,text/plain" hidden>
+        </div>
+        <p class="cv__sub" id="svImpMsg" style="min-height:1.2em;font-size:0.8rem;margin-top:0.45rem"></p>
+      </div>
+    </section>
+
     <section class="cv__card" style="border-color:rgba(138,180,248,0.4)">
       <p class="cv__k" style="color:#8ab4f8">The two routes to rising</p>
       <h2>Money, control, or both.</h2>
@@ -161,6 +196,152 @@
             "</div>" +
             '<p class="cv__sub" style="font-size:0.82rem;margin-top:0.5rem">Every point of street credit pays 2 game points into your price. Raise it below: connect accounts, file your card, vote, keep showing up.</p>';
         }).catch(function () {});
+      })();
+
+      /* THE ONE CHART — every platform's numbers, one picture.
+         Reads external_signals (public table, own rows via token),
+         one line per source·metric, each indexed to its own range.
+         Solid = the machine pulled it; dotted = the member declared
+         it. The import door files through file_my_signals. */
+      (function () {
+        var cv = $("svChart"), leg = $("svLegend"), rng = $("svRange"), impMsg = $("svImpMsg");
+        if (!cv) return;
+        var authedC = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
+        var COLORS = { youtube: "#ff4e45", spotify: "#1ed760", instagram: "#e1306c", facebook: "#1877f2",
+          tiktok: "#69c9d0", x: "#9aa2ad", twitch: "#a970ff", reddit: "#ff6a2c", github: "#c9d1d9",
+          threads: "#f4efe6", snapchat: "#fffc00", linkedin: "#0a66c2", lastfm: "#d51007", songstats: "#45b6ff" };
+        var days = 90, hidden = {}, SERIES = {};
+        function paintRange() {
+          rng.innerHTML = [30, 90, 365].map(function (d) {
+            return '<button type="button" data-days="' + d + '" style="font:inherit;font-weight:800;font-size:0.7rem;letter-spacing:0.06em;cursor:pointer;border-radius:100px;padding:0.35em 0.95em;border:1.5px solid ' +
+              (d === days ? "#e8c877;background:rgba(201,157,69,0.25);color:#fff" : "rgba(244,239,230,0.3);background:none;color:rgba(244,239,230,0.6)") + '">' +
+              (d === 365 ? "1Y" : d + "D") + "</button>";
+          }).join("");
+          rng.querySelectorAll("[data-days]").forEach(function (b) {
+            b.addEventListener("click", function () { days = +b.getAttribute("data-days"); load(); });
+          });
+        }
+        function draw() {
+          var dpr = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth || 320, h = 180;
+          cv.width = w * dpr; cv.height = h * dpr;
+          var cx = cv.getContext("2d"); cx.scale(dpr, dpr);
+          cx.clearRect(0, 0, w, h);
+          var keys = Object.keys(SERIES).filter(function (k) { return !hidden[k]; });
+          if (!keys.length) {
+            cx.fillStyle = "rgba(244,239,230,0.4)"; cx.font = "12px system-ui";
+            cx.fillText(authedC ? "Connect an account or file an import — the chart draws itself." : "Open your account and the chart draws itself.", 10, h / 2);
+            return;
+          }
+          var t0 = Date.now() - days * 864e5, t1 = Date.now();
+          keys.forEach(function (k) {
+            var s = SERIES[k].pts.filter(function (p) { return p.t >= t0; });
+            if (s.length < 1) return;
+            var lo = Infinity, hi = -Infinity;
+            s.forEach(function (p) { lo = Math.min(lo, p.v); hi = Math.max(hi, p.v); });
+            if (hi - lo < 1) hi = lo + 1;
+            cx.beginPath();
+            cx.setLineDash(SERIES[k].self ? [5, 4] : []);
+            s.forEach(function (p, i) {
+              var x = ((p.t - t0) / (t1 - t0)) * (w - 4) + 2;
+              var y = h - 6 - ((p.v - lo) / (hi - lo)) * (h - 12);
+              i ? cx.lineTo(x, y) : cx.moveTo(x, y);
+            });
+            cx.strokeStyle = SERIES[k].color; cx.lineWidth = 2; cx.lineJoin = "round"; cx.stroke();
+            if (s.length === 1) {
+              cx.beginPath(); cx.setLineDash([]);
+              cx.arc(((s[0].t - t0) / (t1 - t0)) * (w - 4) + 2, h / 2, 3.5, 0, 7);
+              cx.fillStyle = SERIES[k].color; cx.fill();
+            }
+          });
+          cx.setLineDash([]);
+        }
+        function paintLegend() {
+          leg.innerHTML = Object.keys(SERIES).map(function (k) {
+            var s = SERIES[k];
+            return '<button type="button" data-leg="' + esc(k) + '" style="display:inline-flex;align-items:center;gap:0.4em;font:inherit;font-size:0.68rem;font-weight:700;cursor:pointer;border:1px solid rgba(244,239,230,0.18);border-radius:100px;padding:0.3em 0.8em;background:none;color:rgba(244,239,230,' + (hidden[k] ? "0.35" : "0.85") + ')">' +
+              '<i style="width:9px;height:9px;border-radius:100px;background:' + s.color + (hidden[k] ? ";opacity:0.3" : "") + '"></i>' +
+              esc(k) + " · " + (+s.last).toLocaleString() + (s.self ? " · declared" : "") + "</button>";
+          }).join("") || "";
+          leg.querySelectorAll("[data-leg]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var k = b.getAttribute("data-leg");
+              hidden[k] = !hidden[k];
+              paintLegend(); draw();
+            });
+          });
+        }
+        function load() {
+          paintRange();
+          if (!authedC) { draw(); return; }
+          var since = new Date(Date.now() - days * 864e5).toISOString().slice(0, 10);
+          S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/external_signals?owner=eq." + S.uid() +
+              "&at=gte." + since + "&select=source,kind,value,at,self&order=at.asc&limit=2000",
+              { headers: { apikey: S.key, Authorization: "Bearer " + t } });
+          }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+            SERIES = {};
+            (rows || []).forEach(function (x) {
+              var k = x.source + " · " + x.kind;
+              if (!SERIES[k]) SERIES[k] = { pts: [], color: COLORS[x.source] || "#c99d45", self: false, last: 0 };
+              SERIES[k].pts.push({ t: new Date(x.at).getTime(), v: +x.value });
+              if (x.self) SERIES[k].self = true;
+              SERIES[k].last = +x.value;
+            });
+            paintLegend(); draw();
+          }).catch(function () { draw(); });
+        }
+        load();
+        /* the import door: a number now, or the platform's own export */
+        function fileRows(rows) {
+          impMsg.textContent = "Filing…";
+          return S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/rpc/file_my_signals", { method: "POST",
+              headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
+              body: JSON.stringify({ p_rows: rows }) });
+          }).then(function (r) { return r.ok ? r.json() : r.text().then(function (x) { throw new Error(String(x).slice(0, 120)); }); });
+        }
+        $("svFile").addEventListener("click", function () {
+          if (!authedC) { impMsg.textContent = "Open your account first — one tap on the desk."; return; }
+          var v = +$("svVal").value;
+          if (!(v >= 0) || $("svVal").value === "") { impMsg.textContent = "Put the number in first."; return; }
+          fileRows([{ source: $("svSrc").value, kind: $("svKind").value, value: v }]).then(function (n) {
+            impMsg.innerHTML = +n > 0 ? "<b style='color:#2fbf71'>✓ Filed</b> — it's on the chart and it pays the world term at the next tape." : "The desk didn't take it — is social-desk.sql in?";
+            $("svVal").value = "";
+            track("social_file", { s: $("svSrc").value, k: $("svKind").value });
+            load();
+          }).catch(function (e) { impMsg.textContent = /file_my_signals|404/.test(String(e)) ? "One paste arms this: docs/social-desk.sql in Supabase." : "Couldn't file — " + String(e.message || e); });
+        });
+        $("svCsv").addEventListener("click", function () { $("svCsvFile").click(); });
+        $("svCsvFile").addEventListener("change", function () {
+          var f = $("svCsvFile").files && $("svCsvFile").files[0];
+          if (!f) return;
+          if (!authedC) { impMsg.textContent = "Open your account first — one tap on the desk."; return; }
+          var rd = new FileReader();
+          rd.onload = function () {
+            var text = String(rd.result || "");
+            var sep = (text.indexOf(";") !== -1 && text.indexOf(",") === -1) ? ";" : ",";
+            var lines = text.split(/\r?\n/).filter(function (l) { return l.trim(); });
+            if (lines.length < 2) { impMsg.textContent = "That file reads empty — is it the analytics export?"; return; }
+            var rows = [];
+            for (var i = 1; i < lines.length && rows.length < 400; i++) {
+              var cells = lines[i].split(sep).map(function (c) { return c.replace(/^"|"$/g, "").trim(); });
+              var d = null, v = null;
+              cells.forEach(function (c) {
+                if (d == null && /\d{4}/.test(c) && !isNaN(new Date(c).getTime())) { d = new Date(c); return; }
+                var num = parseFloat(c.replace(/[^0-9.]/g, ""));
+                if (v == null && isFinite(num) && c !== "" && /\d/.test(c)) v = num;
+              });
+              if (d && v != null) rows.push({ source: $("svSrc").value, kind: $("svKind").value, value: v, at: d.toISOString().slice(0, 10) });
+            }
+            if (!rows.length) { impMsg.textContent = "Couldn't find date + number columns in that export."; return; }
+            fileRows(rows).then(function (n) {
+              impMsg.innerHTML = "<b style='color:#2fbf71'>✓ " + n + " days filed</b> from " + esc(f.name) + " — the line is on the chart.";
+              track("social_csv", { s: $("svSrc").value, n: +n });
+              load();
+            }).catch(function (e) { impMsg.textContent = "Couldn't file — " + String(e.message || e); });
+          };
+          rd.readAsText(f);
+        });
       })();
 
       /* ---- the handshake: connect accounts by logging in ----
