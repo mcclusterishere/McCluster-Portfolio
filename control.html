@@ -18,33 +18,33 @@
     .ct__route { border: 1px solid rgba(244,239,230,0.14); border-radius: 14px; padding: 1rem 1.05rem; }
     .ct__route b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; }
     .ct__route.is-money b { color: #2fbf71; } .ct__route.is-control b { color: #8ab4f8; }
-    .ct__route small { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.5; display: block; margin-top: 0.3rem; }
+    .ct__route small { color: var(--cream-dim); font-size: 0.84rem; line-height: 1.5; display: block; margin-top: 0.3rem; }
     .ct__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6);
       padding: 1.1rem 1.05rem 1.2rem; margin-top: 1.2rem; }
-    .ct__k { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: #8ab4f8; font-weight: 800; }
+    .ct__k { font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; color: #8ab4f8; font-weight: 800; }
     .ct__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.7rem 0; }
     .ct__chip { border: 1px solid rgba(244,239,230,0.3); border-radius: 100px; background: none; color: var(--cream-dim);
-      font: inherit; font-size: 0.74rem; padding: 0.5em 1.1em; cursor: pointer; }
+      font: inherit; font-size: 0.84rem; padding: 0.5em 1.1em; cursor: pointer; }
     .ct__chip.is-on { border-color: #8ab4f8; color: #fff; background: rgba(138,180,248,0.22); }
     .ct__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.25); border-radius: 10px;
       color: var(--cream); font: inherit; font-size: max(16px, 0.95rem); padding: 0.75em 1em; margin: 0 0 0.55rem; }
     textarea.ct__in { min-height: 5rem; resize: vertical; }
-    .ct__msg { color: #8ab4f8; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
+    .ct__msg { color: #8ab4f8; font-size: 0.9rem; min-height: 1.1em; margin-top: 0.4rem; }
     .ct__prop { border: 1px solid rgba(244,239,230,0.13); border-radius: 14px; padding: 0.9rem 1rem; margin-top: 0.7rem; }
     .ct__prop h3 { font-size: 0.95rem; }
-    .ct__prop p { color: var(--cream-dim); font-size: 0.82rem; line-height: 1.55; margin-top: 0.3rem; }
-    .ct__tag { display: inline-block; font-size: 0.55rem; letter-spacing: 0.16em; text-transform: uppercase;
+    .ct__prop p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.55; margin-top: 0.3rem; }
+    .ct__tag { display: inline-block; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
       border: 1px solid rgba(138,180,248,0.5); color: #8ab4f8; border-radius: 100px; padding: 0.3em 0.8em; margin-right: 0.4em; }
     .ct__tag.city { border-color: rgba(47,158,98,0.5); color: #2f9e62; }
     .ct__tag.policy { border-color: rgba(201,157,69,0.5); color: #c99d45; }
-    .ct__tag.st { border-color: rgba(244,239,230,0.3); color: var(--cream-dim); }
+    .ct__tag.st { border-color: rgba(244,239,230,0.7); color: var(--cream-dim); }
     .ct__vote { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.7rem; }
     .ct__vbtn { border: 1px solid rgba(244,239,230,0.25); border-radius: 100px; background: none; color: var(--cream);
-      font: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.4em 1em; cursor: pointer; }
+      font: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.4em 1em; cursor: pointer; }
     .ct__vbtn.up.is-on { border-color: #2fbf71; color: #2fbf71; background: rgba(47,191,113,0.15); }
     .ct__vbtn.down.is-on { border-color: var(--ruby-hot); color: var(--ruby-hot); background: rgba(229,56,59,0.15); }
     .ct__score { font-variant-numeric: tabular-nums; font-weight: 800; margin-left: auto; }
-    .ct__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+    .ct__fine { font-size: 0.84rem; color: rgba(244,239,230,0.7); line-height: 1.6; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
@@ -185,7 +185,7 @@
             "<h3>" + esc(p.title) + "</h3>" +
             (p.body ? "<p>" + esc(p.body) + "</p>" : "") +
             (p.note ? '<p style="color:#8ab4f8">The desk: ' + esc(p.note) + "</p>" : "") +
-            '<p style="font-size:0.68rem;color:var(--cream-dim);margin-top:0.3rem">by ' + esc(p.proposer) + " · " + esc(new Date(p.at).toLocaleDateString()) + "</p>" +
+            '<p style="font-size:0.78rem;color:var(--cream-dim);margin-top:0.3rem">by ' + esc(p.proposer) + " · " + esc(new Date(p.at).toLocaleDateString()) + "</p>" +
             '<div class="ct__vote">' +
             '<button class="ct__vbtn up' + (+p.my_vote === 1 ? " is-on" : "") + '" type="button" data-v="' + p.id + ':1">▲ ' + (+p.ups || 0) + "</button>" +
             '<button class="ct__vbtn down' + (+p.my_vote === -1 ? " is-on" : "") + '" type="button" data-v="' + p.id + ':-1">▼ ' + (+p.downs || 0) + "</button>" +

@@ -255,7 +255,7 @@
     css.textContent =
       ".gr__chip{position:fixed;right:0.9rem;bottom:calc(var(--appbar-h,3.7rem) + env(safe-area-inset-bottom) + 1rem);z-index:150;" +
       "border:1px solid rgba(0,200,5,0.5);border-radius:100px;background:rgba(10,12,10,0.92);color:#e6efe6;" +
-      "font:inherit;font-size:0.72rem;font-weight:700;letter-spacing:0.03em;padding:0.6em 1.05em;cursor:pointer;" +
+      "font:inherit;font-size:0.84rem;font-weight:700;letter-spacing:0.03em;padding:0.6em 1.05em;cursor:pointer;" +
       "box-shadow:0 8px 26px rgba(0,200,5,0.25);backdrop-filter:blur(8px)}" +
       ".gr__chip b{color:#00c805}" +
       ".gr__veil{position:fixed;inset:0;background:rgba(5,4,3,0.74);z-index:160}" +
@@ -264,16 +264,16 @@
       "padding:1.2rem 1.3rem calc(1.6rem + env(safe-area-inset-bottom));max-height:88dvh;overflow-y:auto}" +
       ".gr__x{position:absolute;top:0.8rem;right:0.9rem;width:34px;height:34px;border-radius:50%;" +
       "border:1px solid rgba(244,239,230,0.25);background:rgba(10,8,7,0.6);color:#9e9890;font:inherit;cursor:pointer}" +
-      ".gr__k{font-size:0.64rem;letter-spacing:0.2em;text-transform:uppercase;color:#9e9890;font-weight:800}" +
+      ".gr__k{font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;color:#9e9890;font-weight:800}" +
       ".gr__sheet h2{font-size:1.35rem;font-weight:800;margin-top:0.15rem;color:#f4efe6}" +
-      ".gr__sub{color:#9e9890;font-size:0.82rem;line-height:1.6;margin-top:0.4rem}" +
+      ".gr__sub{color:#9e9890;font-size:0.9rem;line-height:1.6;margin-top:0.4rem}" +
       ".gr-up{color:#00c805}.gr-dn{color:#ff5000}" +
       ".gr__tasks{display:flex;flex-direction:column;gap:0.45rem;margin-top:0.9rem}" +
       ".gr__task{display:flex;align-items:center;gap:0.7rem;border:1px solid rgba(244,239,230,0.12);border-radius:12px;" +
-      "padding:0.75rem 0.9rem;text-decoration:none;color:#f4efe6;font-size:0.86rem}" +
+      "padding:0.75rem 0.9rem;text-decoration:none;color:#f4efe6;font-size:0.9rem}" +
       ".gr__task span{color:#00c805;font-weight:800}" +
       ".gr__task.is-done{opacity:0.55;border-color:rgba(0,200,5,0.4)}" +
-      ".gr__note{color:#9e9890;font-size:0.72rem;line-height:1.6;margin-top:0.9rem}";
+      ".gr__note{color:#9e9890;font-size:0.84rem;line-height:1.6;margin-top:0.9rem}";
     document.head.appendChild(css);
     chip = document.createElement("button");
     chip.className = "gr__chip";

@@ -67,7 +67,7 @@
           (o.blurb ? '<p class="mp__note" style="margin:0.2rem 0 0.6rem">' + o.blurb + "</p>" : "") +
           '<p style="font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0 0 0.5rem">' +
           (+o.price).toFixed(0) + ' <span style="font-size:0.55em;vertical-align:0.3em">E⤴︎</span>' +
-          (o.stock != null ? ' <span style="font-size:0.72rem;color:var(--cream-dim);font-weight:400">· ' + o.stock + " on the shelf</span>" : "") + "</p>" +
+          (o.stock != null ? ' <span style="font-size:0.84rem;color:var(--cream-dim);font-weight:400">· ' + o.stock + " on the shelf</span>" : "") + "</p>" +
           '<div data-house-act></div><p class="mp__msg" data-house-msg></p>';
         var act = card.querySelector("[data-house-act]");
         var msg = card.querySelector("[data-house-msg]");

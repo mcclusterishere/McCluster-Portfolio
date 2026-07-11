@@ -25,13 +25,13 @@
     .cw__row { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 0.2rem; border-top: 1px solid rgba(244,239,230,0.08); }
     .cw__row:first-child { border-top: 0; }
     .cw__row b { font-size: 0.95rem; }
-    .cw__row small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.1rem; line-height: 1.45; }
+    .cw__row small { display: block; color: var(--cream-dim); font-size: 0.84rem; margin-top: 0.1rem; line-height: 1.45; }
     .cw__pts { flex: none; font-weight: 800; font-variant-numeric: tabular-nums; color: #e8c877; text-align: right; }
     .cw__pts small { font-weight: 400; }
     .cw__dot { flex: none; width: 12px; height: 12px; border-radius: 100px; background: var(--c, #c99d45); box-shadow: 0 0 10px var(--c, #c99d45); }
-    .cw__msg { color: #2fbf71; font-size: 0.85rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .cw__msg { color: #2fbf71; font-size: 0.9rem; min-height: 1.2em; margin-top: 0.5rem; }
     .cw__roster a { color: var(--cream); text-decoration: none; font-weight: 700; }
-    .cw__boss { font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: #e8c877; margin-left: 0.4em; }
+    .cw__boss { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: #e8c877; margin-left: 0.4em; }
   </style>
 </head>
 <body class="songpage">
@@ -102,7 +102,7 @@
               (c.motto ? "<small>" + esc(c.motto) + "</small>" : "") +
               "<small>" + c.members + (c.members === 1 ? " rider" : " riders") + "</small></span>" +
               '<span class="cw__pts">' + Math.round(+c.points).toLocaleString() + "<br><small>pts</small></span>" +
-              (authed && !inCrew ? '<button class="btn btn--ghost" type="button" data-join="' + esc(c.slug) + '" style="padding:0.4em 0.9em;font-size:0.7rem">Join</button>' : "") +
+              (authed && !inCrew ? '<button class="btn btn--ghost" type="button" data-join="' + esc(c.slug) + '" style="padding:0.4em 0.9em;font-size:0.84rem">Join</button>' : "") +
               "</div>";
           }).join("");
           host.querySelectorAll("[data-join]").forEach(function (b) {
@@ -140,7 +140,7 @@
               '<h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem">' + esc(c.name) + "</h2>" +
               (c.motto ? '<p class="cw__sub" style="margin-top:0.2rem">&ldquo;' + esc(c.motto) + "&rdquo;</p>" : "") +
               '<div style="margin-top:0.7rem">' + roster + "</div>" +
-              '<button class="btn btn--ghost" id="cwLeave" type="button" style="margin-top:0.9rem;font-size:0.74rem">Walk away from the crew</button>' +
+              '<button class="btn btn--ghost" id="cwLeave" type="button" style="margin-top:0.9rem;font-size:0.84rem">Walk away from the crew</button>' +
               '<p class="cw__msg" id="cwLeaveMsg"></p></div>';
             $("cwLeave").addEventListener("click", function () {
               if (!confirm("Walk away from " + c.name + "? A boss walking out hands the keys to the oldest rider.")) return;
@@ -159,7 +159,7 @@
               }).join("") + "</div>" +
               '<button class="btn btn--ruby" id="cwCreate" type="button" style="margin-top:0.9rem;width:100%;justify-content:center">Put it on the board</button>' +
               '<p class="cw__msg" id="cwMsg"></p>' +
-              '<p class="cw__sub" style="font-size:0.8rem">…or join a crew from the board below. One crew per member — choose like it matters.</p></div>';
+              '<p class="cw__sub" style="font-size:0.9rem">…or join a crew from the board below. One crew per member — choose like it matters.</p></div>';
             var pick = COLORS[0];
             host.querySelectorAll(".cw__color").forEach(function (b) {
               b.addEventListener("click", function () {

@@ -16,10 +16,10 @@
     .pf__sub b { color: var(--cream); }
     .pf__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.7); padding: 1.1rem 1.15rem; margin-top: 1rem; }
     .pf__arch { display: inline-flex; align-items: center; gap: 0.45em; border: 1px solid rgba(201,157,69,0.55); color: #e8c877;
-      border-radius: 100px; padding: 0.3em 0.85em; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+      border-radius: 100px; padding: 0.3em 0.85em; font-size: 0.84rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
     /* the two sides */
     .pf__sides { display: flex; gap: 0.5rem; margin-top: 1.3rem; }
-    .pf__side { flex: 1; font: inherit; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.86rem;
+    .pf__side { flex: 1; font: inherit; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.9rem;
       border: 2px solid rgba(244,239,230,0.25); background: rgba(14,11,9,0.7); color: var(--cream-dim);
       border-radius: 14px; padding: 0.85rem 0.5rem; cursor: pointer; transition: all 0.2s; }
     .pf__side.is-on { border-color: #e8c877; color: #0a0807; background: linear-gradient(180deg, #e8c877, #c99d45); box-shadow: 0 0 24px rgba(201,157,69,0.35); }
@@ -33,17 +33,17 @@
       border-left: 3px solid var(--dc, #c99d45); transition: transform 0.12s; }
     .pf__door:active { transform: scale(0.98); }
     .pf__door b { display: block; font-size: 0.96rem; }
-    .pf__door small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.15rem; line-height: 1.45; }
+    .pf__door small { display: block; color: var(--cream-dim); font-size: 0.84rem; margin-top: 0.15rem; line-height: 1.45; }
     .pf__door .ic { flex: none; font-size: 1.15rem; }
     .pf__door .go { flex: none; color: var(--dc, #c99d45); font-weight: 800; }
-    .pf__tag { display: inline-block; font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
+    .pf__tag { display: inline-block; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
       color: var(--dc, #c99d45); margin-left: 0.4em; vertical-align: 0.12em; }
     .pf__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 0.5rem; margin-top: 0.9rem; }
     .pf__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.7rem; text-align: center; }
     .pf__stat b { display: block; font-size: 1.25rem; font-variant-numeric: tabular-nums; color: #e8c877; }
-    .pf__stat small { color: var(--cream-dim); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .pf__stat small { color: var(--cream-dim); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
     .pf__out { background: none; border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; color: var(--cream-dim);
-      font: inherit; font-size: 0.74rem; padding: 0.4em 1em; cursor: pointer; margin-top: 1.6rem; }
+      font: inherit; font-size: 0.84rem; padding: 0.4em 1em; cursor: pointer; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
@@ -104,7 +104,7 @@
           '<p class="pf__sub"><b>Two sides to every member:</b> the public face the floor sees, and the private rooms where you work. ' +
           "It starts with your card.</p>" +
           '<div class="pf__card card-call"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
-          '<span style="font-size:0.82rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
+          '<span style="font-size:0.9rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
           '<div class="pf__card"><div id="pfDoor"></div></div>';
         if (window.MCC_DOOR && window.MCC_DOOR.mount) {
           window.MCC_DOOR.mount($("pfDoor"), { ticker: true, context: "profile", onDone: function () { location.reload(); } });

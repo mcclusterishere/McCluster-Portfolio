@@ -198,7 +198,7 @@
         window.MCC_TOKEN.equity().then(function (e) {
           if (!e || !(+e.pool > 0)) { eh.innerHTML = ""; return; }
           var pts = (+e.points || 0), pool = (+e.pool || 0), pct = (+e.stake_pct || 0);
-          eh.innerHTML = '<p style="font-size:0.78rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
+          eh.innerHTML = '<p style="font-size:0.84rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
             'display:flex;justify-content:space-between;gap:0.6rem">' +
             '<span>Equity stake <b style="color:#c99d45">' + pct.toFixed(3) + '%</b> of the pool</span>' +
             '<span style="color:var(--cream-dim)">' + pts.toFixed(2) + ' pts · pool ' + pool.toFixed(2) + '</span></p>';
@@ -211,7 +211,7 @@
           if (!w) { vh.innerHTML = ""; return; }
           var fed = (+w.contributed_to_vault || 0), res = (+w.vault_reserve || 0);
           if (res <= 0 && fed <= 0) { vh.innerHTML = ""; return; }
-          vh.innerHTML = '<p style="font-size:0.78rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
+          vh.innerHTML = '<p style="font-size:0.84rem;color:var(--cream-dim);margin:0.1rem 0 0.4rem;' +
             'display:flex;justify-content:space-between;gap:0.6rem">' +
             '<span>Fed into <a href="reserve.html" style="color:#c99d45">the Vault</a> <b style="color:#c99d45">' + fed.toFixed(2) + ' E⤴︎</b></span>' +
             '<span style="color:var(--cream-dim)">reserve holds ' + res.toFixed(0) + '</span></p>';
@@ -226,7 +226,7 @@
           el.querySelector("#mtkBal").innerHTML = r[0].toFixed(2) + ' <span style="font-size:0.5em;vertical-align:0.35em">E⤴︎</span>' +
             ' <span style="font-size:0.44em;color:#c99d45;font-weight:800;vertical-align:0.5em">' + Math.round(r[0] * 100).toLocaleString() + ' pts</span>';
           el.querySelector("#mtkRows").innerHTML = (r[1] || []).map(function (row) {
-            return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.78rem;' +
+            return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.84rem;' +
               'border-bottom:1px dashed rgba(244,239,230,0.12);padding:0.35em 0">' +
               '<span style="color:var(--cream-dim)">' + (row.reason || "movement") + "</span>" +
               "<b style=\"font-variant-numeric:tabular-nums;color:" + (+row.delta >= 0 ? "#00c805" : "#ff5000") + "\">" +

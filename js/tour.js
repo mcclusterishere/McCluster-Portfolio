@@ -33,22 +33,22 @@
     "#mccTour .tour__card{position:absolute;pointer-events:auto;max-width:330px;width:calc(100vw - 2.4rem);" +
     "background:rgba(20,16,14,0.97);border:1px solid rgba(244,239,230,0.18);border-radius:16px;" +
     "padding:1.05rem 1.1rem 1.15rem;box-shadow:0 18px 50px rgba(0,0,0,0.55);transition:top 0.35s,left 0.35s}" +
-    "#mccTour .tour__kick{font-family:var(--micro,monospace);font-size:0.62rem;letter-spacing:0.22em;" +
+    "#mccTour .tour__kick{font-family:var(--micro,monospace);font-size:0.78rem;letter-spacing:0.22em;" +
     "text-transform:uppercase;color:#c99d45;display:flex;justify-content:space-between;gap:0.6rem}" +
     "#mccTour h3{font-family:var(--display,inherit);font-weight:400;text-transform:uppercase;" +
     "font-size:1.25rem;line-height:1.05;margin:0.45rem 0 0.35rem;color:var(--cream,#f4efe6)}" +
-    "#mccTour p{margin:0;color:rgba(244,239,230,0.75);font-size:0.85rem;line-height:1.55}" +
+    "#mccTour p{margin:0;color:rgba(244,239,230,0.75);font-size:0.9rem;line-height:1.55}" +
     "#mccTour .tour__acts{display:flex;gap:0.5rem;margin-top:0.85rem;align-items:center}" +
     "#mccTour .tour__next{border:0;border-radius:10px;cursor:pointer;font:inherit;font-weight:800;" +
-    "letter-spacing:0.05em;text-transform:uppercase;font-size:0.8rem;padding:0.65em 1.3em;color:#fff;" +
+    "letter-spacing:0.05em;text-transform:uppercase;font-size:0.9rem;padding:0.65em 1.3em;color:#fff;" +
     "background:linear-gradient(120deg,var(--ruby,#a4161a),var(--ruby-hot,#e5383b))}" +
-    "#mccTour .tour__skip{background:none;border:0;cursor:pointer;font:inherit;font-size:0.78rem;" +
-    "color:rgba(244,239,230,0.5);text-decoration:underline;padding:0.4em}" +
+    "#mccTour .tour__skip{background:none;border:0;cursor:pointer;font:inherit;font-size:0.84rem;" +
+    "color:rgba(244,239,230,0.7);text-decoration:underline;padding:0.4em}" +
     "#mccTour .tour__img{width:calc(100% + 2.2rem);margin:-1.05rem -1.1rem 0.7rem;height:110px;" +
     "object-fit:cover;border-radius:15px 15px 0 0;display:block}" +
     "#mccTour .tour__doors{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.7rem}" +
     "#mccTour .tour__doors a{border:1px solid rgba(244,239,230,0.22);border-radius:100px;" +
-    "padding:0.42em 0.95em;font-size:0.76rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;" +
+    "padding:0.42em 0.95em;font-size:0.84rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;" +
     "color:var(--cream,#f4efe6);text-decoration:none;background:rgba(244,239,230,0.05)}" +
     "#mccTour .tour__doors a:hover{border-color:rgba(229,56,59,0.7);background:rgba(229,56,59,0.12)}";
   document.head.appendChild(css);

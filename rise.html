@@ -11,7 +11,7 @@
   <style>
     .rz { min-height: 100dvh; display: grid; place-items: center; padding: clamp(4rem, 8vh, 6rem) 1.1rem 8rem; }
     .rz__stage { width: 100%; max-width: 30rem; }
-    .rz__k { color: #c99d45; font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; }
+    .rz__k { color: #c99d45; font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; }
     .rz h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 10vw, 4rem); margin-top: 0.3rem; }
     .rz__lede { color: var(--cream-dim); line-height: 1.75; font-size: 1.06rem; margin-top: 0.9rem; }
     .rz__lede b { color: var(--cream); }
@@ -22,7 +22,7 @@
       border: 1.5px solid rgba(244,239,230,0.22); border-radius: 15px; padding: 0.95rem 1.05rem; cursor: pointer;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.12s; }
     .rz__chip b { display: block; font-size: 1.02rem; font-weight: 800; }
-    .rz__chip small { display: block; color: var(--cream-dim); font-size: 0.8rem; line-height: 1.5; margin-top: 0.25rem; }
+    .rz__chip small { display: block; color: var(--cream-dim); font-size: 0.9rem; line-height: 1.5; margin-top: 0.25rem; }
     .rz__chip:active { transform: scale(0.98); }
     .rz__chips:not(.is-touched) .rz__chip { animation: rzGlow 2.8s ease-in-out infinite; }
     .rz__chips:not(.is-touched) .rz__chip:nth-child(2) { animation-delay: 0.4s; }
@@ -34,9 +34,9 @@
     @media (prefers-reduced-motion: reduce) { .rz__chips .rz__chip { animation: none !important; } }
     .rz__echo { min-height: 2.4em; color: #d8ba7c; font-size: 0.9rem; line-height: 1.6; margin-top: 1rem; font-style: italic; }
     .rz__forming { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.7rem; min-height: 1.6em; }
-    .rz__gain { border: 1px solid rgba(0,200,5,0.5); color: #00c805; border-radius: 100px; font-size: 0.62rem;
+    .rz__gain { border: 1px solid rgba(0,200,5,0.5); color: #00c805; border-radius: 100px; font-size: 0.78rem;
       font-weight: 800; letter-spacing: 0.08em; padding: 0.2em 0.65em; animation: rzIn 0.4s; }
-    .rz__meta { color: rgba(244,239,230,0.45); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.6rem; }
+    .rz__meta { color: rgba(244,239,230,0.7); font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.6rem; }
     .rz__card { border: 1.5px solid rgba(201,157,69,0.6); border-radius: 20px; background: rgba(18,14,11,0.92);
       padding: 1.4rem 1.3rem; margin-top: 1.1rem; box-shadow: 0 0 44px rgba(201,157,69,0.18); }
     .rz__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.7rem; line-height: 1; color: #e8c877; }
@@ -44,12 +44,12 @@
     .rz__card .sub b { color: var(--cream); }
     .rz__vals { margin-top: 1rem; display: grid; gap: 0.4rem; }
     .rz__val { display: flex; align-items: center; gap: 0.6rem; }
-    .rz__val small { flex: none; width: 6.4rem; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; }
+    .rz__val small { flex: none; width: 6.4rem; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; }
     .rz__val span { flex: 1; height: 7px; border-radius: 5px; background: rgba(244,239,230,0.08); overflow: hidden; }
     .rz__val i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7a5a17, #e8c877); transition: width 1s cubic-bezier(0.2,0.9,0.2,1); }
-    .rz__val b { flex: none; width: 2rem; text-align: right; font-size: 0.76rem; font-variant-numeric: tabular-nums; }
+    .rz__val b { flex: none; width: 2rem; text-align: right; font-size: 0.84rem; font-variant-numeric: tabular-nums; }
     .rz__block { border-top: 1px solid rgba(244,239,230,0.12); margin-top: 0.95rem; padding-top: 0.85rem; }
-    .rz__block small { color: #c99d45; font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 800; }
+    .rz__block small { color: #c99d45; font-size: 0.78rem; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 800; }
     .rz__block p { color: var(--cream-dim); font-size: 0.88rem; line-height: 1.6; margin-top: 0.3rem; }
     .rz__block p b { color: var(--cream); }
     .rz__cta { margin-top: 1.2rem; display: grid; gap: 0.55rem; }
@@ -176,9 +176,8 @@
       function paintIntro() {
         stage.innerHTML = '<div class="rz__step"><p class="rz__k">Equity Uprise · the signal</p>' +
           "<h1>What makes<br>you rise?</h1>" +
-          '<p class="rz__lede">You made it this far. Most people scroll — a few notice the <b>system underneath</b>.<br><br>' +
-          "A city has talent. Buildings. Money. Stories. Problems. What it doesn't have is <b>coordination</b>.<br><br>" +
-          "This is not a quiz. You're about to make decisions under pressure, and every one of them drafts your card — in the open.</p>" +
+          '<p class="rz__lede" style="font-size:1.15rem">Most people scroll. <b>You didn&rsquo;t.</b><br><br>' +
+          "This is not a quiz. You make <b>real decisions under pressure</b> — and every one drafts your E&#10548; Card, in the open. Two minutes.</p>" +
           '<div class="finale__actions" style="margin-top:1.4rem"><button class="btn btn--ruby" id="rzGo" style="font-size:1.1rem;padding:1rem 2.4rem">RISE &#8599;</button></div></div>';
         $("rzGo").addEventListener("click", function () {
           track("rise_start", {});
@@ -214,7 +213,7 @@
           echoes.push(c[4]);
           track("quiz_answer", { game: "rise", q: s.k, pick: c[0] });
           $("rzEcho").textContent = c[4];
-          $("rzForm").innerHTML = '<span style="color:rgba(244,239,230,0.4);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:800;margin-right:0.2rem">Your card is forming</span>' + gains(c[2]);
+          $("rzForm").innerHTML = '<span style="color:rgba(244,239,230,0.7);font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:800;margin-right:0.2rem">Your card is forming</span>' + gains(c[2]);
           document.querySelectorAll(".rz__chip").forEach(function (b) { b.disabled = true; b.style.opacity = b.getAttribute("data-i") == i ? "1" : "0.3"; });
           setTimeout(function () { si + 1 < SCENES.length ? paintScene(si + 1) : paintCard(); }, 2100);
         });
@@ -269,7 +268,7 @@
           '<div class="rz__door" id="rzDoor"></div>' +
           '<a class="btn btn--ghost" href="market.html#providers" data-cta="rise-collab" style="justify-content:center">See who you should build with &#8594;</a>' +
           '<a class="btn btn--ghost" href="mymission.html" style="justify-content:center;opacity:0.8">Your missions are waiting &#8594;</a></div>' +
-          '<p class="rz__lede" style="font-size:0.78rem;margin-top:1rem;color:rgba(244,239,230,0.45)">Your Equity Uprise profile has already begun — the entry point, the values, the archetype all carry into your card. And the card is earned, not answered: from here, what you actually do on the record moves it.</p></div>';
+          '<p class="rz__lede" style="font-size:0.84rem;margin-top:1rem;color:rgba(244,239,230,0.7)">Your Equity Uprise profile has already begun — the entry point, the values, the archetype all carry into your card. And the card is earned, not answered: from here, what you actually do on the record moves it.</p></div>';
         requestAnimationFrame(function () {
           document.querySelectorAll(".rz__val i").forEach(function (i) { i.style.width = i.getAttribute("data-w") + "%"; });
         });
