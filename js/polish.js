@@ -408,9 +408,56 @@
         ["rise.html", "🃏", "Your card"], ["mymission.html", "🎯", "Missions"],
         ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"]] },
     };
+    /* THE METER LAW + the geo desks — ONE source, shared by the rides
+       page and the meter tool the dock pops on any page */
+    window.WE_LAW = {
+      meter: function (miles, minutes) {
+        var raw = 1.0 + 0.97 * miles + 0.32 * minutes;
+        var trip = Math.max(7, raw);
+        var fare = trip + 3.2;
+        var total = fare * 1.10;
+        return { trip: trip, floored: raw < 7, fare: fare, raise: total - fare,
+          total: total, eup: Math.round(total * 0.67) };
+      },
+    };
+    window.WE_GEO = {
+      suggest: function (q, near) {
+        var u = "https://photon.komoot.io/api/?limit=4&q=" + encodeURIComponent(q) +
+          (near ? "&lat=" + near.lat + "&lon=" + near.lon : "&lat=41.1792&lon=-73.1894");
+        return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          return ((j && j.features) || []).map(function (f) {
+            var p = f.properties || {};
+            var line1 = [p.housenumber, p.street].filter(Boolean).join(" ") || p.name || "";
+            var label = [line1, p.city || p.town || p.village, p.state].filter(Boolean).join(", ");
+            return { label: label || p.name || q, lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] };
+          });
+        }).catch(function () { return []; });
+      },
+      find: function (q, near) {
+        return window.WE_GEO.suggest(q, near).then(function (hits) {
+          if (hits[0]) return hits[0];
+          // the old desk answers when the new one is quiet
+          return fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q), {
+            headers: { Accept: "application/json" } })
+            .then(function (r) { return r.ok ? r.json() : []; })
+            .then(function (j) { return j && j[0] ? { label: j[0].display_name, lat: +j[0].lat, lon: +j[0].lon } : null; })
+            .catch(function () { return null; });
+        });
+      },
+      route: function (a, b) {
+        return fetch("https://router.project-osrm.org/route/v1/driving/" + a.lon + "," + a.lat + ";" + b.lon + "," + b.lat +
+          "?overview=full&geometries=geojson")
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            var r0 = j && j.routes && j.routes[0];
+            return r0 ? { miles: r0.distance / 1609.344, minutes: r0.duration / 60, geo: r0.geometry } : null;
+          });
+      },
+    };
+
     /* what each door IS — the peek card reads from here */
     var PREVIEWS = {
-      "rides.html": ["🚘", "Whip Equipped", "The WE tab: a real map, your live dot, drivers pinned, upfront pricing on the standard meter — the only difference is the 10%, and it rides to your driver."],
+      "rides.html": ["🚘", "Whip Equipped", "The WE tab: a real map, your live dot, drivers pinned, upfront pricing on the standard meter — the house takes a dime on the dollar, not a third."],
       "rides.html#meter": ["🧮", "The meter", "Type where to, see one upfront price before any wheels move — the industry model plus the 10%."],
       "rides.html#drivers": ["🚗", "Drivers on the road", "Real members carrying the Rides lane — on the list and pinned on the street. Book in one pop."],
       "welcome.html?as=driver": ["🪙", "Drive & earn", "Get Whip Equipped: the walk-in pre-picks the Rides lane. The meter names it, you keep all of it."],
@@ -459,11 +506,103 @@
       if (peekEl && peekEl.parentNode) peekEl.parentNode.removeChild(peekEl);
       peekEl = null;
     }
+    /* THE TOOLS: for the load-bearing slots, the pop IS the room's
+       working part — the meter quotes, the road lists, the keypad
+       loads — used right here, no travel. Light by law: one aspect,
+       the most central one, never the whole page. */
+    function wesc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+    var WIDGETS = {
+      "rides.html#meter": function (box) {
+        box.innerHTML = '<input class="dk-w__in" data-w-from type="text" placeholder="Pickup — address" autocomplete="off">' +
+          '<input class="dk-w__in" data-w-to type="text" placeholder="Where to?" autocomplete="off">' +
+          '<button class="dk-peek__go" data-w-run type="button" style="width:100%;margin-top:0.55rem">See the price &#8594;</button>' +
+          '<p class="dk-w__out" data-w-out></p>';
+        var run = box.querySelector("[data-w-run]");
+        run.addEventListener("click", function () {
+          var f = box.querySelector("[data-w-from]").value.trim();
+          var t = box.querySelector("[data-w-to]").value.trim();
+          var out = box.querySelector("[data-w-out]");
+          if (!f || !t) { out.textContent = "Both ends of the ride."; return; }
+          run.disabled = true; out.textContent = "Running the meter…";
+          Promise.all([window.WE_GEO.find(f), window.WE_GEO.find(t)]).then(function (p) {
+            if (!p[0] || !p[1]) throw 0;
+            return window.WE_GEO.route(p[0], p[1]);
+          }).then(function (leg) {
+            if (!leg) throw 0;
+            var m = window.WE_LAW.meter(leg.miles, leg.minutes);
+            out.innerHTML = '<b style="color:#ff5c2e;font-size:1.35em">$' + m.total.toFixed(2) + "</b> upfront &middot; " +
+              '<b style="color:#e8c877">' + m.eup.toLocaleString() + " E⤴</b> &middot; " +
+              leg.miles.toFixed(1) + " mi &middot; " + Math.round(leg.minutes) + " min";
+          }).catch(function () { out.textContent = "Couldn't place that ride — add a city or zip."; })
+            .then(function () { run.disabled = false; });
+        });
+      },
+      "rides.html#drivers": function (box) {
+        box.innerHTML = '<p class="dk-w__out">Checking the road…</p>';
+        var S = window.MCC_SUPA;
+        var liveP = S ? fetch(S.url + "/rest/v1/rpc/drivers_on_road", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key }, body: "{}" })
+          .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; }) : Promise.resolve([]);
+        var floorP = window.MCC_FLOOR ? window.MCC_FLOOR.load().catch(function () { return { providers: [] }; }) : Promise.resolve({ providers: [] });
+        Promise.all([liveP, floorP]).then(function (rr) {
+          var live = rr[0] || [], liveSlugs = {};
+          live.forEach(function (d) { liveSlugs[d.slug] = 1; });
+          var base = (rr[1].providers || []).filter(function (p) {
+            return (p.roles || []).some(function (r) { return /rid|driv/i.test(String(r)); }) && !liveSlugs[p.slug || p.id];
+          });
+          var all = live.map(function (d) { return { name: d.name, area: d.area, slug: d.slug, live: true }; })
+            .concat(base.map(function (p) { return { name: p.name, area: p.area, slug: p.slug || p.id, live: false }; }));
+          box.innerHTML = all.length ? all.map(function (d) {
+            return '<div class="dk-w__row">' + (d.live ? '<span style="color:#00c805">●</span>' : "") +
+              "<b>" + wesc(d.name) + "</b><small>" + wesc(d.area || "") + (d.live ? " · live now" : "") + "</small>" +
+              '<a href="market.html?to=' + encodeURIComponent(d.slug) + '">Book &#8594;</a></div>';
+          }).join("") : '<p class="dk-w__out">No drivers on the road yet — <a href="welcome.html?as=driver" style="color:#ff5c2e">be the first</a>.</p>';
+        });
+      },
+      "market.html#pay": function (box) {
+        box.innerHTML = '<input class="dk-w__in" data-w-tick type="text" placeholder="Who — ticker or name (e.g. MCC)" autocomplete="off">' +
+          '<a class="dk-peek__go" data-w-pay href="market.html#pay" style="display:block;text-align:center;margin-top:0.55rem;text-decoration:none">Open the desk loaded &#8594;</a>' +
+          '<p class="dk-w__out">Name them here, land on the keypad with their desk loaded.</p>';
+        box.querySelector("[data-w-tick]").addEventListener("input", function () {
+          var t = this.value.trim().replace(/^\$/, "");
+          box.querySelector("[data-w-pay]").setAttribute("href", t ? "market.html?to=" + encodeURIComponent(t) : "market.html#pay");
+        });
+      },
+    };
+    function popTool(dest) {
+      unpeek();
+      var m = PREVIEWS[dest] || ["✦", dest.replace(/[#?].*$/, ""), ""];
+      peekEl = document.createElement("div");
+      peekEl.className = "dk-peek";
+      peekEl.setAttribute("data-for", dest);
+      peekEl.innerHTML = '<div class="dk-peek__card">' +
+        '<div class="dk-peek__top"><span class="dk-peek__ic">' + m[0] + "</span><div style=\"flex:1\"><b>" + m[1] + "</b></div>" +
+        '<a class="dk-peek__full" data-pk-go="' + dest + '" href="' + dest + '">Full page &#8594;</a></div>' +
+        '<div class="dk-w" data-w-box></div></div>';
+      document.body.appendChild(peekEl);
+      WIDGETS[dest](peekEl.querySelector("[data-w-box]"));
+      peekEl.addEventListener("click", function (e) {
+        var go = e.target.closest("[data-pk-go]");
+        if (go) { e.preventDefault(); sail(go.getAttribute("data-pk-go"), 460); }
+      });
+      peekAway = function (e) {
+        if (e.target.closest && (e.target.closest(".dk-peek") || e.target.closest(".appbar"))) return;
+        unpeek();
+      };
+      setTimeout(function () { if (peekAway) document.addEventListener("pointerdown", peekAway, true); }, 0);
+      emit("mcc:dock-peek", { dest: dest, tool: true });
+    }
+    /* a slot pops its tool up — and the same taps pop it back down */
+    function toggleSlot(dest) {
+      if (peekEl && peekEl.getAttribute("data-for") === dest) { unpeek(); return; }
+      if (WIDGETS[dest]) popTool(dest); else peek(dest, null);
+    }
     function peek(dest, wingKey) {
       unpeek();
       var m = PREVIEWS[dest] || ["✦", dest.replace(/[#?].*$/, ""), ""];
       peekEl = document.createElement("div");
       peekEl.className = "dk-peek";
+      peekEl.setAttribute("data-for", dest);
       var acts = "";
       if (wingKey) acts += '<button class="dk-peek__alt" type="button" data-pk-menu="' + wingKey + '">Open the menu</button>';
       if (dest === "app.html" && (window.MCC_RADIO || window.MCC_NP_PLAY)) {
@@ -493,6 +632,7 @@
       setTimeout(function () { if (peekAway) document.addEventListener("pointerdown", peekAway, true); }, 0);
       emit("mcc:dock-peek", { dest: dest });
     }
+    var ORDER = ["we", "music", "market", "spaces", "profile"];
     function morph(key) {
       var w = WINGS[key];
       if (!w || wingOn === key) return;
@@ -500,14 +640,23 @@
       unpeek();
       wingOn = key;
       dock.classList.add("appbar--morph");
-      dock.innerHTML =
-        '<a class="appbar__tab appbar__tab--wing is-active" href="' + w.home + '" data-appnav="' + key + '">' +
-        (key === "we" ? '<img class="appbar__m" src="assets/img/we-mark.png" alt="">' : ic("⌂")) +
-        "<span>" + w.label + "</span></a>" +
-        w.slots.map(function (s) {
-          return '<a class="appbar__tab appbar__tab--slot" href="' + s[0] + '" data-dock="' + s[0] + '">' +
-            ic(s[1]) + "<span>" + s[2] + "</span></a>";
-        }).join("");
+      /* THE ANCHOR LAW: the tab you double-tapped never moves and never
+         changes — it stays exactly where it was, exactly as it looks;
+         only the OTHER four slots rearrange into the wing's menu */
+      var tmp = document.createElement("div");
+      tmp.innerHTML = HOME_BAR;
+      var anchor = tmp.querySelector('[data-appnav="' + key + '"]');
+      if (anchor) { anchor.classList.add("appbar__tab--wing", "is-active"); }
+      var slotHtml = w.slots.map(function (s) {
+        return '<a class="appbar__tab appbar__tab--slot" href="' + s[0] + '" data-dock="' + s[0] + '">' +
+          ic(s[1]) + "<span>" + s[2] + "</span></a>";
+      });
+      var idx = ORDER.indexOf(key), cells = [], si = 0;
+      for (var i = 0; i < ORDER.length; i++) {
+        if (i === idx) cells.push(anchor ? anchor.outerHTML : "");
+        else cells.push(slotHtml[si++]);
+      }
+      dock.innerHTML = cells.join("");
       emit("mcc:dock-morph", { wing: key });
     }
     function revert() {
@@ -531,16 +680,20 @@
       taps += 1;
       clearTimeout(timer);
       if (taps === 1) {
-        // one tap only ever LOOKS — the peek card rises, nothing moves
+        // one tap only ever LOOKS — a peek, or a slot's working tool,
+        // rises in place; nothing travels
         timer = setTimeout(function () {
           taps = 0;
-          peek(w ? w.home : slot, w ? key : null);
+          if (w) {
+            if (peekEl && peekEl.getAttribute("data-for") === w.home) unpeek();
+            else peek(w.home, key);
+          } else toggleSlot(slot);
         }, 300);
       } else if (taps === 2) {
         timer = setTimeout(function () {
           taps = 0;
           if (w) { if (wingOn === key) revert(); else morph(key); }
-          else sail(slot, 460); // two taps on a slot: through the door
+          else toggleSlot(slot); // slots pop up and pop down — no travel
         }, 300);
       } else {
         taps = 0;
@@ -573,9 +726,9 @@
       { t: "One bar runs the whole world.", b: "Every tab down there is its own mini-app. Thirty seconds to learn the grammar, then every door opens.", btn: "Show me" },
       { t: "Tap WE once.", b: "One tap only LOOKS — a peek card tells you what lives there. Nothing moves until you say so.", ev: "mcc:dock-peek" },
       { t: "Now double-tap WE.", b: "Two taps OPEN the wing — the bar becomes WE's own menu, and you never left this page.", ev: "mcc:dock-morph" },
-      { t: "Tap any slot once.", b: "Same law inside: one tap peeks at the room. Double-tap a slot when you actually want to go.", ev: "mcc:dock-peek" },
-      { t: "Double-tap WE again.", b: "The main bar comes right back.", ev: "mcc:dock-revert" },
-      { t: "That's the whole grammar.", b: "1 tap looks · 2 taps open (or go, on a slot) · 3 taps carry you all the way through. The peek card's button travels too.", btn: "I got it — open the doors" },
+      { t: "Tap any slot once.", b: "Its working part pops up RIGHT HERE — the meter quotes, the road lists — and you use it without ever leaving the page. Tap again, it pops down.", ev: "mcc:dock-peek" },
+      { t: "Double-tap WE again.", b: "The main bar comes right back. The tab you opened never moved — only the others made room.", ev: "mcc:dock-revert" },
+      { t: "That's the whole grammar.", b: "1 tap looks (a slot pops its tool) · 2 taps open a wing · 3 taps carry you all the way through. The cards' buttons travel too.", btn: "I got it — open the doors" },
     ];
     var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
     var at = -1;
