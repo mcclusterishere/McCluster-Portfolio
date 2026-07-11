@@ -2530,7 +2530,10 @@
           var hasStash = false;
           try { hasStash = !!(localStorage.getItem("mcc_onboard") || localStorage.getItem("mcc_ticker_claim")); } catch (e) {}
           box.innerHTML =
-            '<div class="mp__signin"><p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">The desk is the whole business</b> — your ticker, your listing, your inbox, your deals, your payment link. It opens with one tap.</p>' +
+            '<div class="mp__signin">' +
+            '<p class="mp__note card-call" style="margin:0 0 0.6rem;padding:0.65rem 0.8rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
+            '<span style="font-size:0.78rem">The E⤴ Card is the key to everything here — it deals your world and pays your first points.</span></p>' +
+            '<p class="mp__note" style="margin:0 0 0.4rem"><b style="color:var(--cream)">The desk is the whole business</b> — your ticker, your listing, your inbox, your deals, your payment link. It opens with one tap.</p>' +
             (hasStash ? '<p class="mp__note" style="color:#2fbf71;margin:0 0 0.6rem">Your onboarding answers are saved on this device — the listing form fills itself the moment you’re in.</p>' : "") +
             '<div id="youDoor" style="margin:0.6rem 0"></div>' +
             '<button class="btn btn--ghost" id="youTour" type="button" style="justify-content:center">✦ Show me around first</button></div>';
@@ -3051,9 +3054,15 @@
           var needsDressing = !!c.querySelector("#tdSave") && !ME;
           arm(c, h, needsDressing);
         });
-        // the pinned next move: one line, one door
+        // the pinned next move: one line, one door — THE CARD COMES FIRST
         var dn = $("deskNext");
-        if (dn && dn.style.display === "none" && AUTHED && !ME) {
+        var hasCard = false;
+        try { hasCard = !!(JSON.parse(localStorage.getItem("mcc_rise") || "null") || {}).arch; } catch (e3) {}
+        if (dn && dn.style.display === "none" && AUTHED && !hasCard) {
+          dn.style.display = "";
+          dn.classList.add("card-call");
+          dn.innerHTML = '🃏 <b>GET YOUR CARD</b> — play WHAT MAKES YOU RISE? (2 min). It deals your E⤴ Card and shapes the whole app to you. <a href="rise.html" style="color:#e8c877;font-weight:800">Deal me in &#8594;</a>';
+        } else if (dn && dn.style.display === "none" && AUTHED && !ME) {
           dn.style.display = "";
           dn.innerHTML = '🃏 <b>Next move:</b> dress your card so the floor can find you — <a href="#" style="color:#e8c877;font-weight:800" data-nextfold>open the listing</a>';
           var a = dn.querySelector("[data-nextfold]");

@@ -203,8 +203,19 @@
         window.MCC_NET.myListing().catch(function () { return null; })]).then(function (r) {
         var m = r[0], g = r[1], mine = r[2];
         if (!m) {
-          host.innerHTML = '<div class="mm__card"><h2>The room arms with one paste.</h2>' +
-            '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live.</p></div>';
+          // paste talk is for the admin ONLY — a member gets a human
+          // answer and the card call keeps flashing even here
+          var rz0 = null;
+          try { rz0 = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e0) {}
+          host.innerHTML = ADMIN
+            ? '<div class="mm__card"><h2>The room arms with one paste.</h2>' +
+              '<p class="mm__sub" style="margin-top:0.2rem">docs/gauntlet-schema.sql in the SQL editor — then every number below goes live.</p></div>'
+            : '<div class="mm__card">' +
+              (rz0 && rz0.arch ? "" :
+                '<p class="mm__sub card-call" style="padding:0.7rem 0.85rem;margin-bottom:0.7rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
+                '<span style="font-size:0.8rem">It deals your E⤴ Card and lines these missions up to your path.</span></p>') +
+              "<h2>Your numbers are waking up.</h2>" +
+              '<p class="mm__sub" style="margin-top:0.2rem">The Trap loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p></div>';
           return;
         }
         var done = (g && g.done) || [];
@@ -252,7 +263,7 @@
             return '<div style="border:1.5px solid rgba(201,157,69,0.55);border-radius:14px;padding:0.85rem 0.9rem;margin-top:1rem;background:rgba(201,157,69,0.06)">' +
               '<p class="mm__k" style="color:#e8c877">Chase your path — next 3 moves' +
               (myPaths ? " · " + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ")
-                       : ' · <a href="rise.html" style="color:#e8c877">find your path — play RISE →</a>') + "</p>" +
+                       : ' · <a class="card-call" href="rise.html" style="color:#e8c877;font-weight:800;padding:0.25em 0.7em;display:inline-block">🃏 GET YOUR CARD — play RISE →</a>') + "</p>" +
               next.map(function (mi) {
                 var pm = PATH_META[PATH_OF[mi[0]]] || ["", "#c99d45"];
                 return '<a class="mm__mi" href="' + mi[3] + '" style="border-color:' + pm[1] + '55">' +
