@@ -603,8 +603,10 @@
 /* THE VELVET ROPE — the E⤴ Card is the key to the whole house.
    Everything past the front-facing landing pages (the ones ads land
    on) requires a card: no card, you're walked straight into RISE,
-   and RISE hands you back to wherever you were headed. The admin's
-   own sign-in is never roped off the build. */
+   and RISE hands you back to wherever you were headed. A signed-in
+   session walks through — the account carries the imprint, and the
+   desk restores the card from it, so a member on a NEW device is
+   never asked to play RISE twice. */
 (function () {
   var here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
   var OPEN = { "index.html": 1, "rise.html": 1, "page.html": 1, "equity-uprise.html": 1,
@@ -624,7 +626,8 @@
     var seg = s && s.access_token && s.access_token.split(".")[1];
     if (seg) {
       var pay = JSON.parse(atob(seg.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - seg.length % 4) % 4)));
-      if ((pay.email || "") === "matthew@mccluster.org") return;
+      // any live sign-in passes: the account is the card's home now
+      if (pay.sub && (!pay.exp || pay.exp * 1000 > Date.now())) return;
     }
   } catch (e2) {}
   try { sessionStorage.setItem("mcc_rope_next", here + location.search + location.hash); } catch (e3) {}
