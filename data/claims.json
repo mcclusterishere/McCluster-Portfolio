@@ -1,162 +1,397 @@
 {
-  "note": "The Back End registry — every platform where an artist claims their page, opens the developer door, or exports their own numbers. The claim run reads this; add platforms here, never in the page.",
-  "ranks": [
-    { "at": 0, "name": "Tenant", "line": "Somebody else runs your back end." },
-    { "at": 80, "name": "Keyholder", "line": "You can get in the building." },
-    { "at": 200, "name": "Operator", "line": "You run your own consoles." },
-    { "at": 360, "name": "Controller", "line": "Your numbers answer to you." },
-    { "at": 540, "name": "Executive", "line": "Every door, your name on it." }
-  ],
-  "tiers": [
-    { "id": "money", "name": "The Money Back Ends", "desc": "Where the royalties actually live. Claim these first — unclaimed money doesn't wait forever." },
-    { "id": "consoles", "name": "The DSP Consoles", "desc": "The real play counts. Every streaming platform shows the artist their true numbers — but only if you claim the chair." },
-    { "id": "social", "name": "The Social Back Ends", "desc": "Where the audience data lives. Professional dashboards, sound pages, creator consoles." },
-    { "id": "registry", "name": "The Paper Trail", "desc": "The identifiers that make you machine-readable — the difference between a name and an entity." }
-  ],
-  "platforms": [
-    {
-      "id": "distributor", "tier": "money", "name": "Your distributor (DistroKid etc.)",
-      "why": "The one export with REAL royalties from every platform at once — actual plays, actual dollars. This file is the ground truth your catalogue appraisal runs on.",
-      "claim": { "label": "Log into your distributor's bank/reports", "url": "https://distrokid.com/bank/", "pts": 15 },
-      "export": { "label": "Download an earnings report (CSV)", "pts": 30, "note": "Monthly ritual. This is the truest data in your whole empire." }
-    },
-    {
-      "id": "soundexchange", "tier": "money", "name": "SoundExchange",
-      "why": "Digital radio and non-interactive streams (Pandora, SiriusXM, webcasts) pay through here — money that never touches your distributor.",
-      "claim": { "label": "Register / claim your catalog", "url": "https://www.soundexchange.com/", "pts": 25 }
-    },
-    {
-      "id": "pro", "tier": "money", "name": "Your PRO — ASCAP or BMI",
-      "why": "Performance royalties: radio, venues, TV, live shows. Registering works + logging performances is money on the table. The platform's packet builder feeds this.",
-      "claim": { "label": "Join and register your works", "url": "https://www.ascap.com/", "pts": 25 },
-      "export": { "label": "Log a live show (build the packet here)", "url": "packet.html", "pts": 15 }
-    },
-    {
-      "id": "mlc", "tier": "money", "name": "The MLC",
-      "why": "Mechanical royalties from streaming — the pot most independent artists never claim. If you write your songs, the MLC owes you.",
-      "claim": { "label": "Register as a member", "url": "https://www.themlc.com/", "pts": 25 }
-    },
-    {
-      "id": "spotify-artists", "tier": "consoles", "name": "Spotify for Artists",
-      "why": "Your real Spotify numbers — streams, listeners, saves, playlists — plus control of your artist page, canvas, and playlist pitching.",
-      "claim": { "label": "Claim your artist profile", "url": "https://artists.spotify.com/", "pts": 20 },
-      "api": { "label": "Web API (needs a Premium-backed dev app)", "url": "https://developer.spotify.com/dashboard", "pts": 30, "note": "Followers + popularity flow into the nightly snapshot." },
-      "export": { "label": "Export audience CSVs from the console", "pts": 15 }
-    },
-    {
-      "id": "apple-artists", "tier": "consoles", "name": "Apple Music for Artists",
-      "why": "Apple pays among the highest per stream — and this is the ONLY place their real play counts exist. Plays, listeners, Shazams, purchases, by song and country.",
-      "claim": { "label": "Claim your artist page", "url": "https://artists.apple.com/", "pts": 20 },
-      "export": { "label": "Export the CSVs — plays & Shazams", "pts": 25, "note": "No API exists at any price. The export IS the pipeline." }
-    },
-    {
-      "id": "amazon-artists", "tier": "consoles", "name": "Amazon Music for Artists",
-      "why": "Amazon's console — streams, listeners, and your Alexa presence. Claim it and the voice assistant starts working for you.",
-      "claim": { "label": "Claim on the app or web", "url": "https://artists.amazonmusic.com/", "pts": 15 }
-    },
-    {
-      "id": "youtube-oac", "tier": "consoles", "name": "YouTube Official Artist Channel",
-      "why": "Merges your channels into one verified artist home; YouTube Studio shows watch time and audience, and the Data API is free for anyone.",
-      "claim": { "label": "Request the Official Artist Channel", "url": "https://support.google.com/youtube/answer/7336634", "pts": 20 },
-      "api": { "label": "YouTube Data API key (free)", "url": "https://console.cloud.google.com/", "pts": 25, "note": "Views + subscribers flow into the nightly snapshot." },
-      "export": { "label": "YouTube Studio analytics export", "pts": 10 }
-    },
-    {
-      "id": "deezer", "tier": "consoles", "name": "Deezer for Creators",
-      "why": "Claim the page, see the streams; Deezer's public API is free — fan counts ride the snapshot with no key at all.",
-      "claim": { "label": "Claim via Deezer Backstage", "url": "https://www.deezerbackstage.com/", "pts": 10 }
-    },
-    {
-      "id": "tidal", "tier": "consoles", "name": "TIDAL Artist Home",
-      "why": "The highest payer per stream. Claim the profile, control the page, watch the numbers that pay the most.",
-      "claim": { "label": "Claim your artist profile", "url": "https://artists.tidal.com/", "pts": 10 }
-    },
-    {
-      "id": "pandora", "tier": "consoles", "name": "Pandora AMP",
-      "why": "Pandora's artist console (with Next Big Sound analytics) — US radio-style listening your other consoles never see.",
-      "claim": { "label": "Claim via AMP", "url": "https://amp.pandora.com/", "pts": 10 }
-    },
-    {
-      "id": "soundcloud", "tier": "consoles", "name": "SoundCloud for Artists",
-      "why": "Where the unreleased catalogue lives. Claim the artist tools — stats, fans, and monetization on the demos the DSPs never see.",
-      "claim": { "label": "Sign up for artist tools", "url": "https://artists.soundcloud.com/", "pts": 10 }
-    },
-    {
-      "id": "audiomack", "tier": "consoles", "name": "Audiomack Creators",
-      "why": "The mixtape floor — real audience in hip-hop's home. Creator dashboard shows plays and trending placement.",
-      "claim": { "label": "Claim creator access", "url": "https://audiomack.com/creators", "pts": 10 }
-    },
-    {
-      "id": "tiktok", "tier": "social", "name": "TikTok Artist Account",
-      "why": "Your sounds' second life. The artist account tags your music, shows sound usage, and unlocks the commercial library door.",
-      "claim": { "label": "Switch to an Artist Account", "url": "https://www.tiktok.com/", "pts": 15 }
-    },
-    {
-      "id": "meta", "tier": "social", "name": "Meta Professional Dashboard",
-      "why": "Instagram + Facebook professional mode: reach, audience, and the music on your reels. The developer door (Graph API) opens from the same account.",
-      "claim": { "label": "Turn on professional mode", "url": "https://www.facebook.com/business/tools/meta-business-suite", "pts": 15 },
-      "api": { "label": "Meta developer app (Graph API)", "url": "https://developers.facebook.com/", "pts": 20, "note": "Follower counts into the snapshot when you're ready." }
-    },
-    {
-      "id": "genius", "tier": "social", "name": "Genius Verified Artist",
-      "why": "Own your lyrics pages — annotate your own bars, see the pageviews, and every search for your lyrics lands on a page you control.",
-      "claim": { "label": "Claim your artist page", "url": "https://genius.com/", "pts": 10 }
-    },
-    {
-      "id": "musixmatch", "tier": "social", "name": "Musixmatch Pro",
-      "why": "The lyrics that show inside Spotify, Apple, and Instagram come through here. Verify and your words render right everywhere.",
-      "claim": { "label": "Verify as the artist", "url": "https://about.musixmatch.com/", "pts": 10 }
-    },
-    {
-      "id": "bandsintown", "tier": "social", "name": "Bandsintown for Artists",
-      "why": "Tour presence + follower alerts; their events API is free and your shows syndicate across the internet from one console.",
-      "claim": { "label": "Claim your artist page", "url": "https://artists.bandsintown.com/", "pts": 10 },
-      "api": { "label": "Events API (free)", "url": "https://artists.bandsintown.com/support/public-api", "pts": 10 }
-    },
-    {
-      "id": "shazam", "tier": "social", "name": "Shazam (inside Apple for Artists)",
-      "why": "Every Shazam is a stranger reaching for your name. The counts live in your Apple Music for Artists console — same claim covers both.",
-      "claim": { "label": "Covered by the Apple claim — check your Shazam tab", "url": "https://artists.apple.com/", "pts": 5 }
-    },
-    {
-      "id": "musicbrainz", "tier": "registry", "name": "MusicBrainz",
-      "why": "The open music encyclopedia every machine reads. A clean MusicBrainz entry feeds a hundred other databases — free, open API, no key.",
-      "claim": { "label": "Create / correct your artist entry", "url": "https://musicbrainz.org/", "pts": 15 }
-    },
-    {
-      "id": "isni", "tier": "registry", "name": "ISNI",
-      "why": "Your name as a global identifier — the same registry publishers, libraries, and rights databases resolve. McCluster Corp holds two already.",
-      "claim": { "label": "Register via an ISNI agency", "url": "https://isni.org/", "pts": 15 }
-    },
-    {
-      "id": "isrc", "tier": "registry", "name": "ISRC codes",
-      "why": "Every recording needs its fingerprint. Your distributor assigns them free — or register your own prefix like the QT6KV catalogue did.",
-      "claim": { "label": "Know your codes (or get a prefix)", "url": "https://usisrc.org/", "pts": 10 }
-    },
-    {
-      "id": "wikidata", "tier": "registry", "name": "Wikidata",
-      "why": "The database behind Google's knowledge panels. A sourced Wikidata entity is how search engines learn you're real.",
-      "claim": { "label": "Create your entity (cite your press)", "url": "https://www.wikidata.org/", "pts": 15 }
-    },
-    {
-      "id": "google-kp", "tier": "registry", "name": "Google Knowledge Panel",
-      "why": "When the panel appears, claim it — then you control the photo and links the whole internet sees first.",
-      "claim": { "label": "Claim the panel when it shows", "url": "https://support.google.com/knowledgepanel/answer/7534842", "pts": 10 }
-    },
-    {
-      "id": "discogs", "tier": "registry", "name": "Discogs",
-      "why": "The collector's ledger. Physical or not, a Discogs artist page is catalogue provenance — and their API is free.",
-      "claim": { "label": "Add / claim your artist page", "url": "https://www.discogs.com/", "pts": 5 }
-    },
-    {
-      "id": "lastfm", "tier": "registry", "name": "Last.fm",
-      "why": "Twenty years of scrobbles — your page builds itself from listeners. The API is free and already rides the nightly snapshot.",
-      "claim": { "label": "Check your artist page exists clean", "url": "https://www.last.fm/", "pts": 5 }
-    },
-    {
-      "id": "the-pack", "tier": "registry", "name": "The Identifier Resource Pack",
-      "why": "The cheat code for this whole tier — the same playbook that got McCluster Corp verified end-to-end: every identifier, every registry, in order, with the gotchas mapped. Play the run free, or buy the map.",
-      "claim": { "label": "Get the pack — $20 · pay what's fair", "url": "resource-pack.html", "pts": 10 }
-    }
-  ]
+ "note": "The Back End registry \u2014 every platform where an artist claims their page, opens the developer door, or exports their own numbers. The claim run reads this; add platforms here, never in the page.",
+ "ranks": [
+  {
+   "at": 0,
+   "name": "Tenant",
+   "line": "Somebody else runs your back end."
+  },
+  {
+   "at": 80,
+   "name": "Keyholder",
+   "line": "You can get in the building."
+  },
+  {
+   "at": 200,
+   "name": "Operator",
+   "line": "You run your own consoles."
+  },
+  {
+   "at": 360,
+   "name": "Controller",
+   "line": "Your numbers answer to you."
+  },
+  {
+   "at": 540,
+   "name": "Executive",
+   "line": "Every door, your name on it."
+  }
+ ],
+ "tiers": [
+  {
+   "id": "money",
+   "name": "The Money Back Ends",
+   "desc": "Where the royalties actually live. Claim these first \u2014 unclaimed money doesn't wait forever."
+  },
+  {
+   "id": "consoles",
+   "name": "The DSP Consoles",
+   "desc": "The real play counts. Every streaming platform shows the artist their true numbers \u2014 but only if you claim the chair."
+  },
+  {
+   "id": "social",
+   "name": "The Social Back Ends",
+   "desc": "Where the audience data lives. Professional dashboards, sound pages, creator consoles."
+  },
+  {
+   "id": "registry",
+   "name": "The Paper Trail",
+   "desc": "The identifiers that make you machine-readable \u2014 the difference between a name and an entity."
+  }
+ ],
+ "platforms": [
+  {
+   "id": "distributor",
+   "tier": "money",
+   "name": "Your distributor",
+   "why": "The one export with REAL royalties from every platform at once \u2014 actual plays, actual dollars. This file is the ground truth your catalogue appraisal runs on.",
+   "claim": {
+    "label": "Log into your distributor's reports & bank",
+    "url": "",
+    "pts": 15
+   },
+   "export": {
+    "label": "Download an earnings report (CSV)",
+    "pts": 30,
+    "note": "Monthly ritual. This is the truest data in your whole empire."
+   }
+  },
+  {
+   "id": "soundexchange",
+   "tier": "money",
+   "name": "SoundExchange",
+   "why": "Digital radio and non-interactive streams (Pandora, SiriusXM, webcasts) pay through here \u2014 money that never touches your distributor.",
+   "claim": {
+    "label": "Register / claim your catalog",
+    "url": "https://www.soundexchange.com/",
+    "pts": 25
+   }
+  },
+  {
+   "id": "pro",
+   "tier": "money",
+   "name": "Your PRO \u2014 ASCAP or BMI",
+   "why": "Performance royalties: radio, venues, TV, live shows. Registering works + logging performances is money on the table. The platform's packet builder feeds this.",
+   "claim": {
+    "label": "Join and register your works",
+    "url": "https://www.ascap.com/",
+    "pts": 25
+   },
+   "export": {
+    "label": "Log a live show (build the packet here)",
+    "url": "packet.html",
+    "pts": 15
+   }
+  },
+  {
+   "id": "mlc",
+   "tier": "money",
+   "name": "The MLC",
+   "why": "Mechanical royalties from streaming \u2014 the pot most independent artists never claim. If you write your songs, the MLC owes you.",
+   "claim": {
+    "label": "Register as a member",
+    "url": "https://www.themlc.com/",
+    "pts": 25
+   }
+  },
+  {
+   "id": "spotify-artists",
+   "tier": "consoles",
+   "name": "Spotify for Artists",
+   "why": "Your real Spotify numbers \u2014 streams, listeners, saves, playlists \u2014 plus control of your artist page, canvas, and playlist pitching.",
+   "claim": {
+    "label": "Claim your artist profile",
+    "url": "https://artists.spotify.com/",
+    "pts": 20
+   },
+   "api": {
+    "label": "Web API (needs a Premium-backed dev app)",
+    "url": "https://developer.spotify.com/dashboard",
+    "pts": 30,
+    "note": "Followers + popularity flow into the nightly snapshot."
+   },
+   "export": {
+    "label": "Export audience CSVs from the console",
+    "pts": 15
+   }
+  },
+  {
+   "id": "apple-artists",
+   "tier": "consoles",
+   "name": "Apple Music for Artists",
+   "why": "Apple pays among the highest per stream \u2014 and this is the ONLY place their real play counts exist. Plays, listeners, Shazams, purchases, by song and country.",
+   "claim": {
+    "label": "Claim your artist page",
+    "url": "https://artists.apple.com/",
+    "pts": 20
+   },
+   "export": {
+    "label": "Export the CSVs \u2014 plays & Shazams",
+    "pts": 25,
+    "note": "No API exists at any price. The export IS the pipeline."
+   }
+  },
+  {
+   "id": "amazon-artists",
+   "tier": "consoles",
+   "name": "Amazon Music for Artists",
+   "why": "Amazon's console \u2014 streams, listeners, and your Alexa presence. Claim it and the voice assistant starts working for you.",
+   "claim": {
+    "label": "Claim on the app or web",
+    "url": "https://artists.amazonmusic.com/",
+    "pts": 15
+   }
+  },
+  {
+   "id": "youtube-oac",
+   "tier": "consoles",
+   "name": "YouTube Official Artist Channel",
+   "why": "Merges your channels into one verified artist home; YouTube Studio shows watch time and audience, and the Data API is free for anyone.",
+   "claim": {
+    "label": "Request the Official Artist Channel",
+    "url": "https://support.google.com/youtube/answer/7336634",
+    "pts": 20
+   },
+   "api": {
+    "label": "YouTube Data API key (free)",
+    "url": "https://console.cloud.google.com/",
+    "pts": 25,
+    "note": "Views + subscribers flow into the nightly snapshot."
+   },
+   "export": {
+    "label": "YouTube Studio analytics export",
+    "pts": 10
+   }
+  },
+  {
+   "id": "deezer",
+   "tier": "consoles",
+   "name": "Deezer for Creators",
+   "why": "Claim the page, see the streams; Deezer's public API is free \u2014 fan counts ride the snapshot with no key at all.",
+   "claim": {
+    "label": "Claim via Deezer Backstage",
+    "url": "https://www.deezerbackstage.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "tidal",
+   "tier": "consoles",
+   "name": "TIDAL Artist Home",
+   "why": "The highest payer per stream. Claim the profile, control the page, watch the numbers that pay the most.",
+   "claim": {
+    "label": "Claim your artist profile",
+    "url": "https://artists.tidal.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "pandora",
+   "tier": "consoles",
+   "name": "Pandora AMP",
+   "why": "Pandora's artist console (with Next Big Sound analytics) \u2014 US radio-style listening your other consoles never see.",
+   "claim": {
+    "label": "Claim via AMP",
+    "url": "https://amp.pandora.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "soundcloud",
+   "tier": "consoles",
+   "name": "SoundCloud for Artists",
+   "why": "Where the unreleased catalogue lives. Claim the artist tools \u2014 stats, fans, and monetization on the demos the DSPs never see.",
+   "claim": {
+    "label": "Sign up for artist tools",
+    "url": "https://artists.soundcloud.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "audiomack",
+   "tier": "consoles",
+   "name": "Audiomack Creators",
+   "why": "The mixtape floor \u2014 real audience in hip-hop's home. Creator dashboard shows plays and trending placement.",
+   "claim": {
+    "label": "Claim creator access",
+    "url": "https://audiomack.com/creators",
+    "pts": 10
+   }
+  },
+  {
+   "id": "tiktok",
+   "tier": "social",
+   "name": "TikTok Artist Account",
+   "why": "Your sounds' second life. The artist account tags your music, shows sound usage, and unlocks the commercial library door.",
+   "claim": {
+    "label": "Switch to an Artist Account",
+    "url": "https://www.tiktok.com/",
+    "pts": 15
+   }
+  },
+  {
+   "id": "meta",
+   "tier": "social",
+   "name": "Meta Professional Dashboard",
+   "why": "Instagram + Facebook professional mode: reach, audience, and the music on your reels. The developer door (Graph API) opens from the same account.",
+   "claim": {
+    "label": "Turn on professional mode",
+    "url": "https://www.facebook.com/business/tools/meta-business-suite",
+    "pts": 15
+   },
+   "api": {
+    "label": "Meta developer app (Graph API)",
+    "url": "https://developers.facebook.com/",
+    "pts": 20,
+    "note": "Follower counts into the snapshot when you're ready."
+   }
+  },
+  {
+   "id": "genius",
+   "tier": "social",
+   "name": "Genius Verified Artist",
+   "why": "Own your lyrics pages \u2014 annotate your own bars, see the pageviews, and every search for your lyrics lands on a page you control.",
+   "claim": {
+    "label": "Claim your artist page",
+    "url": "https://genius.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "musixmatch",
+   "tier": "social",
+   "name": "Musixmatch Pro",
+   "why": "The lyrics that show inside Spotify, Apple, and Instagram come through here. Verify and your words render right everywhere.",
+   "claim": {
+    "label": "Verify as the artist",
+    "url": "https://about.musixmatch.com/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "bandsintown",
+   "tier": "social",
+   "name": "Bandsintown for Artists",
+   "why": "Tour presence + follower alerts; their events API is free and your shows syndicate across the internet from one console.",
+   "claim": {
+    "label": "Claim your artist page",
+    "url": "https://artists.bandsintown.com/",
+    "pts": 10
+   },
+   "api": {
+    "label": "Events API (free)",
+    "url": "https://artists.bandsintown.com/support/public-api",
+    "pts": 10
+   }
+  },
+  {
+   "id": "shazam",
+   "tier": "social",
+   "name": "Shazam (inside Apple for Artists)",
+   "why": "Every Shazam is a stranger reaching for your name. The counts live in your Apple Music for Artists console \u2014 same claim covers both.",
+   "claim": {
+    "label": "Covered by the Apple claim \u2014 check your Shazam tab",
+    "url": "https://artists.apple.com/",
+    "pts": 5
+   }
+  },
+  {
+   "id": "musicbrainz",
+   "tier": "registry",
+   "name": "MusicBrainz",
+   "why": "The open music encyclopedia every machine reads. A clean MusicBrainz entry feeds a hundred other databases \u2014 free, open API, no key.",
+   "claim": {
+    "label": "Create / correct your artist entry",
+    "url": "https://musicbrainz.org/",
+    "pts": 15
+   }
+  },
+  {
+   "id": "isni",
+   "tier": "registry",
+   "name": "ISNI",
+   "why": "Your name as a global identifier \u2014 the same registry publishers, libraries, and rights databases resolve. McCluster Corp holds two already.",
+   "claim": {
+    "label": "Register via an ISNI agency",
+    "url": "https://isni.org/",
+    "pts": 15
+   }
+  },
+  {
+   "id": "isrc",
+   "tier": "registry",
+   "name": "ISRC codes",
+   "why": "Every recording needs its fingerprint. Your distributor assigns them free \u2014 or register your own prefix like the QT6KV catalogue did.",
+   "claim": {
+    "label": "Know your codes (or get a prefix)",
+    "url": "https://usisrc.org/",
+    "pts": 10
+   }
+  },
+  {
+   "id": "wikidata",
+   "tier": "registry",
+   "name": "Wikidata",
+   "why": "The database behind Google's knowledge panels. A sourced Wikidata entity is how search engines learn you're real.",
+   "claim": {
+    "label": "Create your entity (cite your press)",
+    "url": "https://www.wikidata.org/",
+    "pts": 15
+   }
+  },
+  {
+   "id": "google-kp",
+   "tier": "registry",
+   "name": "Google Knowledge Panel",
+   "why": "When the panel appears, claim it \u2014 then you control the photo and links the whole internet sees first.",
+   "claim": {
+    "label": "Claim the panel when it shows",
+    "url": "https://support.google.com/knowledgepanel/answer/7534842",
+    "pts": 10
+   }
+  },
+  {
+   "id": "discogs",
+   "tier": "registry",
+   "name": "Discogs",
+   "why": "The collector's ledger. Physical or not, a Discogs artist page is catalogue provenance \u2014 and their API is free.",
+   "claim": {
+    "label": "Add / claim your artist page",
+    "url": "https://www.discogs.com/",
+    "pts": 5
+   }
+  },
+  {
+   "id": "lastfm",
+   "tier": "registry",
+   "name": "Last.fm",
+   "why": "Twenty years of scrobbles \u2014 your page builds itself from listeners. The API is free and already rides the nightly snapshot.",
+   "claim": {
+    "label": "Check your artist page exists clean",
+    "url": "https://www.last.fm/",
+    "pts": 5
+   }
+  },
+  {
+   "id": "the-pack",
+   "tier": "registry",
+   "name": "The Identifier Resource Pack",
+   "why": "The cheat code for this whole tier \u2014 the same playbook that got McCluster Corp verified end-to-end: every identifier, every registry, in order, with the gotchas mapped. Play the run free, or buy the map.",
+   "claim": {
+    "label": "Get the pack \u2014 $20 \u00b7 pay what's fair",
+    "url": "resource-pack.html",
+    "pts": 10
+   }
+  }
+ ]
 }
