@@ -94,8 +94,10 @@ function check(name, cond, detail) {
   // empty movers strip on a young tape is the honest state, not a bug
   const dashRows = await page.evaluate(() => (window.MCC_ROWS || []).filter((r) => !r.onTape).length);
   check("market", dashRows > 0 || (await page.$$(".xc__mover")).length > 0, "floor shows neither dashes nor movers");
+  // the consolidated rail: five jumps; #build opens through the Money
+  // pane's inline door — walking it that way IS the test
   for (const pane of ["pay", "build", "yours", "providers"]) {
-    await page.click(`a.mk__jump[href="#${pane}"]`);
+    await page.click(pane === "build" ? 'a[href="#build"]' : `a.mk__jump[href="#${pane}"]`);
     await page.waitForTimeout(300);
     const visible = await page.$eval("#" + pane, (el) => getComputedStyle(el).display !== "none");
     check("market", visible, `pane #${pane} did not show`);
