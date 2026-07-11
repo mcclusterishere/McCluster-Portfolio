@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Whip Equipped · WE Rides on Equity Uprise</title>
-  <meta name="description" content="Whip Equipped — the WE tab. A real map, your real location, upfront pricing on the industry-standard meter. The only difference is the 10% — and it rides to your driver.">
+  <meta name="description" content="Whip Equipped — the WE tab. A real map, your real location, live drivers, upfront pricing on the industry-standard meter. The house takes a dime on the dollar — the big apps take a third.">
   <link rel="icon" type="image/png" href="assets/img/we-mark.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -33,10 +33,13 @@
       border: 1px solid rgba(255,92,46,0.5); border-radius: 100px; padding: 0.4rem 1rem 0.4rem 0.5rem; pointer-events: none; }
     .we-map__brand img { width: 1.6rem; height: 1.6rem; border-radius: 6px; }
     .we-map__brand b { font-size: 0.86rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .we-locate { position: absolute; left: 0.9rem; bottom: 1rem; z-index: 5; font: inherit; font-weight: 800;
+      font-size: 0.84rem; background: rgba(12,9,8,0.9); color: #f4efe6; border: 1px solid rgba(255,92,46,0.6);
+      border-radius: 100px; padding: 0.55em 1.1em; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
     .we-map__fail { position: absolute; inset: 0; display: none; place-items: center; text-align: center;
       color: var(--cream-dim); font-size: 0.95rem; padding: 2rem; }
     .we-map.is-down .we-map__fail { display: grid; }
-    .we-map.is-down .we-map__c { display: none; }
+    .we-map.is-down .we-map__c, .we-map.is-down .we-locate { display: none; }
     .maplibregl-ctrl-attrib { font-size: 9px; opacity: 0.5; }
     /* the car + pin markers */
     .we-car { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%;
@@ -45,6 +48,9 @@
     .we-car::after { content: attr(data-name); position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%);
       background: rgba(12,9,8,0.9); color: #f4efe6; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.06em;
       padding: 0.15em 0.6em; border-radius: 100px; white-space: nowrap; border: 1px solid rgba(255,92,46,0.4); }
+    .we-car--live { border-color: #00c805; box-shadow: 0 0 14px rgba(0,200,5,0.55); z-index: 6; animation: weLive 1.8s ease-out infinite; }
+    .we-car--live::after { border-color: rgba(0,200,5,0.5); }
+    @keyframes weLive { 0% { outline: 2px solid rgba(0,200,5,0.5); outline-offset: 0; } 70% { outline: 2px solid rgba(0,200,5,0); outline-offset: 10px; } 100% { outline: 2px solid rgba(0,200,5,0); outline-offset: 10px; } }
     .we-pin { width: 0.9rem; height: 0.9rem; border-radius: 50%; border: 3px solid #f4efe6; background: var(--pc, #ff5c2e);
       box-shadow: 0 0 10px rgba(0,0,0,0.6); pointer-events: none; }
     /* ---- THE SHEET: where-to + upfront fare, riding over the map ---- */
@@ -56,9 +62,29 @@
       font-size: 1rem; margin-top: 0.6rem; }
     .rd__in::placeholder { color: rgba(244,239,230,0.45); }
     .rd__in:focus { outline: none; border-color: #ff5c2e; }
+    /* the pickup→drop rail, kit-style: ringed dot, connector, filled dot */
+    .we-rail { position: relative; }
+    .we-rail::before { content: ""; position: absolute; left: 1.28rem; top: 2.35rem; bottom: 2.35rem; width: 2px;
+      background: rgba(244,239,230,0.22); }
     .we-field { position: relative; }
-    .we-field::before { content: attr(data-dot); position: absolute; left: 0.85rem; top: 50%; transform: translateY(-38%);
-      font-size: 0.8rem; }
+    .we-field::before { content: ""; position: absolute; left: 0.95rem; top: 1.5rem; width: 9px; height: 9px;
+      border-radius: 50%; border: 3px solid #00c805; background: transparent; z-index: 1; }
+    .we-field--to::before { border-color: #e5383b; background: #e5383b; }
+    /* the address whisperer */
+    .we-sug { position: absolute; left: 0; right: 0; top: 100%; z-index: 20; background: rgba(14,11,9,0.98);
+      border: 1px solid rgba(255,92,46,0.45); border-radius: 12px; margin-top: 0.25rem; overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.6); }
+    .we-sug button { display: block; width: 100%; text-align: left; font: inherit; font-size: 0.9rem; color: var(--cream);
+      background: none; border: 0; border-top: 1px dashed rgba(244,239,230,0.12); padding: 0.7rem 0.9rem; cursor: pointer; }
+    .we-sug button:first-child { border-top: 0; }
+    .we-sug button::before { content: "📍 "; opacity: 0.7; }
+    .we-sug button:hover, .we-sug button:focus { background: rgba(255,92,46,0.14); }
+    /* "You here" — the kit's bubble over your live dot */
+    .we-you { background: rgba(12,9,8,0.92); color: #f4efe6; font-size: 0.7rem; font-weight: 800;
+      letter-spacing: 0.08em; padding: 0.35em 0.8em; border-radius: 100px; border: 1px solid rgba(0,200,5,0.55);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5); white-space: nowrap; pointer-events: none; }
+    .we-you::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: rgba(12,9,8,0.92); }
     .rd__tape { margin-top: 1rem; border: 1px dashed rgba(244,239,230,0.25); border-radius: 12px; padding: 0.9rem 1rem; display: none; }
     .rd__tape.is-on { display: block; }
     .rd__tl { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.28rem 0; font-size: 0.9rem;
@@ -99,16 +125,19 @@
     <section class="we-map" id="weMapWrap">
       <div class="we-map__c" id="weMap"></div>
       <div class="we-map__brand"><img src="assets/img/we-mark.png" alt=""><b>Whip Equipped</b></div>
+      <button class="we-locate" id="weLocate" type="button">&#128205; Find me — go live</button>
       <p class="we-map__fail">The street map is catching its breath — the meter below still quotes your ride.</p>
     </section>
 
     <!-- THE SHEET: where to? → one upfront price -->
     <section class="we-sheet" id="meter">
       <p class="rd__k">The meter · priced upfront</p>
-      <div class="we-field" data-dot="🟢"><input class="rd__in" id="weFrom" type="text" placeholder="Pickup — finding you…" autocomplete="off"></div>
-      <div class="we-field" data-dot="🔴"><input class="rd__in" id="weTo" type="text" placeholder="Where to?" autocomplete="off"></div>
+      <div class="we-rail">
+        <div class="we-field"><input class="rd__in" id="weFrom" type="text" placeholder="Pickup — finding you…" autocomplete="off"></div>
+        <div class="we-field we-field--to"><input class="rd__in" id="weTo" type="text" placeholder="Where to?" autocomplete="off"></div>
+      </div>
       <div class="finale__actions" style="margin-top:0.9rem">
-        <button class="btn btn--ruby" id="weRun" type="button">See the price &#8594;</button>
+        <button class="btn btn--ruby" id="weRun" type="button" style="width:100%">See the price &#8594;</button>
       </div>
       <p class="rd__err" id="weErr"></p>
       <div class="rd__tape" id="weTape">
@@ -116,14 +145,27 @@
         <div class="rd__tl"><span id="weMiLbl">Distance</span><b id="weMi">—</b></div>
         <div class="rd__tl"><span id="weMinLbl">Time</span><b id="weMin">—</b></div>
         <div class="rd__tl"><span>Booking desk<span id="weFloor" style="display:none"> · $7 trip floor applied</span></span><b>$3.20</b></div>
-        <div class="rd__tl"><span>Meter fare — the standard model</span><b id="weFare">—</b></div>
-        <div class="rd__tl"><span>The only difference — 10%, rides to your driver</span><b id="weTip">—</b></div>
+        <div class="rd__tl"><span>Meter fare — every cent to your driver</span><b id="weFare">—</b></div>
+        <div class="rd__tl"><span>The house's 10 — a third of what the big apps take</span><b id="weTip">—</b></div>
         <div class="rd__tl rd__tl--total"><span>Upfront price</span><b id="weTotal">—</b></div>
         <div class="rd__tl rd__tl--eup"><span>Or in E&#10548; — 33% off, like everything here</span><b id="weEup">—</b></div>
       </div>
     </section>
 
     <div class="rd__body">
+      <!-- THE WHEEL: the driver console — go online, be seen live -->
+      <div class="rd__card" id="weWheel" hidden style="--rc:#00c805">
+        <p class="rd__k">The wheel · drivers</p>
+        <h2>Go online. Be on the map.</h2>
+        <p class="rd__sub" style="font-size:0.92rem;margin-top:0.4rem">Flip it on and riders see your live spot on the
+          street — flip it off (or leave) and you vanish. <b>Online means your position is public.</b> The Rides lane
+          joins your card without touching anything else on your desk.</p>
+        <div class="finale__actions" style="margin-top:0.9rem">
+          <button class="btn btn--ruby" id="weOnline" type="button">Go online — riders see you live</button>
+        </div>
+        <p class="rd__err" id="weWhMsg" style="color:var(--cream-dim)"></p>
+      </div>
+
       <div class="rd__card" id="drivers" style="--rc:#c99d45">
         <p class="rd__k">Drivers on the road</p>
         <h2>Ride with somebody real.</h2>
@@ -131,14 +173,15 @@
       </div>
 
       <div class="rd__card" style="--rc:#00c805">
-        <p class="rd__k">Drivers — keep it all</p>
+        <p class="rd__k">Drivers — keep the meter, whole</p>
         <h2>The math that flips people.</h2>
         <div class="rd__math">
-          <div class="rd__m"><b style="color:#ff5000">25–40%</b><small>what the meter apps take from every fare you drive</small></div>
-          <div class="rd__m"><b style="color:#00c805">0%</b><small>what leaves your fare here — meter plus the 10% raise, all yours</small></div>
+          <div class="rd__m"><b style="color:#ff5000">25–40%</b><small>what the big apps hold back from the rider's dollar</small></div>
+          <div class="rd__m"><b style="color:#00c805">100%</b><small>of the METER lands on you — the house lives on the rider's dime</small></div>
         </div>
         <p class="rd__sub" style="font-size:0.95rem"><b>The play:</b> the meter runs the same standard model the big
-          apps run. The rider pays 10% on top — and the whole thing lands on <b>you</b>, whole, on the record.</p>
+          apps run — and every cent of it is yours, whole, on the record. The rider pays 10% on top; that dime is the
+          house's entire take. Theirs is a third.</p>
         <div class="finale__actions" style="margin-top:1rem">
           <a class="btn btn--ruby" href="welcome.html?as=driver">Drive — get Whip Equipped &#8594;</a>
         </div>
@@ -184,53 +227,26 @@
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       function usd(n) { return "$" + n.toFixed(2); }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p || {}); }
+      var S = window.MCC_SUPA;
 
-      /* THE METER — the industry-standard model, priced upfront.
-         Same shape Uber/Lyft run in 2026 (national-average rates):
-           trip  = max($7, $1.00 base + $0.97/mile + $0.32/minute)
-           fare  = trip + $3.20 booking desk (never surged, like the apps)
-           rider = fare × 1.10  ← THE ONLY DIFFERENCE, and it rides to
-                                  the driver, not a dispatcher
-           E⤴    = rider × 0.67 (network money runs 33% cheaper) */
-      function meter(miles, minutes) {
-        var raw = 1.0 + 0.97 * miles + 0.32 * minutes;
-        var trip = Math.max(7, raw);
-        var fare = trip + 3.2;
-        var total = fare * 1.10;
-        return { trip: trip, floored: raw < 7, fare: fare, raise: total - fare,
-          total: total, eup: Math.round(total * 0.67) };
-      }
-      window.WE_METER = meter; /* one law, testable */
+      /* THE METER LAW lives in polish.js (window.WE_LAW) — one source
+         for this page and the meter tool the dock pops anywhere.
+         trip = max($7, $1.00 + $0.97/mi + $0.32/min); fare = trip + $3.20
+         booking desk; rider = fare × 1.10 — the house's dime, a third of
+         the big apps' take; E⤴ = rider × 0.67. */
+      var meter = window.WE_LAW.meter;
+      window.WE_METER = meter;
 
-      /* ---------- geo desks (free, keyless) ---------- */
-      function geocode(q) {
-        return fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q), {
-          headers: { Accept: "application/json" } })
-          .then(function (r) { return r.ok ? r.json() : []; })
-          .then(function (j) { return j && j[0] ? { lat: +j[0].lat, lon: +j[0].lon, name: j[0].display_name } : null; });
-      }
-      function revgeo(lat, lon) {
-        return fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon, {
-          headers: { Accept: "application/json" } })
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (j) {
-            if (!j) return null;
-            var a = j.address || {};
-            return [a.house_number, a.road, a.city || a.town || a.village].filter(Boolean).join(" ") || j.display_name;
-          }).catch(function () { return null; });
-      }
-      function route(a, b) {
-        return fetch("https://router.project-osrm.org/route/v1/driving/" + a.lon + "," + a.lat + ";" + b.lon + "," + b.lat +
-          "?overview=full&geometries=geojson")
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (j) {
-            var r0 = j && j.routes && j.routes[0];
-            return r0 ? { miles: r0.distance / 1609.344, minutes: r0.duration / 60, geo: r0.geometry } : null;
-          });
+      function rpcAnon(name, body) {
+        if (!S) return Promise.resolve(null);
+        return fetch(S.url + "/rest/v1/rpc/" + name, { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
+          body: JSON.stringify(body || {}) })
+          .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       }
 
       /* ---------- THE STREET: the real map ---------- */
-      var map = null, mapUp = false, ME = null, pins = [];
+      var map = null, mapUp = false, ME = null, pins = [], geoCtl = null;
       try {
         map = new maplibregl.Map({
           container: "weMap",
@@ -240,32 +256,46 @@
         });
         map.on("load", function () {
           mapUp = true;
-          var geo = new maplibregl.GeolocateControl({
+          geoCtl = new maplibregl.GeolocateControl({
             positionOptions: { enableHighAccuracy: true },
             trackUserLocation: true, showUserHeading: true,
           });
-          map.addControl(geo, "bottom-right");
+          map.addControl(geoCtl, "bottom-right");
           map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
-          geo.on("geolocate", function (p) {
+          var youMark = null;
+          geoCtl.on("geolocate", function (p) {
             ME = { lat: p.coords.latitude, lon: p.coords.longitude };
+            $("weLocate").hidden = true;
             if (!$("weFrom").value) {
-              revgeo(ME.lat, ME.lon).then(function (nm) {
-                if (!$("weFrom").value) $("weFrom").value = nm || "Your location";
-                $("weFrom").setAttribute("data-live", "1");
-              });
+              $("weFrom").value = "Your location (live)";
+              $("weFrom").setAttribute("data-live", "1");
             }
+            // the kit's "You here" bubble rides above your live dot
+            if (!youMark) {
+              var yEl = document.createElement("div");
+              yEl.className = "we-you";
+              yEl.textContent = "You here";
+              youMark = new maplibregl.Marker({ element: yEl, offset: [0, -26] })
+                .setLngLat([ME.lon, ME.lat]).addTo(map);
+            } else youMark.setLngLat([ME.lon, ME.lat]);
           });
-          // ask for the blue dot the moment the street is up — the app
-          // opens on YOU, like the big ones
-          setTimeout(function () { try { geo.trigger(); } catch (e) {} }, 400);
           placeDrivers();
+          loadLive();
+          // the ask fires the moment the street is up — and the chip
+          // stays as the loud, guaranteed-gesture way in
+          setTimeout(function () { try { geoCtl.trigger(); } catch (e) {} }, 600);
         });
+        map.once("idle", function () { if (geoCtl) { try { geoCtl.trigger(); } catch (e) {} } });
         map.on("error", function () { if (!mapUp) mapDown(); });
         setTimeout(function () { if (!mapUp) mapDown(); }, 9000);
         window.WE_MAP = map;
       } catch (e) { mapDown(); }
       function mapDown() { $("weMapWrap").classList.add("is-down"); }
-      if ($("weFrom").value === "") $("weFrom").placeholder = "Pickup — address, or allow location";
+      $("weLocate").addEventListener("click", function () {
+        if (geoCtl) { try { geoCtl.trigger(); } catch (e) {} }
+        $("weErr").textContent = "";
+      });
+      if ($("weFrom").value === "") $("weFrom").placeholder = "Pickup — address, or tap Find me";
 
       function dropPin(lon, lat, color) {
         var el = document.createElement("div");
@@ -295,20 +325,60 @@
           { padding: 64, duration: 900 });
       }
 
+      /* ---------- THE WHISPERER: addresses complete themselves ---------- */
+      var PTS = { from: null, to: null };
+      function attachSug(input, key) {
+        var box = document.createElement("div");
+        box.className = "we-sug";
+        box.hidden = true;
+        input.parentNode.appendChild(box);
+        var t = null;
+        input.addEventListener("input", function () {
+          PTS[key] = null;
+          if (key === "from") input.removeAttribute("data-live");
+          clearTimeout(t);
+          var q = input.value.trim();
+          if (q.length < 3) { box.hidden = true; return; }
+          t = setTimeout(function () {
+            window.WE_GEO.suggest(q, ME).then(function (hits) {
+              if (!hits.length || document.activeElement !== input) { box.hidden = true; return; }
+              box.innerHTML = hits.map(function (h, i) {
+                return '<button type="button" data-sug="' + i + '">' + esc(h.label) + "</button>";
+              }).join("");
+              box.hidden = false;
+              box.querySelectorAll("[data-sug]").forEach(function (b) {
+                b.addEventListener("click", function () {
+                  var h = hits[+b.getAttribute("data-sug")];
+                  input.value = h.label;
+                  PTS[key] = { lat: h.lat, lon: h.lon };
+                  box.hidden = true;
+                  track("we_sug_pick", { k: key });
+                });
+              });
+            });
+          }, 350);
+        });
+        input.addEventListener("blur", function () { setTimeout(function () { box.hidden = true; }, 250); });
+      }
+      attachSug($("weFrom"), "from");
+      attachSug($("weTo"), "to");
+
       /* ---------- the quote ---------- */
       $("weRun").addEventListener("click", function () {
         var fromTx = $("weFrom").value.trim(), toTx = $("weTo").value.trim();
         var err = $("weErr"), btn = $("weRun");
         err.textContent = "";
-        if (!toTx) { err.textContent = "Name the drop-off — where to?"; return; }
+        if (!toTx && !PTS.to) { err.textContent = "Name the drop-off — where to?"; return; }
         btn.disabled = true; btn.textContent = "Running the meter…";
-        var pickP = (ME && ($("weFrom").getAttribute("data-live") === "1" || !fromTx))
-          ? Promise.resolve({ lat: ME.lat, lon: ME.lon })
-          : (fromTx ? geocode(fromTx) : Promise.resolve(null));
-        Promise.all([pickP, geocode(toTx)]).then(function (pts) {
-          if (!pts[0]) throw "Couldn't place the pickup — type an address, or allow location.";
-          if (!pts[1]) throw "Couldn't place the drop-off — add a city or zip.";
-          return route(pts[0], pts[1]).then(function (leg) {
+        var pickP = PTS.from ? Promise.resolve(PTS.from)
+          : (ME && ($("weFrom").getAttribute("data-live") === "1" || !fromTx))
+            ? Promise.resolve({ lat: ME.lat, lon: ME.lon })
+            : (fromTx ? window.WE_GEO.find(fromTx, ME) : Promise.resolve(null));
+        var dropP = PTS.to ? Promise.resolve(PTS.to) : window.WE_GEO.find(toTx, ME);
+        Promise.all([pickP, dropP]).then(function (pts) {
+          if (!pts[0]) throw "Couldn't place the pickup — pick a suggestion, or tap Find me.";
+          if (!pts[1]) throw "Couldn't place the drop-off — pick one of the suggestions.";
+          return window.WE_GEO.route(pts[0], pts[1]).then(function (leg) {
             if (!leg) throw "No drivable route between those two — check the addresses.";
             var m = meter(leg.miles, leg.minutes);
             $("weMiLbl").textContent = leg.miles.toFixed(1) + " mi × $0.97";
@@ -329,7 +399,6 @@
           err.textContent = typeof e === "string" ? e : "The meter hiccuped — try again in a second.";
         }).then(function () { btn.disabled = false; btn.innerHTML = "See the price &#8594;"; });
       });
-      $("weFrom").addEventListener("input", function () { $("weFrom").removeAttribute("data-live"); });
 
       /* ---------- THE WE WORLD — booking pops up in place ---------- */
       var LAST = null;
@@ -353,18 +422,88 @@
       });
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") popDown(); });
 
-      /* ---------- DRIVERS: on the list AND on the map ----------
-         The pin sits on each driver's home area (geocoded, cached) —
-         their stated base, honestly labeled. Live GPS pins come when
-         drivers go online with location sharing. */
-      var DRIVERS = [];
+      /* ---------- THE WHEEL: drivers go online, for real ----------
+         Heartbeats ride driver_ping (docs/we-driver.sql); the Rides
+         lane joins their roles additively — the rest of their desk
+         never moves. */
+      (function wheel() {
+        if (!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) return;
+        $("weWheel").hidden = false;
+        var on = false, watchId = null, beat = null, fix = null;
+        function ping(online) {
+          return S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/rpc/driver_ping", { method: "POST", keepalive: true,
+              headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + (t || S.key) },
+              body: JSON.stringify({ p_online: online, p_lat: fix ? fix.lat : null, p_lng: fix ? fix.lng : null,
+                p_heading: fix ? fix.heading : null }) })
+              .then(function (r) { return r.ok ? r.json() : null; });
+          }).catch(function () { return null; });
+        }
+        function paintBtn() {
+          $("weOnline").textContent = on ? "Go offline" : "Go online — riders see you live";
+          $("weOnline").className = on ? "btn btn--ghost" : "btn btn--ruby";
+        }
+        var pinged = false;
+        function goLive() {
+          if (pinged) return;
+          pinged = true;
+          ping(true).then(function (j) {
+            if (j && j.ok) {
+              on = true; paintBtn();
+              $("weWhMsg").innerHTML = '<span style="color:#00c805">●</span> You’re on the road — live until you flip this off or leave.';
+              beat = setInterval(function () { ping(true); }, 20000);
+              loadLive();
+              /* the Rides lane joins the card without touching the rest */
+              if (window.MCC_NET && window.MCC_NET.myListing) window.MCC_NET.myListing().then(function (mine) {
+                if (mine && (mine.roles || []).indexOf("Rides") === -1) {
+                  window.MCC_NET.saveListing({ roles: (mine.roles || []).concat("Rides") });
+                }
+              }).catch(function () {});
+            } else {
+              $("weWhMsg").textContent = (j && j.why) || "The wheel arms with one paste on the back end (we-driver).";
+              if (watchId != null) navigator.geolocation.clearWatch(watchId);
+              fix = null; pinged = false;
+            }
+          });
+        }
+        $("weOnline").addEventListener("click", function () {
+          if (!on) {
+            $("weWhMsg").textContent = "Finding you…";
+            watchId = navigator.geolocation.watchPosition(function (p) {
+              fix = { lat: p.coords.latitude, lng: p.coords.longitude, heading: p.coords.heading };
+              goLive();
+            }, function () {
+              if (!fix) $("weWhMsg").textContent = "Location is off — the road needs your live spot to put you on it.";
+            }, { enableHighAccuracy: true, maximumAge: 5000 });
+            /* the map already found you? that fix rides — no waiting on
+               a fresh satellite lock to open the road */
+            if (ME && !fix) { fix = { lat: ME.lat, lng: ME.lon, heading: null }; goLive(); }
+          } else {
+            on = false; paintBtn();
+            if (watchId != null) navigator.geolocation.clearWatch(watchId);
+            clearInterval(beat); fix = null;
+            ping(false);
+            $("weWhMsg").textContent = "Off the road — your spot is no longer shared.";
+            loadLive();
+          }
+          track("we_wheel", { on: on });
+        });
+        window.addEventListener("pagehide", function () { if (on) ping(false); });
+        paintBtn();
+      })();
+
+      /* ---------- DRIVERS: the list, the base pins, the LIVE cars ----------
+         Base pins sit on each driver's stated home area (geocoded,
+         cached, honestly labeled). LIVE cars are real: drivers who went
+         online, refreshed every 30 seconds off the road table. */
+      var DRIVERS = [], LIVE = {};
       function areaPoint(area) {
         var key = "mcc_geo:" + area;
         try {
           var hit = JSON.parse(localStorage.getItem(key) || "null");
           if (hit) return Promise.resolve(hit);
         } catch (e) {}
-        return geocode(area).then(function (p) {
+        return window.WE_GEO.find(area).then(function (p) {
           if (p) try { localStorage.setItem(key, JSON.stringify(p)); } catch (e) {}
           return p;
         });
@@ -372,22 +511,52 @@
       function placeDrivers() {
         if (!mapUp) return;
         DRIVERS.forEach(function (p, i) {
+          var slug = p.slug || p.id;
           var area = p.area || "Bridgeport, CT";
           setTimeout(function () {
+            if (LIVE[slug]) return; // the live car IS the pin
             areaPoint(area).then(function (pt) {
-              if (!pt) return;
+              if (!pt || LIVE[slug]) return;
               var el = document.createElement("div");
               el.className = "we-car";
               el.setAttribute("data-name", p.name || "Driver");
               el.textContent = "🚘";
               el.addEventListener("click", function () {
-                popUp(p.name, (p.area || "") + " · their base — confirm pickup range when you book", p.slug || p.id);
+                popUp(p.name, (p.area || "") + " · their base — confirm pickup range when you book", slug);
               });
               new maplibregl.Marker({ element: el }).setLngLat([pt.lon, pt.lat]).addTo(map);
             });
           }, i * 1100); // one desk call at a time — the free geocoder's law
         });
       }
+      function loadLive() {
+        if (!mapUp) return;
+        rpcAnon("drivers_on_road").then(function (rows) {
+          rows = rows || [];
+          var seen = {};
+          rows.forEach(function (d) {
+            seen[d.slug] = 1;
+            if (LIVE[d.slug]) { LIVE[d.slug].setLngLat([d.lng, d.lat]); return; }
+            var el = document.createElement("div");
+            el.className = "we-car we-car--live";
+            el.setAttribute("data-name", d.name || "Driver");
+            el.textContent = "🚘";
+            el.addEventListener("click", function () { popUp(d.name, "● live on the road right now", d.slug); });
+            LIVE[d.slug] = new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).addTo(map);
+          });
+          Object.keys(LIVE).forEach(function (s) { if (!seen[s]) { LIVE[s].remove(); delete LIVE[s]; } });
+          /* the list wears the live dots too */
+          document.querySelectorAll("#weDrivers [data-book]").forEach(function (b) {
+            var s = b.getAttribute("data-book");
+            var small = b.parentNode.querySelector("small");
+            if (small && seen[s] && small.innerHTML.indexOf("live now") === -1) {
+              small.innerHTML = '<span style="color:#00c805">● live now</span> · ' + small.innerHTML;
+            }
+          });
+        });
+      }
+      setInterval(loadLive, 30000);
+
       function paintDrivers(floor) {
         DRIVERS = (floor.providers || []).filter(function (p) {
           return (p.roles || []).some(function (r) { return /rid|driv/i.test(String(r)); });
@@ -412,7 +581,7 @@
             popUp(b.getAttribute("data-name"), b.getAttribute("data-area"), b.getAttribute("data-book"));
           });
         });
-        if (mapUp) placeDrivers();
+        if (mapUp) { placeDrivers(); loadLive(); }
       }
       if (window.MCC_FLOOR) {
         window.MCC_FLOOR.load().then(paintDrivers).catch(function () { paintDrivers({ providers: [] }); });

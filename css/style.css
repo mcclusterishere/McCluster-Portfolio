@@ -4098,6 +4098,19 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
   padding: 0.6em 1.3em; flex: 1; min-width: 9rem; }
 .dk-peek__alt { font: inherit; font-weight: 700; border: 1px solid rgba(244, 239, 230, 0.3); cursor: pointer;
   background: none; color: var(--cream); border-radius: 100px; padding: 0.6em 1.1em; }
+.dk-peek__full { flex: none; align-self: flex-start; color: #e8c877; font-size: 0.78rem; font-weight: 800;
+  text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; }
+.dk-w { margin-top: 0.7rem; }
+.dk-w__in { width: 100%; box-sizing: border-box; background: rgba(244, 239, 230, 0.06); color: var(--cream);
+  border: 1px solid rgba(244, 239, 230, 0.22); border-radius: 10px; padding: 0.65rem 0.8rem; font: inherit;
+  font-size: 0.95rem; margin-top: 0.45rem; }
+.dk-w__in:focus { outline: none; border-color: #e8c877; }
+.dk-w__out { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.55; margin-top: 0.6rem; min-height: 1.2em; }
+.dk-w__row { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.5rem 0; font-size: 0.92rem;
+  border-top: 1px dashed rgba(244, 239, 230, 0.14); }
+.dk-w__row:first-child { border-top: 0; }
+.dk-w__row small { color: var(--cream-dim); }
+.dk-w__row a { margin-left: auto; color: #ff5c2e; font-weight: 800; text-decoration: none; }
 
 /* ---- THE DOCK WALK: the first-boot lesson; the bar stays live above it ---- */
 .dockwalk { position: fixed; inset: 0; z-index: 199; background: rgba(5, 4, 3, 0.88);
