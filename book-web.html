@@ -3,150 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Book Web Design · McCluster</title>
-  <meta name="description" content="Websites like this one: cinematic, fast, and built to convert. Book the date in two minutes.">
+  <title>Web booking moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="All McCluster services on one page — this page moved into the live Equity Uprise platform; you are being taken there now.">
+  <meta http-equiv="refresh" content="0; url=hire.html">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/hire.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .bl { position: relative; min-height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: clamp(6rem, 12vh, 8rem) clamp(1.2rem, 5vw, 3.5rem) clamp(2.5rem, 7vh, 4.5rem); overflow: hidden; }
-    .bl__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
-    .bl__scrim { position: absolute; inset: 0; z-index: -1;
-      background: linear-gradient(200deg, rgba(10,8,7,0.25) 0%, rgba(10,8,7,0.82) 62%, rgba(10,8,7,0.97) 100%); }
-    .bl__kick { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
-    .bl__h1 { font-family: var(--display); font-size: clamp(2.6rem, 10vw, 5.4rem); text-transform: uppercase; line-height: 0.92; margin: 0.35rem 0 0.8rem; }
-    .bl__sub { max-width: 52ch; color: var(--cream-dim); font-size: clamp(0.98rem, 2.8vw, 1.15rem); line-height: 1.6; }
-    .bl__pts { list-style: none; margin: 1.3rem 0 1.6rem; padding: 0; display: grid; gap: 0.55rem; max-width: 56ch; }
-    .bl__pts li { display: flex; gap: 0.6em; font-size: 0.92rem; line-height: 1.5; color: var(--cream); }
-    .bl__pts li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--ruby-hot); margin-top: 0.45em; box-shadow: 0 0 10px rgba(229,56,59,0.8); }
-    .bl__ctas { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
-    .bl__more { margin-top: 1rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .bl__more a { color: var(--ruby-hot); text-decoration: none; }
-    /* the tiers */
-    .tiers { padding: clamp(3rem, 8vh, 5rem) clamp(1.2rem, 5vw, 3.5rem) clamp(2rem, 6vh, 4rem); }
-    .tiers__kick { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
-    .tiers__h { font-family: var(--display); font-size: clamp(1.9rem, 6vw, 3.2rem); text-transform: uppercase; line-height: 0.95; margin: 0.3rem 0 0.6rem; }
-    .tiers__sub { max-width: 58ch; color: var(--cream-dim); font-size: 0.95rem; line-height: 1.6; }
-    .tiers__grid { display: grid; gap: 1rem; margin-top: 1.8rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); align-items: start; }
-    .tier { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 14px; padding: 1.4rem 1.3rem 1.5rem; background: rgba(20, 16, 14, 0.55); }
-    .tier--mid { border-color: var(--ruby-hot); box-shadow: 0 14px 44px rgba(229, 56, 59, 0.22); position: relative; }
-    .tier__flag { position: absolute; top: -0.7em; left: 1.1rem; font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase;
-      background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); color: #fff; border-radius: 100px; padding: 0.45em 1em; }
-    .tier__name { font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; }
-    .tier__price { margin: 0.3rem 0 0.9rem; color: var(--cream); font-weight: 800; font-size: 1.05rem; }
-    .tier__price small { display: block; font-weight: 400; color: var(--cream-dim); font-size: 0.68rem; letter-spacing: 0.08em; margin-top: 0.2em; }
-    .tier ul { list-style: none; margin: 0 0 1.2rem; padding: 0; display: grid; gap: 0.45rem; }
-    .tier li { display: flex; gap: 0.55em; font-size: 0.84rem; line-height: 1.5; color: var(--cream-dim); }
-    .tier li::before { content: "—"; color: var(--ruby-hot); flex: none; }
-    .tiers__care { margin-top: 1.6rem; max-width: 62ch; color: var(--cream-dim); font-size: 0.85rem; line-height: 1.65;
-      border-left: 3px solid var(--ruby-hot); padding-left: 1rem; }
-    .tiers__care b { color: var(--cream); }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
-<body class="songpage">
-  <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="index.html">The experience</a>
-      <a class="head-cta" data-book href="#">Book the date</a>
-    </nav>
-  </header>
-  <main>
-    <section class="bl">
-      <img class="bl__bg" src="assets/frames/designer_0080.jpg" alt="" fetchpriority="high">
-      <div class="bl__scrim" aria-hidden="true"></div>
-      <p class="bl__kick">Web design · booking now</p>
-      <h1 class="bl__h1">You just used<br>the portfolio</h1>
-      <p class="bl__sub">This site is the pitch: the scroll films, the app, the VR, the speed. Your build gets the same standard, sized to your business and your budget.</p>
-      <ul class="bl__pts"><li>Design and build, end to end, with analytics and lead capture wired from day one</li><li>Fast on real phones, installable as an app, no monthly platform tax</li><li>You own everything: the code, the content, the data</li></ul>
-      <div class="bl__ctas">
-        <a class="btn btn--ruby" data-book href="#" data-cta="book-call-web">Book the date</a>
-        <a class="btn btn--ghost" data-lead href="mailto:matthew@mccluster.org?subject=Quote%20%E2%80%94%20web" data-cta="quote-web">Get a quote in 24h</a>
-      </div>
-      <p class="bl__more"><a href="#tiers">See the tiers &#8595;</a> &nbsp;·&nbsp; <a href="offer.html">The limited offer &#8594;</a></p>
-    </section>
-
-    <!-- the tiers: sized to the market, priced to the craft -->
-    <section class="tiers" id="tiers">
-      <p class="tiers__kick">The builds</p>
-      <h2 class="tiers__h">Three ways in</h2>
-      <p class="tiers__sub">
-        Interactive builds with scroll-driven storytelling and integrated film run $15,000&ndash;$50,000
-        at the agencies. This is the same craft, direct from the builder &mdash; strategy, design, motion,
-        and code in one pair of hands.
-      </p>
-      <div class="tiers__grid">
-        <article class="tier">
-          <h3 class="tier__name">Essential</h3>
-          <p class="tier__price">$10,000&ndash;$12,000<small>The cinematic feel, focused</small></p>
-          <ul>
-            <li>Custom design and build &mdash; no templates, ever</li>
-            <li>Cinematic scroll with focused motion and film sections</li>
-            <li>Responsive and fast on real phones, installable as an app</li>
-            <li>Booking form, analytics, and lead capture wired from day one</li>
-            <li>You own the code, the content, and the data</li>
-          </ul>
-          <a class="btn btn--ghost" data-lead href="mailto:matthew@mccluster.org?subject=Essential%20Build%20%E2%80%94%20Web&body=I%27m%20interested%20in%20the%20Essential%20build.%0AMy%20business%3A%0AWhat%20the%20site%20needs%20to%20do%3A%0ATimeline%3A%0A" data-cta="tier-essential">Start Essential</a>
-        </article>
-        <article class="tier tier--mid">
-          <p class="tier__flag">Most booked</p>
-          <h3 class="tier__name">Enhanced</h3>
-          <p class="tier__price">$14,000&ndash;$24,000<small>The full experience, conversion-tuned</small></p>
-          <ul>
-            <li>Everything in Essential, with more sections and deeper motion</li>
-            <li>Video production and edit for the scroll films</li>
-            <li>Copywriting and conversion strategy across every screen</li>
-            <li>Booking and calendar integration, SEO, and performance tuning</li>
-            <li>Launch report: what's landing, where to push next</li>
-          </ul>
-          <a class="btn btn--ruby" data-lead href="mailto:matthew@mccluster.org?subject=Enhanced%20Build%20%E2%80%94%20Web&body=I%27m%20interested%20in%20the%20Enhanced%20build.%0AMy%20business%3A%0AWhat%20the%20site%20needs%20to%20do%3A%0ATimeline%3A%0A" data-cta="tier-enhanced">Start Enhanced</a>
-        </article>
-        <article class="tier">
-          <h3 class="tier__name">Premium</h3>
-          <p class="tier__price">$25,000+<small>Deep immersion, custom everything</small></p>
-          <ul>
-            <li>Everything in Enhanced, taken as far as the vision goes</li>
-            <li>3D and WebGL moments &mdash; 360&deg; scenes, interactive film</li>
-            <li>Content systems: catalogues, players, member areas</li>
-            <li>Commerce, multilingual, or custom backend integrations</li>
-            <li>Art direction across the whole brand, not just the site</li>
-          </ul>
-          <a class="btn btn--ghost" data-lead href="mailto:matthew@mccluster.org?subject=Premium%20Build%20%E2%80%94%20Web&body=I%27m%20interested%20in%20a%20Premium%20build.%0AMy%20business%3A%0AThe%20vision%3A%0ATimeline%3A%0A" data-cta="tier-premium">Talk Premium</a>
-        </article>
-      </div>
-      <p class="tiers__care">
-        <b>After launch:</b> hosting, maintenance, and fresh content are where sites live or die &mdash;
-        plan on 15&ndash;30% of the build per year. Monthly care and content retainers are available,
-        and the <a href="offer.html" style="color:var(--ruby-hot)">limited offer</a> bundles the whole
-        content system with a build included.
-      </p>
-    </section>
-  </main>
-  <script src="js/analytics.js?v=__STAMP__"></script>
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/payments.js?v=__STAMP__"></script>
-  <script src="js/lead.js?v=__STAMP__"></script>
-  <script>
-    (function () {
-      "use strict";
-      var pay = window.PAYMENTS || {};
-      var mail = "mailto:matthew@mccluster.org?subject=" + encodeURIComponent("Booking — web") +
-        "&body=" + encodeURIComponent("What I need:\nDate:\nLocation:\nBudget range:\n");
-      var has = pay.bookcall && pay.bookcall.link;
-      document.querySelectorAll("[data-book]").forEach(function (el) {
-        el.setAttribute("href", has ? pay.bookcall.link : mail);
-        if (has) { el.target = "_blank"; el.rel = "noopener"; }
-      });
-      document.querySelectorAll("a[data-cta]").forEach(function (a) {
-        a.addEventListener("click", function () {
-          if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: a.getAttribute("data-cta"), page: "web-lander" });
-        });
-      });
-      if (window.MCC_TRACK) window.MCC_TRACK("lander_view", { page: "web" });
-    })();
-  </script>
+<body>
+  <p>Booking lives on <a href="hire.html">one page</a> now.<br>Taking you there&hellip;</p>
+  <script>location.replace("hire.html");</script>
 </body>
 </html>

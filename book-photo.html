@@ -3,75 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Book Photography · McCluster</title>
-  <meta name="description" content="Editorial and commercial photography. Book the date in two minutes.">
+  <title>Photo booking moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="All McCluster services on one page — this page moved into the live Equity Uprise platform; you are being taken there now.">
+  <meta http-equiv="refresh" content="0; url=hire.html">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/hire.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .bl { position: relative; min-height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: clamp(6rem, 12vh, 8rem) clamp(1.2rem, 5vw, 3.5rem) clamp(2.5rem, 7vh, 4.5rem); overflow: hidden; }
-    .bl__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
-    .bl__scrim { position: absolute; inset: 0; z-index: -1;
-      background: linear-gradient(200deg, rgba(10,8,7,0.25) 0%, rgba(10,8,7,0.82) 62%, rgba(10,8,7,0.97) 100%); }
-    .bl__kick { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 700; }
-    .bl__h1 { font-family: var(--display); font-size: clamp(2.6rem, 10vw, 5.4rem); text-transform: uppercase; line-height: 0.92; margin: 0.35rem 0 0.8rem; }
-    .bl__sub { max-width: 52ch; color: var(--cream-dim); font-size: clamp(0.98rem, 2.8vw, 1.15rem); line-height: 1.6; }
-    .bl__pts { list-style: none; margin: 1.3rem 0 1.6rem; padding: 0; display: grid; gap: 0.55rem; max-width: 56ch; }
-    .bl__pts li { display: flex; gap: 0.6em; font-size: 0.92rem; line-height: 1.5; color: var(--cream); }
-    .bl__pts li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--ruby-hot); margin-top: 0.45em; box-shadow: 0 0 10px rgba(229,56,59,0.8); }
-    .bl__ctas { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
-    .bl__more { margin-top: 1rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .bl__more a { color: var(--ruby-hot); text-decoration: none; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
-<body class="songpage">
-  <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="index.html">The experience</a>
-      <a class="head-cta" data-book href="#">Book the date</a>
-    </nav>
-  </header>
-  <main>
-    <section class="bl">
-      <img class="bl__bg" src="assets/frames/keynote_0050.jpg" alt="" fetchpriority="high">
-      <div class="bl__scrim" aria-hidden="true"></div>
-      <p class="bl__kick">Photography · booking now</p>
-      <h1 class="bl__h1">Frames that<br>close deals</h1>
-      <p class="bl__sub">Portraits, products, events, and editorial. Shot on 61 megapixels, delivered retouched, licensed clean for wherever you need them to work.</p>
-      <ul class="bl__pts"><li>A7R V primary system: files sharp enough for a billboard, fast enough for a feed</li><li>Studio or location, natural or built light, always color-managed</li><li>Delivery in days, not weeks, with web and print masters</li></ul>
-      <div class="bl__ctas">
-        <a class="btn btn--ruby" data-book href="#" data-cta="book-call-photo">Book the date</a>
-        <a class="btn btn--ghost" data-lead href="mailto:matthew@mccluster.org?subject=Quote%20%E2%80%94%20photo" data-cta="quote-photo">Get a quote in 24h</a>
-      </div>
-      <p class="bl__more"><a href="network-photo.html">See the photo network &#8594;</a></p>
-    </section>
-  </main>
-  <script src="js/analytics.js?v=__STAMP__"></script>
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/payments.js?v=__STAMP__"></script>
-  <script src="js/lead.js?v=__STAMP__"></script>
-  <script>
-    (function () {
-      "use strict";
-      var pay = window.PAYMENTS || {};
-      var mail = "mailto:matthew@mccluster.org?subject=" + encodeURIComponent("Booking — photo") +
-        "&body=" + encodeURIComponent("What I need:\nDate:\nLocation:\nBudget range:\n");
-      var has = pay.bookcall && pay.bookcall.link;
-      document.querySelectorAll("[data-book]").forEach(function (el) {
-        el.setAttribute("href", has ? pay.bookcall.link : mail);
-        if (has) { el.target = "_blank"; el.rel = "noopener"; }
-      });
-      document.querySelectorAll("a[data-cta]").forEach(function (a) {
-        a.addEventListener("click", function () {
-          if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: a.getAttribute("data-cta"), page: "photo-lander" });
-        });
-      });
-      if (window.MCC_TRACK) window.MCC_TRACK("lander_view", { page: "photo" });
-    })();
-  </script>
+<body>
+  <p>Booking lives on <a href="hire.html">one page</a> now.<br>Taking you there&hellip;</p>
+  <script>location.replace("hire.html");</script>
 </body>
 </html>

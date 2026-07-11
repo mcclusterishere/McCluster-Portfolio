@@ -3,188 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Rahndrx — Leader by Voice · Equity Uprise</title>
-  <meta name="description" content="Rahndrx — Leader by Voice. Connecticut artist, founder of BREDE. It's way bigger than me: be the difference you want to see in the world. His profile on Equity Uprise — unclaimed, waiting for him.">
-  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/profile-rahndrx.html">
+  <title>The page moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Rahndrx's live page — this page moved into the live Equity Uprise platform; you are being taken there now.">
+  <meta http-equiv="refresh" content="0; url=page.html?who=rahndrx">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/page.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <meta property="og:type" content="profile">
-  <meta property="og:title" content="Rahndrx — Leader by Voice">
-  <meta property="og:description" content="CT artist, founder of BREDE. It's way bigger than me.">
-  <meta property="og:image" content="https://mcclusterishere.github.io/McCluster-Portfolio/assets/img/rahndrx-hero.jpg">
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .rx { --rx: #7c3aed; --rx-hot: #a855f7; }
-    /* the scroll hero: image (or 360 video) sits fixed, content rides over it */
-    .rx-hero { position: relative; min-height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end;
-      padding: clamp(6rem,12vh,8rem) clamp(1.2rem,5vw,3.5rem) clamp(2.4rem,7vh,4rem); overflow: hidden; background: #050406; }
-    .rx-hero__media { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; }
-    .rx-hero__media img, .rx-hero__media video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%;
-      will-change: transform; }
-    .rx-hero__scrim { position: absolute; inset: 0; z-index: 1;
-      background:
-        radial-gradient(120% 80% at 70% 15%, rgba(124,58,237,0.22), transparent 55%),
-        linear-gradient(196deg, rgba(5,4,6,0.1) 0%, rgba(5,4,6,0.72) 60%, rgba(5,4,6,0.98) 100%); }
-    .rx-hero__in { position: relative; z-index: 2; }
-    .rx-badge { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.62rem; letter-spacing: 0.26em;
-      text-transform: uppercase; color: var(--rx-hot); font-weight: 800; }
-    .rx-badge::before { content: ""; width: 1.4rem; height: 2px; background: var(--rx); }
-    .rx-hero__h1 { font-family: var(--display); text-transform: uppercase; line-height: 0.86; letter-spacing: 0.01em;
-      font-size: clamp(3.2rem,16vw,8rem); color: var(--cream); margin-top: 0.5rem; text-wrap: balance; }
-    .rx-tick { font-family: var(--display); color: var(--rx-hot); font-size: clamp(1.1rem,4vw,1.5rem); letter-spacing: 0.06em; margin-top: 0.2rem; }
-    .rx-hero__sub { max-width: 40ch; color: var(--cream-dim); font-size: clamp(1rem,3vw,1.18rem); line-height: 1.6; margin-top: 0.9rem; }
-    .rx-hero__sub b { color: var(--cream); }
-    .rx-cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
-
-    .rx-sec { max-width: 60rem; margin: 0 auto; padding: clamp(2.6rem,8vh,4.4rem) clamp(1.2rem,5vw,3.5rem); }
-    .rx-kick { font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--rx-hot); font-weight: 800; margin-bottom: 0.8rem; }
-    .rx-sec h2 { font-family: var(--display); text-transform: uppercase; font-size: clamp(1.8rem,6vw,3rem); line-height: 1; margin-bottom: 1rem; text-wrap: balance; }
-    .rx-sec h2 em { color: var(--rx-hot); font-style: normal; }
-    .rx-sec p { color: var(--cream-dim); font-size: 1.05rem; line-height: 1.7; max-width: 60ch; }
-    .rx-sec p + p { margin-top: 1rem; }
-    .rx-sec p b { color: var(--cream); }
-
-    .rx-gal { display: grid; grid-template-columns: 2fr 1fr; gap: 0.7rem; margin-top: 1.4rem; }
-    .rx-gal img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; display: block; }
-    .rx-gal__tall { grid-row: span 2; }
-    .rx-gal__stack { display: grid; gap: 0.7rem; }
-    @media (max-width: 620px) { .rx-gal { grid-template-columns: 1fr 1fr; } .rx-gal__tall { grid-column: span 2; grid-row: auto; aspect-ratio: 4/5; } }
-
-    .rx-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
-    .rx-links a { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid rgba(244,239,230,0.25);
-      background: rgba(244,239,230,0.05); border-radius: 100px; padding: 0.6em 1.1em; color: var(--cream); font-size: 0.85rem; text-decoration: none; }
-    .rx-links a:hover { border-color: var(--rx-hot); }
-
-    .rx-foot { text-align: center; padding: clamp(3rem,10vh,5rem) 1.3rem; border-top: 1px solid rgba(244,239,230,0.1); }
-    .rx-foot h2 { font-family: var(--display); text-transform: uppercase; font-size: clamp(2rem,8vw,3.4rem); line-height: 0.95; text-wrap: balance; }
-    .rx-foot h2 em { color: var(--rx-hot); font-style: normal; }
-    .rx-foot p { color: var(--cream-dim); margin: 0.8rem auto 1.6rem; max-width: 38ch; }
-
-    @media (prefers-reduced-motion: reduce) { .rx-hero__media img, .rx-hero__media video { transform: none !important; } }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
   </style>
 </head>
-<body class="rx has-appbar">
-
-  <header class="rx-hero" id="rxHero">
-    <div class="rx-hero__media" id="rxMedia">
-      <!-- 360 video slot: drop assets/video/rahndrx-360.mp4 in and it takes over;
-           the real photo is the durable hero and the poster/fallback. -->
-      <img id="rxHeroImg" src="assets/img/rahndrx-hero.jpg" alt="Rahndrx">
-    </div>
-    <div class="rx-hero__scrim"></div>
-    <div class="rx-hero__in">
-      <span class="rx-badge">Equity Uprise · Approved Chaser</span>
-      <h1 class="rx-hero__h1">Rahndrx</h1>
-      <div class="rx-tick">$RAHN · Leader by Voice</div>
-      <p class="rx-hero__sub">"It's way bigger than me." <b>Connecticut artist, founder of BREDE.</b> Music made to move people to move.</p>
-      <div class="rx-cta">
-        <a class="btn btn--ruby" href="market.html?to=RAHN">Book Rahndrx</a>
-        <a class="btn btn--ghost" href="market.html#yours">Claim this profile</a>
-      </div>
-    </div>
-  </header>
-
-  <section class="rx-sec">
-    <div class="rx-kick">The Artist</div>
-    <h2>Leader <em>by voice.</em></h2>
-    <p>Rahndrx doesn't chase the moment — he moves it. Out of Connecticut, founder of <b>BREDE</b>, he makes music that
-      carries a message: <b>be the difference you want to see in the world.</b></p>
-    <p>The bars are personal, but the mission isn't. "It's way bigger than me" isn't a caption — it's the whole point.
-      A voice for the people who don't have one yet.</p>
-  </section>
-
-  <section class="rx-sec">
-    <div class="rx-kick">The Shoot</div>
-    <h2>On <em>the record.</em></h2>
-    <div class="rx-gal">
-      <img class="rx-gal__tall" src="assets/img/rahndrx-energy.jpg" alt="Rahndrx, arms raised">
-      <div class="rx-gal__stack">
-        <img src="assets/img/rahndrx-detail1.jpg" alt="Rahndrx — the chest piece">
-        <img src="assets/img/rahndrx-detail2.jpg" alt="Rahndrx — the rings">
-      </div>
-    </div>
-  </section>
-
-  <section class="rx-sec">
-    <div class="rx-kick">An Equity Uprise Release · free</div>
-    <h2>"Upset" — <em>on the house.</em></h2>
-    <p><b>Hitman Benji × Rahndrx × Raheem.</b> The first <b>Equity Uprise Release</b> — put out free by the platform,
-      split between the artists, streams counted here. This is what a loss-leader looks like when the house has your back.</p>
-    <div style="margin-top:1.2rem;border:1px solid rgba(168,85,247,0.3);border-radius:16px;padding:1.2rem 1.3rem;background:rgba(124,58,237,0.06)">
-      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:baseline">
-        <b style="font-family:var(--display);text-transform:uppercase;font-size:1.4rem;letter-spacing:0.03em">Upset</b>
-        <span style="font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:#c99d45;border:1px solid rgba(201,157,69,0.5);border-radius:100px;padding:0.15rem 0.6rem">Equity Uprise Release · Free</span>
-      </div>
-      <p style="font-size:0.86rem;color:var(--cream-dim);margin:0.35rem 0 0.7rem">$BENJI · $RAHN · $RHEEM — 34 / 33 / 33</p>
-      <audio id="upsetAudio" controls preload="none" style="width:100%" src="assets/audio/upset.mp3"></audio>
-      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:0.5rem"><span id="upsetStreams">—</span> streams · counted on the platform</p>
-    </div>
-    <script>
-      (function () {
-        var au = document.getElementById("upsetAudio"), lbl = document.getElementById("upsetStreams"), counted = false;
-        function stream() {
-          if (counted || !window.MCC_SUPA) return; counted = true;
-          if (window.MCC_TRACK) window.MCC_TRACK("track_play", { slug: "upset", title: "Upset" });
-          fetch(window.MCC_SUPA.url + "/rest/v1/rpc/stream_record", {
-            method: "POST", headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
-            body: JSON.stringify({ p_record_slug: "upset", p_fp: (window.MCC_HEAT && window.MCC_HEAT.fp && window.MCC_HEAT.fp()) || (function(){try{var v=localStorage.getItem("mcc_fp");if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem("mcc_fp",v);}return v;}catch(e){return "anon";}})() })
-          }).then(function (r) { return r.ok ? r.json() : null; }).then(function (n) { if (n != null && lbl) lbl.textContent = n; }).catch(function () {});
-        }
-        if (au) au.addEventListener("play", stream, { once: true });
-        // show current count on load
-        if (window.MCC_SUPA) fetch(window.MCC_SUPA.url + "/rest/v1/rpc/record_board", {
-          method: "POST", headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key },
-          body: JSON.stringify({ p_record_slug: "upset" })
-        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-          if (j && j.record && lbl) lbl.textContent = j.record.streams;
-        }).catch(function () {});
-      })();
-    </script>
-  </section>
-
-  <section class="rx-sec">
-    <div class="rx-kick">Find him</div>
-    <h2>The <em>whole world.</em></h2>
-    <p>Everywhere his people already are — and soon, all his plays route right back here.</p>
-    <div class="rx-links">
-      <a href="https://instagram.com/rahndrx" target="_blank" rel="noopener">Instagram &#8599;</a>
-      <a href="https://linktr.ee/rahndrx" target="_blank" rel="noopener">Linktree &#8599;</a>
-      <a href="market.html#floor">$RAHN on the floor &#8599;</a>
-    </div>
-  </section>
-
-  <footer class="rx-foot">
-    <h2>This is <em>yours,</em> Rahndrx.</h2>
-    <p>The profile's already built. Claim it and light it up — route your plays, take your bookings, keep 100%.</p>
-    <div class="rx-cta" style="justify-content:center">
-      <a class="btn btn--ruby" href="market.html#yours">Claim your profile</a>
-      <a class="btn btn--ghost" href="market.html?to=RAHN">Book Rahndrx</a>
-    </div>
-  </footer>
-
-  <script>
-    /* the scroll experience: the hero media parallax-scales as you leave it —
-       the "360 scroll" feel, cheap and smooth, off under reduced-motion */
-    (function () {
-      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      var media = document.getElementById("rxMedia");
-      var hero = document.getElementById("rxHero");
-      if (!media || !hero) return;
-      var ticking = false;
-      function frame() {
-        var h = hero.offsetHeight || 1;
-        var p = Math.min(1, Math.max(0, window.scrollY / h));
-        media.style.transform = "scale(" + (1 + p * 0.12) + ") translateY(" + (p * 6) + "%)";
-        media.style.opacity = String(1 - p * 0.5);
-        ticking = false;
-      }
-      window.addEventListener("scroll", function () {
-        if (!ticking) { window.requestAnimationFrame(frame); ticking = true; }
-      }, { passive: true });
-      frame();
-    })();
-  </script>
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/backend.js?v=__STAMP__"></script>
-  <script src="js/guide.js?v=__STAMP__"></script>
+<body>
+  <p>This profile is live at <a href="page.html?who=rahndrx">the Page</a>.<br>Taking you there&hellip;</p>
+  <script>location.replace("page.html?who=rahndrx");</script>
 </body>
 </html>

@@ -475,14 +475,10 @@
   <main class="mk">
     <nav class="mk__rail" aria-label="Market sections">
       <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
-      <a class="mk__jump" href="#build">&#9889; Deal builder</a>
-      <a class="mk__jump mk__jump--pay" href="#pay">$ E-Up Pay</a>
-      <a class="mk__jump" href="#scb">&#127963;&#65038; SCB</a>
-      <a class="mk__jump" href="#wire">&#128172; The Wire</a>
-      <a class="mk__jump" href="control.html">&#127963;&#65039; Control</a>
-      <a class="mk__jump" href="#lanes">Hustles</a>
+      <a class="mk__jump mk__jump--pay" href="#pay">$ Money</a>
       <a class="mk__jump" href="#yours">Your desk</a>
-      <a class="mk__jump" href="#providers">Providers</a>
+      <a class="mk__jump" href="#providers">People</a>
+      <a class="mk__jump" href="#wire">&#128172; The Wire</a>
     </nav>
 
     <!-- 1 · THE FLOOR: live exchange -->
@@ -676,6 +672,7 @@
         <p class="ob-kick" style="font-size:0.6rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--ruby-hot);font-weight:700;margin:0.4rem 0 0">E-UP PAY &middot; EQUITY UPRISE &times; STREET CREDIT</p>
         <div class="mp__amt is-zero" id="mpAmt">0 E⤴︎</div>
         <p class="mp__hint" id="mpHint">Name your price. Then find who it's for.</p>
+        <p class="mp__note" style="margin:0.2rem 0 0.5rem">Need full terms, dates and splits? <a href="#build" style="color:#c99d45;font-weight:700">&#9889; The deal builder &#8594;</a> &middot; Your clean deals file at <a href="#scb" style="color:#2fbf71;font-weight:700">the Bureau &#8594;</a></p>
         <div class="mp__pad" id="mpPad">
           <button class="mp__key" type="button" data-k="1">1</button>
           <button class="mp__key" type="button" data-k="2">2</button>
@@ -833,7 +830,8 @@
     <section id="providers">
       <p class="mk__k">The people</p>
       <h2 class="mk__h2">Verified providers</h2>
-      <p class="mk__note" style="margin-top:0.2rem">Every seal is verified before it hangs. Tap one — their profile plays their music and opens their deal.</p>
+      <p class="mk__note" style="margin-top:0.2rem">Every seal is verified before it hangs. Tap one — their profile plays their music and opens their deal.
+        <a href="#lanes" style="color:#c99d45;font-weight:700">Browse by hustle &#8594;</a> &middot; <a href="civic.html" style="color:#8ab4f8;font-weight:700">The Control Room &#8594;</a></p>
       <div class="prov__chips" id="provChips" style="margin-top:1rem"></div>
       <div class="mk__provwall" id="provGrid"><p class="mk__note">Loading the wall…</p></div>
     </section>
@@ -1017,7 +1015,7 @@
             "<small>" + (window.MCC_STOCK ? "$" + esc(window.MCC_STOCK.ticker(p.ticker, p.name)) + " · " : "") +
             esc((p.roles || [])[0] || "Verified") + "</small></a>";
         }).join("") +
-        '<a class="mk__prov" href="onboard.html" data-cta="mk-join-card" style="--badge-c:#2fbf71">' +
+        '<a class="mk__prov" href="welcome.html" data-cta="mk-join-card" style="--badge-c:#2fbf71">' +
           '<span class="mk__prov-seal"><img src="assets/img/m-mark.png" alt=""></span>' +
           "<b>Your name here</b><small>Get verified</small></a>";
       }
