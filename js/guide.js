@@ -176,7 +176,14 @@
       return fetch(S.url + "/functions/v1/the-guide", {
         method: "POST",
         headers: { apikey: S.key, Authorization: "Bearer " + t, "Content-Type": "application/json" },
-        body: JSON.stringify({ say: say }),
+        body: JSON.stringify({ say: say, ctx: (function () {
+          var c = { page: location.pathname.split("/").pop() || "index.html" };
+          try { var r = JSON.parse(localStorage.getItem("mcc_rise")); if (r && r.arch) c.card = r.arch.join("+"); } catch (e) {}
+          try { var so = JSON.parse(localStorage.getItem("mcc_social")); if (so && so.platforms) c.social = so.platforms.join(","); } catch (e) {}
+          try { var d = JSON.parse(localStorage.getItem("mcc_distro")); if (d && d.ind) c.distro = d.ind + ":" + (d.dists || []).join(","); } catch (e) {}
+          try { var ca = JSON.parse(localStorage.getItem("mcc_cart")); if (ca && ca.kind) c.abandoned = ca.kind; } catch (e) {}
+          return c;
+        })() }),
       }).then(function (r) {
         return r.text().then(function (txt) {
           var j = null; try { j = JSON.parse(txt); } catch (e) { /* non-JSON */ }
