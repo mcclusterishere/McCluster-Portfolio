@@ -169,12 +169,16 @@ async function readState(state: string): Promise<{ uid: string; provider: string
 async function verifierFor(body: string): Promise<string> {
   return (await hmac("pkce." + body)).slice(0, 64);
 }
-async function whoIs(jwt: string): Promise<string | null> {
+async function whoIs(jwt: string): Promise<{ id: string; email: string } | null> {
   const r = await fetch(SB + "/auth/v1/user", { headers: { apikey: ANON, Authorization: "Bearer " + jwt } });
   if (!r.ok) return null;
   const j = await r.json();
-  return j?.id || null;
+  return j?.id ? { id: j.id, email: j.email || "" } : null;
 }
+// providers still in a platform's development mode ride the admin's
+// account only — everyone else gets an honest answer, not a broken door
+const ADMIN_ONLY = new Set(["spotify"]);
+const ADMIN_EMAIL = "matthew@mccluster.org";
 function svc(path: string, init: RequestInit = {}) {
   return fetch(SB + "/rest/v1/" + path, {
     ...init,
@@ -199,9 +203,11 @@ Deno.serve(async (req) => {
     if (!env(p.idKey) || !env(p.secretKey))
       return new Response(JSON.stringify({ error: provider + " is not armed yet — the desk knows" }), { status: 503, headers: cors });
     const jwt = url.searchParams.get("t") || "";
-    const uid = await whoIs(jwt);
-    if (!uid) return new Response(JSON.stringify({ error: "sign in first" }), { status: 401, headers: cors });
-    const state = await makeState(uid, provider);
+    const who = await whoIs(jwt);
+    if (!who) return new Response(JSON.stringify({ error: "sign in first" }), { status: 401, headers: cors });
+    if (ADMIN_ONLY.has(provider) && who.email !== ADMIN_EMAIL)
+      return new Response(JSON.stringify({ error: provider + " rides the admin desk only while it's in development mode" }), { status: 403, headers: cors });
+    const state = await makeState(who.id, provider);
     const q: Record<string, string> = {
       client_id: env(p.idKey), redirect_uri: SELF, response_type: "code",
       scope: p.scope, state, ...(p.extraAuth || {}) };

@@ -187,9 +187,13 @@
           var g = $("pfStats");
           if (!g || !sc) return;
           function stat(n, l) { return '<div class="pf__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
-          g.innerHTML = stat(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "your price on the tape") +
+          /* TWO TAPES: you are one stock, each property is another */
+          g.innerHTML = stat(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "YOU · the person's price") +
             stat(sc.points != null ? Math.round(+sc.points).toLocaleString() : "—", "game points") +
-            stat(sc.score != null ? sc.score : "—", "reputation · of 1000");
+            stat(sc.score != null ? sc.score : "—", "street credit · of 1000") +
+            (sc.listings || []).map(function (li) {
+              return stat("$" + (+li.price).toFixed(2), "$" + esc(li.ticker || li.slug) + " · the listing's price");
+            }).join("");
         }).catch(function () {});
       }
 
