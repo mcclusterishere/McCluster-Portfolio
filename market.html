@@ -1790,6 +1790,19 @@
           esc(r.p.slug || r.p.id) + '" style="color:#e8c877">the score, in the open &#8594;</a></b></div>' +
           '<div class="xc__stat"><small>Hustle</small><b>' + esc((r.p.roles || []).join(" · ") || "Member") + "</b></div>" +
           (rate ? '<div class="xc__stat"><small>Floor rate</small><b>' + rate + " E⤴︎/hr</b></div>" : "") +
+          /* THE LINKS ROW: what the walk-in collected — the followership
+             the machine reads rides right on the sheet */
+          (function () {
+            var lk = (r.p.terms && r.p.terms.links) || r.p.links || null;
+            if (!lk) return "";
+            function door(label, v) {
+              if (!v) return "";
+              var href = /^https?:/.test(v) ? v : (/^@/.test(v) ? "https://instagram.com/" + v.slice(1) : "https://" + v);
+              return '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:#c99d45;text-decoration:none;margin-right:0.7em">' + label + " &#8599;</a>";
+            }
+            var row = door("IG", lk.ig) + door("Music", lk.music) + door("YT/TikTok", lk.yt) + door("Site", lk.web);
+            return row ? '<div class="xc__stat" style="grid-column:1/-1"><small>Their links — the followership the tape reads</small><b>' + row + "</b></div>" : "";
+          })() +
           (r.onTape
             ? (function () {
                 /* THE HISTORY MARKERS: every number below is a real day
@@ -2608,7 +2621,7 @@
           var base = location.origin + location.pathname.replace(/[^/]*$/, "");
           html += '<h2 class="mp__toolhead">The desk</h2>';
           html += '<div class="mp__tools">' +
-            tool("mymission.html", "Your Mission Control — run the Trap", "Your traffic, your numbers, and up to 1,000 E⤴︎ for doing literally everything") +
+            tool("mymission.html", "Your Mission Control — run T.R.A.P.S.", "Your traffic, your numbers, and up to 1,000 E⤴︎ for doing literally everything") +
             tool("page.html?who=" + esc(slug),
             "Your page — the social you", "Post to your supporters, edit the vibe, export your fan book") +
             tool("backend.html", "Own your back end — the claim run", "Claim every artist page, open every API, export every number — level up, earn tokens") + "</div>";

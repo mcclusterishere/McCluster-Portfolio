@@ -31,7 +31,7 @@
       turf: ["chain.html", "The M Chain", "Your home turf: every record hashed, stamped and verifiable."] },
     command: { name: "The Command Chaser", world: "The Command Desk", ic: "🎛", color: "#ff7a00",
       line: "You coordinate people under pressure and decide when it's unclear.",
-      turf: ["mymission.html", "The Trap", "Your home turf: 100,000 points of missions, yours to run."] },
+      turf: ["mymission.html", "T.R.A.P.S.", "Your home turf: 100,000 points of missions, yours to run."] },
   };
 
   function read() { try { return JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) { return null; } }
