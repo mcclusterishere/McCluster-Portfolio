@@ -132,7 +132,7 @@ const REG: Record<string, Prov> = {
     idKey: "X_ID", secretKey: "X_SECRET",
     authUrl: "https://x.com/i/oauth2/authorize",
     tokenUrl: "https://api.x.com/2/oauth2/token",
-    scope: "users.read tweet.read", basicAuth: true, pkcePlain: true,
+    scope: "users.read tweet.read tweet.write offline.access", basicAuth: true, pkcePlain: true,
     identKind: "x_user",
     me: async (access) => {
       const me = (await (await fetch("https://api.x.com/2/users/me?user.fields=public_metrics",

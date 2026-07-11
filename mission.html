@@ -176,7 +176,7 @@
         <button class="mc__tab" data-tab="mcFund" type="button">The Fund</button>
         <span class="mc__tgrp" aria-hidden="true">Reach</span>
         <button class="mc__tab" data-tab="mcAnalytics" type="button">Analytics <b id="tabNAnna"></b></button>
-        <button class="mc__tab" data-tab="mcSms" type="button">Texts</button>
+        <button class="mc__tab" data-tab="mcSms" type="button">Megaphone</button>
         <span class="mc__tgrp" aria-hidden="true">Tools</span>
         <button class="mc__tab" data-tab="mcCockpit" type="button">Cockpit</button>
         <button class="mc__tab" data-tab="mcMint" type="button">Mint</button>
@@ -310,7 +310,19 @@
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcSms">
-        <h2>Push — speak to every pocket</h2>
+        <h2>The Megaphone &#128227; — one post, every platform</h2>
+        <p class="mc__obj"><b>Objective</b> Speak once, land everywhere. Write it here, pick the lanes, fire — receipts come back per platform on the board below. Admin-first for now; it rolls out to members once you've run it.</p>
+        <textarea class="mc__in" id="megBody" maxlength="500" placeholder="Say it once — the Wire, Discord and X carry it"></textarea>
+        <div class="mc__acts" id="megTargets" style="margin-top:0">
+          <button class="mc__tab is-on" data-meg="wire" type="button">The Wire</button>
+          <button class="mc__tab" data-meg="discord" type="button">Discord</button>
+          <button class="mc__tab" data-meg="x" type="button">X</button>
+        </div>
+        <button class="btn btn--ruby" id="megGo" type="button" style="margin-top:0.8rem">Fire the megaphone</button>
+        <p class="mc__msg" id="megMsg"></p>
+        <div id="megBoard"></div>
+
+        <h2 style="margin-top:1.6rem">Push — speak to every pocket</h2>
         <p class="mc__obj"><b>Objective</b> Reach every pocket. Push speaks to installed devices in one shot; the text list below is the fallback line.</p>
         <p class="mc__empty" style="margin-bottom:0.6rem" id="pushCount">Counting the armed devices…</p>
         <input class="mc__in" id="pushTitle" type="text" maxlength="80" placeholder="Title — e.g. The shelf just restocked">
@@ -1198,6 +1210,52 @@
           msg.textContent = /mint_profile/.test(s) || /404/.test(s) ? "One paste opens this: docs/records-schema.sql in Supabase." : s;
         });
       });
+      // THE MEGAPHONE — one composer, per-lane receipts on the board
+      function loadMeg() {
+        var host = $("megBoard");
+        if (!host) return;
+        window.MCC_SUPA.token().then(function (t) {
+          if (!t) return null;
+          return fetch(window.MCC_SUPA.url + "/rest/v1/megaphone_queue?order=created_at.desc&select=body,targets,status,results,created_at&limit=8", {
+            headers: { apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t } });
+        }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (rows) {
+          if (!rows) { host.innerHTML = '<p class="mc__empty">One paste arms the megaphone: <b>docs/megaphone.sql</b> — then your receipts land here.</p>'; return; }
+          if (!rows.length) { host.innerHTML = '<p class="mc__empty">Nothing fired yet — the first shot lands here with per-platform receipts.</p>'; return; }
+          host.innerHTML = rows.map(function (m) {
+            var rec = Object.keys(m.results || {}).map(function (k) { return k + ": " + m.results[k]; }).join(" \u00b7 ");
+            return '<div class="mc__row"><h3>' + esc(String(m.body).slice(0, 90)) + '<span class="mc__tag">' + esc(m.status) + "</span></h3>" +
+              "<p>" + esc((m.targets || []).join(" + ")) + (rec ? " \u2014 " + esc(rec) : "") + " \u00b7 " +
+              esc(new Date(m.created_at).toLocaleString()) + "</p></div>";
+          }).join("");
+        }).catch(function () {});
+      }
+      $("megTargets") && $("megTargets").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-meg]");
+        if (b) b.classList.toggle("is-on");
+      });
+      $("megGo") && $("megGo").addEventListener("click", function () {
+        var text = $("megBody").value.trim();
+        var tgt = Array.prototype.map.call(document.querySelectorAll("#megTargets [data-meg].is-on"),
+          function (b) { return b.getAttribute("data-meg"); });
+        if (!text) { $("megMsg").textContent = "Say something first."; return; }
+        if (!tgt.length) { $("megMsg").textContent = "Pick at least one platform."; return; }
+        $("megMsg").style.color = ""; $("megMsg").textContent = "Firing\u2026";
+        window.MCC_SUPA.token().then(function (t) {
+          return fetch(window.MCC_SUPA.url + "/rest/v1/rpc/megaphone_post", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + (t || window.MCC_SUPA.key) },
+            body: JSON.stringify({ p_body: text, p_targets: tgt }) });
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          if (j && j.ok) {
+            $("megMsg").style.color = "#2fbf71";
+            $("megMsg").textContent = "Fired \u2014 receipts land on the board in a beat.";
+            $("megBody").value = "";
+            setTimeout(loadMeg, 1400);
+          } else {
+            $("megMsg").textContent = (j && j.why) || "One paste arms this: docs/megaphone.sql.";
+          }
+        }).catch(function (e) { $("megMsg").textContent = String(e && e.message || e); });
+      });
+
       function loadFund() {
         fetch(window.MCC_SUPA.url + "/rest/v1/rpc/fund_stats", { method: "POST",
           headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + window.MCC_SUPA.key }, body: "{}" })
@@ -1225,13 +1283,14 @@
           }); })
           .catch(function (e) { m.textContent = String(e && e.message || e); });
       });
-      $("mcRefresh").addEventListener("click", function () { loadAll(); loadFund(); });
+      $("mcRefresh").addEventListener("click", function () { loadAll(); loadFund(); loadMeg(); });
       $("mcOut").addEventListener("click", function () {
         window.MCC_AUTH.signOut().then(function () { location.reload(); });
       });
 
       if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
         loadFund();
+        loadMeg();
         $("mcAuth").classList.add("mc__hidden");
         $("mcIn").classList.remove("mc__hidden");
         var u = window.MCC_AUTH.user();
@@ -1265,7 +1324,7 @@
         { tab: "mcHouse", t: "The House.", b: "What the house owes: claims members are waiting on, and earned credit cashing out. Keep both columns current — this room is the platform's word." },
         { tab: "mcFund", t: "The Fund.", b: "The community chest. Award it with a reason attached — every grant lands on the member's record and moves their tape." },
         { tab: "mcAnalytics", t: "Analytics.", b: "The platform's own eyes — traffic, behavior, what's landing. Read it before you change anything; THE COACH reads these same signals when it guides members." },
-        { tab: "mcSms", t: "Texts &amp; push.", b: "Speak to every pocket — push hits every installed device in one shot, and the text list underneath is the fallback line." },
+        { tab: "mcSms", t: "The Megaphone.", b: "Speak once, land everywhere — the Wire, Discord and X from one composer, with receipts per lane. Push and the text list live here too. <b>Admin-first</b>: only your sign-in can fire it; members get it after you\u2019ve run it." },
         { tab: "mcCockpit", t: "The cockpit.", b: "One hop to the outside tools — Analytics, Stripe, Supabase, the repo, the Metadata Engine. Until each one lives in here, this is the shortest path out and back." },
         { tab: "mcMint", t: "Mint.", b: "Mint an unclaimed profile for anyone you're pitching — their page is live before they ever sign up. They claim it later and take it over. The pitch IS the product." },
         { tab: "mcDecks", t: "Decks.", b: "The pitch arsenal — present any of these from the phone, across any table. Every unclaimed profile doubles as its own deck." },
