@@ -320,6 +320,40 @@
     document.addEventListener("mouseenter", function () { document.documentElement.classList.remove("cur-gone"); });
   }
 
+  /* ---------- THE LENS: documents pop up, never navigate ----------
+     Any element wearing data-lens="img.jpg" opens the image in a
+     pop-over right here — proclamations, charity papers, certs —
+     with an optional data-lens-doc="file.pdf" door to the full
+     document. Backdrop, ✕, or Esc pops it down. */
+  (function () {
+    var box = null;
+    function down() { if (box && box.parentNode) box.parentNode.removeChild(box); box = null; }
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("[data-lens]");
+      if (!a) return;
+      e.preventDefault();
+      var src = a.getAttribute("data-lens");
+      var doc = a.getAttribute("data-lens-doc") || "";
+      var cap = a.getAttribute("data-lens-cap") || a.textContent.trim();
+      down();
+      box = document.createElement("div");
+      box.className = "lens";
+      box.innerHTML = '<div class="lens__bg" data-lens-down></div>' +
+        '<figure class="lens__card">' +
+        '<button class="lens__x" type="button" data-lens-down aria-label="Close">&#10005;</button>' +
+        '<img src="' + src + '" alt="">' +
+        "<figcaption><span>" + cap + "</span>" +
+        (doc ? '<a href="' + doc + '" target="_blank" rel="noopener" data-noveil>Full document &#8599;</a>' : "") +
+        "</figcaption></figure>";
+      document.body.appendChild(box);
+      box.addEventListener("click", function (ev) {
+        if (ev.target.closest && ev.target.closest("[data-lens-down]")) down();
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("lens_open", { src: src });
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") down(); });
+  })();
+
   /* ---------- film-cut page transitions (cover-out on internal nav) ---------- */
   if (!reduce) {
     var veil = document.createElement("div");

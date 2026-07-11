@@ -90,9 +90,15 @@
     .rd__tl { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.28rem 0; font-size: 0.9rem;
       color: var(--cream-dim); font-variant-numeric: tabular-nums; }
     .rd__tl b { color: var(--cream); font-weight: 700; }
-    .rd__tl.rd__tl--total { border-top: 1px solid rgba(244,239,230,0.2); margin-top: 0.4rem; padding-top: 0.6rem; font-size: 1.05rem; }
-    .rd__tl.rd__tl--total b { color: #ff5c2e; font-family: var(--display); font-size: 1.45rem; }
     .rd__tl.rd__tl--eup b { color: #e8c877; }
+    .we-price { display: flex; align-items: baseline; gap: 0.8rem; margin-top: 0.3rem; }
+    .we-price b { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 9vw, 3rem); color: #ff5c2e;
+      font-variant-numeric: tabular-nums; line-height: 1; }
+    .we-price span { color: var(--cream-dim); font-size: 0.92rem; }
+    .rd__card--night { position: relative; overflow: hidden; }
+    .rd__card--night::before { content: ""; position: absolute; inset: 0;
+      background: url("assets/img/we-night.jpg") center / cover no-repeat; opacity: 0.3; }
+    .rd__card--night > * { position: relative; }
     .rd__err { color: #ff5000; font-size: 0.9rem; margin-top: 0.7rem; min-height: 1.2em; }
     /* drivers */
     .rd__drv { display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 0; border-top: 1px dashed rgba(244,239,230,0.12); }
@@ -141,14 +147,10 @@
       </div>
       <p class="rd__err" id="weErr"></p>
       <div class="rd__tape" id="weTape">
-        <div class="rd__tl"><span>Base</span><b>$1.00</b></div>
-        <div class="rd__tl"><span id="weMiLbl">Distance</span><b id="weMi">—</b></div>
-        <div class="rd__tl"><span id="weMinLbl">Time</span><b id="weMin">—</b></div>
-        <div class="rd__tl"><span>Booking desk<span id="weFloor" style="display:none"> · $7 trip floor applied</span></span><b>$3.20</b></div>
-        <div class="rd__tl"><span>Meter fare — every cent to your driver</span><b id="weFare">—</b></div>
-        <div class="rd__tl"><span>The house's 10 — a third of what the big apps take</span><b id="weTip">—</b></div>
-        <div class="rd__tl rd__tl--total"><span>Upfront price</span><b id="weTotal">—</b></div>
-        <div class="rd__tl rd__tl--eup"><span>Or in E&#10548; — 33% off, like everything here</span><b id="weEup">—</b></div>
+        <p class="rd__k" style="color:#e8c877;font-size:0.68rem">Your ride · one number, locked</p>
+        <div class="we-price"><b id="weTotal">—</b><span id="weLeg">—</span></div>
+        <div class="rd__tl rd__tl--eup" style="margin-top:0.4rem"><span>Or in E&#10548; — 33% off, like everything here</span><b id="weEup">—</b></div>
+        <p class="rd__sub" style="font-size:0.84rem;margin-top:0.5rem">Priced upfront, before the wheels move. Every cent of the meter is your driver's.</p>
       </div>
     </section>
 
@@ -172,7 +174,7 @@
         <div id="weDrivers"><p class="rd__sub" style="font-size:0.92rem;margin-top:0.4rem">Checking who's on the road…</p></div>
       </div>
 
-      <div class="rd__card" style="--rc:#00c805">
+      <div class="rd__card rd__card--night" style="--rc:#00c805">
         <p class="rd__k">Drivers — keep the meter, whole</p>
         <h2>The math that flips people.</h2>
         <div class="rd__math">
@@ -381,13 +383,7 @@
           return window.WE_GEO.route(pts[0], pts[1]).then(function (leg) {
             if (!leg) throw "No drivable route between those two — check the addresses.";
             var m = meter(leg.miles, leg.minutes);
-            $("weMiLbl").textContent = leg.miles.toFixed(1) + " mi × $0.97";
-            $("weMi").textContent = usd(0.97 * leg.miles);
-            $("weMinLbl").textContent = Math.round(leg.minutes) + " min × $0.32";
-            $("weMin").textContent = usd(0.32 * leg.minutes);
-            $("weFloor").style.display = m.floored ? "" : "none";
-            $("weFare").textContent = usd(m.fare);
-            $("weTip").textContent = usd(m.raise);
+            $("weLeg").textContent = leg.miles.toFixed(1) + " mi · " + Math.round(leg.minutes) + " min";
             $("weTotal").textContent = usd(m.total);
             $("weEup").textContent = m.eup.toLocaleString() + " E⤴";
             $("weTape").classList.add("is-on");

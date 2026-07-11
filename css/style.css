@@ -4080,6 +4080,32 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .appbar__tab--wing { color: #e8c877; }
 @media (prefers-reduced-motion: reduce) { .appbar--morph .appbar__tab { animation: none; } }
 
+/* ---- THE OFFER STAGE: one way on stage at a time ---- */
+.offer-hero { margin: 1.6rem 0 0; border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(232, 200, 119, 0.35); box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5); }
+.offer-hero img { display: block; width: 100%; }
+button.hire__pill { font: inherit; cursor: pointer; }
+.ostage { max-width: 34rem; }
+.ostage__card { animation: dockIn 0.35s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.ostage__nav { display: flex; align-items: center; gap: 1rem; margin-top: 0.9rem; }
+.ostage__dots { display: flex; gap: 0.4rem; }
+.ostage__dots i { width: 1.6rem; height: 4px; border-radius: 4px; background: rgba(244, 239, 230, 0.18); }
+.ostage__dots i.is-lit { background: #e8c877; }
+
+/* ---- THE LENS: documents pop up in place ---- */
+.lens { position: fixed; inset: 0; z-index: 320; display: grid; place-items: center; padding: 1.2rem; }
+.lens__bg { position: absolute; inset: 0; background: rgba(5, 4, 3, 0.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.lens__card { position: relative; max-width: min(92vw, 34rem); max-height: 88dvh; display: flex; flex-direction: column;
+  border-radius: 18px; overflow: hidden; border: 1px solid rgba(232, 200, 119, 0.5);
+  background: #14100d; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7); animation: dockIn 0.3s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.lens__card img { display: block; width: 100%; min-height: 0; object-fit: contain; overflow: auto; background: #f4efe6; }
+.lens__card figcaption { display: flex; align-items: baseline; gap: 0.8rem; justify-content: space-between;
+  padding: 0.75rem 1rem; font-size: 0.86rem; color: var(--cream-dim); }
+.lens__card figcaption a { color: #e8c877; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.lens__x { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 2; width: 2.1rem; height: 2.1rem;
+  border-radius: 50%; border: 0; cursor: pointer; background: rgba(10, 8, 7, 0.85); color: #f4efe6;
+  font-size: 0.95rem; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+
 /* ---- THE PEEK: one tap looks — the card that explains a door ---- */
 .dk-peek { position: fixed; left: 50%; transform: translateX(-50%); z-index: 205;
   bottom: calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 0.9rem);
