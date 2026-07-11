@@ -40,6 +40,12 @@ async function boot(path, opts = {}) {
   });
   await page.route(/google-analytics|script\.google/, (r) => r.abort());
   if (opts.blockVideo) await page.route(/assets\/video/, (r) => r.abort());
+  // THE VELVET ROPE: app pages require an E⤴ Card — smoke walks in
+  // holding one, like every real member past the landing pages
+  await page.goto(B + "/index.html", { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => {
+    try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "create", arch: ["culture", "signal"], v: {}, at: "smoke" })); } catch (e) {}
+  });
   await page.goto(B + path, { waitUntil: "networkidle", timeout: 30000 });
   await page.waitForTimeout(opts.settle || 1200);
   return { page, errors, netCounts };
@@ -127,9 +133,13 @@ function check(name, cond, detail) {
   await page.close();
 }
 
-// the redirects hold
+// the redirects hold (card in hand — card-less traffic ropes to RISE by law)
 for (const [from, to] of [["/pay.html?to=x&amt=5", "market.html"], ["/talent.html", "market.html"], ["/catalogue.html", "app.html"]]) {
   const page = await browser.newPage();
+  await page.goto(B + "/index.html", { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => {
+    try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "create", arch: ["culture", "signal"], v: {}, at: "smoke" })); } catch (e) {}
+  });
   await page.goto(B + from, { waitUntil: "load" });
   await page.waitForTimeout(800);
   check("redirect", page.url().includes(to), `${from} landed on ${page.url()}`);

@@ -599,3 +599,34 @@
     });
   })();
 })();
+
+/* THE VELVET ROPE — the E⤴ Card is the key to the whole house.
+   Everything past the front-facing landing pages (the ones ads land
+   on) requires a card: no card, you're walked straight into RISE,
+   and RISE hands you back to wherever you were headed. The admin's
+   own sign-in is never roped off the build. */
+(function () {
+  var here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  var OPEN = { "index.html": 1, "rise.html": 1, "page.html": 1, "equity-uprise.html": 1,
+    "heal-the-3.html": 1, "hire.html": 1, "vaunt.html": 1, "vr-vaunt.html": 1, "motm.html": 1,
+    "agreement.html": 1, "brand.html": 1, "ip.html": 1, "resume.html": 1, "role.html": 1,
+    "docket-516.html": 1, "dekalb.html": 1, "deluxe-516r.html": 1, "grind-paper.html": 1,
+    "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
+    "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
+    "offline.html": 1, "mission.html": 1, "walkthrough-qt6kv-2847.html": 1 };
+  if (OPEN[here] || here.indexOf("song-") === 0) return;
+  try {
+    var card = JSON.parse(localStorage.getItem("mcc_rise") || "null");
+    if (card && card.arch) return;
+  } catch (e) {}
+  try {
+    var s = JSON.parse(localStorage.getItem("mccdb_session") || "null");
+    var seg = s && s.access_token && s.access_token.split(".")[1];
+    if (seg) {
+      var pay = JSON.parse(atob(seg.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - seg.length % 4) % 4)));
+      if ((pay.email || "") === "matthew@mccluster.org") return;
+    }
+  } catch (e2) {}
+  try { sessionStorage.setItem("mcc_rope_next", here + location.search + location.hash); } catch (e3) {}
+  location.replace("rise.html");
+})();

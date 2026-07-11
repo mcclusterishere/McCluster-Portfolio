@@ -253,6 +253,14 @@
           '<div class="rz__block"><small>Your equity needs</small><p>You rise fastest next to <b>' + p1.collab + "</b>.</p></div>" +
           '<div class="rz__block"><small>Recommended first move</small><p><b>' + p1.move + "</b></p></div></div>" +
           '<div class="rz__cta">' +
+          /* the velvet rope hands you back: card in hand, walk right in */
+          (function () {
+            var nx = null;
+            try { nx = sessionStorage.getItem("mcc_rope_next"); } catch (eN) {}
+            return nx && /^[a-z0-9-]+\.html/.test(nx)
+              ? '<a class="btn btn--ruby" href="' + nx + '" style="justify-content:center;width:100%">🃏 Card in hand — continue where you were headed &#8594;</a>'
+              : "";
+          })() +
           '<div class="rz__door" id="rzDoor"></div>' +
           '<a class="btn btn--ghost" href="market.html#providers" data-cta="rise-collab" style="justify-content:center">See who you should build with &#8594;</a>' +
           '<a class="btn btn--ghost" href="mymission.html" style="justify-content:center;opacity:0.8">Your missions are waiting &#8594;</a></div>' +
