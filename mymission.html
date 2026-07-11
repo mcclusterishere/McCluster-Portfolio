@@ -279,29 +279,60 @@
             try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "imprint", arch: ips, v: {}, at: new Date().toISOString() })); } catch (e) {}
           }
         })();
-        var FACE_ON = imp.face || null;
+        /* MANY FACES, ONE DESK: you are allowed to be several things at
+           once. The set imprints on the account; the desk sorts to the
+           UNION of every selected face's lane. */
+        var FACES_ON = (imp.faces && imp.faces.length) ? imp.faces.slice() : (imp.face ? [imp.face] : []);
         var roles = (mine && mine.roles) || [];
 
+        function laneSetOf(list) {
+          var set = {};
+          (list || []).forEach(function (rr) { set[faceMeta(rr)[3]] = 1; });
+          return set;
+        }
+        function walkSummary() {
+          if (!FACES_ON.length) {
+            return "Tap <b>everything</b> you do — one thing or five. The interview bends to the combination.";
+          }
+          var lanes = laneSetOf(FACES_ON);
+          var laneKeys = Object.keys(lanes);
+          var n = GAUNTLET.filter(function (mi) { return lanes[PATH_OF[mi[0]]]; }).length;
+          var names = FACES_ON.map(function (rr) { return faceMeta(rr)[0]; }).join(" × ");
+          var laneNames = laneKeys.map(function (l) { return PATH_META[l] ? PATH_META[l][0] : l; }).join(" + ");
+          return "<b>" + names + "</b> — the desk sorts to the " + laneNames + " lane" +
+            (laneKeys.length > 1 ? "s" : "") + " · <b>" + n + " missions</b> light up on your lanes.";
+        }
         function walkCards(list, label) {
           return '<div class="mm__card" style="border-color:rgba(201,157,69,0.5)"><p class="mm__k" style="color:#e8c877">' + label + "</p>" +
-            "<h2>Who&rsquo;s running this desk?</h2>" +
-            '<p class="mm__sub" style="margin-top:0.1rem;font-size:0.9rem">One tap — it imprints on your <b>account</b>, not this device. Every visit, every phone, the desk opens already sorted to you. Change it any time up top.</p>' +
+            "<h2>What do you do? Pick ALL of it.</h2>" +
+            '<p class="mm__sub" style="margin-top:0.1rem;font-size:0.9rem">Tap every face that\u2019s yours — the desk sorts to the whole combination and it imprints on your <b>account</b>, every device, until you change it up top.</p>' +
             '<div class="mm__facecards">' + list.map(function (rr) {
               var fm = faceMeta(rr);
               var lane = PATH_META[fm[3]] ? PATH_META[fm[3]][0] : fm[3];
-              return '<button class="mm__fc" type="button" data-face="' + esc(rr) + '" data-mmbg="' + fm[4] + '" style="--fc:' + fm[2] + '"><span>' + fm[1] + " " + esc(fm[0]) + "<small>sorts the desk to the " + lane + " lane</small></span></button>";
-            }).join("") + "</div></div>";
+              var on = FACES_ON.indexOf(rr) !== -1;
+              return '<button class="mm__fc' + (on ? " is-on" : "") + '" type="button" data-face="' + esc(rr) + '" data-mmbg="' + fm[4] + '" style="--fc:' + fm[2] + (on ? ";box-shadow:0 0 20px " + fm[2] : "") + '"><span>' + (on ? "\u2713 " : "") + fm[1] + " " + esc(fm[0]) + "<small>the " + lane + " lane</small></span></button>";
+            }).join("") + "</div>" +
+            '<p class="mm__sub" id="mmWalkSum" style="margin-top:0.8rem;font-size:0.92rem">' + walkSummary() + "</p>" +
+            (FACES_ON.length ? '<button class="btn btn--ruby" id="mmWalkGo" type="button" style="margin-top:0.6rem;width:100%;justify-content:center">Run the desk as ' + esc(FACES_ON.map(function (rr) { return faceMeta(rr)[0]; }).join(" × ")) + " &#8594;</button>" : "") +
+            "</div>";
         }
-        function pickFace(rr) {
-          FACE_ON = rr;
-          var fm = faceMeta(rr);
-          try { localStorage.setItem("mcc_mm_mode", "path"); localStorage.setItem("mcc_mm_pick", fm[3]); } catch (e) {}
-          auth("imprint_desk", { p_face: rr, p_paths: null });
-          if (roles.indexOf(rr) === -1 && FACES[rr]) {
-            roles.push(rr);
-            window.MCC_NET.saveListing({ roles: roles }).catch(function () {});
-          }
-          track("face_pick", { f: rr });
+        function toggleFace(rr) {
+          var i = FACES_ON.indexOf(rr);
+          if (i === -1) FACES_ON.push(rr); else FACES_ON.splice(i, 1);
+        }
+        function commitFaces() {
+          try {
+            localStorage.setItem("mcc_mm_mode", "path");
+            localStorage.setItem("mcc_mm_pick",
+              FACES_ON.length > 1 ? "mine" : (FACES_ON.length ? faceMeta(FACES_ON[0])[3] : "all"));
+          } catch (e) {}
+          auth("imprint_desk", { p_face: FACES_ON[0] || null, p_paths: null, p_faces: FACES_ON });
+          var grew = false;
+          FACES_ON.forEach(function (rr) {
+            if (roles.indexOf(rr) === -1 && FACES[rr]) { roles.push(rr); grew = true; }
+          });
+          if (grew) window.MCC_NET.saveListing({ roles: roles }).catch(function () {});
+          track("face_pick", { f: FACES_ON.join("+") });
           paintRoom();
         }
 
@@ -325,19 +356,19 @@
 
         /* THE FACES rail: which YOU runs this room — one tap sorts the
            whole desk to that lane and imprints on the account */
-        var fOn = FACE_ON ? faceMeta(FACE_ON) : null;
+        var fOn = FACES_ON.length ? faceMeta(FACES_ON[0]) : null;
         var railRoles = roles.slice();
-        if (FACE_ON && railRoles.indexOf(FACE_ON) === -1) railRoles.push(FACE_ON);
+        FACES_ON.forEach(function (rr) { if (railRoles.indexOf(rr) === -1) railRoles.push(rr); });
         var html = notice + '<div class="mm__faces" id="mmFaces">' + railRoles.map(function (rr) {
           var fm = faceMeta(rr);
-          return '<button class="mm__face' + (FACE_ON === rr ? " is-on" : "") + '" type="button" data-face="' + esc(rr) +
+          return '<button class="mm__face' + (FACES_ON.indexOf(rr) !== -1 ? " is-on" : "") + '" type="button" data-face="' + esc(rr) +
             '" style="--fc:' + fm[2] + '">' + fm[1] + " " + esc(fm[0]) + "</button>";
         }).join("") + '<button class="mm__face is-add" type="button">+ add a face</button></div>' +
         '<div id="mmFaceWalk"></div>';
 
         /* the command room hero wears your face's scene */
         html += '<div class="mm__hero" data-mmbg="' + (fOn ? fOn[4] : "assets/img/mc-hero.jpg") + '" style="--fc:' + (fOn ? fOn[2] : "#e8c877") + '">' +
-          (fOn ? '<span class="mm__runas">Running as ' + esc(fOn[0]) + "</span>" : "") + "<div>" +
+          (fOn ? '<span class="mm__runas">Running as ' + esc(FACES_ON.slice(0, 3).map(function (rr) { return faceMeta(rr)[0]; }).join(" × ")) + (FACES_ON.length > 3 ? " +" + (FACES_ON.length - 3) : "") + "</span>" : "") + "<div>" +
           '<b class="mm__pts">' + pts(paid) + " pts</b>" +
           "<small>of 100,000 — the full run · 1 E⤴︎ = 100 points</small></div></div>";
 
@@ -352,7 +383,7 @@
           (function () {
             var rise = null; try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
             var myPaths = rise && rise.arch ? rise.arch.slice() : null;
-            if (FACE_ON) myPaths = [faceMeta(FACE_ON)[3]].concat(myPaths || []);
+            if (FACES_ON.length) myPaths = FACES_ON.map(function (rr) { return faceMeta(rr)[3]; }).concat(myPaths || []);
             var undone = GAUNTLET.filter(function (mi) { return done.indexOf(mi[0]) === -1; });
             var next = myPaths ? undone.filter(function (mi) { return myPaths.indexOf(PATH_OF[mi[0]]) !== -1; }) : [];
             undone.forEach(function (mi) { if (next.length < 3 && next.indexOf(mi) === -1) next.push(mi); });
@@ -449,28 +480,29 @@
         /* THE FACES: rail taps + the pick walk (photo cards) */
         (function () {
           var rail = $("mmFaces");
-          function wireWalkBtns() {
+          function paintWalk(list, label) {
+            $("mmFaceWalk").innerHTML = walkCards(list, label);
             var w = $("mmFaceWalk");
-            if (!w) return;
             w.querySelectorAll("[data-face]").forEach(function (b) {
-              b.addEventListener("click", function () { pickFace(b.getAttribute("data-face")); });
+              b.addEventListener("click", function () {
+                toggleFace(b.getAttribute("data-face"));
+                paintWalk(list, label);      // the interview redraws with every tap
+              });
             });
+            var go = document.getElementById("mmWalkGo");
+            if (go) go.addEventListener("click", commitFaces);
             loadBgs(w);
           }
           if (rail) rail.addEventListener("click", function (e) {
             if (e.target.closest(".is-add")) {
-              var missing = Object.keys(FACES).filter(function (k) { return roles.indexOf(k) === -1; });
-              $("mmFaceWalk").innerHTML = walkCards(missing.length ? missing : Object.keys(FACES),
-                "Add a face — it saves to your account");
-              wireWalkBtns();
+              paintWalk(Object.keys(FACES), "Change your faces — it saves to your account");
               return;
             }
             var b = e.target.closest("[data-face]");
-            if (b) pickFace(b.getAttribute("data-face"));
+            if (b) { toggleFace(b.getAttribute("data-face")); commitFaces(); }
           });
-          if (!FACE_ON) {
-            $("mmFaceWalk").innerHTML = walkCards(roles.length ? roles : Object.keys(FACES), "First, your face");
-            wireWalkBtns();
+          if (!FACES_ON.length) {
+            paintWalk(Object.keys(FACES).filter(function (k) { return !roles.length || roles.indexOf(k) !== -1; }).length && roles.length ? roles.slice() : Object.keys(FACES), "First, your faces");
           }
         })();
         /* THE FILTER DESK: two modes, one law. BY HUSTLE scopes whole
@@ -487,7 +519,7 @@
             var rz = null;
             try { rz = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e2) {}
             var prim = rz && rz.arch && rz.arch[0];
-            var fLane = FACE_ON ? faceMeta(FACE_ON)[3] : null;
+            var fLane = FACES_ON.length > 1 ? "mine" : (FACES_ON.length ? faceMeta(FACES_ON[0])[3] : null);
             mode = localStorage.getItem("mcc_mm_mode") || (fLane || prim ? "path" : "arc");
             pick = localStorage.getItem("mcc_mm_pick") || (mode === "path" ? (fLane || prim || "all") : "all");
           } catch (e) {}
@@ -502,6 +534,7 @@
                 }).join("");
             }
             return '<button class="mm__filt" type="button" data-f="all" style="--fc:#e8c877">⚡ All paths</button>' +
+              (FACES_ON.length ? '<button class="mm__filt" type="button" data-f="mine" style="--fc:#e8c877">★ My lanes</button>' : "") +
               Object.keys(PATH_META).map(function (p) {
                 var mine2 = GAUNTLET.filter(function (mi) { return PATH_OF[mi[0]] === p; });
                 var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
@@ -519,8 +552,10 @@
                 w.classList.toggle("is-hid", pick !== "all" && w.getAttribute("data-arcw") !== pick);
               } else {
                 var vis = 0;
+                var lanesMine = laneSetOf(FACES_ON);
                 w.querySelectorAll(".mm__mi").forEach(function (mi) {
-                  var on = pick === "all" || mi.getAttribute("data-path") === pick;
+                  var mp = mi.getAttribute("data-path");
+                  var on = pick === "all" || (pick === "mine" ? !!lanesMine[mp] : mp === pick);
                   mi.style.display = on ? "" : "none"; if (on) vis++;
                 });
                 w.classList.toggle("is-hid", vis === 0);
