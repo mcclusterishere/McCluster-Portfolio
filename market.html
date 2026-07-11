@@ -91,6 +91,29 @@
     .mk__h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem;
       letter-spacing: 0.03em; margin: 0 0 0.8rem; display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
 
+    /* THE FOLDS: every desk card collapses to its heading — the pane
+       reads as a list of rooms, and you open the one you came for */
+    #yours [data-fold].is-shut > :not(.mk__h3):not(.mp__toolhead):not(.mp__lblx) { display: none; }
+    #yours [data-fold] > .mk__h3, #yours [data-fold] > .mp__toolhead, #yours [data-fold] > .mp__lblx { cursor: pointer; user-select: none; }
+    #yours [data-fold] > .mk__h3::after, #yours [data-fold] > .mp__toolhead::after, #yours [data-fold] > .mp__lblx::after {
+      content: "▾"; float: right; margin-left: 0.6em; color: rgba(244,239,230,0.45); transition: transform 0.2s; }
+    #yours [data-fold] > .mk__h3::after { float: none; margin-left: auto; }
+    #yours [data-fold].is-shut > .mk__h3::after, #yours [data-fold].is-shut > .mp__toolhead::after,
+    #yours [data-fold].is-shut > .mp__lblx::after { transform: rotate(-90deg); }
+    #yours [data-fold].is-shut { padding-bottom: 0.9rem; }
+    #yours .mp__fold { border: 1px solid rgba(244,239,230,0.1); border-radius: 14px; padding: 0.9rem 1rem; margin-top: 0.8rem; }
+    #yours .mp__fold > .mp__toolhead { display: flex; align-items: baseline; margin: 0; }
+    #yours .mp__fold:not(.is-shut) > .mp__toolhead { margin-bottom: 0.6rem; }
+    /* the bell */
+    .bell__row { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.65rem 0.2rem; text-decoration: none;
+      color: var(--cream); border-top: 1px solid rgba(244,239,230,0.08); }
+    .bell__row:first-child { border-top: 0; }
+    .bell__row b { display: block; font-size: 0.9rem; }
+    .bell__row small { display: block; color: var(--cream-dim); font-size: 0.74rem; line-height: 1.45; }
+    .bell__row .bell__at { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.15rem; }
+    .bell__row.is-new b::after { content: "●"; color: #e5383b; font-size: 0.6em; margin-left: 0.5em; vertical-align: 0.25em; }
+    .bell__ic { flex: none; }
+
     /* your desk: the talent app, folded into the exchange */
     .td__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 0 0 1rem; }
     .td__stats > div { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.7rem 0.5rem; text-align: center; }
@@ -770,6 +793,13 @@
       <!-- the You room: id card, role tools, the operator's whole desk -->
       <div id="mpYou"></div>
 
+      <p class="mk__note" id="deskNext" style="display:none;border:1px solid rgba(201,157,69,0.4);border-radius:12px;padding:0.6rem 0.8rem"></p>
+
+      <div class="mk__card" id="bellCard" style="display:none">
+        <h3 class="mk__h3">The bell <span class="mk__note" id="bellN" style="display:none;color:#e5383b;font-size:0.72rem;font-weight:800"></span></h3>
+        <div id="bellList"></div>
+      </div>
+
       <div class="mk__card" id="tdStockCard" style="display:none"><div id="tdStock"></div></div>
 
       <div class="mk__card">
@@ -815,7 +845,7 @@
       </div>
 
       <div class="mk__card">
-        <h3 class="mk__h3">The inbox</h3>
+        <h3 class="mk__h3">Booking requests</h3>
         <div id="tdReqs"><p class="mk__note">When someone books you from the directory, it lands here.</p></div>
       </div>
 
@@ -2509,6 +2539,7 @@
           if (tb) tb.addEventListener("click", function () {
             if (window.MCC_TOUR) window.MCC_TOUR.start();
           });
+          foldDesk();
           return;
         }
         var welcomeDue = false;
@@ -2927,6 +2958,113 @@
           }).catch(function () {});
         }
         track("mpay_you", { face: face, authed: true });
+        loadBell();
+        foldDesk();
+      }
+
+      /* ---------- THE FOLDS: the desk reads as a list of rooms and you
+         open the one you came for; every choice survives the visit ---------- */
+      function foldKey(t) {
+        return String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 28) || "card";
+      }
+      function openFold(key) {
+        var c = document.querySelector('#yours [data-fold="' + key + '"]');
+        if (c) { c.classList.remove("is-shut"); c.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      }
+      function foldDesk() {
+        var sec = $("yours");
+        if (!sec) return;
+        var saved = {};
+        try { saved = JSON.parse(localStorage.getItem("mcc_folds") || "{}"); } catch (e) {}
+        function arm(card, head, defOpen) {
+          if (!card || !head || card.getAttribute("data-fold")) return;
+          // key from the heading's own first text — status spans change, keys can't
+          var key = foldKey((head.childNodes[0] && head.childNodes[0].textContent) || head.textContent);
+          card.setAttribute("data-fold", key);
+          var open = saved[key] != null ? !!saved[key] : !!defOpen;
+          card.classList.toggle("is-shut", !open);
+          head.addEventListener("click", function (e) {
+            if (e.target.closest("a, button, input, textarea, select")) return;
+            var shut = card.classList.toggle("is-shut");
+            saved[key] = !shut;
+            try { localStorage.setItem("mcc_folds", JSON.stringify(saved)); } catch (e2) {}
+          });
+        }
+        // painted tool-heads fold with their grids as one room
+        sec.querySelectorAll("#mpYou .mp__toolhead").forEach(function (h) {
+          if (h.closest("[data-fold]")) return;
+          var nodes = [], n = h.nextSibling;
+          while (n && !(n.nodeType === 1 && (n.classList.contains("mp__toolhead") || n.classList.contains("mp__card")))) {
+            nodes.push(n); n = n.nextSibling;
+          }
+          var wrap = document.createElement("div");
+          wrap.className = "mp__fold";
+          h.parentNode.insertBefore(wrap, h);
+          wrap.appendChild(h);
+          nodes.forEach(function (x) { wrap.appendChild(x); });
+          arm(wrap, h, false);
+        });
+        // painted cards fold to their label lines
+        sec.querySelectorAll("#mpYou div.mp__card").forEach(function (c) {
+          arm(c, c.querySelector(".mp__lblx"), false);
+        });
+        // the static cards fold to their headings; a missing listing stays open
+        Array.prototype.forEach.call(sec.children, function (c) {
+          if (!c.classList || !c.classList.contains("mk__card")) return;
+          var h = c.querySelector(".mk__h3");
+          if (!h) return;
+          var needsDressing = !!c.querySelector("#tdSave") && !ME;
+          arm(c, h, needsDressing);
+        });
+        // the pinned next move: one line, one door
+        var dn = $("deskNext");
+        if (dn && dn.style.display === "none" && AUTHED && !ME) {
+          dn.style.display = "";
+          dn.innerHTML = '🃏 <b>Next move:</b> dress your card so the floor can find you — <a href="#" style="color:#e8c877;font-weight:800" data-nextfold>open the listing</a>';
+          var a = dn.querySelector("[data-nextfold]");
+          if (a) a.addEventListener("click", function (e) { e.preventDefault(); openFold("your-listing"); });
+        }
+      }
+
+      /* ---------- THE BELL: everything that happened to you, one card.
+         Unread rings it open; opening marks it seen. ---------- */
+      function loadBell() {
+        if (!AUTHED) return;
+        var card = $("bellCard"), list = $("bellList"), badge = $("bellN");
+        if (!card || card.getAttribute("data-rang")) return;
+        card.setAttribute("data-rang", "1");
+        var S3 = window.MCC_SUPA;
+        S3.token().then(function (t) {
+          return fetch(S3.url + "/rest/v1/rpc/my_inbox", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S3.key, Authorization: "Bearer " + t },
+            body: JSON.stringify({ p_limit: 30 }) });
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
+          if (rows == null) return;   // the bell isn't wired cloud-side yet — stay dark, never fake
+          card.style.display = "";
+          if (!rows.length) {
+            list.innerHTML = '<p class="mk__note">Quiet for now — deals landing, money arriving and review news ring here.</p>';
+            return;
+          }
+          var unread = rows.filter(function (x) { return !x.read; }).length;
+          var ICO = { deal: "🤝", paid: "💵", listing: "🪪", visit: "🚗", crew: "🧩" };
+          list.innerHTML = rows.map(function (x) {
+            return '<a class="bell__row' + (x.read ? "" : " is-new") + '" href="' + esc(x.link || "market.html#yours") + '">' +
+              '<span class="bell__ic">' + (ICO[x.kind] || "🔔") + "</span><span><b>" + esc(x.title) + "</b>" +
+              (x.body ? "<small>" + esc(x.body) + "</small>" : "") +
+              '<small class="bell__at">' + new Date(x.at).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + "</small></span></a>";
+          }).join("");
+          if (unread > 0) {
+            badge.textContent = unread + " new";
+            badge.style.display = "";
+            card.classList.remove("is-shut");
+            var dn = $("deskNext");
+            if (dn) { dn.style.display = ""; dn.innerHTML = "🔔 <b>" + unread + " new</b> on your bell — it's open below."; }
+            S3.token().then(function (t) {
+              return fetch(S3.url + "/rest/v1/rpc/inbox_seen", { method: "POST",
+                headers: { "Content-Type": "application/json", apikey: S3.key, Authorization: "Bearer " + t }, body: "{}" });
+            }).catch(function () {});
+          }
+        }).catch(function () {});
       }
 
       /* ---------- the desk wiring: copy, share, save, talk ---------- */
