@@ -2334,7 +2334,10 @@
           paintHits(box.value);
         });
       })();
-      $("mpSend").addEventListener("click", function () { openSheet("pay"); });
+      $("mpSend").addEventListener("click", function () {
+        try { localStorage.setItem("mcc_cart", JSON.stringify({ kind: "pay", label: "A send is sitting on the counter", href: "market.html#pay", at: Date.now() })) } catch (eC) {}
+        openSheet("pay");
+      });
       $("mpRequest").addEventListener("click", function () { openSheet("request"); });
 
       /* the ticker sheet's "M Pay" door lands here with the payee pre-picked */

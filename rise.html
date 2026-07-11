@@ -180,7 +180,11 @@
           "A city has talent. Buildings. Money. Stories. Problems. What it doesn't have is <b>coordination</b>.<br><br>" +
           "This is not a quiz. You're about to make decisions under pressure, and every one of them drafts your card — in the open.</p>" +
           '<div class="finale__actions" style="margin-top:1.4rem"><button class="btn btn--ruby" id="rzGo" style="font-size:1.1rem;padding:1rem 2.4rem">RISE &#8599;</button></div></div>';
-        $("rzGo").addEventListener("click", function () { track("rise_start", {}); step = 0; paintEntry(); });
+        $("rzGo").addEventListener("click", function () {
+          track("rise_start", {});
+          try { localStorage.setItem("mcc_cart", JSON.stringify({ kind: "rise", label: "Your E⤴ Card is half-dealt", href: "rise.html", at: Date.now() })) } catch (eC) {}
+          step = 0; paintEntry();
+        });
       }
       function paintEntry() {
         stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The network is forming · select your entry point</p>' +
@@ -236,6 +240,7 @@
           localStorage.setItem("mcc_onboard", JSON.stringify(ob));
         } catch (e) {}
         track("rise_done", { arch: card.arch.join("+"), entry: entry[0] });
+        try { var c9 = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (c9 && c9.kind === "rise") localStorage.removeItem("mcc_cart"); } catch (eC2) {}
         var sorted = VKEYS.slice().sort(function (a, b) { return card.v[b] - card.v[a]; });
         stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The pattern formed · your E⤴ Card</p>' +
           '<div class="rz__card">' +

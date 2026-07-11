@@ -630,3 +630,35 @@
   try { sessionStorage.setItem("mcc_rope_next", here + location.search + location.hash); } catch (e3) {}
   location.replace("rise.html");
 })();
+
+/* THE CLOSER — abandoned moves don't die, they knock. Any flow that
+   starts drops a breadcrumb (mcc_cart); finishing clears it. A visitor
+   carrying one sees a single resume bar on every page until they finish,
+   dismiss it (per session), or it goes stale at 48 hours. */
+(function () {
+  var cart = null;
+  try { cart = JSON.parse(localStorage.getItem("mcc_cart") || "null"); } catch (e) {}
+  if (!cart || !cart.at || !cart.href || Date.now() - cart.at > 48 * 3600 * 1000) return;
+  try { if (sessionStorage.getItem("mcc_cart_hush")) return; } catch (e2) {}
+  var here = location.pathname.split("/").pop() || "index.html";
+  if (here === String(cart.href).split(/[?#]/)[0]) return;   // already back in the flow
+  function paint() {
+    var bar = document.createElement("div");
+    bar.className = "closer-bar";
+    var a = document.createElement("a");
+    a.href = cart.href;
+    a.textContent = "↺ " + (cart.label || "You left something mid-move") + " — pick it back up →";
+    var x = document.createElement("button");
+    x.type = "button"; x.setAttribute("aria-label", "Dismiss"); x.textContent = "✕";
+    x.addEventListener("click", function () {
+      try { sessionStorage.setItem("mcc_cart_hush", "1"); } catch (e3) {}
+      bar.remove();
+      if (window.MCC_TRACK) window.MCC_TRACK("closer_hush", { kind: cart.kind });
+    });
+    bar.appendChild(a); bar.appendChild(x);
+    document.body.appendChild(bar);
+    if (window.MCC_TRACK) window.MCC_TRACK("closer_shown", { kind: cart.kind });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", paint);
+  else paint();
+})();

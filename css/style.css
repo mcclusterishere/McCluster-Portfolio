@@ -4346,3 +4346,14 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .card-call { border: 1.5px solid rgba(232, 200, 119, 0.55); border-radius: 14px;
   animation: mccCardCall 1.5s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .card-call { animation: none; border-color: #e8c877; } }
+
+/* THE CLOSER — an abandoned move gets one gentle tap back, on every page */
+.closer-bar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+  z-index: 96; display: flex; align-items: center; gap: 0.6rem; max-width: min(92vw, 30rem);
+  border: 1.5px solid rgba(232, 200, 119, 0.6); border-radius: 100px; background: rgba(14, 11, 9, 0.96);
+  padding: 0.55rem 0.6rem 0.55rem 1rem; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 18px rgba(232, 200, 119, 0.25);
+  animation: mccCardCall 2.2s ease-in-out infinite; }
+.closer-bar a { color: #e8c877; font-weight: 800; font-size: 0.82rem; text-decoration: none; line-height: 1.35; }
+.closer-bar button { flex: none; border: 0; background: none; color: rgba(244, 239, 230, 0.55); font-size: 0.85rem;
+  cursor: pointer; padding: 0.3em 0.5em; }
+@media (prefers-reduced-motion: reduce) { .closer-bar { animation: none; } }

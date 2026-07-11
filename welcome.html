@@ -347,6 +347,7 @@
         }).catch(function () {}).then(function () {
           try {
             localStorage.removeItem("mcc_welcome_pending");
+            try { var cW = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (cW && cW.kind === "walk") localStorage.removeItem("mcc_cart"); } catch (eW) {}
             localStorage.setItem("mcc_goals", JSON.stringify(A.goals));
           } catch (e) {}
           track("welcome_done", { roles: A.roles.join(","), goals: A.goals.join(",") });
