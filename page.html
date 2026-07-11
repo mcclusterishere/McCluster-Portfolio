@@ -676,12 +676,18 @@
             '<b style="display:block;font-variant-numeric:tabular-nums;color:' + (col || "#f4efe6") + '">' + n + "</b>" +
             '<small style="color:rgba(244,239,230,0.55);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
         }
-        var P2 = line.parts || {};
+        /* the tape stores the game breakdown under parts.game, next to the
+           street-score pillars — unwrap it, or fall back for older rows */
+        var PR = line.parts || {};
+        var P2 = PR.game || PR;
         var LBL = { interactions: "interactions", plays: "in-app plays", money: "money · verified",
-          identity: "identity", world: "the world outside", sales: "sales book · declared" };
-        document.getElementById("pgOpenParts").innerHTML = Object.keys(LBL).map(function (k) {
-          return P2[k] != null ? cell((+P2[k]).toLocaleString() + " pts", LBL[k], "#e8c877") : "";
-        }).join("");
+          identity: "identity", world: "the world outside", sales: "sales book · declared",
+          trust: "street credit → trust" };
+        document.getElementById("pgOpenParts").innerHTML =
+          (line.score != null ? cell((+line.score).toLocaleString() + " / 1000", "street credit score", "#2fbf71") : "") +
+          Object.keys(LBL).map(function (k) {
+            return P2[k] != null ? cell((+P2[k]).toLocaleString() + " pts", LBL[k], "#e8c877") : "";
+          }).join("");
         if (sig) {
           var nice = { spotify: "Spotify", youtube: "YouTube", lastfm: "Last.fm", songstats: "Songstats" };
           document.getElementById("pgOpenSignals").innerHTML =
