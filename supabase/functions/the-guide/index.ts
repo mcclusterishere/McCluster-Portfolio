@@ -21,9 +21,23 @@ const DAILY_CAP = 40;
 const H = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` };
 
 const CHARTER =
-  "You are The Guide — the in-app concierge on Matthew McCluster's creator platform " +
-  "(music marketplace, member exchange, the Our World game, and the Equity Uprise civic wing). " +
-  "You talk to one signed-in member at a time. What you know cold:\n" +
+  "You are The Guide — the in-app COACH on Matthew McCluster's creator platform " +
+  "(music marketplace, member exchange, the Uprise Nation game, and the Street Cred Portal). " +
+  "You are attached to the member's whole journey: every message arrives with where they stand — " +
+  "their page, their E⤴ Card, their platforms, any unfinished move, and their recent real actions. " +
+  "Coach from that. ALWAYS end with ONE concrete next move for THIS member. What you know cold:\n" +
+  "- The E⤴ Card: dealt by WHAT MAKES YOU RISE (rise.html) — decisions, not answers. Everything past the " +
+  "landing pages requires a card; no card means RISE comes first, always.\n" +
+  "- TWO TAPES: a LISTING's price is what the property earns (its plays + money paid to it); the PERSON's " +
+  "price is interactions, identity, world signals, sales book, and street-credit trust. Different stocks, both " +
+  "in the open on page.html.\n" +
+  "- Street credit: 0-1000 reputation; every point pays 2 game points into the person's price. Its home is the " +
+  "Street Cred Portal (civic.html): connect accounts by login (verified on the spot), THE ONE CHART merging every " +
+  "platform's numbers, the import door for platforms still behind review, and the Press Desk (PR wires ride the " +
+  "Distribution Desk as their own lane).\n" +
+  "- Crews (crews.html): one crew per member, public roster, collective score off the tape.\n" +
+  "- The bell on the desk: deals landing, money arriving, review news; visit pings buzz the pocket when someone " +
+  "pulls up to your spot in Uprise Nation (switch on the desk).\n" +
   "- E⤴ credit: platform credit pegged 1 E⤴ = $1 = 100 points (the points law — members read who is up or down in points). It is NOT cryptocurrency — no blockchain, no speculation. " +
   "EARNED credit (from completed deals, bounties, services) can be cashed out, but every cash-out is " +
   "reviewed and approved by the desk. GRANTED and PURCHASED credit spends inside the platform only.\n" +
@@ -67,8 +81,10 @@ Deno.serve(async (req) => {
     const uid = user.id as string;
     const isDesk = (user.email || "") === "matthew@mccluster.org";
 
-    const say = String((await req.json().catch(() => ({})))?.say || "").trim().slice(0, 500);
+    const bodyIn = await req.json().catch(() => ({}));
+    const say = String(bodyIn?.say || "").trim().slice(0, 500);
     if (!say) return json({ error: "say something" }, 400);
+    const cx = (bodyIn?.ctx || {}) as Record<string, unknown>;
 
     // the meter: 40 a day keeps the credits alive
     let left = DAILY_CAP;
@@ -87,15 +103,35 @@ Deno.serve(async (req) => {
       } catch { /* if the meter can't be read (e.g. guide_chats not created yet), let them talk */ }
     }
 
-    // the caller's own card + the recent thread — nothing about anyone else
-    const [me, thread] = await Promise.all([
+    // the caller's own card, thread, RECENT REAL ACTIONS and numbers —
+    // the coach sees this member's whole journey and nobody else's
+    const [me, thread, moves, snap] = await Promise.all([
       grab(`providers?owner=eq.${uid}&select=name,ticker,slug,status,roles&limit=1`),
       grab(`guide_chats?owner=eq.${uid}&order=at.desc&select=role,body&limit=12`),
+      grab(`events?uid=eq.${uid}&order=at.desc&select=name&limit=40`),
+      grab(`score_snapshots?owner=eq.${uid}&order=at.desc&select=score,ticker&limit=1`),
     ]);
     const card = (me || [])[0];
-    const context = card
-      ? `The member you're helping: ${card.name || "unnamed"} ($${card.ticker || "—"}, listing status: ${card.status || "none"}, hustles: ${JSON.stringify(card.roles || [])}).`
-      : "The member you're helping hasn't claimed a listing yet — the desk under #yours on the Market floor is where that starts.";
+    const tally: Record<string, number> = {};
+    (moves || []).forEach((e: { name?: string }) => {
+      const k = String(e.name || "").slice(0, 24);
+      if (k) tally[k] = (tally[k] || 0) + 1;
+    });
+    const recent = Object.entries(tally).slice(0, 12).map(([k, v]) => k + "\u00d7" + v).join(", ");
+    const nums = (snap || [])[0];
+    const cxLine = [
+      cx.page ? "standing on " + String(cx.page).slice(0, 40) : "",
+      cx.card ? "E\u2934 Card: " + String(cx.card).slice(0, 40) : "NO CARD YET \u2014 rise.html is their next move, always",
+      cx.social ? "posts on: " + String(cx.social).slice(0, 120) : "",
+      cx.distro ? "distributes via: " + String(cx.distro).slice(0, 80) : "",
+      cx.abandoned ? "UNFINISHED MOVE: " + String(cx.abandoned).slice(0, 20) + " \u2014 coach them back to it" : "",
+    ].filter(Boolean).join(" \u00b7 ");
+    const context = (card
+      ? `The member you're coaching: ${card.name || "unnamed"} ($${card.ticker || "\u2014"}, listing status: ${card.status || "none"}, hustles: ${JSON.stringify(card.roles || [])}).`
+      : "The member you're coaching has no listing yet \u2014 the desk under #yours on the Market floor is where that starts.") +
+      (cxLine ? `\nWhere they stand right now: ${cxLine}.` : "") +
+      (recent ? `\nTheir recent real moves (action\u00d7count): ${recent}.` : "\nNo recorded moves yet \u2014 they are brand new; keep it to one small step.") +
+      (nums ? `\nTheir numbers: street credit ${nums.score ?? "\u2014"}/1000, person price $${nums.ticker ?? "\u2014"}.` : "");
 
     const messages = (thread || []).reverse().map((m: { role: string; body: string }) => ({
       role: m.role === "guide" ? "assistant" : "user",
