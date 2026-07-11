@@ -380,12 +380,13 @@
 
   /* ---------- THE MORPHING DOCK: five mini-apps sharing one bar ----------
      The grammar (the dock walk below teaches it, once, gated):
-       1 tap  — go, same as ever
-       2 taps — morph: the bar becomes that wing's own menu, no nav
-       1 tap on a morphed slot — go there
-       2 taps on the wing again — the main bar comes back
-       3 taps — all the way through: the morph flashes and you land
-                on the wing's front page */
+       1 tap  — LOOK: a peek card explains what lives there; nothing moves
+       2 taps — OPEN: the bar morphs into that wing's own menu, no nav
+               (on a morphed slot, 2 taps GO there; on the open wing,
+                2 taps bring the main bar back)
+       3 taps — THROUGH: straight to the wing's front page
+     Travel only ever happens on 2-taps-on-a-slot, 3 taps, or the peek
+     card's own button — a single tap never navigates. */
   (function () {
     var dock = document.querySelector(".appbar");
     if (!dock) return;
@@ -407,6 +408,32 @@
         ["rise.html", "🃏", "Your card"], ["mymission.html", "🎯", "Missions"],
         ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"]] },
     };
+    /* what each door IS — the peek card reads from here */
+    var PREVIEWS = {
+      "rides.html": ["🚘", "Whip Equipped", "The WE tab: a real map, your live dot, drivers pinned, upfront pricing on the standard meter — the only difference is the 10%, and it rides to your driver."],
+      "rides.html#meter": ["🧮", "The meter", "Type where to, see one upfront price before any wheels move — the industry model plus the 10%."],
+      "rides.html#drivers": ["🚗", "Drivers on the road", "Real members carrying the Rides lane — on the list and pinned on the street. Book in one pop."],
+      "welcome.html?as=driver": ["🪙", "Drive & earn", "Get Whip Equipped: the walk-in pre-picks the Rides lane. The meter names it, you keep all of it."],
+      "app.html": ["🎧", "Only Us", "The music house: the heat chart, the registry, the series — and the sound follows you room to room."],
+      "mccluster.html": ["🌇", "The Penthouse", "McCluster's own floor — the films, the record, the live $MCC tape. What a built-out page looks like."],
+      "index.html": ["🎬", "The front door", "The cinematic opener — the spinning, scrolling face of the whole house."],
+      "song-dealer-plates.html": ["🎞", "The Series", "Whip Equipped, season one: dealer plates, two mixes, one ride."],
+      "distribution.html": ["🎛", "Distribution", "The locker: the identifiers your work pays through, seals, earnings."],
+      "market.html": ["🏪", "Our Street", "The floor: every member a ticker, every deal on the record, the Wire running through it."],
+      "market.html#pay": ["💸", "The pay desk", "Punch a number, tap a phone, the deal goes on the record. Card or E⤴ — one price."],
+      "market.html#yours": ["🏦", "Your desk", "Your listing, wallet, deals and payouts — the private side of your ticker."],
+      "market.html#wire": ["💬", "The Wire", "One feed for all of Our Street — drops, reactions, receipts."],
+      "shelf.html": ["🥇", "The Gold Shelf", "What gold is FOR: burn granted E⤴ with the house on reach, polish and partner deals."],
+      "spaces.html": ["🏠", "Spaces", "Rooms, studios and stages you can actually book — the city's inventory."],
+      "list-your-space.html": ["📋", "List your space", "Put your room on the map and let it earn — the walk-in takes minutes."],
+      "ourworld.html": ["🗺", "The Game", "Uprise Nation: your place on the real map — drive out and see it."],
+      "amenities.html": ["🛋", "Amenities", "What rides with every space — the standard of the house."],
+      "hire.html": ["🎥", "Hire the desk", "Photo, video, web — THE OFFER on every package, priced straight."],
+      "profile.html": ["🪪", "Your profile", "Your E⤴ Card, big — face, name, colors, credit — and the mirror to edit it."],
+      "rise.html": ["🃏", "Your card", "WHAT MAKES YOU RISE? Two minutes; it deals your card and shapes the whole house to you."],
+      "mymission.html": ["🎯", "Your missions", "T.R.A.P.S. — Take Risk And Prosper. Your walk, your points, your next move."],
+      "civic.html": ["🪪", "Street Cred Portal", "Your street credit score, verified accounts, the E⤴ Card behind it all."],
+    };
     var HOME_BAR = dock.innerHTML;
     var wingOn = null, taps = 0, tapKey = null, timer = null, practice = false;
     function emit(n, d) { try { document.dispatchEvent(new CustomEvent(n, { detail: d || {} })); } catch (e) {} }
@@ -414,6 +441,7 @@
     function veilOff() { document.documentElement.classList.remove("pt-out"); }
     function sail(dest, wait) {
       // the actual departure — practice mode reports instead of leaving
+      unpeek();
       if (practice) { veilOff(); emit("mcc:dock-goes", { href: dest }); return; }
       var url = null;
       try { url = new URL(dest, location.href); } catch (e) {}
@@ -423,10 +451,53 @@
       veilOn();
       setTimeout(function () { location.href = dest; }, wait);
     }
+
+    /* THE PEEK: one tap looks — a card explains the door, travel waits */
+    var peekEl = null, peekAway = null;
+    function unpeek() {
+      if (peekAway) { document.removeEventListener("pointerdown", peekAway, true); peekAway = null; }
+      if (peekEl && peekEl.parentNode) peekEl.parentNode.removeChild(peekEl);
+      peekEl = null;
+    }
+    function peek(dest, wingKey) {
+      unpeek();
+      var m = PREVIEWS[dest] || ["✦", dest.replace(/[#?].*$/, ""), ""];
+      peekEl = document.createElement("div");
+      peekEl.className = "dk-peek";
+      var acts = "";
+      if (wingKey) acts += '<button class="dk-peek__alt" type="button" data-pk-menu="' + wingKey + '">Open the menu</button>';
+      if (dest === "app.html" && (window.MCC_RADIO || window.MCC_NP_PLAY)) {
+        acts += '<button class="dk-peek__alt" type="button" data-pk-sound>&#9199;&#xFE0E; Sound</button>';
+      }
+      acts += '<button class="dk-peek__go" type="button" data-pk-go="' + dest + '">Take me there &#8594;</button>';
+      peekEl.innerHTML = '<div class="dk-peek__card">' +
+        '<div class="dk-peek__top"><span class="dk-peek__ic">' + m[0] + "</span>" +
+        "<div><b>" + m[1] + "</b><small>" + m[2] + "</small></div></div>" +
+        '<div class="dk-peek__acts">' + acts + "</div></div>";
+      document.body.appendChild(peekEl);
+      peekEl.addEventListener("click", function (e) {
+        var go = e.target.closest("[data-pk-go]");
+        if (go) { sail(go.getAttribute("data-pk-go"), 460); return; }
+        var mn = e.target.closest("[data-pk-menu]");
+        if (mn) { var k = mn.getAttribute("data-pk-menu"); unpeek(); if (wingOn !== k) morph(k); return; }
+        if (e.target.closest("[data-pk-sound]")) {
+          if (window.MCC_RADIO) window.MCC_RADIO.toggle();
+          else if (window.MCC_NP_PLAY) window.MCC_NP_PLAY();
+        }
+      });
+      // a tap anywhere off the card and off the bar puts it away
+      peekAway = function (e) {
+        if (e.target.closest && (e.target.closest(".dk-peek") || e.target.closest(".appbar"))) return;
+        unpeek();
+      };
+      setTimeout(function () { if (peekAway) document.addEventListener("pointerdown", peekAway, true); }, 0);
+      emit("mcc:dock-peek", { dest: dest });
+    }
     function morph(key) {
       var w = WINGS[key];
       if (!w || wingOn === key) return;
       veilOff();
+      unpeek();
       wingOn = key;
       dock.classList.add("appbar--morph");
       dock.innerHTML =
@@ -441,44 +512,43 @@
     }
     function revert() {
       if (!wingOn) return;
+      unpeek();
       wingOn = null;
       dock.classList.remove("appbar--morph");
       dock.innerHTML = HOME_BAR;
       emit("mcc:dock-revert", {});
     }
     dock.addEventListener("click", function (e) {
-      // a tab that consumed its tap (the Music transport) keeps its meaning
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       var a = e.target.closest && e.target.closest("a[data-dock],a[data-appnav]");
       if (!a || !dock.contains(a)) return;
       e.preventDefault();
       var slot = a.getAttribute("data-dock");
-      if (slot) { sail(slot, 460); return; } // morphed slots: one tap goes
       var key = a.getAttribute("data-appnav");
-      var w = WINGS[key];
-      if (key !== tapKey) { taps = 0; tapKey = key; }
+      var id = slot || key;
+      var w = key ? WINGS[key] : null;
+      if (id !== tapKey) { taps = 0; tapKey = id; }
       taps += 1;
       clearTimeout(timer);
       if (taps === 1) {
-        // the veil starts rising NOW, so a lone tap still lands at the same
-        // 480ms film-cut it always did — the double-tap window hides inside
-        // the fade instead of adding latency
-        if (!practice) veilOn();
-        var dest = (wingOn === key && w) ? w.home : a.getAttribute("href");
-        timer = setTimeout(function () { taps = 0; sail(dest, 140); }, 340);
-      } else if (taps === 2) {
-        veilOff();
+        // one tap only ever LOOKS — the peek card rises, nothing moves
         timer = setTimeout(function () {
           taps = 0;
-          if (wingOn === key) revert();
-          else if (w) morph(key);
-        }, 340);
+          peek(w ? w.home : slot, w ? key : null);
+        }, 300);
+      } else if (taps === 2) {
+        timer = setTimeout(function () {
+          taps = 0;
+          if (w) { if (wingOn === key) revert(); else morph(key); }
+          else sail(slot, 460); // two taps on a slot: through the door
+        }, 300);
       } else {
         taps = 0;
-        if (w) { morph(key); sail(w.home, 460); } // all the way through
+        sail(w ? w.home : slot, 460); // three taps: all the way through
       }
     });
-    window.MCC_DOCK = { morph: morph, revert: revert, wing: function () { return wingOn; } };
+    window.addEventListener("pageshow", function () { taps = 0; tapKey = null; unpeek(); });
+    window.MCC_DOCK = { morph: morph, revert: revert, peek: peek, wing: function () { return wingOn; } };
 
     /* ---------- THE DOCK WALK: learn the bar, then the doors open ----------
        First boot on any device, the site waits behind this one lesson.
@@ -501,10 +571,11 @@
     document.body.appendChild(ov);
     var STEPS = [
       { t: "One bar runs the whole world.", b: "Every tab down there is its own mini-app. Thirty seconds to learn the grammar, then every door opens.", btn: "Show me" },
-      { t: "Double-tap WE.", b: "Two quick taps on the WE tab. Watch what the bar does.", ev: "mcc:dock-morph" },
-      { t: "You're halfway in.", b: "That's WE's own menu — you never left this page. One tap on any slot takes you there. Try one (travel is off during class).", ev: "mcc:dock-goes" },
-      { t: "Double-tap brings it back.", b: "Double-tap the wing again and the main bar returns.", ev: "mcc:dock-revert" },
-      { t: "Triple-tap goes all the way.", b: "Three taps carries you straight into a wing. That's the whole grammar — 1 go · 2 look · 3 through.", btn: "I got it — open the doors" },
+      { t: "Tap WE once.", b: "One tap only LOOKS — a peek card tells you what lives there. Nothing moves until you say so.", ev: "mcc:dock-peek" },
+      { t: "Now double-tap WE.", b: "Two taps OPEN the wing — the bar becomes WE's own menu, and you never left this page.", ev: "mcc:dock-morph" },
+      { t: "Tap any slot once.", b: "Same law inside: one tap peeks at the room. Double-tap a slot when you actually want to go.", ev: "mcc:dock-peek" },
+      { t: "Double-tap WE again.", b: "The main bar comes right back.", ev: "mcc:dock-revert" },
+      { t: "That's the whole grammar.", b: "1 tap looks · 2 taps open (or go, on a slot) · 3 taps carry you all the way through. The peek card's button travels too.", btn: "I got it — open the doors" },
     ];
     var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
     var at = -1;
@@ -745,15 +816,9 @@
       }
     }
 
-    tab.addEventListener("click", function (ev) {
-      if (here === "app.html") return; // the app opens its own player sheet
-      // radio riding: one tap pauses it; tapped again, the door opens and
-      // the app picks the track up right where it paused
-      if (window.MCC_RADIO && window.MCC_RADIO.playing()) { ev.preventDefault(); window.MCC_RADIO.toggle(); return; }
-      // page sound off: the first tap turns it on; playing, the tap is the door
-      if (!state.playing && window.MCC_NP_PLAY) { ev.preventDefault(); window.MCC_NP_PLAY(); return; }
-      // playing → default nav: the Music app, sound in hand
-    });
+    /* the tab itself now speaks the dock grammar like every other tab —
+       one tap peeks, and the ⏯ Sound button on the peek card is the
+       transport (MCC_RADIO.toggle / MCC_NP_PLAY ride there) */
   })();
 })();
 

@@ -89,17 +89,21 @@ function check(name, cond, detail) {
   const { page, errors, netCounts } = await boot("/market.html", { settle: 1800, dockwalk: true });
   check("market", errors.length === 0, "page errors: " + errors.join(" | "));
   // a cold boot MUST open THE DOCK WALK — the gate that teaches the bar's
-  // grammar (2 taps morph · 1 tap goes · 2 taps back · 3 through); the
-  // whole lesson is driven here so the gate stays a tested invariant
+  // grammar (1 tap looks · 2 taps open/go · 3 taps through); the whole
+  // lesson is driven here so the gate stays a tested invariant
   const walk = await page.$(".dockwalk");
   check("market", walk, "the dock walk gate did not appear on a cold boot");
   if (walk) {
     await page.click("#dwBtn"); // Show me
+    await page.evaluate(() => document.querySelector('.appbar__tab[data-appnav="we"]').click()); // one tap = look
+    await page.waitForTimeout(500);
+    check("market", await page.$(".dk-peek"), "single tap did not raise the peek card");
     await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
     await page.waitForTimeout(500);
     check("market", await page.$(".appbar--morph"), "double-tap did not morph the bar");
-    await page.click('.appbar [data-dock]'); // one tap on a slot (travel off in class)
-    await page.waitForTimeout(200);
+    await page.evaluate(() => document.querySelector(".appbar [data-dock]").click()); // one tap peeks a slot
+    await page.waitForTimeout(500);
+    check("market", await page.$(".dk-peek"), "slot single tap did not peek");
     await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
     await page.waitForTimeout(500);
     check("market", !(await page.$(".appbar--morph")), "double-tap did not bring the main bar back");
