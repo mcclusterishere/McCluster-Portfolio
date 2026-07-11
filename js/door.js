@@ -96,7 +96,7 @@
     var AGREE_V = "v1-2026-07";
     var agreeRow = el("label", null);
     agreeRow.style.cssText = "display:flex;gap:0.6rem;align-items:flex-start;cursor:pointer;" +
-      "color:rgba(244,239,230,0.7);font-size:0.8rem;line-height:1.5";
+      "color:rgba(244,239,230,0.7);font-size:0.9rem;line-height:1.5";
     var agreeBox = el("input", null);
     agreeBox.type = "checkbox";
     agreeBox.style.cssText = "flex:none;width:1.15rem;height:1.15rem;margin-top:0.1rem;accent-color:#e5383b";

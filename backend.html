@@ -12,7 +12,7 @@
   <style>
     body { background: #0a0807; }
     .cr { max-width: 46rem; margin: 0 auto; padding: clamp(5.5rem, 10vh, 7rem) clamp(1.1rem, 4vw, 2rem) 9rem; }
-    .cr__k { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .cr__k { font-size: 0.72rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
     .cr h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: 0.95;
       font-size: clamp(2.2rem, 8.5vw, 3.4rem); margin-top: 0.4rem; }
     .cr__lede { color: var(--cream-dim); font-size: 0.95rem; line-height: 1.7; margin-top: 0.9rem; max-width: 52ch; }
@@ -27,11 +27,11 @@
       display: grid; place-items: center;
       background: conic-gradient(#d8ba7c calc(var(--p, 0) * 1%), rgba(244,239,230,0.12) 0); }
     .cr__ring::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #14100e; }
-    .cr__ring b { position: relative; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    .cr__ring b { position: relative; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
     .cr__hud-mid { flex: 1; min-width: 0; }
     .cr__hud-mid b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase;
       font-size: 1.05rem; letter-spacing: 0.04em; }
-    .cr__hud-mid small { display: block; color: var(--cream-dim); font-size: 0.64rem; margin-top: 0.1rem; }
+    .cr__hud-mid small { display: block; color: var(--cream-dim); font-size: 0.78rem; margin-top: 0.1rem; }
     .cr__hud.is-flash { animation: crFlash 0.7s; }
     @keyframes crFlash { 30% { border-color: #d8ba7c; box-shadow: 0 0 26px rgba(216, 186, 124, 0.6); } }
 
@@ -40,14 +40,14 @@
     .cr__tier-h { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
       border-bottom: 1px solid rgba(216, 186, 124, 0.35); padding-bottom: 0.5rem; }
     .cr__tier-h h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.4rem; }
-    .cr__tier-h small { color: #d8ba7c; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; flex: none; }
-    .cr__tier-d { color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; margin-top: 0.6rem; }
+    .cr__tier-h small { color: #d8ba7c; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; flex: none; }
+    .cr__tier-d { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin-top: 0.6rem; }
     .cr__card { border: 1px solid rgba(244,239,230,0.12); border-radius: 16px; background: rgba(18,14,12,0.66);
       padding: 1rem 1.1rem; margin-top: 0.9rem; transition: border-color 0.3s; }
     .cr__card.is-done { border-color: rgba(47, 191, 113, 0.55); }
     .cr__card h3 { font-size: 1rem; display: flex; align-items: baseline; gap: 0.5rem; }
-    .cr__card h3 .cr__done { color: #2fbf71; font-size: 0.72rem; font-weight: 800; margin-left: auto; flex: none; }
-    .cr__why { color: var(--cream-dim); font-size: 0.78rem; line-height: 1.6; margin-top: 0.4rem; }
+    .cr__card h3 .cr__done { color: #2fbf71; font-size: 0.84rem; font-weight: 800; margin-left: auto; flex: none; }
+    .cr__why { color: var(--cream-dim); font-size: 0.84rem; line-height: 1.6; margin-top: 0.4rem; }
     .cr__moves { display: grid; gap: 0.45rem; margin-top: 0.75rem; }
     .cr__move { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.14);
       border-radius: 12px; padding: 0.6rem 0.8rem; }
@@ -56,15 +56,15 @@
       background: none; cursor: pointer; color: transparent; font-size: 0.9rem; display: grid; place-items: center; }
     .cr__move.is-on .cr__check { border-color: #2fbf71; color: #2fbf71; background: rgba(47,191,113,0.12); }
     .cr__move-mid { flex: 1; min-width: 0; }
-    .cr__move-mid a { color: var(--cream); text-decoration: none; font-size: 0.84rem; font-weight: 600; }
+    .cr__move-mid a { color: var(--cream); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
     .cr__move-mid a:hover { color: var(--ruby-hot); }
-    .cr__move-mid small { display: block; color: var(--cream-dim); font-size: 0.66rem; margin-top: 0.15rem; line-height: 1.45; }
-    .cr__pts { flex: none; font-size: 0.66rem; font-weight: 800; color: #d8ba7c; font-variant-numeric: tabular-nums; }
-    .cr__kind { flex: none; font-size: 0.52rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800;
+    .cr__move-mid small { display: block; color: var(--cream-dim); font-size: 0.78rem; margin-top: 0.15rem; line-height: 1.45; }
+    .cr__pts { flex: none; font-size: 0.78rem; font-weight: 800; color: #d8ba7c; font-variant-numeric: tabular-nums; }
+    .cr__kind { flex: none; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800;
       border: 1px solid rgba(244,239,230,0.25); border-radius: 100px; padding: 0.25em 0.7em; color: var(--cream-dim); }
     .cr__move[data-kind="api"] .cr__kind { color: #45b6ff; border-color: rgba(69,182,255,0.5); }
     .cr__move[data-kind="export"] .cr__kind { color: #2fbf71; border-color: rgba(47,191,113,0.5); }
-    .cr__pop { position: fixed; right: 1rem; top: 5.4rem; z-index: 90; font-size: 0.8rem; font-weight: 800;
+    .cr__pop { position: fixed; right: 1rem; top: 5.4rem; z-index: 90; font-size: 0.9rem; font-weight: 800;
       color: #ffd98a; pointer-events: none; animation: crPop 1.3s ease-out forwards; }
     @keyframes crPop { 0% { opacity: 0; transform: translateY(8px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }
   </style>
@@ -89,13 +89,13 @@
     <div class="cr__hud" id="crHud">
       <span class="cr__ring" id="crRing" style="--p:0"><b id="crPts">0</b></span>
       <span class="cr__hud-mid"><b id="crRank">Tenant</b><small id="crRankLine">Somebody else runs your back end.</small></span>
-      <span style="flex:none;color:var(--cream-dim);font-size:0.62rem" id="crCount"></span>
+      <span style="flex:none;color:var(--cream-dim);font-size:0.78rem" id="crCount"></span>
     </div>
     <div id="crBonus" style="display:none;margin-top:0.8rem;border:1px solid rgba(47,191,113,0.5);border-radius:14px;background:rgba(47,191,113,0.07);padding:0.9rem 1rem">
-      <p style="font-size:0.82rem;line-height:1.6;color:var(--cream-dim)"><b style="color:#2fbf71">Operator rank reached.</b>
+      <p style="font-size:0.9rem;line-height:1.6;color:var(--cream-dim)"><b style="color:#2fbf71">Operator rank reached.</b>
         The run pays: <b style="color:var(--cream)">25 E⤴︎</b> of E-Up credit, minted once to your ledger — the closing 25 of the Trap's thousand.</p>
       <button class="btn btn--ruby" id="crBonusGo" type="button" style="margin-top:0.7rem">Claim the run bonus</button>
-      <p style="font-size:0.78rem;color:#2fbf71;min-height:1.2em;margin-top:0.5rem" id="crBonusMsg"></p>
+      <p style="font-size:0.84rem;color:#2fbf71;min-height:1.2em;margin-top:0.5rem" id="crBonusMsg"></p>
     </div>
 
     <div id="crTiers"><p class="cr__why">Opening the registry&hellip;</p></div>

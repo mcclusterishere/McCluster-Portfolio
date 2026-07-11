@@ -29,7 +29,7 @@
       font-weight: 800; color: #fff; font-size: 0.9rem; background-color: #1a1512; }
     .ow-face.mine { box-shadow: 0 0 0 2px #c99d45, 0 0 14px #c99d45; }
     .ow-trait { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #0a0807;
-      font-weight: 800; font-size: 0.85rem; border: 2px solid rgba(255,255,255,0.6); animation: owPulse 1.6s ease-in-out infinite; }
+      font-weight: 800; font-size: 0.9rem; border: 2px solid rgba(255,255,255,0.6); animation: owPulse 1.6s ease-in-out infinite; }
     .ow-trait.got { animation: none; opacity: 0.4; }
     @keyframes owPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 8px currentColor; } 50% { transform: scale(1.18); box-shadow: 0 0 20px currentColor; } }
     @media (prefers-reduced-motion: reduce) { .ow-trait { animation: none; } }
@@ -42,21 +42,21 @@
       display: flex; align-items: center; gap: 0.5rem; pointer-events: none; }
     .ow-brand { display: flex; align-items: center; gap: 0.4rem; background: rgba(12,9,8,0.85); backdrop-filter: blur(10px);
       border: 1px solid rgba(244,239,230,0.16); border-radius: 100px; padding: 0.4rem 0.85rem 0.4rem 0.5rem; }
-    .ow-brand img { width: 20px; } .ow-brand b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; }
+    .ow-brand img { width: 20px; } .ow-brand b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.05em; }
     .ow-traits { margin-left: auto; display: flex; gap: 0.3rem; }
     .ow-traits span { background: rgba(12,9,8,0.85); backdrop-filter: blur(8px); border-radius: 100px; padding: 0.24rem 0.5rem;
-      font-size: 0.56rem; font-weight: 800; color: #f4efe6; border: 1px solid; }
+      font-size: 0.72rem; font-weight: 800; color: #f4efe6; border: 1px solid; }
     .ow-live { position: fixed; top: calc(3.1rem + env(safe-area-inset-top)); left: 0.8rem; z-index: 30; pointer-events: none;
       background: rgba(12,9,8,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(0,200,5,0.5); border-radius: 100px;
-      padding: 0.24rem 0.6rem; font-size: 0.6rem; font-weight: 800; color: #f4efe6; }
+      padding: 0.24rem 0.6rem; font-size: 0.78rem; font-weight: 800; color: #f4efe6; }
     .ow-hint { position: fixed; bottom: calc(5.6rem + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
       z-index: 30; background: rgba(12,9,8,0.88); border: 1px solid rgba(244,239,230,0.18); border-radius: 100px;
-      padding: 0.5rem 1.2rem; font-size: 0.7rem; color: var(--cream-dim); pointer-events: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
+      padding: 0.5rem 1.2rem; font-size: 0.84rem; color: var(--cream-dim); pointer-events: none; white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis; }
     .ow-hint b { color: var(--cream); }
     .ow-place { position: fixed; left: 0; right: 0; bottom: calc(7.5rem + env(safe-area-inset-bottom)); z-index: 28;
       text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.5s, transform 0.5s; transform: translateY(10px); }
     .ow-place .n { font-family: var(--display); text-transform: uppercase; font-size: 2.3rem; line-height: 0.9; color: #f4efe6; text-shadow: 0 3px 18px rgba(0,0,0,0.7); }
-    .ow-place .t { font-size: 0.66rem; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 800; margin-top: 0.3rem; }
+    .ow-place .t { font-size: 0.78rem; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 800; margin-top: 0.3rem; }
 
     /* the stick */
     .ow-stick { position: fixed; left: 1.1rem; bottom: calc(8.2rem + env(safe-area-inset-bottom)); z-index: 25;
@@ -73,15 +73,15 @@
     .ow-din { text-align: center; max-width: 27rem; padding: 1.5rem; background: rgba(8,6,5,0.55); backdrop-filter: blur(2px); border-radius: 18px; }
     .ow-din img { width: 58px; margin-bottom: 0.7rem; filter: drop-shadow(0 0 18px rgba(229,56,59,0.7)); }
     .ow-din h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 2.6rem; line-height: 0.95; }
-    .ow-din .tag { color: #d8ba7c; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; margin-top: 0.4rem; }
-    .ow-din p { color: var(--cream-dim); font-size: 0.85rem; line-height: 1.6; margin: 0.9rem 0 0; } .ow-din p b { color: var(--cream); }
+    .ow-din .tag { color: #d8ba7c; font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; margin-top: 0.4rem; }
+    .ow-din p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin: 0.9rem 0 0; } .ow-din p b { color: var(--cream); }
     .ow-ctl { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.9rem; flex-wrap: wrap; }
-    .ow-ctl span { border: 1px solid rgba(244,239,230,0.25); border-radius: 10px; padding: 0.45em 0.8em; font-size: 0.66rem; color: var(--cream-dim); }
+    .ow-ctl span { border: 1px solid rgba(244,239,230,0.25); border-radius: 10px; padding: 0.45em 0.8em; font-size: 0.78rem; color: var(--cream-dim); }
     .ow-ctl b { color: var(--cream); }
     .ow-din__badge { display: inline-grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 0.7rem;
       background: var(--cream, #f4efe6); border-radius: 15px; box-shadow: 0 0 22px rgba(69,182,255,0.45); }
     .ow-din__badge img { width: 44px; margin: 0; filter: none; }
-    .ow-ask { color: #45b6ff; font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 800; margin-top: 1.1rem; }
+    .ow-ask { color: #45b6ff; font-size: 0.78rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 800; margin-top: 1.1rem; }
     /* the city picker */
     .ow-cities { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-top: 0.7rem; }
     .ow-city { position: relative; text-align: left; border: 1px solid rgba(244,239,230,0.16); border-radius: 14px;
@@ -89,11 +89,11 @@
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; }
     .ow-city:active { transform: scale(0.97); }
     .ow-city b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.05rem; line-height: 1; }
-    .ow-city small { display: block; color: var(--cream-dim); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-top: 0.3rem; }
+    .ow-city small { display: block; color: var(--cream-dim); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-top: 0.3rem; }
     .ow-city.is-on { border-color: var(--cc, #45b6ff); box-shadow: 0 0 0 2px var(--cc, #45b6ff), 0 10px 26px rgba(0,0,0,0.5); }
     .ow-city.is-locked { cursor: not-allowed; opacity: 0.5; }
     .ow-city.is-locked b, .ow-city.is-locked small { color: var(--cream-dim); }
-    .ow-city__lock { position: absolute; top: 0.55rem; right: 0.6rem; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase;
+    .ow-city__lock { position: absolute; top: 0.55rem; right: 0.6rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
       font-weight: 800; color: #d8ba7c; border: 1px solid rgba(216,186,124,0.4); border-radius: 100px; padding: 0.15em 0.5em; }
     .btn--ruby:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -105,19 +105,19 @@
       transition: transform 0.32s cubic-bezier(0.2,0.9,0.2,1); max-height: 80dvh; overflow-y: auto; }
     body.ow-open .ow-veil { opacity: 1; pointer-events: auto; } body.ow-open .ow-sheet { transform: translateY(0); }
     .ow-x { position: absolute; top: 0.8rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(244,239,230,0.25); background: rgba(10,8,7,0.6); color: var(--cream-dim); font: inherit; cursor: pointer; }
-    .ow-sheet .k { font-size: 0.56rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 800; }
+    .ow-sheet .k { font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 800; }
     .ow-sheet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; margin-top: 0.2rem; }
-    .ow-sheet .d { color: var(--cream-dim); font-size: 0.82rem; line-height: 1.6; margin-top: 0.4rem; }
+    .ow-sheet .d { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin-top: 0.4rem; }
     .ow-ms { display: grid; gap: 0.5rem; margin-top: 0.9rem; }
     .ow-m { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.7rem 0.85rem; text-decoration: none; color: var(--cream); }
     .ow-m.is-done { border-color: rgba(47,191,113,0.55); background: rgba(47,191,113,0.06); }
-    .ow-m-ic { flex: none; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; border: 1.5px solid var(--dc, #e5383b); color: var(--dc, #e5383b); font-size: 0.8rem; font-weight: 800; }
+    .ow-m-ic { flex: none; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; border: 1.5px solid var(--dc, #e5383b); color: var(--dc, #e5383b); font-size: 0.9rem; font-weight: 800; }
     .ow-m.is-done .ow-m-ic { border-color: #2fbf71; color: #2fbf71; }
-    .ow-m-mid { flex: 1; min-width: 0; } .ow-m-mid b { display: block; font-size: 0.84rem; } .ow-m-mid small { display: block; color: var(--cream-dim); font-size: 0.66rem; margin-top: 0.15rem; }
-    .ow-m-go { flex: none; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dc, #e5383b); }
+    .ow-m-mid { flex: 1; min-width: 0; } .ow-m-mid b { display: block; font-size: 0.9rem; } .ow-m-mid small { display: block; color: var(--cream-dim); font-size: 0.78rem; margin-top: 0.15rem; }
+    .ow-m-go { flex: none; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dc, #e5383b); }
     .ow-toast { position: fixed; top: calc(3.6rem + env(safe-area-inset-top)); left: 50%; transform: translate(-50%, -140%); z-index: 260;
       max-width: min(92vw, 26rem); border: 1px solid rgba(216,186,124,0.55); border-radius: 14px; background: rgba(16,12,10,0.96);
-      color: var(--cream-dim); padding: 0.75rem 1rem; font-size: 0.8rem; line-height: 1.5; box-shadow: 0 12px 34px rgba(0,0,0,0.5);
+      color: var(--cream-dim); padding: 0.75rem 1rem; font-size: 0.9rem; line-height: 1.5; box-shadow: 0 12px 34px rgba(0,0,0,0.5);
       transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1); } .ow-toast b { color: #d8ba7c; } .ow-toast.is-in { transform: translate(-50%, 0); }
     .ow-fail { position: fixed; inset: 0; z-index: 400; display: none; place-items: center; background: #0a0807; text-align: center; padding: 2rem; }
     .ow-fail.on { display: grid; } .ow-fail p { color: var(--cream-dim); max-width: 26rem; line-height: 1.7; }
@@ -154,8 +154,8 @@
       <div class="finale__actions" style="justify-content:center;margin-top:1.2rem">
         <button class="btn btn--ruby" id="owEnter" type="button" disabled>Pick a city to enter</button>
       </div>
-      <p style="margin-top:0.9rem;font-size:0.78rem"><a href="game/" style="color:#e8c877;font-weight:800;text-decoration:none">&#9889; BLOCK OPS — the tactical block &#8594;</a></p>
-      <p style="margin-top:0.5rem;font-size:0.72rem"><a href="ourworld.html" style="color:#9e9890">or the classic hand-painted city →</a></p>
+      <p style="margin-top:0.9rem;font-size:0.84rem"><a href="game/" style="color:#e8c877;font-weight:800;text-decoration:none">&#9889; BLOCK OPS — the tactical block &#8594;</a></p>
+      <p style="margin-top:0.5rem;font-size:0.84rem"><a href="ourworld.html" style="color:#9e9890">or the classic hand-painted city →</a></p>
     </div>
   </div>
 

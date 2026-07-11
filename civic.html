@@ -16,28 +16,28 @@
     .cv__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6);
       padding: 1.2rem 1.15rem 1.3rem; margin-top: 1.3rem; }
     .cv__card h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem; margin-bottom: 0.5rem; }
-    .cv__k { font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase; color: #2f9e62; font-weight: 800; }
+    .cv__k { font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; color: #2f9e62; font-weight: 800; }
     .cv__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
     .cv__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.85rem; text-align: center; }
     .cv__stat b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; color: #2f9e62; }
-    .cv__stat small { color: var(--cream-dim); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .cv__stat small { color: var(--cream-dim); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
     .cv__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.6rem 0; }
     .cv__chip { border: 1px solid rgba(244,239,230,0.3); border-radius: 100px; background: none; color: var(--cream-dim);
-      font: inherit; font-size: 0.74rem; padding: 0.5em 1.1em; cursor: pointer; }
+      font: inherit; font-size: 0.84rem; padding: 0.5em 1.1em; cursor: pointer; }
     .cv__chip.is-on { border-color: #2f9e62; color: #fff; background: rgba(47,158,98,0.25); }
     .cv__in { width: 100%; background: rgba(10,8,7,0.7); border: 1px solid rgba(244,239,230,0.25); border-radius: 10px;
       color: var(--cream); font: inherit; font-size: max(16px, 0.95rem); padding: 0.75em 1em; margin: 0 0 0.55rem; }
-    .cv__msg { color: #2f9e62; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
+    .cv__msg { color: #2f9e62; font-size: 0.9rem; min-height: 1.1em; margin-top: 0.4rem; }
     .cv__bill { border: 1px solid rgba(244,239,230,0.12); border-radius: 12px; padding: 0.8rem 0.95rem; margin-top: 0.6rem; }
     .cv__bill b { font-size: 0.88rem; }
-    .cv__bill p { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.5; margin-top: 0.3rem; }
-    .cv__st { display: inline-block; font-size: 0.56rem; letter-spacing: 0.16em; border: 1px solid rgba(47,158,98,0.5);
+    .cv__bill p { color: var(--cream-dim); font-size: 0.84rem; line-height: 1.5; margin-top: 0.3rem; }
+    .cv__st { display: inline-block; font-size: 0.72rem; letter-spacing: 0.16em; border: 1px solid rgba(47,158,98,0.5);
       color: #2f9e62; border-radius: 100px; padding: 0.3em 0.8em; margin-right: 0.4em; }
     .cv__mi { display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(244,239,230,0.13); border-radius: 12px;
       padding: 0.75rem 0.9rem; margin-top: 0.5rem; text-decoration: none; color: var(--cream); }
-    .cv__mi small { display: block; color: var(--cream-dim); font-size: 0.68rem; margin-top: 0.15rem; }
-    .cv__mi .pts { flex: none; color: #2f9e62; font-weight: 800; font-size: 0.7rem; }
-    .cv__fine { font-size: 0.72rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+    .cv__mi small { display: block; color: var(--cream-dim); font-size: 0.78rem; margin-top: 0.15rem; }
+    .cv__mi .pts { flex: none; color: #2f9e62; font-weight: 800; font-size: 0.84rem; }
+    .cv__fine { font-size: 0.84rem; color: rgba(244,239,230,0.7); line-height: 1.6; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
@@ -71,7 +71,7 @@
       <p class="cv__k">The ladder — rank is earned, never typed</p>
       <h2 id="cvRankName">…</h2>
       <div class="cv__chips" id="cvLadder"></div>
-      <p class="cv__sub" id="cvRankNext" style="margin-top:0.4rem;font-size:0.82rem"></p>
+      <p class="cv__sub" id="cvRankNext" style="margin-top:0.4rem;font-size:0.9rem"></p>
       <div id="cvSeat"></div>
     </section>
 
@@ -89,7 +89,7 @@
         the proof), and your real numbers file straight onto your ticker. Your identity here is built from accounts
         you actually control, nowhere else.</p>
       <div id="cvConnect" style="display:grid;gap:0.5rem;margin-top:0.9rem"></div>
-      <p class="cv__sub" id="cvConnMsg" style="min-height:1.2em;font-size:0.82rem;margin-top:0.5rem"></p>
+      <p class="cv__sub" id="cvConnMsg" style="min-height:1.2em;font-size:0.9rem;margin-top:0.5rem"></p>
     </section>
 
     <section class="cv__card" style="border-color:rgba(232,200,119,0.45)">
@@ -123,7 +123,7 @@
           <button class="btn btn--ghost" id="svCsv" type="button">⬆ Drop the export CSV</button>
           <input type="file" id="svCsvFile" accept=".csv,text/csv,text/plain" hidden>
         </div>
-        <p class="cv__sub" id="svImpMsg" style="min-height:1.2em;font-size:0.8rem;margin-top:0.45rem"></p>
+        <p class="cv__sub" id="svImpMsg" style="min-height:1.2em;font-size:0.9rem;margin-top:0.45rem"></p>
       </div>
     </section>
 
@@ -153,7 +153,7 @@
       <p class="cv__k">Civic missions — the activation game</p>
       <h2>Run the civic arc.</h2>
       <div id="cvMissions"></div>
-      <p class="cv__sub" style="font-size:0.8rem;margin-top:0.7rem">Civic points ride the same engine as everything
+      <p class="cv__sub" style="font-size:0.9rem;margin-top:0.7rem">Civic points ride the same engine as everything
         else — the <b>Please Set Me Free</b> ride mints them, City Hall in Uprise Nation unlocks on them, and the desk sees
         who's really carrying the work.</p>
     </section>
@@ -196,7 +196,7 @@
         function cred(n, l, col) {
           return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:12px;padding:0.7rem;text-align:center;flex:1;min-width:96px">' +
             '<b style="display:block;font-size:1.35rem;font-variant-numeric:tabular-nums;color:' + (col || "#2fbf71") + '">' + n + "</b>" +
-            '<small style="color:rgba(244,239,230,0.55);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
+            '<small style="color:rgba(244,239,230,0.7);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
         }
         if (!authed0) {
           host.innerHTML = '<p class="cv__sub" style="margin-top:0.6rem">Your street credit score lives here — earned by showing up, verified accounts, votes and receipts. <a href="market.html#yours" style="color:#e8c877;font-weight:800">Open your account &#8594;</a> and the number appears.</p>';
@@ -213,7 +213,7 @@
             cred(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "your price — the person", "#e8c877") +
             (trust != null ? cred(trust.toLocaleString() + " pts", "credit paying your price", "#e8c877") : "") +
             "</div>" +
-            '<p class="cv__sub" style="font-size:0.82rem;margin-top:0.5rem">Every point of street credit pays 2 game points into your price. Raise it below: connect accounts, file your card, vote, keep showing up.</p>';
+            '<p class="cv__sub" style="font-size:0.9rem;margin-top:0.5rem">Every point of street credit pays 2 game points into your price. Raise it below: connect accounts, file your card, vote, keep showing up.</p>';
         }).catch(function () {});
       })();
 
@@ -248,10 +248,10 @@
             '<p class="cv__sub" style="margin:0.3rem 0 0.6rem">Which platforms do you actually post on? Tap all of them — the chart builds itself around your answer.</p>' +
             '<div id="svWalkChips" style="display:flex;flex-wrap:wrap;gap:0.4rem">' +
             PLATS.map(function (p) {
-              return '<button type="button" data-plat="' + p[0] + '" style="font:inherit;font-size:0.78rem;font-weight:700;cursor:pointer;border-radius:100px;padding:0.5em 1em;border:1.5px solid rgba(244,239,230,0.35);background:rgba(10,8,7,0.5);color:#f4efe6">' + p[1] + "</button>";
+              return '<button type="button" data-plat="' + p[0] + '" style="font:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;border-radius:100px;padding:0.5em 1em;border:1.5px solid rgba(244,239,230,0.35);background:rgba(10,8,7,0.5);color:#f4efe6">' + p[1] + "</button>";
             }).join("") + "</div>" +
             '<button class="btn btn--ruby" id="svWalkGo" type="button" style="margin-top:0.8rem;width:100%;justify-content:center">Arm my chart</button>' +
-            '<p class="cv__sub" id="svWalkMsg" style="min-height:1.1em;font-size:0.78rem;margin-top:0.4rem"></p></div>';
+            '<p class="cv__sub" id="svWalkMsg" style="min-height:1.1em;font-size:0.84rem;margin-top:0.4rem"></p></div>';
           leg.querySelectorAll("[data-plat]").forEach(function (b) {
             b.addEventListener("click", function () {
               var k = b.getAttribute("data-plat");
@@ -289,7 +289,7 @@
         }
         function paintRange() {
           rng.innerHTML = [30, 90, 365].map(function (d) {
-            return '<button type="button" data-days="' + d + '" style="font:inherit;font-weight:800;font-size:0.7rem;letter-spacing:0.06em;cursor:pointer;border-radius:100px;padding:0.35em 0.95em;border:1.5px solid ' +
+            return '<button type="button" data-days="' + d + '" style="font:inherit;font-weight:800;font-size:0.84rem;letter-spacing:0.06em;cursor:pointer;border-radius:100px;padding:0.35em 0.95em;border:1.5px solid ' +
               (d === days ? "#e8c877;background:rgba(201,157,69,0.25);color:#fff" : "rgba(244,239,230,0.3);background:none;color:rgba(244,239,230,0.6)") + '">' +
               (d === 365 ? "1Y" : d + "D") + "</button>";
           }).join("");
@@ -334,7 +334,7 @@
         function paintLegend() {
           leg.innerHTML = Object.keys(SERIES).map(function (k) {
             var s = SERIES[k];
-            return '<button type="button" data-leg="' + esc(k) + '" style="display:inline-flex;align-items:center;gap:0.4em;font:inherit;font-size:0.68rem;font-weight:700;cursor:pointer;border:1px solid rgba(244,239,230,0.18);border-radius:100px;padding:0.3em 0.8em;background:none;color:rgba(244,239,230,' + (hidden[k] ? "0.35" : "0.85") + ')">' +
+            return '<button type="button" data-leg="' + esc(k) + '" style="display:inline-flex;align-items:center;gap:0.4em;font:inherit;font-size:0.78rem;font-weight:700;cursor:pointer;border:1px solid rgba(244,239,230,0.18);border-radius:100px;padding:0.3em 0.8em;background:none;color:rgba(244,239,230,' + (hidden[k] ? "0.35" : "0.85") + ')">' +
               '<i style="width:9px;height:9px;border-radius:100px;background:' + s.color + (hidden[k] ? ";opacity:0.3" : "") + '"></i>' +
               esc(k) + " · " + (+s.last).toLocaleString() + (s.self ? " · declared" : "") + "</button>";
           }).join("") || "";
@@ -498,15 +498,15 @@
         CARD.modes = (CARD.modes && CARD.modes.length ? CARD.modes : [CARD.mode || "fan"]).slice();
         CARD.issues = CARD.issues || [];
         host.innerHTML =
-          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.8rem">Wear one or both — the personalities stack:</p>' +
+          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.9rem">Wear one or both — the personalities stack:</p>' +
           '<div class="cv__chips" id="cvMode">' +
           '<button class="cv__chip' + (CARD.modes.indexOf("fan") !== -1 ? " is-on" : "") + '" data-m="fan" type="button">🎟 Fan — the culture</button>' +
           '<button class="cv__chip' + (CARD.modes.indexOf("policy") !== -1 ? " is-on" : "") + '" data-m="policy" type="button">⚖ Policy — the work</button></div>' +
           '<select class="cv__in" id="cvCountry">' + COUNTRIES.map(function (c) {
             return '<option value="' + c[0] + '"' + ((CARD.country || "US") === c[0] ? " selected" : "") + ">" + c[1] + "</option>";
           }).join("") + "</select>" +
-          '<p class="cv__sub" id="cvSysLine" style="margin:0 0 0.55rem;font-size:0.76rem"></p>' +
-          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.8rem">Your portfolio — the issues you carry:</p>' +
+          '<p class="cv__sub" id="cvSysLine" style="margin:0 0 0.55rem;font-size:0.84rem"></p>' +
+          '<p class="cv__sub" style="margin:0 0 0.3rem;font-size:0.9rem">Your portfolio — the issues you carry:</p>' +
           '<div class="cv__chips" id="cvIssues">' + ISSUES.map(function (f) {
             return '<button class="cv__chip' + (CARD.issues.indexOf(f[0]) !== -1 ? " is-on" : "") + '" data-i="' + f[0] + '" type="button">' + f[1] + "</button>";
           }).join("") + "</div>" +
@@ -523,7 +523,7 @@
           ["Democrat", "Republican", "Independent", "Other", "None", "keep private"].map(function (v) { return '<option value="' + v + '"' + (CARD.party === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select>" +
           '<button class="btn btn--ruby" id="cvSave" type="button" style="width:100%;justify-content:center">Save my civic card</button>' +
           '<p class="cv__msg" id="cvMsg"></p>' +
-          '<p class="cv__sub" style="font-size:0.74rem;margin-top:0.4rem">Only you and the desk ever see this card. The public sees counts.</p>';
+          '<p class="cv__sub" style="font-size:0.84rem;margin-top:0.4rem">Only you and the desk ever see this card. The public sees counts.</p>';
         host.querySelector("#cvMode").addEventListener("click", function (e) {
           var b = e.target.closest("[data-m]"); if (!b) return;
           var m = b.getAttribute("data-m"), i = CARD.modes.indexOf(m);
@@ -592,7 +592,7 @@
             " proposals · best +" + (+j.best_ups || 0) + ")</span>";
           if (j.seat) {
             $("cvSeat").innerHTML = '<p class="cv__sub" style="margin-top:0.6rem"><span style="border:1px solid rgba(138,180,248,0.6);' +
-              'border-radius:100px;padding:0.4em 1em;color:#8ab4f8;font-weight:700;font-size:0.78rem">🏛 ' +
+              'border-radius:100px;padding:0.4em 1em;color:#8ab4f8;font-weight:700;font-size:0.84rem">🏛 ' +
               esc(j.seat) + "</span> — your seat, on the public record.</p>";
           }
         }).catch(function () {});
@@ -627,10 +627,10 @@
         ];
         $("cvMissions").innerHTML = M.map(function (m) {
           return '<a class="cv__mi" href="' + m[1] + '"' + (/^https:/.test(m[1]) ? ' target="_blank" rel="noopener"' : "") + ">" +
-            "<span>" + (m[3] ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.86rem">' + m[0] + "</b><small>" + m[2] + "</small></span>" +
+            "<span>" + (m[3] ? "✓" : "○") + '</span><span style="flex:1"><b style="font-size:0.9rem">' + m[0] + "</b><small>" + m[2] + "</small></span>" +
             '<span class="pts">' + (m[3] ? "done" : "go →") + "</span></a>";
         }).join("") +
-          '<p class="cv__sub" style="font-size:0.8rem;margin-top:0.6rem">Civic points banked: <b style="color:#2f9e62">' + cp + "</b></p>";
+          '<p class="cv__sub" style="font-size:0.9rem;margin-top:0.6rem">Civic points banked: <b style="color:#2f9e62">' + cp + "</b></p>";
       })();
 
       /* ---- the moving docket ---- */

@@ -26,18 +26,18 @@
       border: 1px solid rgba(244,239,230,0.2); border-radius: 12px; color: var(--cream); font: inherit;
       font-size: 0.92rem; padding: 0.7rem 0.85rem; }
     .wr-compose .row { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; margin-top: 0.6rem; }
-    .wr-compose .who { font-size: 0.76rem; color: var(--cream-dim); }
+    .wr-compose .who { font-size: 0.84rem; color: var(--cream-dim); }
     .wr-post { border: 1px solid rgba(244,239,230,0.12); border-radius: 16px; padding: 1rem 1.05rem;
       background: linear-gradient(180deg, rgba(20,16,14,0.8), rgba(9,7,6,0.85)); margin-bottom: 0.9rem; }
     .wr-post__head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem; text-decoration: none; color: inherit; }
     .wr-post__pic { width: 2.4rem; height: 2.4rem; border-radius: 50%; object-fit: cover; background: rgba(244,239,230,0.08);
       border: 1px solid rgba(244,239,230,0.18); flex: none; display: grid; place-items: center; font-weight: 800; color: var(--ruby-hot); }
     .wr-post__head b { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em; font-size: 1rem; }
-    .wr-post__head small { display: block; color: var(--cream-dim); font-size: 0.7rem; }
+    .wr-post__head small { display: block; color: var(--cream-dim); font-size: 0.84rem; }
     .wr-post__body { color: rgba(244,239,230,0.88); font-size: 0.94rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
     .wr-acts { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
     .wr-react { border: 1px solid rgba(244,239,230,0.16); background: rgba(244,239,230,0.04); color: var(--cream-dim);
-      border-radius: 100px; padding: 0.35em 0.85em; font: inherit; font-size: 0.82rem; cursor: pointer;
+      border-radius: 100px; padding: 0.35em 0.85em; font: inherit; font-size: 0.9rem; cursor: pointer;
       display: inline-flex; align-items: center; gap: 0.35em; transition: border-color 0.2s, background 0.2s, transform 0.15s; }
     .wr-react:active { transform: scale(0.94); }
     .wr-react.is-mine { border-color: rgba(229,56,59,0.7); background: rgba(229,56,59,0.14); color: var(--cream); }
@@ -92,7 +92,7 @@
           var host = document.getElementById("wrFeed");
           if (!rows.length) {
             host.innerHTML = '<p class="wr-empty">The wire is quiet — the first word wins the room.<br>' +
-              '<span style="font-size:0.8rem">(Admin: the feed opens after one paste — docs/social2-schema.sql.)</span></p>';
+              '<span style="font-size:0.9rem">(Admin: the feed opens after one paste — docs/social2-schema.sql.)</span></p>';
             return;
           }
           host.innerHTML = "";

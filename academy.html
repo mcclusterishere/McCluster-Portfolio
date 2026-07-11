@@ -31,10 +31,10 @@
     .ac-lesson__head { display: flex; align-items: center; gap: 0.8rem; width: 100%; text-align: left;
       background: none; border: 0; color: var(--cream); cursor: pointer; padding: 1rem 1.1rem; font: inherit; }
     .ac-lesson__num { flex: none; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center;
-      border: 1px solid rgba(244,239,230,0.3); font-size: 0.8rem; font-weight: 800; }
+      border: 1px solid rgba(244,239,230,0.3); font-size: 0.9rem; font-weight: 800; }
     .is-done .ac-lesson__num { background: #c99d45; color: #0a0807; border-color: #c99d45; }
     .ac-lesson__head h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.02em; }
-    .ac-lesson__head small { display: block; color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.1rem; }
+    .ac-lesson__head small { display: block; color: var(--cream-dim); font-size: 0.84rem; margin-top: 0.1rem; }
     .ac-lesson__body { display: none; padding: 0 1.1rem 1.1rem; }
     .ac-lesson.is-open .ac-lesson__body { display: block; }
     .ac-lesson__body p { color: var(--cream-dim); font-size: 0.92rem; line-height: 1.65; }
@@ -46,13 +46,13 @@
       border-radius: 10px; border: 1px solid rgba(244,239,230,0.2); background: rgba(244,239,230,0.05);
       color: var(--cream); font: inherit; font-size: 0.88rem; cursor: pointer; }
     .ac-quiz button:hover { border-color: rgba(229,56,59,0.6); }
-    .ac-quiz .msg { font-size: 0.82rem; min-height: 1.2em; margin-top: 0.3rem; }
+    .ac-quiz .msg { font-size: 0.9rem; min-height: 1.2em; margin-top: 0.3rem; }
     .ac-grant { border: 1px solid rgba(201,157,69,0.5); border-radius: 16px; padding: 1.2rem 1.2rem 1.3rem; margin-top: 1.6rem;
       background: linear-gradient(160deg, rgba(30,24,14,0.9), rgba(8,6,5,0.95)); }
     .ac-grant h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; }
     .ac-grant p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.6; margin-top: 0.4rem; }
     .ac-grant p b { color: var(--cream); }
-    .ac-fine { font-size: 0.74rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+    .ac-fine { font-size: 0.84rem; color: rgba(244,239,230,0.7); line-height: 1.6; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
@@ -231,7 +231,7 @@
           headers: { apikey: S.key, Authorization: "Bearer " + S.key },
         }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
           var g = document.getElementById("acTreasury");
-          function cell(n, l) { return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:14px;background:rgba(20,16,14,0.6);padding:1rem 1.1rem"><b style="display:block;font-size:1.4rem;font-variant-numeric:tabular-nums">' + n + '</b><small style="color:var(--cream-dim);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase">' + l + "</small></div>"; }
+          function cell(n, l) { return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:14px;background:rgba(20,16,14,0.6);padding:1rem 1.1rem"><b style="display:block;font-size:1.4rem;font-variant-numeric:tabular-nums">' + n + '</b><small style="color:var(--cream-dim);font-size:0.84rem;letter-spacing:0.08em;text-transform:uppercase">' + l + "</small></div>"; }
           if (!rows) { g.innerHTML = cell("—", "the treasury opens after one paste: docs/web3-schema.sql"); return; }
           if (!rows.length) { g.innerHTML = cell("0", "holdings attested — the first buy lands here"); return; }
           g.innerHTML = rows.map(function (h) { return cell((+h.quantity).toFixed(4) + " " + h.asset, h.note || ("attested " + new Date(h.at).toLocaleDateString())); }).join("");

@@ -14,24 +14,24 @@
     .ds__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; max-width: 54ch; } .ds__sub b { color: var(--cream); }
     .ds__tabs { display: flex; gap: 0.45rem; overflow-x: auto; margin: 1.5rem 0 1rem; padding-bottom: 0.3rem; -webkit-overflow-scrolling: touch; }
     .ds__tab { flex: none; border: 1px solid rgba(244,239,230,0.2); background: rgba(244,239,230,0.04); color: var(--cream-dim);
-      border-radius: 100px; padding: 0.5rem 0.95rem; font: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+      border-radius: 100px; padding: 0.5rem 0.95rem; font: inherit; font-size: 0.84rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
     .ds__tab.is-on { background: var(--ruby); border-color: var(--ruby); color: #fff; }
-    .ds__note { color: var(--cream-dim); font-size: 0.82rem; margin: 0 0 1rem; }
+    .ds__note { color: var(--cream-dim); font-size: 0.9rem; margin: 0 0 1rem; }
     .ds__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; }
     .ds__card { position: relative; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px; background: rgba(20,16,14,0.6);
       padding: 0.9rem 0.95rem; cursor: pointer; transition: border-color 0.2s, transform 0.2s, background 0.2s; text-align: left; font: inherit; color: var(--cream); }
     .ds__card:hover { transform: translateY(-2px); border-color: rgba(229,56,59,0.5); }
     .ds__card.is-on { border-color: rgba(47,191,113,0.6); background: rgba(47,191,113,0.07); }
     .ds__dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 0.4rem; vertical-align: -1px; }
-    .ds__card b { font-size: 0.9rem; } .ds__card .st { display: block; margin-top: 0.4rem; font-size: 0.68rem; color: var(--cream-dim); }
+    .ds__card b { font-size: 0.9rem; } .ds__card .st { display: block; margin-top: 0.4rem; font-size: 0.78rem; color: var(--cream-dim); }
     .ds__card.is-on .st { color: #2fbf71; font-weight: 700; }
     .ds__sec-h { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; margin: 2rem 0 0.4rem; }
     .ds__conn { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; background: rgba(20,16,14,0.55); padding: 0.75rem 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.7rem; }
-    .ds__conn b { font-size: 0.88rem; } .ds__conn small { display: block; color: var(--cream-dim); font-size: 0.68rem; }
+    .ds__conn b { font-size: 0.88rem; } .ds__conn small { display: block; color: var(--cream-dim); font-size: 0.78rem; }
     .ds__conn .grow { flex: 1; min-width: 0; }
     .ds__stat { border: 1px solid rgba(201,157,69,0.4); border-radius: 14px; background: rgba(30,24,14,0.5); padding: 1rem 1.1rem; margin: 1rem 0; }
-    .ds__stat b { display: block; font-size: 2rem; font-variant-numeric: tabular-nums; color: var(--cream); } .ds__stat small { color: var(--cream-dim); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
-    .ds__fine { font-size: 0.74rem; color: rgba(244,239,230,0.45); line-height: 1.6; margin-top: 1.6rem; }
+    .ds__stat b { display: block; font-size: 2rem; font-variant-numeric: tabular-nums; color: var(--cream); } .ds__stat small { color: var(--cream-dim); font-size: 0.84rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .ds__fine { font-size: 0.84rem; color: rgba(244,239,230,0.7); line-height: 1.6; margin-top: 1.6rem; }
 
     .ds__veil { position: fixed; inset: 0; background: rgba(5,4,3,0.6); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 110; }
     .ds__sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; max-width: 32rem; margin: 0 auto; background: #14100e;
@@ -42,7 +42,7 @@
     .ds__sheet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.6rem; }
     .ds__sheet .act { display: block; width: 100%; margin-top: 0.6rem; text-align: center; }
     .ds__in { width: 100%; background: rgba(244,239,230,0.05); border: 1px solid rgba(244,239,230,0.2); border-radius: 12px; color: var(--cream); font: inherit; font-size: max(16px,0.9rem); padding: 0.65rem 0.8rem; margin-top: 0.6rem; }
-    .ds__msg { font-size: 0.82rem; color: #d8ba7c; min-height: 1.2em; margin-top: 0.5rem; }
+    .ds__msg { font-size: 0.9rem; color: #d8ba7c; min-height: 1.2em; margin-top: 0.5rem; }
   </style>
 </head>
 <body class="songpage">
@@ -181,8 +181,8 @@
             '<span class="ds__dot" style="background:' + (LANEC[d.lane] || "#c99d45") + '"></span><b>' + esc(d.name) + "</b>" +
             '<span class="st" style="color:var(--cream-dim)">' + esc(d.help || "") + "</span>" +
             '<div style="display:flex;gap:0.4rem;margin-top:0.55rem">' +
-            (d.url ? '<a class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.66rem" href="' + esc(d.url) + '" target="_blank" rel="noopener">Get it ↗</a>' : "") +
-            '<button class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.66rem" type="button" data-idk="' + esc(d.kind) + '" data-idn="' + esc(d.name) + '">+ locker</button></div></div>';
+            (d.url ? '<a class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.78rem" href="' + esc(d.url) + '" target="_blank" rel="noopener">Get it ↗</a>' : "") +
+            '<button class="btn btn--ghost" style="padding:0.35em 0.7em;font-size:0.78rem" type="button" data-idk="' + esc(d.kind) + '" data-idn="' + esc(d.name) + '">+ locker</button></div></div>';
         }).join("") || '<p class="ds__note">No standard code for this category — your platform accounts are your identity.</p>';
         $("dsIdent").querySelectorAll("[data-idk]").forEach(function (b) {
           b.addEventListener("click", function () {
@@ -208,10 +208,10 @@
         var status = held ? held.status : null;
         host.innerHTML = '<div style="border:1px solid ' + seal.color + ';border-radius:16px;background:rgba(20,16,14,0.55);padding:1rem 1.1rem;margin:0.4rem 0 0.2rem;display:flex;align-items:center;gap:0.9rem">' +
           '<span style="flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:' + seal.color + '"><img src="assets/img/m-mark.png" alt="" style="width:22px"></span>' +
-          '<div style="flex:1;min-width:0"><b style="display:block;font-size:0.92rem">' + esc(seal.badge) + '</b><small style="color:var(--cream-dim);font-size:0.72rem">' + esc(seal.desc) + '</small></div>' +
-          (status === "verified" ? '<span style="color:#2fbf71;font-weight:800;font-size:0.78rem;white-space:nowrap">✓ verified</span>'
-            : status === "applied" ? '<span style="color:#d8ba7c;font-weight:800;font-size:0.78rem;white-space:nowrap">⏳ under review</span>'
-            : '<button class="btn btn--ruby" style="padding:0.5em 1em;font-size:0.72rem;white-space:nowrap" type="button" id="dsBadgeApply">Apply for the seal</button>') + "</div>";
+          '<div style="flex:1;min-width:0"><b style="display:block;font-size:0.92rem">' + esc(seal.badge) + '</b><small style="color:var(--cream-dim);font-size:0.84rem">' + esc(seal.desc) + '</small></div>' +
+          (status === "verified" ? '<span style="color:#2fbf71;font-weight:800;font-size:0.84rem;white-space:nowrap">✓ verified</span>'
+            : status === "applied" ? '<span style="color:#d8ba7c;font-weight:800;font-size:0.84rem;white-space:nowrap">⏳ under review</span>'
+            : '<button class="btn btn--ruby" style="padding:0.5em 1em;font-size:0.84rem;white-space:nowrap" type="button" id="dsBadgeApply">Apply for the seal</button>') + "</div>";
         var ab = host.querySelector("#dsBadgeApply");
         if (ab) ab.addEventListener("click", function () {
           if (!signedIn()) { location.href = "market.html#yours"; return; }
@@ -279,14 +279,14 @@
         } else {
           var url = (conn && conn.reports_url) || d.reports;
           body.innerHTML =
-            (conn ? '<p style="color:#2fbf71;font-size:0.82rem;margin:0 0 0.3rem">✓ Connected — the desk knows you distribute through ' + esc(d.name) + ".</p>" : '<p class="ds__sub" style="margin:0 0 0.4rem;font-size:0.82rem">Connect this and the desk knows exactly who you distribute through.</p>') +
+            (conn ? '<p style="color:#2fbf71;font-size:0.9rem;margin:0 0 0.3rem">✓ Connected — the desk knows you distribute through ' + esc(d.name) + ".</p>" : '<p class="ds__sub" style="margin:0 0 0.4rem;font-size:0.9rem">Connect this and the desk knows exactly who you distribute through.</p>') +
             (conn ? "" : '<input class="ds__in" id="dsDHandle" placeholder="Your artist / account name on ' + esc(d.name) + ' (optional)">') +
             '<a class="btn btn--ghost act" href="' + esc(url) + '" target="_blank" rel="noopener" id="dsOpen">Open your ' + esc(d.name) + ' reports &amp; bank ↗</a>' +
             (conn ? "" : '<button class="btn btn--ruby act" id="dsConnect" type="button">Connect ' + esc(d.name) + "</button>") +
-            (d.csv === false ? '<p class="ds__sub" style="font-size:0.76rem;margin-top:0.6rem">' + esc(d.name) + " doesn't export a CSV — download what they give you, or log the total under Other." : "") +
+            (d.csv === false ? '<p class="ds__sub" style="font-size:0.84rem;margin-top:0.6rem">' + esc(d.name) + " doesn't export a CSV — download what they give you, or log the total under Other." : "") +
             '<div style="margin-top:0.7rem;border-top:1px dashed rgba(244,239,230,0.15);padding-top:0.7rem">' +
-            '<p style="font-size:0.82rem;color:var(--cream);font-weight:700;margin:0 0 0.3rem">Got your earnings report?</p>' +
-            '<p class="ds__sub" style="font-size:0.76rem;margin:0 0 0.5rem">Download the CSV from ' + esc(d.name) + ' and drop it here — we read the total and file it on your record.</p>' +
+            '<p style="font-size:0.9rem;color:var(--cream);font-weight:700;margin:0 0 0.3rem">Got your earnings report?</p>' +
+            '<p class="ds__sub" style="font-size:0.84rem;margin:0 0 0.5rem">Download the CSV from ' + esc(d.name) + ' and drop it here — we read the total and file it on your record.</p>' +
             '<button class="btn btn--ghost act" id="dsUp" type="button">⬆ Upload earnings CSV</button>' +
             '<input type="file" accept=".csv,text/csv,text/plain" hidden id="dsFile"></div>';
           var openBtn = body.querySelector("#dsOpen");
@@ -340,7 +340,7 @@
         if (conns.length) {
           html += '<h2 class="ds__sec-h">Your connections</h2>' + conns.map(function (c) {
             return '<div class="ds__conn"><span class="ds__dot" style="background:#2fbf71"></span><span class="grow"><b>' + esc(c.name) + "</b><small>" + esc(c.industry) + (c.handle ? " · " + esc(c.handle) : "") + (c.verified ? " · ✓ verified" : "") + "</small></span>" +
-              (c.reports_url ? '<a class="btn btn--ghost" style="padding:0.4em 0.9em;font-size:0.7rem" href="' + esc(c.reports_url) + '" target="_blank" rel="noopener">Reports ↗</a>' : "") + "</div>";
+              (c.reports_url ? '<a class="btn btn--ghost" style="padding:0.4em 0.9em;font-size:0.84rem" href="' + esc(c.reports_url) + '" target="_blank" rel="noopener">Reports ↗</a>' : "") + "</div>";
           }).join("");
         }
         html += '<div class="ds__stat"><b>' + (MINE.reported_total != null ? "$" + (+MINE.reported_total).toLocaleString() : "$0") + '</b><small>reported earnings, all time · $' + (+(MINE.reported_12mo || 0)).toLocaleString() + " last 12 months</small></div>";

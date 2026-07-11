@@ -12,13 +12,13 @@
   function signedIn() { return !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()); }
 
   var css = ".dq{border:1px solid rgba(201,157,69,0.5);border-radius:16px;background:rgba(20,16,14,0.92);padding:1.1rem 1.15rem;text-align:left}" +
-    ".dq__k{font-size:0.58rem;letter-spacing:0.24em;text-transform:uppercase;color:#c99d45;font-weight:800;margin:0}" +
+    ".dq__k{font-size:0.72rem;letter-spacing:0.24em;text-transform:uppercase;color:#c99d45;font-weight:800;margin:0}" +
     ".dq h2{font-family:var(--display,inherit);font-weight:400;text-transform:uppercase;font-size:1.3rem;margin:0.3rem 0 0.2rem;color:#f4efe6}" +
-    ".dq__n{color:rgba(244,239,230,0.6);font-size:0.82rem;line-height:1.6;margin:0 0 0.7rem}" +
+    ".dq__n{color:rgba(244,239,230,0.6);font-size:0.9rem;line-height:1.6;margin:0 0 0.7rem}" +
     ".dq__chips{display:flex;flex-wrap:wrap;gap:0.45rem}" +
-    ".dq__chip{border:1.5px solid rgba(244,239,230,0.35);border-radius:100px;background:rgba(10,8,7,0.5);color:#f4efe6;font:inherit;font-size:0.82rem;font-weight:700;padding:0.55em 1.1em;cursor:pointer}" +
+    ".dq__chip{border:1.5px solid rgba(244,239,230,0.35);border-radius:100px;background:rgba(10,8,7,0.5);color:#f4efe6;font:inherit;font-size:0.9rem;font-weight:700;padding:0.55em 1.1em;cursor:pointer}" +
     ".dq__chip.is-on{border-color:#e8c877;background:rgba(201,157,69,0.25);color:#fff}" +
-    ".dq__go{display:inline-block;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;padding:0.85em 1.6em;color:#fff;margin-top:0.9rem;background:linear-gradient(120deg,#7f1d1d,#e5383b)}";
+    ".dq__go{display:inline-block;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;padding:0.85em 1.6em;color:#fff;margin-top:0.9rem;background:linear-gradient(120deg,#7f1d1d,#e5383b)}";
   var st = document.createElement("style");
   st.textContent = css;
   document.head.appendChild(st);

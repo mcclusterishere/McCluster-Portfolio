@@ -31,13 +31,13 @@
     .vr__brand { display: flex; align-items: center; gap: 0.6rem; color: var(--cream); text-decoration: none; }
     .vr__brand img { width: 26px; }
     .vr__brand b { font-family: var(--display); font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; }
-    .vr__badge { font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: #fff;
+    .vr__badge { font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; color: #fff;
       background: linear-gradient(120deg, var(--ruby), var(--ruby-hot)); border-radius: 100px; padding: 0.45em 1em; }
     /* the door out: always on screen, big enough for a thumb, impossible to miss */
     .vr__exit {
       display: inline-flex; align-items: center; gap: 0.5em; min-height: 44px; min-width: 44px;
       padding: 0 1.15em; border-radius: 100px; text-decoration: none; color: #fff;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      font-size: 0.84rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
       background: linear-gradient(120deg, #c93a04, #f84c0a);
       box-shadow: 0 6px 22px rgba(248, 76, 10, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
@@ -47,12 +47,12 @@
       padding: 1rem 1.2rem calc(1.2rem + env(safe-area-inset-bottom));
       background: linear-gradient(0deg, rgba(10,8,7,0.85), transparent);
     }
-    .vr__hint { color: var(--cream-dim); font-size: 0.86rem; letter-spacing: 0.04em; margin-bottom: 0.7rem; }
+    .vr__hint { color: var(--cream-dim); font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.7rem; }
     .vr__hint b { color: var(--cream); }
     .vr__actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
     .vr__btn {
       border: 1px solid rgba(244, 239, 230, 0.35); border-radius: 100px; background: rgba(10,8,7,0.6);
-      color: var(--cream); font: inherit; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--cream); font: inherit; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
       padding: 0.6em 1.3em; cursor: pointer; transition: border-color 0.25s, background 0.25s;
     }
     .vr__btn:hover { border-color: var(--ruby-hot); background: rgba(193, 18, 31, 0.25); }
@@ -87,7 +87,7 @@
     }
     @keyframes vrSpotPing { 0% { transform: scale(0.7); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
     .vr360-spot span {
-      font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+      font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
       background: rgba(10, 8, 7, 0.75); border: 1px solid rgba(229, 56, 59, 0.5);
       border-radius: 100px; padding: 0.45em 0.95em; backdrop-filter: blur(4px);
       transition: background 0.25s, border-color 0.25s;
@@ -113,7 +113,7 @@
       background: rgba(244, 239, 230, 0.22); outline: none; cursor: pointer; }
     .vr__scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
       background: var(--ruby-hot); box-shadow: 0 0 10px rgba(229, 56, 59, 0.8); }
-    .vr__time { flex: none; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--cream-dim); font-variant-numeric: tabular-nums; }
+    .vr__time { flex: none; font-size: 0.78rem; letter-spacing: 0.1em; color: var(--cream-dim); font-variant-numeric: tabular-nums; }
     /* while the loading-fallback card is up, the film controls stand down —
        the card carries its own doors (Try again / the universe), and the two
        sets of buttons were stacking through each other. The Exit stays. */
@@ -206,7 +206,7 @@
           ov.innerHTML =
             '<div style="background:rgba(10,8,7,0.78);backdrop-filter:blur(6px);border-radius:18px;padding:1.6rem 1.5rem;max-width:22rem">' +
             '<p style="font-family:var(--display);text-transform:uppercase;font-size:1.3rem">' + msg + "</p>" +
-            '<p style="color:var(--cream-dim);font-size:0.85rem;line-height:1.5;margin:0.5rem 0 1rem">The 360 film is a heavy lift on slow connections — the cabin is still real.</p>' +
+            '<p style="color:var(--cream-dim);font-size:0.9rem;line-height:1.5;margin:0.5rem 0 1rem">The 360 film is a heavy lift on slow connections — the cabin is still real.</p>' +
             '<button class="vr__btn" id="vrRetry" type="button">Try again</button> ' +
             '<a class="vr__btn" href="vaunt.html" style="text-decoration:none">The Vaunt universe</a></div>';
           document.querySelector(".vr").appendChild(ov);

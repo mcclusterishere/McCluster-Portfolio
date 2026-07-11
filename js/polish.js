@@ -140,16 +140,16 @@
           'border-bottom:0;border-radius:22px 22px 0 0;padding:1.2rem 1.2rem calc(1.5rem + env(safe-area-inset-bottom))}' +
           '#mccIntake h3{font-family:var(--display,inherit);text-transform:uppercase;font-weight:400;' +
           'font-size:1.3rem;margin:0 0 0.2rem;color:var(--cream,#f4efe6)}' +
-          '#mccIntake .itk__sub{margin:0 0 0.8rem;color:rgba(244,239,230,0.6);font-size:0.8rem;line-height:1.5}' +
+          '#mccIntake .itk__sub{margin:0 0 0.8rem;color:rgba(244,239,230,0.6);font-size:0.9rem;line-height:1.5}' +
           '#mccIntake .itk__in{width:100%;background:rgba(10,8,7,0.75);border:1px solid rgba(244,239,230,0.3);' +
           'border-radius:12px;color:var(--cream,#f4efe6);font:inherit;font-size:max(16px,1rem);padding:0.8em 1em;margin:0 0 0.55rem}' +
           '#mccIntake textarea.itk__in{min-height:5.2em;resize:vertical}' +
           '#mccIntake .itk__go{display:block;width:100%;border:0;border-radius:12px;cursor:pointer;font:inherit;font-weight:800;' +
           'font-size:0.95rem;letter-spacing:0.05em;text-transform:uppercase;padding:1em;color:#fff;' +
           'background:linear-gradient(120deg,var(--ruby,#a4161a),var(--ruby-hot,#e5383b))}' +
-          '#mccIntake .itk__alt{display:block;width:100%;background:none;border:0;color:rgba(244,239,230,0.55);' +
-          'font:inherit;font-size:0.8rem;text-decoration:underline;cursor:pointer;padding:0.7em;text-align:center}' +
-          '#mccIntake .itk__msg{margin:0.4rem 0 0;min-height:1.2em;color:var(--cream,#f4efe6);font-size:0.85rem;text-align:center}</style>' +
+          '#mccIntake .itk__alt{display:block;width:100%;background:none;border:0;color:rgba(244,239,230,0.7);' +
+          'font:inherit;font-size:0.9rem;text-decoration:underline;cursor:pointer;padding:0.7em;text-align:center}' +
+          '#mccIntake .itk__msg{margin:0.4rem 0 0;min-height:1.2em;color:var(--cream,#f4efe6);font-size:0.9rem;text-align:center}</style>' +
           '<div class="itk" role="dialog" aria-modal="true">' +
           '<h3>Say the word.</h3>' +
           '<p class="itk__sub" data-itk-sub></p>' +
@@ -392,7 +392,7 @@
     c.style.cssText = "position:fixed;right:0.9rem;bottom:calc(5.4rem + env(safe-area-inset-bottom));z-index:60;" +
       "display:flex;align-items:center;gap:0.35rem;background:rgba(12,9,8,0.88);backdrop-filter:blur(8px);" +
       "border:1px solid rgba(201,157,69,0.55);border-radius:100px;padding:0.5rem 0.9rem;text-decoration:none;" +
-      "color:#c99d45;font-size:0.66rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;" +
+      "color:#c99d45;font-size:0.78rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;" +
       "box-shadow:0 6px 22px rgba(0,0,0,0.45)";
     c.innerHTML = "&#9670; Command";
     document.body.appendChild(c);

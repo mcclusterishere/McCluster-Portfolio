@@ -122,11 +122,11 @@
       Math.abs(data.changePct).toFixed(2) + "%</span>" +
       (opts.public ? "</div>" :
       '<button type="button" id="mstockDollar" style="margin-left:auto;border:1px solid rgba(244,239,230,0.3);' +
-      'border-radius:100px;background:none;color:var(--cream-dim);font:inherit;font-size:0.66rem;' +
+      'border-radius:100px;background:none;color:var(--cream-dim);font:inherit;font-size:0.78rem;' +
       'letter-spacing:0.14em;text-transform:uppercase;padding:0.4em 1em;cursor:pointer">$</button></div>') +
       '<canvas id="mstockCv" width="600" height="120" style="width:100%;height:60px;margin-top:0.5rem"></canvas>' +
-      (opts.public ? "" : '<p id="mstockMoney" style="min-height:1.3em;font-size:0.8rem;color:var(--cream-dim);margin-top:0.3rem"></p>') +
-      '<p style="font-size:0.68rem;color:var(--cream-dim);letter-spacing:0.08em;margin-top:0.2rem">' +
+      (opts.public ? "" : '<p id="mstockMoney" style="min-height:1.3em;font-size:0.9rem;color:var(--cream-dim);margin-top:0.3rem"></p>') +
+      '<p style="font-size:0.78rem;color:var(--cream-dim);letter-spacing:0.08em;margin-top:0.2rem">' +
       (opts.public
         ? "The public index \u2014 moves with the record: verified standing, the market's pace, the daily floor. Dollars stay private unless the holder shows them.</p>"
         : "Your labor vs the market's pace \u2014 bookings done, deals signed, shows logged move it up; the floor never sleeps.</p>");

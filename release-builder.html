@@ -11,7 +11,7 @@
   <style>
     .rb { max-width: 62rem; margin: 0 auto; padding: clamp(4.5rem,9vh,6rem) clamp(0.9rem,3vw,2rem) 8rem; }
     .rb h1 { font-family: var(--display); text-transform: uppercase; font-size: clamp(2rem,7vw,3.2rem); line-height: 0.95; }
-    .rb__kick { font-family: var(--mono, monospace); font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c99d45; }
+    .rb__kick { font-family: var(--mono, monospace); font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: #c99d45; }
     .rb__sub { color: var(--cream-dim); line-height: 1.6; margin-top: 0.6rem; max-width: 60ch; }
     .rb__sub b { color: var(--cream); }
     .rb__panel { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.6); padding: 1.1rem 1.15rem 1.25rem; margin-top: 1.1rem; }
@@ -19,20 +19,20 @@
     .rb__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
     @media (max-width: 620px) { .rb__grid { grid-template-columns: 1fr; } }
     .rb__f { display: flex; flex-direction: column; gap: 0.2rem; }
-    .rb__f label { font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cream-dim); }
+    .rb__f label { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cream-dim); }
     .rb__in, .rb__ta, .rb__sel { width: 100%; background: rgba(10,8,7,0.75); border: 1px solid rgba(244,239,230,0.22); border-radius: 9px;
       color: var(--cream); font: inherit; font-size: max(16px,0.9rem); padding: 0.6em 0.7em; }
     .rb__in:focus, .rb__ta:focus, .rb__sel:focus { outline: none; border-color: var(--ruby-hot); }
-    .rb__ta { min-height: 3.4em; resize: vertical; font-family: var(--mono, monospace); font-size: 0.82rem; }
+    .rb__ta { min-height: 3.4em; resize: vertical; font-family: var(--mono, monospace); font-size: 0.9rem; }
     .rb__track { border: 1px solid rgba(244,239,230,0.16); border-radius: 14px; padding: 1rem 1.05rem; margin-top: 0.9rem; background: rgba(10,8,7,0.4); }
     .rb__track-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
     .rb__track-head b { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; }
-    .rb__x { background: none; border: 1px solid rgba(244,239,230,0.25); border-radius: 8px; color: var(--cream-dim); cursor: pointer; padding: 0.25em 0.6em; font-size: 0.75rem; }
-    .rb__hint { font-size: 0.72rem; color: rgba(244,239,230,0.5); margin-top: 0.2rem; }
+    .rb__x { background: none; border: 1px solid rgba(244,239,230,0.25); border-radius: 8px; color: var(--cream-dim); cursor: pointer; padding: 0.25em 0.6em; font-size: 0.84rem; }
+    .rb__hint { font-size: 0.84rem; color: rgba(244,239,230,0.7); margin-top: 0.2rem; }
     .rb__bar { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.8rem 0 0; background: linear-gradient(0deg, var(--ink) 60%, transparent); }
     .rb__out { width: 100%; min-height: 8rem; margin-top: 0.8rem; background: #0a0706; border: 1px solid rgba(244,239,230,0.2); border-radius: 10px;
-      color: #c9d7c9; font-family: var(--mono, monospace); font-size: 0.76rem; padding: 0.8rem; white-space: pre; overflow: auto; }
-    .rb__msg { min-height: 1.2em; color: var(--cream); font-size: 0.82rem; margin-top: 0.4rem; }
+      color: #c9d7c9; font-family: var(--mono, monospace); font-size: 0.84rem; padding: 0.8rem; white-space: pre; overflow: auto; }
+    .rb__msg { min-height: 1.2em; color: var(--cream); font-size: 0.9rem; margin-top: 0.4rem; }
   </style>
 </head>
 <body class="songpage has-appbar">
@@ -66,7 +66,7 @@
     <section class="rb__panel">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <h2 style="margin:0">Tracks</h2>
-        <button class="btn btn--ghost" id="rbAdd" type="button" style="padding:0.5em 1em;font-size:0.75rem">+ Add track</button>
+        <button class="btn btn--ghost" id="rbAdd" type="button" style="padding:0.5em 1em;font-size:0.84rem">+ Add track</button>
       </div>
       <div id="rbTracks"></div>
     </section>
@@ -80,7 +80,7 @@
       <button class="btn btn--ghost" id="rbVault" type="button">Save identifiers to my cloud locker</button>
     </div>
     <p class="rb__msg" id="rbMsg"></p>
-    <p class="rb__hint" id="rbPower" style="font-size:0.82rem"></p>
+    <p class="rb__hint" id="rbPower" style="font-size:0.9rem"></p>
     <pre class="rb__out" id="rbOut" aria-live="polite">Your JSON batch appears here on export.</pre>
   </main>
 
