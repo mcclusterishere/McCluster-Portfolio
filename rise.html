@@ -64,6 +64,7 @@
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/door.js?v=__STAMP__"></script>
+  <script src="js/chaser.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -237,7 +238,10 @@
         track("rise_done", { arch: card.arch.join("+"), entry: entry[0] });
         var sorted = VKEYS.slice().sort(function (a, b) { return card.v[b] - card.v[a]; });
         stage.innerHTML = '<div class="rz__step"><p class="rz__meta">The pattern formed · your E⤴ Card</p>' +
-          '<div class="rz__card"><p class="rz__k">' + p1.n.replace("The ", "").replace(" Chaser", "") + " × " + p2.n.replace("The ", "").replace(" Chaser", "") + '</p>' +
+          '<div class="rz__card">' +
+          /* CHASER WORLDS: the card deals a district, not just a title */
+          (window.MCC_CHASER ? '<div style="margin-bottom:0.9rem">' + window.MCC_CHASER.banner(order[0]) + "</div>" : "") +
+          '<p class="rz__k">' + p1.n.replace("The ", "").replace(" Chaser", "") + " × " + p2.n.replace("The ", "").replace(" Chaser", "") + '</p>' +
           "<h2>" + p1.n.replace(" Chaser", "") + "&ndash;" + p2.n.replace("The ", "") + "</h2>" +
           '<p class="sub">' + p1.line + " <b>" + p2.line + "</b></p>" +
           '<div class="rz__vals">' + sorted.map(function (k) {
