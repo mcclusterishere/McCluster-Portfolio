@@ -829,7 +829,7 @@
         <p class="mk__msg" id="tdSaveMsg"></p>
         <a class="mv" href="verify.html" data-cta="mk-desk-mverified">
           <span class="mv__seal" style="--badge-c:#8b5cf6"><img src="assets/img/m-mark.png" alt=""></span>
-          <span class="mv__txt"><small>M-Verified</small><b>New listings go through review — that's what the badge means. Get M-Verified &#8594;</b></span>
+          <span class="mv__txt"><small>M-Verified</small><b>Your listing goes live the moment you post it — the badge is the desk's extra vouch. Get M-Verified &#8594;</b></span>
         </a>
       </div>
 
@@ -2034,7 +2034,17 @@
             }
             st.textContent = mine.status === "live" ? "● live" : mine.status;
             if (mine.review_note && mine.status !== "live") {
-              $("tdSaveMsg").textContent = "From the review: " + mine.review_note + " — fix it up and save again.";
+              /* THE UNDO landed here: the desk's reason shows, and the
+                 member re-lights it themselves when it's fixed */
+              $("tdSaveMsg").innerHTML = 'The desk pulled this back: “' + esc(mine.review_note) +
+                '” — fix it up, then <button class="btn btn--ghost" type="button" id="tdRelight" style="font-size:0.8rem;padding:0.4em 1em">Put it back live</button>';
+              var rl = $("tdRelight");
+              if (rl) rl.addEventListener("click", function () {
+                rl.disabled = true; rl.textContent = "Lighting…";
+                window.MCC_NET.saveListing({ status: "live", review_note: "" }).then(function () {
+                  $("tdSaveMsg").textContent = "✓ Back live on Our Street.";
+                }).catch(function () { rl.disabled = false; rl.textContent = "Put it back live"; });
+              });
             }
             $("fName").value = mine.name || "";
             $("fTicker").value = mine.ticker || "";

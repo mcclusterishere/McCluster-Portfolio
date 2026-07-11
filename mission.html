@@ -208,8 +208,8 @@
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcListings">
-        <h2>Listings to review</h2>
-        <p class="mc__obj"><b>Objective</b> Keep Our Street honest. Every new listing lands here in review — approve it and it goes live on the market; until you do, the member waits.</p>
+        <h2>The Green Tape</h2>
+        <p class="mc__obj"><b>Objective</b> Watch, don't gate. Listings go LIVE the moment members post them — nobody waits on you. Every go-live rings your bell; from here you can <b>undo</b> one (with a reason they see) or <b>message</b> them about it. Money keeps its gates elsewhere.</p>
         <div id="mcListings"><p class="mc__empty">Loading…</p></div>
       </section>
 
@@ -1057,11 +1057,15 @@
             return;
           }
           listings = listings || []; reqs = reqs || []; members = members || []; sms = sms || [];
-          var pend = listings.filter(function (l) { return l.status === "pending"; });
+          var week = Date.now() - 7 * 864e5;
+          var pend = listings.filter(function (l) {
+            return l.status === "pending" ||
+              (l.status === "live" && l.created_at && new Date(l.created_at).getTime() > week);
+          });
           var fresh = reqs.filter(function (q) { return q.status === "new"; });
           var applied = members.filter(function (m) { return m.status === "applied"; });
           $("mcStats").innerHTML =
-            stat("pending listings", pend.length) + stat("new requests", fresh.length) +
+            stat("went live · 7d", pend.length) + stat("new requests", fresh.length) +
             stat("applications", applied.length) + stat("live listings", listings.filter(function (l) { return l.status === "live"; }).length) +
             stat("texts opted in", sms.length);
           $("tabNListings").textContent = pend.length || "";
@@ -1078,18 +1082,31 @@
               (l.blurb ? "<p>" + esc(l.blurb) + "</p>" : "") +
               (l.review_note ? '<p style="color:var(--ruby-hot)">Note on file: ' + esc(l.review_note) + "</p>" : "") +
               rowActs("listing", l.id, l.status === "live"
-                ? [["paused", "Pause"]]
-                : [["live", "Approve → live", "btn--ruby"], ["denied", "Deny with reason"], ["paused", "Pause"]]) +
+                ? [["denied", "Undo — pull it back"]]
+                : [["live", "Restore → live", "btn--ruby"]]) +
+              '<div class="mc__acts" style="margin-top:0.3rem"><button class="btn btn--ghost" data-pen="' + esc(l.owner) + '" data-pen-name="' + esc(l.name) + '">✉ Message them</button></div>' +
             "</div>";
           }).join("") : "<p class='mc__empty'>No listings yet.</p>";
           wireActs($("mcListings"), function (id, to) {
             if (to === "denied") {
-              // the reason travels with the pause — the applicant sees why, not silence
-              var why = prompt("Why is this a no (for now)? The applicant sees this:");
+              // THE UNDO: the reason travels with the pull-back — the member sees why, not silence
+              var why = prompt("Why the pull-back? The member sees this:");
               if (why === null) return Promise.resolve();
               return A.setListing(id, "paused", why.trim());
             }
             return A.setListing(id, to);
+          });
+          /* THE PEN: message any member about what they did */
+          $("mcListings").querySelectorAll("[data-pen]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var msg = prompt("Your note to " + (b.getAttribute("data-pen-name") || "them") + " — lands on their bell:");
+              if (msg === null || !msg.trim()) return;
+              b.textContent = "…";
+              A.noteMember(b.getAttribute("data-pen"), msg.trim()).then(function (j) {
+                b.textContent = j && j.ok ? "✓ Sent" : "✉ Message them";
+                if (!(j && j.ok)) alert((j && j.why) || "The pen arms with one paste (green-light).");
+              }).catch(function () { b.textContent = "✉ Message them"; });
+            });
           });
 
           $("mcRequests").innerHTML = reqs.length ? reqs.map(function (q) {
@@ -1332,7 +1349,7 @@
         { tab: null, t: "This is the house desk.", b: "Mission Control is <b>yours alone</b> — the whole platform on one screen. Members never see this room; they run <b>Your Mission Control</b>, the member desk, with their own numbers only. Sixteen rooms in four groups — this walk takes you through every one." },
         { tab: "mcPulse", t: "The pulse.", b: "The platform computes what's waiting on you — listings in review, requests unanswered, deals mid-flight. Below it, <b>Our Street live</b>: every member's move as it lands. Open here every session; clear the list, read the tape." },
         { tab: "mcBrain", t: "The Brain.", b: "The platform pitches you moves, and <b>the People's Board</b> carries Our Street's proposals. Yours is the only vote that ships anything — approve or decline, and never let a pitch age." },
-        { tab: "mcListings", t: "Listings — the review gate.", b: "Every listing a member creates lands here in <b>review</b> — nothing reaches Our Street until you approve it. When somebody says &ldquo;my listing didn't go through,&rdquo; this room is why. Approve it and it goes live with a price tape of its own." },
+        { tab: "mcListings", t: "The Green Tape — watch, don't gate.", b: "Listings go <b>live the moment members post them</b> — nobody waits on you. Every go-live rings your bell; this room is where you <b>undo</b> one (with a reason they see) or <b>message</b> the member about it. Money keeps its gates elsewhere." },
         { tab: "mcRequests", t: "Requests.", b: "Booking requests off Our Street — real people asking for real dates. Confirm or decline the same day; a stale request is a lost deal." },
         { tab: "mcMembers", t: "Members.", b: "Applications to go deeper on Our Street. You read them, you open the door — the card at the front gate is self-serve, but this room is yours." },
         { tab: "mcIntake", t: "The intake.", b: "Every ask on the record, plus the mission-proof docket. If anyone asked the platform for anything, it sits here until you deal with it — nothing asked gets lost." },
