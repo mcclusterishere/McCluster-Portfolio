@@ -123,6 +123,21 @@ drop trigger if exists notify_listing on public.providers;
 create trigger notify_listing after insert or update on public.providers
   for each row execute function public.tg_notify_listing();
 
+-- a statement filed on the sales book — the record grew
+create or replace function public.tg_notify_earnings()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  begin
+    perform notify(new.owner, 'listing', 'Statement filed',
+      new.distributor || ' — $' || new.gross || ' on your sales book. It pays your price at the next tape.',
+      'distribution.html');
+  exception when others then null; end;
+  return new;
+end $$;
+drop trigger if exists notify_earnings on public.earnings_reports;
+create trigger notify_earnings after insert on public.earnings_reports
+  for each row execute function public.tg_notify_earnings();
+
 -- my bell, newest first
 create or replace function public.my_inbox(p_limit int default 30)
 returns table (id uuid, kind text, title text, body text, link text, read boolean, at timestamptz)
