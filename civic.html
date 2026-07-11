@@ -139,8 +139,14 @@
         var host = $("cvConnect"), msg = $("cvConnMsg");
         var authed = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
         host.innerHTML =
-          '<button class="btn btn--xc" data-oauth="youtube" style="justify-content:center;background:linear-gradient(180deg,#ff4e45,#c4302b);color:#fff">▶ Connect YouTube — log in &amp; done</button>' +
-          '<button class="btn btn--xc" data-oauth="spotify" style="justify-content:center;background:linear-gradient(180deg,#1ed760,#169c46);color:#0a0807">● Connect Spotify — log in &amp; done</button>';
+          [["youtube", "▶ Connect YouTube", "#ff4e45,#c4302b", "#fff"],
+           ["spotify", "● Connect Spotify", "#1ed760,#169c46", "#0a0807"],
+           ["github", "⌥ Connect GitHub", "#6e7681,#24292f", "#fff"],
+           ["twitch", "⏵ Connect Twitch", "#a970ff,#6441a5", "#fff"],
+           ["reddit", "◉ Connect Reddit", "#ff6a2c,#d93a00", "#fff"],
+           ["x", "𝕏 Connect X", "#3a3a3a,#111", "#fff"]].map(function (c) {
+            return '<button class="btn btn--xc" data-oauth="' + c[0] + '" style="justify-content:center;background:linear-gradient(180deg,' + c[2] + ');color:' + c[3] + '">' + c[1] + " — log in &amp; done</button>";
+          }).join("");
         host.querySelectorAll("[data-oauth]").forEach(function (b) {
           b.addEventListener("click", function () {
             if (!authed) { location.href = "rise.html"; return; }
@@ -149,9 +155,9 @@
             S.token().then(function (t) {
               return fetch(S.url + "/functions/v1/oauth-connect/start?provider=" + prov + "&t=" + encodeURIComponent(t || ""), {
                 headers: { apikey: S.key } });
-            }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+            }).then(function (r) { return r.json().catch(function () { return null; }); }).then(function (j) {
               if (j && j.url) { track("oauth_start", { p: prov, from: "civic" }); location.href = j.url; }
-              else { b.disabled = false; b.textContent = "Connect " + prov + " — the rail is being armed"; }
+              else { b.disabled = false; b.textContent = (j && j.error) ? prov + ": " + j.error : "Connect " + prov + " — the rail is being armed"; }
             }).catch(function () { b.disabled = false; b.textContent = "Connect " + prov + " — try again"; });
           });
         });
