@@ -160,6 +160,23 @@
 
     <div class="pg__links" id="pgLinks"></div>
 
+    <section class="pg__sec" id="pgOpenSec" style="display:none">
+      <p class="pg__k" style="color:#e8c877">The score, in the open</p>
+      <div style="border:1px solid rgba(232,200,119,0.4);border-radius:16px;background:rgba(18,14,11,0.75);padding:1rem 1.05rem">
+        <div style="display:flex;align-items:baseline;gap:0.7rem;flex-wrap:wrap">
+          <b id="pgOpenPrice" style="font-size:1.9rem;font-variant-numeric:tabular-nums;color:#e8c877">—</b>
+          <span id="pgOpenChg" style="font-weight:800;font-size:0.85rem"></span>
+          <a id="pgOpenFloor" href="market.html" style="margin-left:auto;color:#00c805;font-weight:800;font-size:0.78rem">on the floor &#8594;</a>
+        </div>
+        <canvas id="pgOpenChart" style="width:100%;height:72px;margin-top:0.5rem"></canvas>
+        <div id="pgOpenParts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:0.45rem;margin-top:0.8rem"></div>
+        <div id="pgOpenSignals" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:0.45rem;margin-top:0.45rem"></div>
+        <p style="color:rgba(244,239,230,0.5);font-size:0.7rem;line-height:1.6;margin-top:0.7rem">Every number above is the record:
+          the price is game points ÷ 100, the chart is the actual nightly tape, and the stats are swept straight off the platforms.
+          Nothing here can be typed in — it can only be done.</p>
+      </div>
+    </section>
+
     <section class="pg__sec pg__hidden" id="pgAboutSec">
       <p class="pg__k">The profile</p>
       <div id="pgAbout"></div>
@@ -610,6 +627,71 @@
         }
         track("page_view", { page: WHO });
       });
+    })();
+
+    /* THE SCORE, IN THE OPEN — the same engine the floor reads, shown on
+       the profile it belongs to: price, real history, and every component
+       that generates it. Transparency is the product. */
+    (function () {
+      var S2 = window.MCC_SUPA;
+      if (!S2 || !S2.url) return;
+      var WHO2 = new URLSearchParams(location.search).get("who") || "mccluster";
+      Promise.all([
+        fetch(S2.url + "/rest/v1/rpc/score_board", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S2.key, Authorization: "Bearer " + S2.key },
+          body: JSON.stringify({ p_limit: 200 }) }).then(function (r) { return r.ok ? r.json() : []; }),
+        fetch(S2.url + "/rest/v1/rpc/board_signals", { method: "POST",
+          headers: { "Content-Type": "application/json", apikey: S2.key, Authorization: "Bearer " + S2.key },
+          body: JSON.stringify({ p_slug: WHO2 }) }).then(function (r) { return r.ok ? r.json() : null; }),
+      ]).then(function (rr) {
+        var line = (rr[0] || []).filter(function (b) { return b.slug === WHO2; })[0];
+        var sig = rr[1];
+        if (!line) return;   // not scored yet: the section stays dark, never fake
+        var sec = document.getElementById("pgOpenSec");
+        sec.style.display = "";
+        var s = (line.series || []);
+        document.getElementById("pgOpenPrice").textContent = "$" + (+line.price).toFixed(2);
+        document.getElementById("pgOpenFloor").href = "market.html?to=" + encodeURIComponent(line.ticker || WHO2);
+        if (s.length > 1) {
+          var d = +s[s.length - 1].v - +s[s.length - 2].v;
+          var c = document.getElementById("pgOpenChg");
+          c.textContent = (d >= 0 ? "▲ +" : "▼ ") + d.toFixed(2) + " today";
+          c.style.color = d >= 0 ? "#00c805" : "#ff5000";
+          var cv = document.getElementById("pgOpenChart"), dpr = Math.min(devicePixelRatio || 1, 2);
+          var w = cv.clientWidth || 320, h = 72;
+          cv.width = w * dpr; cv.height = h * dpr;
+          var cx = cv.getContext("2d"); cx.scale(dpr, dpr);
+          var lo = Infinity, hi = -Infinity;
+          s.forEach(function (p) { lo = Math.min(lo, +p.v); hi = Math.max(hi, +p.v); });
+          if (hi - lo < 0.01) hi = lo + 0.01;
+          cx.beginPath();
+          s.forEach(function (p, i) {
+            var x = (i / (s.length - 1)) * (w - 2) + 1, y = h - 3 - ((+p.v - lo) / (hi - lo)) * (h - 6);
+            i ? cx.lineTo(x, y) : cx.moveTo(x, y);
+          });
+          cx.strokeStyle = "#e8c877"; cx.lineWidth = 1.8; cx.lineJoin = "round"; cx.stroke();
+        }
+        function cell(n, l, col) {
+          return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:11px;padding:0.55rem;text-align:center">' +
+            '<b style="display:block;font-variant-numeric:tabular-nums;color:' + (col || "#f4efe6") + '">' + n + "</b>" +
+            '<small style="color:rgba(244,239,230,0.55);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
+        }
+        var P2 = line.parts || {};
+        var LBL = { interactions: "interactions", plays: "in-app plays", money: "money · verified",
+          identity: "identity", world: "the world outside", sales: "sales book · declared" };
+        document.getElementById("pgOpenParts").innerHTML = Object.keys(LBL).map(function (k) {
+          return P2[k] != null ? cell((+P2[k]).toLocaleString() + " pts", LBL[k], "#e8c877") : "";
+        }).join("");
+        if (sig) {
+          var nice = { spotify: "Spotify", youtube: "YouTube", lastfm: "Last.fm", songstats: "Songstats" };
+          document.getElementById("pgOpenSignals").innerHTML =
+            (sig.signals || []).map(function (x) {
+              return cell((+x.value).toLocaleString(), (nice[x.source] || x.source) + " · " + x.kind, "#45b6ff");
+            }).join("") +
+            (+sig.plays ? cell((+sig.plays).toLocaleString(), "plays here", "#45b6ff") : "") +
+            (+sig.identifiers ? cell((+sig.verified || 0) + " / " + (+sig.identifiers), "verified · banked IDs", "#2fbf71") : "");
+        }
+      }).catch(function () {});
     })();
   </script>
 </body>
