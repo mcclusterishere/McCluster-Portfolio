@@ -71,6 +71,17 @@
       <div id="cvCardHost"><p class="cv__sub" style="margin-top:0.2rem">Checking your card…</p></div>
     </section>
 
+    <section class="cv__card" style="border-color:rgba(255,78,69,0.4)">
+      <p class="cv__k" style="color:#ff6b6b">Connect your accounts — identity, verified by login</p>
+      <h2>Link the back end.</h2>
+      <p class="cv__sub" style="margin-top:0.2rem"><b>One tap:</b> log in at the platform and your account connects
+        itself — banked in your identifier locker, <b style="color:#2fbf71">verified on the spot</b> (logging in IS
+        the proof), and your real numbers file straight onto your ticker. Your identity here is built from accounts
+        you actually control, nowhere else.</p>
+      <div id="cvConnect" style="display:grid;gap:0.5rem;margin-top:0.9rem"></div>
+      <p class="cv__sub" id="cvConnMsg" style="min-height:1.2em;font-size:0.82rem;margin-top:0.5rem"></p>
+    </section>
+
     <section class="cv__card" style="border-color:rgba(138,180,248,0.4)">
       <p class="cv__k" style="color:#8ab4f8">The two routes to rising</p>
       <h2>Money, control, or both.</h2>
@@ -119,6 +130,44 @@
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       var S = window.MCC_SUPA;
+
+      /* ---- the handshake: connect accounts by logging in ----
+         Same rail as the desk (oauth-connect): /start returns the
+         provider's login door; the callback banks + verifies. Signed
+         out, the buttons walk you to the door first. */
+      (function () {
+        var host = $("cvConnect"), msg = $("cvConnMsg");
+        var authed = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
+        host.innerHTML =
+          '<button class="btn btn--xc" data-oauth="youtube" style="justify-content:center;background:linear-gradient(180deg,#ff4e45,#c4302b);color:#fff">▶ Connect YouTube — log in &amp; done</button>' +
+          '<button class="btn btn--xc" data-oauth="spotify" style="justify-content:center;background:linear-gradient(180deg,#1ed760,#169c46);color:#0a0807">● Connect Spotify — log in &amp; done</button>';
+        host.querySelectorAll("[data-oauth]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (!authed) { location.href = "rise.html"; return; }
+            var prov = b.getAttribute("data-oauth");
+            b.disabled = true; b.textContent = "Opening " + prov + "…";
+            S.token().then(function (t) {
+              return fetch(S.url + "/functions/v1/oauth-connect/start?provider=" + prov + "&t=" + encodeURIComponent(t || ""), {
+                headers: { apikey: S.key } });
+            }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+              if (j && j.url) { track("oauth_start", { p: prov, from: "civic" }); location.href = j.url; }
+              else { b.disabled = false; b.textContent = "Connect " + prov + " — the rail is being armed"; }
+            }).catch(function () { b.disabled = false; b.textContent = "Connect " + prov + " — try again"; });
+          });
+        });
+        // the receipt: what's already linked, names only, never tokens
+        if (authed) {
+          S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/rpc/my_connections", { method: "POST",
+              headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" });
+          }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
+            if (rows && rows.length) msg.innerHTML = "<b style='color:#2fbf71'>✓ Linked:</b> " +
+              rows.map(function (c) { return esc(c.provider) + (c.name ? " (" + esc(c.name) + ")" : ""); }).join(" · ");
+          }).catch(function () {});
+        } else {
+          msg.textContent = "Sign in first — RISE gets you a card and an account in one run.";
+        }
+      })();
 
       /* ---- the pulse: aggregates only ---- */
       fetch(S.url + "/rest/v1/rpc/civic_pulse", { method: "POST",
