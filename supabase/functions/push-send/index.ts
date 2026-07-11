@@ -39,6 +39,36 @@ Deno.serve(async (req) => {
       return json({ pub: c.pub });
     }
 
+    if (body.action === "system") {
+      // the database speaks: ping_visit (and future system voices) ride
+      // this door with the vaulted private key as the pass — nothing to
+      // configure, nothing in any paste
+      const c = await config();
+      if (!body.secret || body.secret !== c.priv) return json({ error: "no pass" }, 403);
+      webpush.setVapidDetails("mailto:matthew@mccluster.org", c.pub, c.priv);
+      const owner = String(body.owner || "").replace(/[^a-f0-9-]/gi, "");
+      if (!owner) return json({ error: "who to?" }, 400);
+      const sr = await fetch(`${SB_URL}/rest/v1/push_subs?select=endpoint,sub&owner=eq.${owner}&limit=50`, { headers: H });
+      const subs = await sr.json();
+      const payload = JSON.stringify({
+        title: String(body.title || "M Network").slice(0, 80),
+        body: String(body.body || "").slice(0, 240),
+        url: String(body.url || "market.html").slice(0, 200),
+      });
+      let sent = 0;
+      for (const s of subs) {
+        try { await webpush.sendNotification(s.sub, payload); sent++; }
+        catch (e) {
+          const code = (e as { statusCode?: number }).statusCode || 0;
+          if (code === 404 || code === 410) {
+            await fetch(`${SB_URL}/rest/v1/push_subs?endpoint=eq.${encodeURIComponent(s.endpoint)}`, {
+              method: "DELETE", headers: H });
+          }
+        }
+      }
+      return json({ sent, total: subs.length });
+    }
+
     if (body.action === "send") {
       // only the desk speaks — check the caller against GoTrue
       const jwt = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");

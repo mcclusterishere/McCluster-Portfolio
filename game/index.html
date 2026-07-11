@@ -156,6 +156,22 @@ function file(name, props) {
       body: JSON.stringify({ name, path: "game", props: props || {}, uid: uid() }) }).catch(() => {});
   } catch (e) {}
 }
+/* THE PULL-UP: rolling up to a member's door taps their pocket.
+   Once per spot per session here; the back end holds the owner's
+   on/off switch and a 30-minute cooldown per spot. */
+const pinged = {};
+let pingTick = 0;
+function pingVisit(slug) {
+  if (!slug || pinged[slug]) return;
+  pinged[slug] = 1;
+  try {
+    const s = JSON.parse(localStorage.getItem("mccdb_session") || "null");
+    const tok = (s && s.access_token) || SB_KEY;
+    fetch(SB_URL + "/rest/v1/rpc/ping_visit", { method: "POST", keepalive: true,
+      headers: { "Content-Type": "application/json", apikey: SB_KEY, Authorization: "Bearer " + tok },
+      body: JSON.stringify({ p_slug: slug }) }).catch(() => {});
+  } catch (e) {}
+}
 
 /* ---------- assets ---------- */
 const IMGS = {};
@@ -588,6 +604,14 @@ function update(dt, cmds) {
       file("nr_delivery", { to: c.to.slug, pay, hot: hot > 0 });
       c.state = "done"; P.carrying = null;
       sparks(P.x, P.y, "#00c805", 16); shake = T.juice.shake * 0.7;
+    }
+  }
+  /* the pull-up: near somebody's door, their pocket buzzes (throttled) */
+  if (++pingTick % 30 === 0) {
+    for (let i = 0; i < BLOCKS.length; i++) {
+      const b = BLOCKS[i];
+      if (!b.m || pinged[b.m.slug]) continue;
+      if (Math.hypot(P.x - (b.x + b.w / 2), P.y - (b.y + b.h + 44)) < 90) pingVisit(b.m.slug);
     }
   }
   /* mission clock + completion — every type has a terminal state */
