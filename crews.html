@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Crews · Equity Uprise</title>
+  <meta name="description" content="Ride with a crew: a named unit with a boss, a roster, and a collective score — the sum of every member's real game points, ranked on one board.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .cw { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 34rem; margin: 0 auto; }
+    .cw h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 9vw, 3.4rem); }
+    .cw__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.7rem; font-size: 0.95rem; }
+    .cw__sub b { color: var(--cream); }
+    .cw__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.7);
+      padding: 1.1rem 1.15rem; margin-top: 1rem; border-left: 4px solid var(--cc, #c99d45); }
+    .cw__in { width: 100%; background: rgba(10,8,7,0.75); border: 1px solid rgba(244,239,230,0.3); border-radius: 12px;
+      color: var(--cream); font: inherit; font-size: max(16px, 1rem); padding: 0.8em 1em; margin-top: 0.6rem; }
+    .cw__in:focus { outline: none; border-color: #c99d45; }
+    .cw__colors { display: flex; gap: 0.5rem; margin-top: 0.7rem; flex-wrap: wrap; }
+    .cw__color { width: 34px; height: 34px; border-radius: 100px; border: 2px solid rgba(244,239,230,0.2); cursor: pointer; }
+    .cw__color.is-on { border-color: #f4efe6; box-shadow: 0 0 14px var(--c); }
+    .cw__row { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 0.2rem; border-top: 1px solid rgba(244,239,230,0.08); }
+    .cw__row:first-child { border-top: 0; }
+    .cw__row b { font-size: 0.95rem; }
+    .cw__row small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.1rem; line-height: 1.45; }
+    .cw__pts { flex: none; font-weight: 800; font-variant-numeric: tabular-nums; color: #e8c877; text-align: right; }
+    .cw__pts small { font-weight: 400; }
+    .cw__dot { flex: none; width: 12px; height: 12px; border-radius: 100px; background: var(--c, #c99d45); box-shadow: 0 0 10px var(--c, #c99d45); }
+    .cw__msg { color: #2fbf71; font-size: 0.85rem; min-height: 1.2em; margin-top: 0.5rem; }
+    .cw__roster a { color: var(--cream); text-decoration: none; font-weight: 700; }
+    .cw__boss { font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: #e8c877; margin-left: 0.4em; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="profile.html">Your profile</a><a href="market.html">The Market</a></nav>
+  </header>
+
+  <main class="cw">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> Ride together · score together</p>
+    <h1>The<br>Crews.</h1>
+    <p class="cw__sub"><b>A crew is a unit with a collective score</b> — the sum of every member's real game points
+      off the tape. One crew per member; the roster is public; the board never lies. Build one or join one.</p>
+
+    <div id="cwMine"></div>
+
+    <div class="cw__card" style="--cc:#e8c877">
+      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.25rem">The board</h2>
+      <div id="cwBoard"><p class="cw__sub">Reading the board…</p></div>
+    </div>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p || {}); }
+      var S = window.MCC_SUPA;
+      var COLORS = ["#c99d45", "#e5383b", "#00c805", "#45b6ff", "#8b5cf6", "#a3e635", "#2aa8a0", "#ff7a00"];
+      var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
+      var inCrew = false;
+
+      function rpc(name, body) {
+        var call = function (t) {
+          return fetch(S.url + "/rest/v1/rpc/" + name, { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + (t || S.key) },
+            body: JSON.stringify(body || {}) }).then(function (r) { return r.ok ? r.json() : null; });
+        };
+        return authed ? S.token().then(call) : call(null);
+      }
+
+      function paintBoard() {
+        rpc("crew_board", { p_limit: 50 }).then(function (rows) {
+          var host = $("cwBoard");
+          if (!rows) { host.innerHTML = '<p class="cw__sub">The board opens when the crews paste runs — one paste in the SQL editor.</p>'; return; }
+          if (!rows.length) { host.innerHTML = '<p class="cw__sub">No crews yet — the first name on this board is remembered forever.</p>'; return; }
+          host.innerHTML = rows.map(function (c, i) {
+            return '<div class="cw__row" style="--c:' + esc(c.color) + '"><span style="color:var(--cream-dim);font-variant-numeric:tabular-nums;width:1.4em">' + (i + 1) + "</span>" +
+              '<span class="cw__dot"></span><span style="flex:1"><b>' + esc(c.name) + "</b>" +
+              (c.motto ? "<small>" + esc(c.motto) + "</small>" : "") +
+              "<small>" + c.members + (c.members === 1 ? " rider" : " riders") + "</small></span>" +
+              '<span class="cw__pts">' + Math.round(+c.points).toLocaleString() + "<br><small>pts</small></span>" +
+              (authed && !inCrew ? '<button class="btn btn--ghost" type="button" data-join="' + esc(c.slug) + '" style="padding:0.4em 0.9em;font-size:0.7rem">Join</button>' : "") +
+              "</div>";
+          }).join("");
+          host.querySelectorAll("[data-join]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              b.textContent = "Joining…";
+              rpc("join_crew", { p_slug: b.getAttribute("data-join") }).then(function (j) {
+                if (j && j.ok) { track("crew_join", { c: b.getAttribute("data-join") }); location.reload(); }
+                else b.textContent = (j && j.why) || "try again";
+              });
+            });
+          });
+        });
+      }
+
+      function paintMine() {
+        var host = $("cwMine");
+        if (!authed) {
+          host.innerHTML = '<div class="cw__card"><p class="cw__sub" style="margin-top:0"><b>One tap and you can ride.</b> Open your account and build or join a crew.</p><div id="cwDoor"></div></div>';
+          if (window.MCC_DOOR) window.MCC_DOOR.mount($("cwDoor"), { context: "crews", onDone: function () { location.reload(); } });
+          paintBoard();
+          return;
+        }
+        rpc("my_crew", {}).then(function (c) {
+          if (c) {
+            inCrew = true;
+            var roster = (c.roster || []).map(function (m) {
+              return '<div class="cw__row cw__roster"><span style="flex:1">' +
+                (m.slug ? '<a href="page.html?who=' + esc(m.slug) + '">' + esc(m.name) + "</a>" : "<b>" + esc(m.name) + "</b>") +
+                (m.role === "boss" ? '<span class="cw__boss">boss</span>' : "") +
+                (m.ticker ? ' <small style="display:inline;color:#e8c877">$' + esc(m.ticker) + "</small>" : "") +
+                "</span></div>";
+            }).join("");
+            host.innerHTML = '<div class="cw__card" style="--cc:' + esc(c.color) + '">' +
+              '<p class="kicker" style="margin:0">Your crew · you ride as ' + esc(c.role) + "</p>" +
+              '<h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.6rem">' + esc(c.name) + "</h2>" +
+              (c.motto ? '<p class="cw__sub" style="margin-top:0.2rem">&ldquo;' + esc(c.motto) + "&rdquo;</p>" : "") +
+              '<div style="margin-top:0.7rem">' + roster + "</div>" +
+              '<button class="btn btn--ghost" id="cwLeave" type="button" style="margin-top:0.9rem;font-size:0.74rem">Walk away from the crew</button>' +
+              '<p class="cw__msg" id="cwLeaveMsg"></p></div>';
+            $("cwLeave").addEventListener("click", function () {
+              if (!confirm("Walk away from " + c.name + "? A boss walking out hands the keys to the oldest rider.")) return;
+              rpc("leave_crew", {}).then(function (j) {
+                if (j && j.ok) { track("crew_leave", {}); location.reload(); }
+                else $("cwLeaveMsg").textContent = (j && j.why) || "It didn't take — try again.";
+              });
+            });
+          } else {
+            host.innerHTML = '<div class="cw__card"><p class="kicker" style="margin:0">Start one</p>' +
+              '<h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.25rem">Build your crew</h2>' +
+              '<input class="cw__in" id="cwName" maxlength="24" placeholder="Crew name — 3 to 24 characters">' +
+              '<input class="cw__in" id="cwMotto" maxlength="80" placeholder="The motto (optional)">' +
+              '<div class="cw__colors">' + COLORS.map(function (col, i) {
+                return '<button class="cw__color' + (i === 0 ? " is-on" : "") + '" type="button" data-c="' + col + '" style="--c:' + col + ";background:" + col + '"></button>';
+              }).join("") + "</div>" +
+              '<button class="btn btn--ruby" id="cwCreate" type="button" style="margin-top:0.9rem;width:100%;justify-content:center">Put it on the board</button>' +
+              '<p class="cw__msg" id="cwMsg"></p>' +
+              '<p class="cw__sub" style="font-size:0.8rem">…or join a crew from the board below. One crew per member — choose like it matters.</p></div>';
+            var pick = COLORS[0];
+            host.querySelectorAll(".cw__color").forEach(function (b) {
+              b.addEventListener("click", function () {
+                host.querySelectorAll(".cw__color").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+                pick = b.getAttribute("data-c");
+              });
+            });
+            $("cwCreate").addEventListener("click", function () {
+              var nm = ($("cwName").value || "").trim();
+              if (nm.length < 3) { $("cwMsg").textContent = "Give it a real name — 3 characters at least."; return; }
+              $("cwMsg").textContent = "Raising the flag…";
+              rpc("create_crew", { p_name: nm, p_motto: ($("cwMotto").value || "").trim(), p_color: pick }).then(function (j) {
+                if (j && j.ok) { track("crew_create", { c: j.slug }); location.reload(); }
+                else $("cwMsg").textContent = (j && j.why) || "The board didn't answer — is the crews paste in?";
+              });
+            });
+          }
+          paintBoard();
+        });
+      }
+
+      paintMine();
+      track("crews_view", {});
+    })();
+  </script>
+</body>
+</html>
