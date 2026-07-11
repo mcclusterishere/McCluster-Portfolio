@@ -4056,19 +4056,17 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 /* ---- the M tab: the mark itself is the way home ---- */
 .appbar__m { width: 1.75rem; height: 1.75rem; object-fit: contain; display: block; }
 
-/* ---- AFUERA: the fork into Our World. The EU glyph is navy, so it rides a
-       small light app-icon tile to read on the dark bar; sky-blue accent
-       marks it as its own wing. ---- */
-.appbar__tab--afuera .appbar__m,
-.appbar__tab[data-appnav="afuera"] .appbar__m {
-  width: 1.9rem; height: 1.9rem; padding: 3px; box-sizing: border-box;
-  background: var(--cream, #f4efe6); border-radius: 8px;
-  box-shadow: 0 0 12px rgba(69, 182, 255, 0.4), inset 0 0 0 1px rgba(0,0,0,0.05);
+/* ---- WE · Whip Equipped: the rides wing. The mark is its own black
+       app tile, so it rides bare with an ember ring on the dark bar. ---- */
+.appbar__tab--we .appbar__m,
+.appbar__tab[data-appnav="we"] .appbar__m {
+  width: 1.9rem; height: 1.9rem; border-radius: 8px;
+  box-shadow: 0 0 12px rgba(255, 92, 46, 0.35), 0 0 0 1px rgba(244, 239, 230, 0.18);
 }
-.appbar__tab[data-appnav="afuera"]:hover,
-.appbar__tab[data-appnav="afuera"].is-active { color: #45b6ff; }
-.appbar__tab[data-appnav="afuera"].is-active .appbar__m {
-  box-shadow: 0 0 16px rgba(69, 182, 255, 0.7), inset 0 0 0 1px rgba(0,0,0,0.05);
+.appbar__tab[data-appnav="we"]:hover,
+.appbar__tab[data-appnav="we"].is-active { color: #ff5c2e; }
+.appbar__tab[data-appnav="we"].is-active .appbar__m {
+  box-shadow: 0 0 16px rgba(255, 92, 46, 0.65), 0 0 0 1px rgba(244, 239, 230, 0.25);
 }
 
 /* ---- the tab prompt: sound lives in the center tab now ---- */
