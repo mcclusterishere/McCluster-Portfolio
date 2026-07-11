@@ -4080,6 +4080,25 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .appbar__tab--wing { color: #e8c877; }
 @media (prefers-reduced-motion: reduce) { .appbar--morph .appbar__tab { animation: none; } }
 
+/* ---- THE PEEK: one tap looks — the card that explains a door ---- */
+.dk-peek { position: fixed; left: 50%; transform: translateX(-50%); z-index: 205;
+  bottom: calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 0.9rem);
+  width: min(100% - 1.6rem, 26rem); }
+.dk-peek__card { border: 1px solid rgba(232, 200, 119, 0.45); border-radius: 18px;
+  background: rgba(16, 12, 10, 0.97); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  padding: 1rem 1.05rem 1.05rem; box-shadow: 0 14px 50px rgba(0, 0, 0, 0.6);
+  animation: dockIn 0.26s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.dk-peek__top { display: flex; gap: 0.7rem; align-items: flex-start; }
+.dk-peek__ic { font-size: 1.6rem; line-height: 1.2; }
+.dk-peek__top b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; }
+.dk-peek__top small { display: block; color: var(--cream-dim); font-size: 0.86rem; line-height: 1.55; margin-top: 0.2rem; }
+.dk-peek__acts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+.dk-peek__go { font: inherit; font-weight: 900; letter-spacing: 0.03em; border: 0; cursor: pointer;
+  background: linear-gradient(180deg, #e8c877, #c99d45); color: #0a0807; border-radius: 100px;
+  padding: 0.6em 1.3em; flex: 1; min-width: 9rem; }
+.dk-peek__alt { font: inherit; font-weight: 700; border: 1px solid rgba(244, 239, 230, 0.3); cursor: pointer;
+  background: none; color: var(--cream); border-radius: 100px; padding: 0.6em 1.1em; }
+
 /* ---- THE DOCK WALK: the first-boot lesson; the bar stays live above it ---- */
 .dockwalk { position: fixed; inset: 0; z-index: 199; background: rgba(5, 4, 3, 0.88);
   backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);

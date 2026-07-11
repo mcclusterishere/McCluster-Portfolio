@@ -3,52 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Your Profile · Equity Uprise</title>
-  <meta name="description" content="One profile, two sides: the public face Our Street sees, and the private rooms where you work — filtered to the path you chase.">
+  <title>Your E⤴ Card · Equity Uprise</title>
+  <meta name="description" content="Your profile IS your E⤴ Card — face, name, colors, street credit — plus the mirror to edit it. The menus live in the bar.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .pf { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 34rem; margin: 0 auto; }
+    .pf { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 30rem; margin: 0 auto; }
     .pf h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 9vw, 3.4rem); }
     .pf__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.7rem; font-size: 0.95rem; }
     .pf__sub b { color: var(--cream); }
     .pf__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.7); padding: 1.1rem 1.15rem; margin-top: 1rem; }
-    .pf__arch { display: inline-flex; align-items: center; gap: 0.45em; border: 1px solid rgba(201,157,69,0.55); color: #e8c877;
-      border-radius: 100px; padding: 0.3em 0.85em; font-size: 0.84rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-    /* the two sides */
-    .pf__sides { display: flex; gap: 0.5rem; margin-top: 1.3rem; }
-    .pf__side { flex: 1; font: inherit; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.9rem;
-      border: 2px solid rgba(244,239,230,0.25); background: rgba(14,11,9,0.7); color: var(--cream-dim);
-      border-radius: 14px; padding: 0.85rem 0.5rem; cursor: pointer; transition: all 0.2s; }
-    .pf__side.is-on { border-color: #e8c877; color: #0a0807; background: linear-gradient(180deg, #e8c877, #c99d45); box-shadow: 0 0 24px rgba(201,157,69,0.35); }
-    .pf__pane { display: none; animation: pfIn 0.4s cubic-bezier(0.2,0.9,0.2,1); }
-    .pf__pane.is-on { display: block; }
-    @keyframes pfIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-    /* the doors */
+    /* ---- THE CARD: the profile IS the E⤴ Card ---- */
+    .crd { position: relative; aspect-ratio: 1.586 / 1; border-radius: 22px; margin-top: 1.2rem; overflow: hidden;
+      background: linear-gradient(135deg, var(--cc, #c99d45) 0%, #17110d 58%, #0a0807 100%);
+      border: 1px solid rgba(244,239,230,0.25); box-shadow: 0 18px 60px rgba(0,0,0,0.55), inset 0 0 60px rgba(0,0,0,0.35);
+      padding: 1.05rem 1.15rem; display: flex; flex-direction: column; color: #f4efe6; }
+    .crd__top { display: flex; align-items: center; gap: 0.5rem; }
+    .crd__top img { width: 1.3rem; height: 1.3rem; }
+    .crd__top b { font-size: 0.74rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 800; }
+    .crd__cred { margin-left: auto; text-align: right; }
+    .crd__cred b { display: block; font-family: var(--display); font-size: 1.3rem; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+    .crd__cred small { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.75; }
+    .crd__chip { width: 2.6rem; height: 1.9rem; border-radius: 6px; margin-top: 0.7rem;
+      background: linear-gradient(160deg, #e8c877, #b8862f); border: 1px solid rgba(0,0,0,0.4);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); position: relative; }
+    .crd__chip::after { content: ""; position: absolute; inset: 30% 12%; border: 1px solid rgba(0,0,0,0.35); border-radius: 3px; }
+    .crd__name { margin-top: auto; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: clamp(1.3rem, 6.4vw, 1.8rem); line-height: 1.05; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .crd__name span { color: #e8c877; font-size: 0.62em; vertical-align: 0.25em; margin-left: 0.35em; }
+    .crd__paths { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; opacity: 0.85; margin-top: 0.25rem; }
+    .crd__nums { display: flex; gap: 1.1rem; margin-top: 0.55rem; font-variant-numeric: tabular-nums; }
+    .crd__n b { display: block; font-family: var(--display); font-size: 1.05rem; }
+    .crd__n small { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.75; }
+    .crd__n--gold b { color: #e8c877; }
+    .crd__n--green b { color: #00c805; }
+    .crd__face { position: absolute; right: 1rem; top: 2.9rem; width: 3.6rem; height: 3.6rem; border-radius: 50%;
+      object-fit: cover; border: 2px solid rgba(244,239,230,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+    /* ---- THE MIRROR: edit what the card says ---- */
+    .pf__lab { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800;
+      display: block; margin-top: 0.85rem; }
+    .pf__in { width: 100%; box-sizing: border-box; background: rgba(244,239,230,0.06); color: var(--cream);
+      border: 1px solid rgba(244,239,230,0.22); border-radius: 10px; padding: 0.7rem 0.85rem; font: inherit;
+      font-size: 0.98rem; margin-top: 0.35rem; }
+    .pf__in:focus { outline: none; border-color: #e8c877; }
+    .pf__links { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .pf__msg { min-height: 1.2em; margin-top: 0.8rem; font-size: 0.9rem; color: #2fbf71; }
     .pf__doors { display: grid; gap: 0.55rem; margin-top: 1rem; }
     .pf__door { display: flex; align-items: center; gap: 0.75rem; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px;
       background: rgba(18,14,11,0.85); padding: 0.95rem 1rem; text-decoration: none; color: var(--cream);
-      border-left: 3px solid var(--dc, #c99d45); transition: transform 0.12s; }
+      border-left: 3px solid var(--dc, #c99d45); transition: transform 0.12s; font: inherit; text-align: left; cursor: pointer; }
     .pf__door:active { transform: scale(0.98); }
     .pf__door b { display: block; font-size: 0.96rem; }
     .pf__door small { display: block; color: var(--cream-dim); font-size: 0.84rem; margin-top: 0.15rem; line-height: 1.45; }
     .pf__door .ic { flex: none; font-size: 1.15rem; }
     .pf__door .go { flex: none; color: var(--dc, #c99d45); font-weight: 800; }
-    .pf__tag { display: inline-block; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
-      color: var(--dc, #c99d45); margin-left: 0.4em; vertical-align: 0.12em; }
-    .pf__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 0.5rem; margin-top: 0.9rem; }
-    .pf__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.7rem; text-align: center; }
-    .pf__stat b { display: block; font-size: 1.25rem; font-variant-numeric: tabular-nums; color: #e8c877; }
-    .pf__stat small { color: var(--cream-dim); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .pf__arch { display: inline-flex; align-items: center; gap: 0.45em; border: 1px solid rgba(201,157,69,0.55); color: #e8c877;
+      border-radius: 100px; padding: 0.3em 0.85em; font-size: 0.84rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
     .pf__out { background: none; border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; color: var(--cream-dim);
       font: inherit; font-size: 0.84rem; padding: 0.4em 1em; cursor: pointer; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
   <div class="grain" aria-hidden="true"></div>
-  <main class="pf" id="pfMain"><p class="pf__sub">Opening your profile…</p></main>
+  <main class="pf" id="pfMain"><p class="pf__sub">Dealing your card…</p></main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
@@ -66,7 +85,6 @@
       var main = $("pfMain");
       var S = window.MCC_SUPA;
 
-      /* PERSONA: the RISE card colors and orders everything here */
       var PATH_META = {
         signal: ["Signal", "#45b6ff"], infra: ["Infrastructure", "#c99d45"],
         capital: ["Capital", "#00c805"], culture: ["Culture", "#e5383b"],
@@ -76,33 +94,19 @@
       try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
       var myPaths = (rise && rise.arch) || [];
 
-      /* THE PRIVATE ROOMS — each door belongs to a path; your paths float
-         to the top, so the private side reads as YOUR workspace, not a menu */
-      var ROOMS = [
-        ["market.html#yours", "🏦", "Your desk", "Listing, wallet, deals, payouts, claim your plays.", "capital"],
-        ["mymission.html", "🎯", "Your missions", "T.R.A.P.S.: 100,000 points of real moves, filtered by your path.", "command"],
-        ["civic.html", "🪪", "Street Cred Portal", "Your street credit score, verified accounts, civic card and vote.", "justice"],
-        ["distribution.html", "🎛", "Distribution & identifiers", "The locker: the IDs your work pays through, seals, earnings.", "infra"],
-        ["market.html#wire", "💬", "The Wire", "Speak to all of Our Street.", "signal"],
-        ["academy.html", "🎓", "The Academy", "Six lessons, a real wallet, gas on the house.", "culture"],
-        ["ourworld.html", "🕹", "The Game", "Uprise Nation and BLOCK OPS — plays that move your ticker.", "access"],
-        ["crews.html", "🧩", "Your crew", "Ride with a unit — collective score, one board, no lies.", "command"],
-        ["chain.html", "⛓", "The M Chain", "Every record and badge, hashed and verifiable.", "proof"],
-      ];
-
-      function doorHtml(d, tagged) {
-        var pm = PATH_META[d[4]] || ["", "#c99d45"];
-        return '<a class="pf__door" href="' + d[0] + '" style="--dc:' + pm[1] + '">' +
-          '<span class="ic">' + d[1] + '</span><span style="flex:1"><b>' + d[2] +
-          (tagged ? '<span class="pf__tag">your path · ' + pm[0] + "</span>" : "") +
-          "</b><small>" + d[3] + '</small></span><span class="go">&#8594;</span></a>';
+      function rpc(name) {
+        return S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/" + name, { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + (t || S.key) },
+            body: "{}" }).then(function (r) { return r.ok ? r.json() : null; });
+        }).catch(function () { return null; });
       }
 
       function paintOut() {
-        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
+        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> Your E&#10548; Card</p>' +
           "<h1>Your<br>Profile.</h1>" +
-          '<p class="pf__sub"><b>Two sides to every member:</b> the public face Our Street sees, and the private rooms where you work. ' +
-          "It starts with your card.</p>" +
+          '<p class="pf__sub"><b>Your profile IS your card:</b> your face, your name, your colors, your street credit — ' +
+          "one piece of plastic the whole house reads. It starts with the deal.</p>" +
           '<div class="pf__card card-call"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
           '<span style="font-size:0.9rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
           '<div class="pf__card"><div id="pfDoor"></div></div>';
@@ -111,71 +115,112 @@
         }
       }
 
+      /* THE CARD: the profile is the E⤴ Card, big — the menus live in
+         the bar now (double-tap Profile), so this room holds only the
+         card and the mirror that edits it */
       function paintIn(mine) {
         var ADMIN = (S.email && S.email()) === "matthew@mccluster.org";
         var name = (mine && mine.name) || "Chaser";
         var slug = mine && mine.slug;
         var tick = mine && mine.ticker ? "$" + String(mine.ticker).toUpperCase() : "";
         var CH = window.MCC_CHASER;
-        var prim = CH && CH.primary();
-        var pc = prim && PATH_META[prim] ? PATH_META[prim][1] : "#e8c877";
-        var archLine = myPaths.length
-          ? '<span class="pf__arch" style="border-color:' + pc + ";color:" + pc + '">🃏 ' + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ") + "</span>"
-          : '<a class="pf__arch card-call" href="rise.html" style="text-decoration:none">🃏 GET YOUR CARD — play RISE &#8594;</a>';
-        /* CHASER WORLDS: the private side opens on YOUR district — the
-           banner is a door to your home turf, whoever you are */
-        var worldDoor = "";
-        if (prim && CH.meta(prim)) {
-          var wm = CH.meta(prim);
-          worldDoor = '<a href="' + wm.turf[0] + '" style="text-decoration:none;display:block;margin-top:1rem">' +
-            CH.banner(prim, { sub: wm.turf[2] }) + "</a>";
-        }
-        // your paths float their rooms to the top
-        var rooms = ROOMS.slice().sort(function (a, b) {
-          return (myPaths.indexOf(b[4]) !== -1 ? 1 : 0) - (myPaths.indexOf(a[4]) !== -1 ? 1 : 0);
-        });
-        var privateDoors = (ADMIN
-          ? '<a class="pf__door" href="mission.html" style="--dc:#e5383b"><span class="ic">🎛</span><span style="flex:1"><b>Mission Control<span class="pf__tag" style="--dc:#e5383b">the admin desk</span></b><small>The whole system: pulse, brain, fund, decks, the live floor.</small></span><span class="go" style="--dc:#e5383b">&#8594;</span></a>'
-          : "") +
-          rooms.map(function (d) { return doorHtml(d, myPaths.indexOf(d[4]) !== -1); }).join("");
-        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
-          "<h1>" + esc(name) + (tick ? ' <span style="color:#e8c877;font-size:0.5em;vertical-align:0.4em">' + esc(tick) + "</span>" : "") + "</h1>" +
-          '<div style="margin-top:0.6rem">' + archLine + "</div>" +
-          '<div id="pfHero" aria-hidden="true" style="border-radius:18px;border:1px solid rgba(244,239,230,0.16);min-height:8.5rem;background:linear-gradient(140deg,#1a1210,#0d0a08);background-size:cover;background-position:center;margin-top:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.5)"></div>' +
-          '<div class="pf__sides">' +
-          '<button class="pf__side is-on" type="button" data-side="pub">🌍 Public — Our Street sees</button>' +
-          '<button class="pf__side" type="button" data-side="priv">🔒 Private — your rooms</button></div>' +
+        var prim = CH && CH.primary && CH.primary();
+        var cc = prim && PATH_META[prim] ? PATH_META[prim][1] : "#c99d45";
+        var links = (mine && mine.terms && mine.terms.links) || {};
+        var pathsLine = myPaths.length
+          ? myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ")
+          : "";
 
-          '<div class="pf__pane is-on" data-pane="pub">' +
-          (slug
-            ? '<div class="pf__doors">' +
-              '<a class="pf__door" href="page.html?who=' + esc(slug) + '" style="--dc:#e8c877"><span class="ic">📄</span><span style="flex:1"><b>Your public page</b><small>Films, music, receipts, your ticker — what any visitor sees.</small></span><span class="go">&#8594;</span></a>' +
-              '<a class="pf__door" href="market.html?to=' + esc((mine.ticker || slug)) + '" style="--dc:#00c805"><span class="ic">📈</span><span style="flex:1"><b>Your ticker on Our Street</b><small>The real chart, real prints, real stats.</small></span><span class="go">&#8594;</span></a>' +
-              '<button class="pf__door" type="button" id="pfShare" style="--dc:#45b6ff;font:inherit;text-align:left;cursor:pointer;background:rgba(18,14,11,0.85)"><span class="ic">🔗</span><span style="flex:1"><b>Share your page</b><small id="pfShareNote">One link carries all of it: page.html?who=' + esc(slug) + "</small></span><span class=\"go\">&#8594;</span></button></div>" +
-              '<div class="pf__stats" id="pfStats"></div>'
-            : '<p class="pf__sub">No listing yet — <a href="welcome.html" style="color:#e8c877">finish the walk-in</a> and your public page, ticker and chart go up together.</p>') +
+        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> Your E&#10548; Card</p>' +
+          "<h1>The<br>Card.</h1>" +
+          '<p class="pf__sub">Low key your credit card: your price and street cred are tied to it, and services get paid through it. ' +
+          "The rooms live in the bar — <b>double-tap Profile down there</b> and the menu comes to you.</p>" +
+
+          '<div class="crd" style="--cc:' + cc + '" id="pfCard">' +
+          '<div class="crd__top"><img src="assets/img/eu-favicon.png" alt=""><b>E&#10548; Card</b>' +
+          '<span class="crd__cred"><b id="pfCred">—</b><small>street credit</small></span></div>' +
+          '<div class="crd__chip" aria-hidden="true"></div>' +
+          (mine && mine.photo ? '<img class="crd__face" src="' + esc(mine.photo) + '" alt="" id="pfFaceImg">' : "") +
+          '<div class="crd__name" id="pfCardName">' + esc(name) + (tick ? "<span>" + esc(tick) + "</span>" : "") + "</div>" +
+          '<div class="crd__paths">' + (pathsLine ? "🃏 " + esc(pathsLine) : '<a href="rise.html" style="color:#e8c877;text-decoration:none">🃏 Undealt — play RISE &#8594;</a>') + "</div>" +
+          '<div class="crd__nums">' +
+          '<span class="crd__n"><b id="pfPrice">—</b><small>your price</small></span>' +
+          '<span class="crd__n crd__n--gold" id="pfGoldWrap" style="display:none"><b id="pfGold">—</b><small>gold · spends w/ house</small></span>' +
+          '<span class="crd__n crd__n--green" id="pfGreenWrap" style="display:none"><b id="pfGreen">—</b><small>green · cashes out</small></span>' +
+          '<span class="crd__n"><b id="pfPts">—</b><small>game points</small></span>' +
+          "</div></div>" +
+
+          '<div class="pf__card">' +
+          '<p class="pf__lab" style="margin-top:0">The mirror — what the card says</p>' +
+          '<label class="pf__lab" for="pfEName">Name on the card</label><input class="pf__in" id="pfEName" value="' + esc((mine && mine.name) || "") + '" placeholder="Your name">' +
+          '<label class="pf__lab" for="pfEHead">One line — what you do</label><input class="pf__in" id="pfEHead" value="' + esc((mine && mine.headline) || "") + '" placeholder="Photographer · producer · driver…">' +
+          '<label class="pf__lab" for="pfEArea">Where you run</label><input class="pf__in" id="pfEArea" value="' + esc((mine && mine.area) || "") + '" placeholder="Bridgeport, CT">' +
+          '<label class="pf__lab" for="pfEPhoto">Face (photo URL)</label><input class="pf__in" id="pfEPhoto" value="' + esc((mine && mine.photo) || "") + '" placeholder="https://…jpg">' +
+          '<p class="pf__lab">The links — your followership feeds the chart</p>' +
+          '<div class="pf__links">' +
+          '<input class="pf__in" id="pfLyt" value="' + esc(links.yt || "") + '" placeholder="YouTube">' +
+          '<input class="pf__in" id="pfLig" value="' + esc(links.ig || "") + '" placeholder="Instagram">' +
+          '<input class="pf__in" id="pfLtt" value="' + esc(links.tt || "") + '" placeholder="TikTok">' +
+          '<input class="pf__in" id="pfLx" value="' + esc(links.x || "") + '" placeholder="X / Twitter">' +
           "</div>" +
+          '<div class="finale__actions" style="margin-top:1rem"><button class="btn btn--ruby" id="pfSave" type="button">Press it into the card &#8594;</button></div>' +
+          '<p class="pf__msg" id="pfMsg"></p></div>' +
 
-          '<div class="pf__pane" data-pane="priv">' + worldDoor + '<div class="pf__doors">' + privateDoors + "</div></div>" +
+          '<div class="pf__doors">' +
+          (slug
+            ? '<a class="pf__door" href="page.html?who=' + esc(slug) + '" style="--dc:#e8c877"><span class="ic">📄</span><span style="flex:1"><b>Your public page</b><small>What any visitor sees when your card gets shared.</small></span><span class="go">&#8594;</span></a>' +
+              '<button class="pf__door" type="button" id="pfShare" style="--dc:#45b6ff"><span class="ic">🔗</span><span style="flex:1"><b>Share your card</b><small id="pfShareNote">One link carries all of it.</small></span><span class="go">&#8594;</span></button>'
+            : '<a class="pf__door" href="welcome.html" style="--dc:#e8c877"><span class="ic">🚪</span><span style="flex:1"><b>Finish the walk-in</b><small>Your public page, ticker and chart go up together.</small></span><span class="go">&#8594;</span></a>') +
+          '<a class="pf__door" href="mccluster.html" style="--dc:#c99d45"><span class="ic">🌇</span><span style="flex:1"><b>The Penthouse</b><small>What a built-out card looks like — the desk’s own floor.</small></span><span class="go">&#8594;</span></a>' +
+          (ADMIN ? '<a class="pf__door" href="mission.html" style="--dc:#e5383b"><span class="ic">🎛</span><span style="flex:1"><b>Mission Control</b><small>The whole system — the admin desk.</small></span><span class="go">&#8594;</span></a>' : "") +
+          "</div>" +
           '<button class="pf__out" id="pfSignOut" type="button">Sign out</button>';
 
-        (function () {
-          var h = document.getElementById("pfHero");
-          if (h) { var im = new Image();
-            im.onload = function () { h.style.backgroundImage = "url(assets/img/mc-hero.jpg)"; };
-            im.src = "assets/img/mc-hero.jpg"; }
-        })();
-        main.querySelectorAll(".pf__side").forEach(function (b) {
-          b.addEventListener("click", function () {
-            main.querySelectorAll(".pf__side").forEach(function (x) { x.classList.toggle("is-on", x === b); });
-            main.querySelectorAll(".pf__pane").forEach(function (p) { p.classList.toggle("is-on", p.getAttribute("data-pane") === b.getAttribute("data-side")); });
-            try { localStorage.setItem("mcc_pf_side", b.getAttribute("data-side")); } catch (e) {}
-            track("profile_side", { side: b.getAttribute("data-side") });
-          });
+        /* the numbers: price + points off the engine, colors off the wall */
+        rpc("my_score").then(function (sc) {
+          if (!sc) return;
+          if (sc.price != null) $("pfPrice").textContent = "$" + (+sc.price).toFixed(2);
+          if (sc.points != null) $("pfPts").textContent = Math.round(+sc.points).toLocaleString();
+          if (sc.score != null) $("pfCred").textContent = sc.score;
         });
-        var savedSide = null;
-        try { savedSide = localStorage.getItem("mcc_pf_side"); } catch (e) {}
-        if (savedSide === "priv") main.querySelector('[data-side="priv"]').click();
+        rpc("my_colors").then(function (c) {
+          if (!c) return;
+          $("pfGoldWrap").style.display = "";
+          $("pfGreenWrap").style.display = "";
+          $("pfGold").textContent = (+c.gold || 0).toLocaleString();
+          $("pfGreen").textContent = (+c.green || 0).toLocaleString();
+        });
+
+        /* the mirror presses into the listing — the card repaints live */
+        $("pfSave").addEventListener("click", function () {
+          var btn = $("pfSave");
+          btn.disabled = true; btn.textContent = "Pressing…";
+          var terms = (mine && mine.terms) || {};
+          var lk = {};
+          if ($("pfLyt").value.trim()) lk.yt = $("pfLyt").value.trim();
+          if ($("pfLig").value.trim()) lk.ig = $("pfLig").value.trim();
+          if ($("pfLtt").value.trim()) lk.tt = $("pfLtt").value.trim();
+          if ($("pfLx").value.trim()) lk.x = $("pfLx").value.trim();
+          terms.links = lk;
+          var fields = {
+            name: $("pfEName").value.trim() || name,
+            headline: $("pfEHead").value.trim(),
+            area: $("pfEArea").value.trim(),
+            photo: $("pfEPhoto").value.trim() || null,
+            terms: terms,
+          };
+          window.MCC_NET.saveListing(fields).then(function (row) {
+            $("pfMsg").textContent = "✓ Pressed — the card remembers, and Our Street reads it.";
+            $("pfCardName").innerHTML = esc(fields.name) + (tick ? "<span>" + esc(tick) + "</span>" : "");
+            if (window.MCC_FLOOR && window.MCC_FLOOR.invalidate) window.MCC_FLOOR.invalidate();
+            track("card_pressed", {});
+            if (row && !slug) setTimeout(function () { location.reload(); }, 900);
+          }).catch(function () {
+            $("pfMsg").style.color = "#ff5000";
+            $("pfMsg").textContent = "The press slipped — try again.";
+          }).then(function () { btn.disabled = false; btn.innerHTML = "Press it into the card &#8594;"; });
+        });
+
         var sh = $("pfShare");
         if (sh) sh.addEventListener("click", function () {
           var link = location.origin + location.pathname.replace(/[^/]*$/, "") + "page.html?who=" + slug;
@@ -187,22 +232,6 @@
         $("pfSignOut").addEventListener("click", function () {
           window.MCC_AUTH.signOut().then(function () { location.reload(); });
         });
-        // the public numbers: your price and points, straight off the engine
-        if (slug) S.token().then(function (t) {
-          return fetch(S.url + "/rest/v1/rpc/my_score", { method: "POST",
-            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" });
-        }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (sc) {
-          var g = $("pfStats");
-          if (!g || !sc) return;
-          function stat(n, l) { return '<div class="pf__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
-          /* TWO TAPES: you are one stock, each property is another */
-          g.innerHTML = stat(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "YOU · the person's price") +
-            stat(sc.points != null ? Math.round(+sc.points).toLocaleString() : "—", "game points") +
-            stat(sc.score != null ? sc.score : "—", "street credit · of 1000") +
-            (sc.listings || []).map(function (li) {
-              return stat("$" + (+li.price).toFixed(2), "$" + esc(li.ticker || li.slug) + " · the listing's price");
-            }).join("");
-        }).catch(function () {});
       }
 
       if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
