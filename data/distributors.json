@@ -1,167 +1,941 @@
 {
-  "note": "The distribution + identity registry, keyed by CATEGORY of work. Every category a member can onboard carries three linked things: (1) the correct IDENTIFIERS for that kind of work (the codes that prove and pay you), (2) the PLATFORMS you distribute/earn through (deep-linked to their reports/bank), and (3) the multicolored M-Verified BADGE that category earns. Distributable categories have external platforms; service/org categories earn through deals on the floor and still carry their own identifiers + badge. 'Other' is always offered in the UI. Extend freely — the flow is dynamic per category.",
-  "industries": [
-    { "id": "music", "name": "Music", "kind": "distributable", "verb": "distribute", "badge": "performer",
-      "blurb": "Streaming & download distributors that pay out on your catalog.",
-      "identifiers": [
-        { "kind": "isrc_prefix", "name": "ISRC prefix", "lane": "recording", "url": "https://usisrc.org", "help": "Codes every recording you own — how plays match to you worldwide." },
-        { "kind": "isrc", "name": "ISRC (per track)", "lane": "recording", "url": "https://usisrc.org", "help": "One code per recording, built from your prefix." },
-        { "kind": "iswc", "name": "ISWC (per song)", "lane": "publishing", "url": "https://www.ascap.com", "help": "Codes the SONG (composition), not the recording — the publishing money lane." },
-        { "kind": "upc", "name": "UPC (per release)", "lane": "recording", "url": "https://www.gs1us.org", "help": "The barcode for a single/EP/album — your distributor usually assigns it." },
-        { "kind": "ipi", "name": "IPI / CAE", "lane": "publishing", "url": "https://www.ascap.com", "help": "Your songwriter/publisher payee ID — comes with PRO membership. The publishing lane." },
-        { "kind": "pro", "name": "PRO membership", "lane": "publishing", "url": "https://www.ascap.com", "help": "ASCAP / BMI / SESAC — collects performance royalties. Get this to get paid on radio & live." },
-        { "kind": "publisher", "name": "Publisher / admin", "lane": "publishing", "url": "https://www.songtrust.com", "help": "Who administers your publishing (self or an admin like Songtrust)." },
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID — keeps your credits attached to YOU everywhere." },
-        { "kind": "dpid", "name": "DDEX DPID", "lane": "identity", "url": "https://dpid.ddex.net", "help": "Your party ID in the digital supply chain — how DSPs & distributors exchange your metadata." },
-        { "kind": "spotify_artist", "name": "Spotify Artist ID", "lane": "platform", "url": "https://artists.spotify.com", "help": "Claim your Spotify for Artists profile." },
-        { "kind": "apple_artist", "name": "Apple Artist ID", "lane": "platform", "url": "https://artists.apple.com", "help": "Claim your Apple Music for Artists profile." }
-      ] },
-    { "id": "video", "name": "Video / Film", "kind": "distributable", "verb": "publish", "badge": "creator",
-      "blurb": "Video networks, MCNs and OTT platforms that pay on views.",
-      "identifiers": [
-        { "kind": "isan", "name": "ISAN", "lane": "recording", "url": "https://www.isan.org", "help": "The international standard ID for a film/TV work — the ISRC of video." },
-        { "kind": "imdb_id", "name": "IMDb ID", "lane": "identity", "url": "https://www.imdb.com", "help": "Your name/title record on IMDb (nmXXXXXXX / ttXXXXXXX)." },
-        { "kind": "youtube_channel", "name": "YouTube Channel ID", "lane": "platform", "url": "https://studio.youtube.com", "help": "Your channel ID (UCxxxx) — where AdSense pays." },
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID across every credits database." }
-      ] },
-    { "id": "podcast", "name": "Podcast / Audio", "kind": "distributable", "verb": "host", "badge": "creator",
-      "blurb": "Podcast hosts & networks that pay on downloads and ads.",
-      "identifiers": [
-        { "kind": "podcast_guid", "name": "Podcast GUID", "lane": "recording", "url": "https://podcastindex.org", "help": "The stable ID in your RSS feed (<podcast:guid>) — how directories track your show." },
-        { "kind": "apple_podcasts", "name": "Apple Podcasts ID", "lane": "platform", "url": "https://podcastsconnect.apple.com", "help": "Your show's Apple Podcasts collection ID." },
-        { "kind": "spotify_show", "name": "Spotify Show ID", "lane": "platform", "url": "https://podcasters.spotify.com", "help": "Your show ID on Spotify for Podcasters." },
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID." }
-      ] },
-    { "id": "writing", "name": "Writing / Publishing", "kind": "distributable", "verb": "publish", "badge": "creator",
-      "blurb": "Book, newsletter and article platforms that pay royalties.",
-      "identifiers": [
-        { "kind": "isbn", "name": "ISBN", "lane": "recording", "url": "https://www.myidentifiers.com", "help": "The barcode for a book edition — one per format." },
-        { "kind": "issn", "name": "ISSN", "lane": "recording", "url": "https://www.issn.org", "help": "The ID for a periodical / serial (newsletter, journal)." },
-        { "kind": "doi", "name": "DOI", "lane": "recording", "url": "https://www.doi.org", "help": "A permanent link-ID for an article or dataset." },
-        { "kind": "orcid", "name": "ORCID", "lane": "identity", "url": "https://orcid.org", "help": "The persistent ID for an author/researcher — ties all your work to one record." },
-        { "kind": "asin", "name": "Amazon ASIN", "lane": "platform", "url": "https://kdp.amazon.com", "help": "Your title's Amazon product ID." },
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID." }
-      ] },
-    { "id": "art", "name": "Visual Art / Design", "kind": "distributable", "verb": "sell", "badge": "creator",
-      "blurb": "Print-on-demand, stock and marketplace platforms.",
-      "identifiers": [
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID as an artist." },
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID — the anchor for a shop that sells." },
-        { "kind": "vat", "name": "VAT / Tax ID", "lane": "business", "url": "", "help": "Your sales-tax / VAT registration if you sell internationally." }
-      ] },
-    { "id": "software", "name": "Apps / Software", "kind": "distributable", "verb": "ship", "badge": "creator",
-      "blurb": "App stores and marketplaces that pay out on sales.",
-      "identifiers": [
-        { "kind": "bundle_id", "name": "Apple Bundle ID", "lane": "recording", "url": "https://developer.apple.com", "help": "Your app's reverse-DNS ID (com.you.app) in App Store Connect." },
-        { "kind": "package_name", "name": "Android Package", "lane": "recording", "url": "https://play.google.com/console", "help": "Your app's package name in Play Console." },
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID — required to take payouts." }
-      ] },
-    { "id": "creator", "name": "Creator / Social", "kind": "distributable", "verb": "monetize", "badge": "creator",
-      "blurb": "Platforms that pay creators directly (ads, tips, funds).",
-      "identifiers": [
-        { "kind": "instagram", "name": "Instagram handle", "lane": "platform", "url": "https://instagram.com", "help": "Your @handle." },
-        { "kind": "tiktok", "name": "TikTok handle", "lane": "platform", "url": "https://tiktok.com", "help": "Your @handle." },
-        { "kind": "youtube_channel", "name": "YouTube Channel ID", "lane": "platform", "url": "https://studio.youtube.com", "help": "Your channel ID (UCxxxx)." },
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID." }
-      ] },
-
-    { "id": "studios", "name": "Studios (Venue)", "kind": "org", "verb": "host", "badge": "venue",
-      "blurb": "Recording / photo studios & event spaces. You earn through bookings on the floor — no external distributor — but you carry a venue's identifiers.",
-      "identifiers": [
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID." },
-        { "kind": "state_filing", "name": "State Filing No.", "lane": "business", "url": "https://business.ct.gov", "help": "Your Secretary of State registration." },
-        { "kind": "insurance", "name": "Liability Insurance", "lane": "business", "url": "", "help": "A certificate of general liability — required to host the public." },
-        { "kind": "alei", "name": "ALEI", "lane": "identity", "url": "https://business.ct.gov", "help": "Your machine-readable legal-entity ID." }
-      ] },
-    { "id": "stages", "name": "Stages (Live)", "kind": "org", "verb": "host", "badge": "venue",
-      "blurb": "Live venues & stages. Earn through bookings on the floor; carry a venue's identifiers.",
-      "identifiers": [
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID." },
-        { "kind": "state_filing", "name": "State Filing No.", "lane": "business", "url": "https://business.ct.gov", "help": "Your Secretary of State registration." },
-        { "kind": "insurance", "name": "Liability Insurance", "lane": "business", "url": "", "help": "A certificate of general liability." }
-      ] },
-    { "id": "programs", "name": "Programs / Civic", "kind": "org", "verb": "run", "badge": "nonprofit",
-      "blurb": "Nonprofits, community programs & civic work. Funded by grants & the community chest; carry a nonprofit's identifiers.",
-      "identifiers": [
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your federal tax ID." },
-        { "kind": "charity", "name": "Charity Registration", "lane": "business", "url": "https://portal.ct.gov/dcp", "help": "Your state charitable-solicitation license." },
-        { "kind": "state_filing", "name": "State Filing No.", "lane": "business", "url": "https://business.ct.gov", "help": "Your Secretary of State registration." },
-        { "kind": "ueid", "name": "UEID (SAM.gov)", "lane": "business", "url": "https://sam.gov", "help": "Your ID to receive federal grants & contracts." }
-      ] },
-    { "id": "photo", "name": "Photo / Media Services", "kind": "service", "verb": "shoot", "badge": "creator",
-      "blurb": "Photographers, videographers & media pros. You earn through deals on the floor; carry your creator identity.",
-      "identifiers": [
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID." },
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID (if you operate as a business)." }
-      ] },
-    { "id": "web", "name": "Web / Tech Services", "kind": "service", "verb": "build", "badge": "creator",
-      "blurb": "Web, design & tech builders. Earn through deals on the floor; carry your creator identity.",
-      "identifiers": [
-        { "kind": "isni", "name": "ISNI", "lane": "identity", "url": "https://isni.org", "help": "Your global name ID." },
-        { "kind": "ein", "name": "EIN", "lane": "business", "url": "https://www.irs.gov/ein", "help": "Your business tax ID." }
-      ] }
-  ],
-  "roleMap": {
-    "Music": "music", "Video": "video", "Photo": "photo", "Web": "web",
-    "Studios": "studios", "Stages": "stages", "Merch": "art", "Programs": "programs",
-    "Podcast": "podcast", "Writing": "writing", "Software": "software", "Creator": "creator",
-    "Civic / Community": "programs"
+ "note": "The distribution + identity registry, keyed by CATEGORY of work. Every category a member can onboard carries three linked things: (1) the correct IDENTIFIERS for that kind of work (the codes that prove and pay you), (2) the PLATFORMS you distribute/earn through (deep-linked to their reports/bank), and (3) the multicolored M-Verified BADGE that category earns. Distributable categories have external platforms; service/org categories earn through deals on the floor and still carry their own identifiers + badge. 'Other' is always offered in the UI. Extend freely \u2014 the flow is dynamic per category.",
+ "industries": [
+  {
+   "id": "music",
+   "name": "Music",
+   "kind": "distributable",
+   "verb": "distribute",
+   "badge": "performer",
+   "blurb": "Streaming & download distributors that pay out on your catalog.",
+   "identifiers": [
+    {
+     "kind": "isrc_prefix",
+     "name": "ISRC prefix",
+     "lane": "recording",
+     "url": "https://usisrc.org",
+     "help": "Codes every recording you own \u2014 how plays match to you worldwide."
+    },
+    {
+     "kind": "isrc",
+     "name": "ISRC (per track)",
+     "lane": "recording",
+     "url": "https://usisrc.org",
+     "help": "One code per recording, built from your prefix."
+    },
+    {
+     "kind": "iswc",
+     "name": "ISWC (per song)",
+     "lane": "publishing",
+     "url": "https://www.ascap.com",
+     "help": "Codes the SONG (composition), not the recording \u2014 the publishing money lane."
+    },
+    {
+     "kind": "upc",
+     "name": "UPC (per release)",
+     "lane": "recording",
+     "url": "https://www.gs1us.org",
+     "help": "The barcode for a single/EP/album \u2014 your distributor usually assigns it."
+    },
+    {
+     "kind": "ipi",
+     "name": "IPI / CAE",
+     "lane": "publishing",
+     "url": "https://www.ascap.com",
+     "help": "Your songwriter/publisher payee ID \u2014 comes with PRO membership. The publishing lane."
+    },
+    {
+     "kind": "pro",
+     "name": "PRO membership",
+     "lane": "publishing",
+     "url": "https://www.ascap.com",
+     "help": "ASCAP / BMI / SESAC \u2014 collects performance royalties. Get this to get paid on radio & live."
+    },
+    {
+     "kind": "publisher",
+     "name": "Publisher / admin",
+     "lane": "publishing",
+     "url": "https://www.songtrust.com",
+     "help": "Who administers your publishing (self or an admin like Songtrust)."
+    },
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID \u2014 keeps your credits attached to YOU everywhere."
+    },
+    {
+     "kind": "dpid",
+     "name": "DDEX DPID",
+     "lane": "identity",
+     "url": "https://dpid.ddex.net",
+     "help": "Your party ID in the digital supply chain \u2014 how DSPs & distributors exchange your metadata."
+    },
+    {
+     "kind": "spotify_artist",
+     "name": "Spotify Artist ID",
+     "lane": "platform",
+     "url": "https://artists.spotify.com",
+     "help": "Claim your Spotify for Artists profile."
+    },
+    {
+     "kind": "apple_artist",
+     "name": "Apple Artist ID",
+     "lane": "platform",
+     "url": "https://artists.apple.com",
+     "help": "Claim your Apple Music for Artists profile."
+    }
+   ]
   },
-  "distributors": [
-    { "id": "distrokid",    "name": "DistroKid",           "industry": "music", "reports": "https://distrokid.com/bank/",                     "csv": true,  "color": "#1aab8a" },
-    { "id": "tunecore",     "name": "TuneCore",            "industry": "music", "reports": "https://www.tunecore.com/login",                  "csv": true,  "color": "#00b3a4" },
-    { "id": "cdbaby",       "name": "CD Baby",             "industry": "music", "reports": "https://members.cdbaby.com/",                     "csv": true,  "color": "#e94b3c" },
-    { "id": "unitedmasters","name": "UnitedMasters",       "industry": "music", "reports": "https://unitedmasters.com/login",                "csv": true,  "color": "#111111" },
-    { "id": "symphonic",    "name": "Symphonic Distribution","industry": "music","reports": "https://portal.symphonicdistribution.com/",     "csv": true,  "color": "#ff5a3c" },
-    { "id": "awal",         "name": "AWAL",               "industry": "music", "reports": "https://dashboard.awal.com/",                     "csv": true,  "color": "#0a0a0a" },
-    { "id": "stem",         "name": "Stem",               "industry": "music", "reports": "https://app.stem.is/",                            "csv": true,  "color": "#5b5bd6" },
-    { "id": "amuse",        "name": "Amuse",              "industry": "music", "reports": "https://artist.amuse.io/",                        "csv": true,  "color": "#ff4081" },
-    { "id": "ditto",        "name": "Ditto Music",        "industry": "music", "reports": "https://dittomusic.com/en/login",                 "csv": true,  "color": "#111f3d" },
-    { "id": "routenote",    "name": "RouteNote",          "industry": "music", "reports": "https://routenote.com/login",                     "csv": true,  "color": "#2b8cff" },
-    { "id": "onerpm",       "name": "ONErpm",             "industry": "music", "reports": "https://onerpm.com/login",                        "csv": true,  "color": "#00c2a8" },
-    { "id": "empire",       "name": "EMPIRE",             "industry": "music", "reports": "https://empi.re/",                                "csv": false, "color": "#111111" },
-    { "id": "believe",      "name": "Believe (Backstage)","industry": "music", "reports": "https://backstage.believedigital.com/",           "csv": true,  "color": "#ff2d55" },
-    { "id": "theorchard",   "name": "The Orchard",        "industry": "music", "reports": "https://www.theorchard.com/login/",               "csv": true,  "color": "#00a3e0" },
-    { "id": "vydia",        "name": "Vydia",              "industry": "music", "reports": "https://vydia.com/login",                         "csv": true,  "color": "#6c2bd9" },
-    { "id": "toolost",      "name": "Too Lost",           "industry": "music", "reports": "https://app.toolost.com/",                        "csv": true,  "color": "#111111" },
-    { "id": "repost",       "name": "Repost by SoundCloud","industry": "music","reports": "https://repost.soundcloud.com/",                 "csv": true,  "color": "#ff5500" },
-    { "id": "venice",       "name": "Venice Music",       "industry": "music", "reports": "https://app.venice.music/",                       "csv": true,  "color": "#0f62fe" },
-    { "id": "level",        "name": "LANDR / Level",      "industry": "music", "reports": "https://www.landr.com/en/dashboard/",             "csv": true,  "color": "#ff375f" },
-    { "id": "spinnup",      "name": "Spinnup",            "industry": "music", "reports": "https://artists.spinnup.com/",                    "csv": true,  "color": "#111111" },
-    { "id": "imusician",    "name": "iMusician",          "industry": "music", "reports": "https://imusician.pro/en/login",                  "csv": true,  "color": "#00b2ff" },
-    { "id": "boomplay",     "name": "Boomplay for Artists","industry": "music","reports": "https://artist.boomplay.com/",                   "csv": false, "color": "#f8c200" },
-    { "id": "audiomack",    "name": "Audiomack (Monetization)","industry": "music","reports": "https://audiomack.com/artist/dashboard",     "csv": false, "color": "#ffa200" },
-
-    { "id": "youtube",      "name": "YouTube (AdSense)",   "industry": "video", "reports": "https://studio.youtube.com/",                    "csv": true,  "color": "#ff0000" },
-    { "id": "vimeo",        "name": "Vimeo OTT",           "industry": "video", "reports": "https://vhx.tv/admin",                           "csv": true,  "color": "#1ab7ea" },
-    { "id": "patreon-v",    "name": "Patreon",             "industry": "video", "reports": "https://www.patreon.com/dashboard/earnings",     "csv": true,  "color": "#ff424d" },
-    { "id": "nebula",       "name": "Nebula",              "industry": "video", "reports": "https://creators.nebula.tv/",                    "csv": false, "color": "#3d5afe" },
-
-    { "id": "spotify-pod",  "name": "Spotify for Podcasters","industry":"podcast","reports": "https://podcasters.spotify.com/",             "csv": true,  "color": "#1db954" },
-    { "id": "acast",        "name": "Acast",               "industry": "podcast","reports": "https://www.acast.com/sign-in",                 "csv": true,  "color": "#611f69" },
-    { "id": "megaphone",    "name": "Megaphone",           "industry": "podcast","reports": "https://cms.megaphone.fm/",                     "csv": true,  "color": "#ff6b00" },
-    { "id": "buzzsprout",   "name": "Buzzsprout",          "industry": "podcast","reports": "https://www.buzzsprout.com/",                   "csv": true,  "color": "#e6224a" },
-
-    { "id": "amazonkdp",    "name": "Amazon KDP",          "industry": "writing","reports": "https://kdp.amazon.com/en_US/reports-new",      "csv": true,  "color": "#ff9900" },
-    { "id": "substack",     "name": "Substack",            "industry": "writing","reports": "https://substack.com/dashboard",               "csv": true,  "color": "#ff6719" },
-    { "id": "medium",       "name": "Medium Partner",      "industry": "writing","reports": "https://medium.com/me/partner/dashboard",       "csv": false, "color": "#000000" },
-    { "id": "gumroad-w",    "name": "Gumroad",             "industry": "writing","reports": "https://app.gumroad.com/dashboard",            "csv": true,  "color": "#ff90e8" },
-
-    { "id": "etsy",         "name": "Etsy",                "industry": "art",   "reports": "https://www.etsy.com/your/account/payments",      "csv": true,  "color": "#f56400" },
-    { "id": "redbubble",    "name": "Redbubble",           "industry": "art",   "reports": "https://www.redbubble.com/portfolio/sales",       "csv": true,  "color": "#e41321" },
-    { "id": "printful",     "name": "Printful",            "industry": "art",   "reports": "https://www.printful.com/dashboard",              "csv": true,  "color": "#0d1c2e" },
-    { "id": "shutterstock", "name": "Shutterstock Contributor","industry":"art","reports": "https://submit.shutterstock.com/earnings",       "csv": true,  "color": "#e03a3c" },
-    { "id": "adobestock",   "name": "Adobe Stock",         "industry": "art",   "reports": "https://contributor.stock.adobe.com/",            "csv": true,  "color": "#fa0f00" },
-
-    { "id": "appstore",     "name": "Apple App Store",     "industry": "software","reports": "https://appstoreconnect.apple.com/",           "csv": true,  "color": "#0a0a0a" },
-    { "id": "googleplay",   "name": "Google Play Console", "industry": "software","reports": "https://play.google.com/console/",             "csv": true,  "color": "#01875f" },
-    { "id": "stripe-sw",    "name": "Stripe",              "industry": "software","reports": "https://dashboard.stripe.com/payments",         "csv": true,  "color": "#635bff" },
-    { "id": "gumroad-sw",   "name": "Gumroad",             "industry": "software","reports": "https://app.gumroad.com/dashboard",           "csv": true,  "color": "#ff90e8" },
-
-    { "id": "tiktok-fund",  "name": "TikTok Creator",      "industry": "creator","reports": "https://www.tiktok.com/creator-center/",        "csv": false, "color": "#000000" },
-    { "id": "meta-payouts", "name": "Meta (IG/FB) Payouts","industry": "creator","reports": "https://business.facebook.com/creatorstudio/",  "csv": true,  "color": "#1877f2" },
-    { "id": "twitch",       "name": "Twitch",              "industry": "creator","reports": "https://dashboard.twitch.tv/",                  "csv": true,  "color": "#9146ff" },
-    { "id": "patreon-c",    "name": "Patreon",             "industry": "creator","reports": "https://www.patreon.com/dashboard/earnings",    "csv": true,  "color": "#ff424d" },
-    { "id": "kofi",         "name": "Ko-fi",               "industry": "creator","reports": "https://ko-fi.com/manage/payments",             "csv": true,  "color": "#ff5e5b" }
-  ]
+  {
+   "id": "video",
+   "name": "Video / Film",
+   "kind": "distributable",
+   "verb": "publish",
+   "badge": "creator",
+   "blurb": "Video networks, MCNs and OTT platforms that pay on views.",
+   "identifiers": [
+    {
+     "kind": "isan",
+     "name": "ISAN",
+     "lane": "recording",
+     "url": "https://www.isan.org",
+     "help": "The international standard ID for a film/TV work \u2014 the ISRC of video."
+    },
+    {
+     "kind": "imdb_id",
+     "name": "IMDb ID",
+     "lane": "identity",
+     "url": "https://www.imdb.com",
+     "help": "Your name/title record on IMDb (nmXXXXXXX / ttXXXXXXX)."
+    },
+    {
+     "kind": "youtube_channel",
+     "name": "YouTube Channel ID",
+     "lane": "platform",
+     "url": "https://studio.youtube.com",
+     "help": "Your channel ID (UCxxxx) \u2014 where AdSense pays."
+    },
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID across every credits database."
+    }
+   ]
+  },
+  {
+   "id": "podcast",
+   "name": "Podcast / Audio",
+   "kind": "distributable",
+   "verb": "host",
+   "badge": "creator",
+   "blurb": "Podcast hosts & networks that pay on downloads and ads.",
+   "identifiers": [
+    {
+     "kind": "podcast_guid",
+     "name": "Podcast GUID",
+     "lane": "recording",
+     "url": "https://podcastindex.org",
+     "help": "The stable ID in your RSS feed (<podcast:guid>) \u2014 how directories track your show."
+    },
+    {
+     "kind": "apple_podcasts",
+     "name": "Apple Podcasts ID",
+     "lane": "platform",
+     "url": "https://podcastsconnect.apple.com",
+     "help": "Your show's Apple Podcasts collection ID."
+    },
+    {
+     "kind": "spotify_show",
+     "name": "Spotify Show ID",
+     "lane": "platform",
+     "url": "https://podcasters.spotify.com",
+     "help": "Your show ID on Spotify for Podcasters."
+    },
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID."
+    }
+   ]
+  },
+  {
+   "id": "writing",
+   "name": "Writing / Publishing",
+   "kind": "distributable",
+   "verb": "publish",
+   "badge": "creator",
+   "blurb": "Book, newsletter and article platforms that pay royalties.",
+   "identifiers": [
+    {
+     "kind": "isbn",
+     "name": "ISBN",
+     "lane": "recording",
+     "url": "https://www.myidentifiers.com",
+     "help": "The barcode for a book edition \u2014 one per format."
+    },
+    {
+     "kind": "issn",
+     "name": "ISSN",
+     "lane": "recording",
+     "url": "https://www.issn.org",
+     "help": "The ID for a periodical / serial (newsletter, journal)."
+    },
+    {
+     "kind": "doi",
+     "name": "DOI",
+     "lane": "recording",
+     "url": "https://www.doi.org",
+     "help": "A permanent link-ID for an article or dataset."
+    },
+    {
+     "kind": "orcid",
+     "name": "ORCID",
+     "lane": "identity",
+     "url": "https://orcid.org",
+     "help": "The persistent ID for an author/researcher \u2014 ties all your work to one record."
+    },
+    {
+     "kind": "asin",
+     "name": "Amazon ASIN",
+     "lane": "platform",
+     "url": "https://kdp.amazon.com",
+     "help": "Your title's Amazon product ID."
+    },
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID."
+    }
+   ]
+  },
+  {
+   "id": "art",
+   "name": "Visual Art / Design",
+   "kind": "distributable",
+   "verb": "sell",
+   "badge": "creator",
+   "blurb": "Print-on-demand, stock and marketplace platforms.",
+   "identifiers": [
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID as an artist."
+    },
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID \u2014 the anchor for a shop that sells."
+    },
+    {
+     "kind": "vat",
+     "name": "VAT / Tax ID",
+     "lane": "business",
+     "url": "",
+     "help": "Your sales-tax / VAT registration if you sell internationally."
+    }
+   ]
+  },
+  {
+   "id": "software",
+   "name": "Apps / Software",
+   "kind": "distributable",
+   "verb": "ship",
+   "badge": "creator",
+   "blurb": "App stores and marketplaces that pay out on sales.",
+   "identifiers": [
+    {
+     "kind": "bundle_id",
+     "name": "Apple Bundle ID",
+     "lane": "recording",
+     "url": "https://developer.apple.com",
+     "help": "Your app's reverse-DNS ID (com.you.app) in App Store Connect."
+    },
+    {
+     "kind": "package_name",
+     "name": "Android Package",
+     "lane": "recording",
+     "url": "https://play.google.com/console",
+     "help": "Your app's package name in Play Console."
+    },
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID \u2014 required to take payouts."
+    }
+   ]
+  },
+  {
+   "id": "creator",
+   "name": "Creator / Social",
+   "kind": "distributable",
+   "verb": "monetize",
+   "badge": "creator",
+   "blurb": "Platforms that pay creators directly (ads, tips, funds).",
+   "identifiers": [
+    {
+     "kind": "instagram",
+     "name": "Instagram handle",
+     "lane": "platform",
+     "url": "https://instagram.com",
+     "help": "Your @handle."
+    },
+    {
+     "kind": "tiktok",
+     "name": "TikTok handle",
+     "lane": "platform",
+     "url": "https://tiktok.com",
+     "help": "Your @handle."
+    },
+    {
+     "kind": "youtube_channel",
+     "name": "YouTube Channel ID",
+     "lane": "platform",
+     "url": "https://studio.youtube.com",
+     "help": "Your channel ID (UCxxxx)."
+    },
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID."
+    }
+   ]
+  },
+  {
+   "id": "studios",
+   "name": "Studios (Venue)",
+   "kind": "org",
+   "verb": "host",
+   "badge": "venue",
+   "blurb": "Recording / photo studios & event spaces. You earn through bookings on the floor \u2014 no external distributor \u2014 but you carry a venue's identifiers.",
+   "identifiers": [
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID."
+    },
+    {
+     "kind": "state_filing",
+     "name": "State Filing No.",
+     "lane": "business",
+     "url": "https://business.ct.gov",
+     "help": "Your Secretary of State registration."
+    },
+    {
+     "kind": "insurance",
+     "name": "Liability Insurance",
+     "lane": "business",
+     "url": "",
+     "help": "A certificate of general liability \u2014 required to host the public."
+    },
+    {
+     "kind": "alei",
+     "name": "ALEI",
+     "lane": "identity",
+     "url": "https://business.ct.gov",
+     "help": "Your machine-readable legal-entity ID."
+    }
+   ]
+  },
+  {
+   "id": "stages",
+   "name": "Stages (Live)",
+   "kind": "org",
+   "verb": "host",
+   "badge": "venue",
+   "blurb": "Live venues & stages. Earn through bookings on the floor; carry a venue's identifiers.",
+   "identifiers": [
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID."
+    },
+    {
+     "kind": "state_filing",
+     "name": "State Filing No.",
+     "lane": "business",
+     "url": "https://business.ct.gov",
+     "help": "Your Secretary of State registration."
+    },
+    {
+     "kind": "insurance",
+     "name": "Liability Insurance",
+     "lane": "business",
+     "url": "",
+     "help": "A certificate of general liability."
+    }
+   ]
+  },
+  {
+   "id": "programs",
+   "name": "Programs / Civic",
+   "kind": "org",
+   "verb": "run",
+   "badge": "nonprofit",
+   "blurb": "Nonprofits, community programs & civic work. Funded by grants & the community chest; carry a nonprofit's identifiers.",
+   "identifiers": [
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your federal tax ID."
+    },
+    {
+     "kind": "charity",
+     "name": "Charity Registration",
+     "lane": "business",
+     "url": "https://portal.ct.gov/dcp",
+     "help": "Your state charitable-solicitation license."
+    },
+    {
+     "kind": "state_filing",
+     "name": "State Filing No.",
+     "lane": "business",
+     "url": "https://business.ct.gov",
+     "help": "Your Secretary of State registration."
+    },
+    {
+     "kind": "ueid",
+     "name": "UEID (SAM.gov)",
+     "lane": "business",
+     "url": "https://sam.gov",
+     "help": "Your ID to receive federal grants & contracts."
+    }
+   ]
+  },
+  {
+   "id": "photo",
+   "name": "Photo / Media Services",
+   "kind": "service",
+   "verb": "shoot",
+   "badge": "creator",
+   "blurb": "Photographers, videographers & media pros. You earn through deals on the floor; carry your creator identity.",
+   "identifiers": [
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID."
+    },
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID (if you operate as a business)."
+    }
+   ]
+  },
+  {
+   "id": "web",
+   "name": "Web / Tech Services",
+   "kind": "service",
+   "verb": "build",
+   "badge": "creator",
+   "blurb": "Web, design & tech builders. Earn through deals on the floor; carry your creator identity.",
+   "identifiers": [
+    {
+     "kind": "isni",
+     "name": "ISNI",
+     "lane": "identity",
+     "url": "https://isni.org",
+     "help": "Your global name ID."
+    },
+    {
+     "kind": "ein",
+     "name": "EIN",
+     "lane": "business",
+     "url": "https://www.irs.gov/ein",
+     "help": "Your business tax ID."
+    }
+   ]
+  },
+  {
+   "id": "press",
+   "name": "Press & PR",
+   "kind": "distributable",
+   "verb": "publish through",
+   "badge": "signal",
+   "blurb": "Press-release wires and PR distribution \u2014 your announcements on the record, your reach counted.",
+   "identifiers": []
+  }
+ ],
+ "roleMap": {
+  "Music": "music",
+  "Video": "video",
+  "Photo": "photo",
+  "Web": "web",
+  "Studios": "studios",
+  "Stages": "stages",
+  "Merch": "art",
+  "Programs": "programs",
+  "Podcast": "podcast",
+  "Writing": "writing",
+  "Software": "software",
+  "Creator": "creator",
+  "Civic / Community": "programs"
+ },
+ "distributors": [
+  {
+   "id": "distrokid",
+   "name": "DistroKid",
+   "industry": "music",
+   "reports": "https://distrokid.com/bank/",
+   "csv": true,
+   "color": "#1aab8a"
+  },
+  {
+   "id": "tunecore",
+   "name": "TuneCore",
+   "industry": "music",
+   "reports": "https://www.tunecore.com/login",
+   "csv": true,
+   "color": "#00b3a4"
+  },
+  {
+   "id": "cdbaby",
+   "name": "CD Baby",
+   "industry": "music",
+   "reports": "https://members.cdbaby.com/",
+   "csv": true,
+   "color": "#e94b3c"
+  },
+  {
+   "id": "unitedmasters",
+   "name": "UnitedMasters",
+   "industry": "music",
+   "reports": "https://unitedmasters.com/login",
+   "csv": true,
+   "color": "#111111"
+  },
+  {
+   "id": "symphonic",
+   "name": "Symphonic Distribution",
+   "industry": "music",
+   "reports": "https://portal.symphonicdistribution.com/",
+   "csv": true,
+   "color": "#ff5a3c"
+  },
+  {
+   "id": "awal",
+   "name": "AWAL",
+   "industry": "music",
+   "reports": "https://dashboard.awal.com/",
+   "csv": true,
+   "color": "#0a0a0a"
+  },
+  {
+   "id": "stem",
+   "name": "Stem",
+   "industry": "music",
+   "reports": "https://app.stem.is/",
+   "csv": true,
+   "color": "#5b5bd6"
+  },
+  {
+   "id": "amuse",
+   "name": "Amuse",
+   "industry": "music",
+   "reports": "https://artist.amuse.io/",
+   "csv": true,
+   "color": "#ff4081"
+  },
+  {
+   "id": "ditto",
+   "name": "Ditto Music",
+   "industry": "music",
+   "reports": "https://dittomusic.com/en/login",
+   "csv": true,
+   "color": "#111f3d"
+  },
+  {
+   "id": "routenote",
+   "name": "RouteNote",
+   "industry": "music",
+   "reports": "https://routenote.com/login",
+   "csv": true,
+   "color": "#2b8cff"
+  },
+  {
+   "id": "onerpm",
+   "name": "ONErpm",
+   "industry": "music",
+   "reports": "https://onerpm.com/login",
+   "csv": true,
+   "color": "#00c2a8"
+  },
+  {
+   "id": "empire",
+   "name": "EMPIRE",
+   "industry": "music",
+   "reports": "https://empi.re/",
+   "csv": false,
+   "color": "#111111"
+  },
+  {
+   "id": "believe",
+   "name": "Believe (Backstage)",
+   "industry": "music",
+   "reports": "https://backstage.believedigital.com/",
+   "csv": true,
+   "color": "#ff2d55"
+  },
+  {
+   "id": "theorchard",
+   "name": "The Orchard",
+   "industry": "music",
+   "reports": "https://www.theorchard.com/login/",
+   "csv": true,
+   "color": "#00a3e0"
+  },
+  {
+   "id": "vydia",
+   "name": "Vydia",
+   "industry": "music",
+   "reports": "https://vydia.com/login",
+   "csv": true,
+   "color": "#6c2bd9"
+  },
+  {
+   "id": "toolost",
+   "name": "Too Lost",
+   "industry": "music",
+   "reports": "https://app.toolost.com/",
+   "csv": true,
+   "color": "#111111"
+  },
+  {
+   "id": "repost",
+   "name": "Repost by SoundCloud",
+   "industry": "music",
+   "reports": "https://repost.soundcloud.com/",
+   "csv": true,
+   "color": "#ff5500"
+  },
+  {
+   "id": "venice",
+   "name": "Venice Music",
+   "industry": "music",
+   "reports": "https://app.venice.music/",
+   "csv": true,
+   "color": "#0f62fe"
+  },
+  {
+   "id": "level",
+   "name": "LANDR / Level",
+   "industry": "music",
+   "reports": "https://www.landr.com/en/dashboard/",
+   "csv": true,
+   "color": "#ff375f"
+  },
+  {
+   "id": "spinnup",
+   "name": "Spinnup",
+   "industry": "music",
+   "reports": "https://artists.spinnup.com/",
+   "csv": true,
+   "color": "#111111"
+  },
+  {
+   "id": "imusician",
+   "name": "iMusician",
+   "industry": "music",
+   "reports": "https://imusician.pro/en/login",
+   "csv": true,
+   "color": "#00b2ff"
+  },
+  {
+   "id": "boomplay",
+   "name": "Boomplay for Artists",
+   "industry": "music",
+   "reports": "https://artist.boomplay.com/",
+   "csv": false,
+   "color": "#f8c200"
+  },
+  {
+   "id": "audiomack",
+   "name": "Audiomack (Monetization)",
+   "industry": "music",
+   "reports": "https://audiomack.com/artist/dashboard",
+   "csv": false,
+   "color": "#ffa200"
+  },
+  {
+   "id": "youtube",
+   "name": "YouTube (AdSense)",
+   "industry": "video",
+   "reports": "https://studio.youtube.com/",
+   "csv": true,
+   "color": "#ff0000"
+  },
+  {
+   "id": "vimeo",
+   "name": "Vimeo OTT",
+   "industry": "video",
+   "reports": "https://vhx.tv/admin",
+   "csv": true,
+   "color": "#1ab7ea"
+  },
+  {
+   "id": "patreon-v",
+   "name": "Patreon",
+   "industry": "video",
+   "reports": "https://www.patreon.com/dashboard/earnings",
+   "csv": true,
+   "color": "#ff424d"
+  },
+  {
+   "id": "nebula",
+   "name": "Nebula",
+   "industry": "video",
+   "reports": "https://creators.nebula.tv/",
+   "csv": false,
+   "color": "#3d5afe"
+  },
+  {
+   "id": "spotify-pod",
+   "name": "Spotify for Podcasters",
+   "industry": "podcast",
+   "reports": "https://podcasters.spotify.com/",
+   "csv": true,
+   "color": "#1db954"
+  },
+  {
+   "id": "acast",
+   "name": "Acast",
+   "industry": "podcast",
+   "reports": "https://www.acast.com/sign-in",
+   "csv": true,
+   "color": "#611f69"
+  },
+  {
+   "id": "megaphone",
+   "name": "Megaphone",
+   "industry": "podcast",
+   "reports": "https://cms.megaphone.fm/",
+   "csv": true,
+   "color": "#ff6b00"
+  },
+  {
+   "id": "buzzsprout",
+   "name": "Buzzsprout",
+   "industry": "podcast",
+   "reports": "https://www.buzzsprout.com/",
+   "csv": true,
+   "color": "#e6224a"
+  },
+  {
+   "id": "amazonkdp",
+   "name": "Amazon KDP",
+   "industry": "writing",
+   "reports": "https://kdp.amazon.com/en_US/reports-new",
+   "csv": true,
+   "color": "#ff9900"
+  },
+  {
+   "id": "substack",
+   "name": "Substack",
+   "industry": "writing",
+   "reports": "https://substack.com/dashboard",
+   "csv": true,
+   "color": "#ff6719"
+  },
+  {
+   "id": "medium",
+   "name": "Medium Partner",
+   "industry": "writing",
+   "reports": "https://medium.com/me/partner/dashboard",
+   "csv": false,
+   "color": "#000000"
+  },
+  {
+   "id": "gumroad-w",
+   "name": "Gumroad",
+   "industry": "writing",
+   "reports": "https://app.gumroad.com/dashboard",
+   "csv": true,
+   "color": "#ff90e8"
+  },
+  {
+   "id": "etsy",
+   "name": "Etsy",
+   "industry": "art",
+   "reports": "https://www.etsy.com/your/account/payments",
+   "csv": true,
+   "color": "#f56400"
+  },
+  {
+   "id": "redbubble",
+   "name": "Redbubble",
+   "industry": "art",
+   "reports": "https://www.redbubble.com/portfolio/sales",
+   "csv": true,
+   "color": "#e41321"
+  },
+  {
+   "id": "printful",
+   "name": "Printful",
+   "industry": "art",
+   "reports": "https://www.printful.com/dashboard",
+   "csv": true,
+   "color": "#0d1c2e"
+  },
+  {
+   "id": "shutterstock",
+   "name": "Shutterstock Contributor",
+   "industry": "art",
+   "reports": "https://submit.shutterstock.com/earnings",
+   "csv": true,
+   "color": "#e03a3c"
+  },
+  {
+   "id": "adobestock",
+   "name": "Adobe Stock",
+   "industry": "art",
+   "reports": "https://contributor.stock.adobe.com/",
+   "csv": true,
+   "color": "#fa0f00"
+  },
+  {
+   "id": "appstore",
+   "name": "Apple App Store",
+   "industry": "software",
+   "reports": "https://appstoreconnect.apple.com/",
+   "csv": true,
+   "color": "#0a0a0a"
+  },
+  {
+   "id": "googleplay",
+   "name": "Google Play Console",
+   "industry": "software",
+   "reports": "https://play.google.com/console/",
+   "csv": true,
+   "color": "#01875f"
+  },
+  {
+   "id": "stripe-sw",
+   "name": "Stripe",
+   "industry": "software",
+   "reports": "https://dashboard.stripe.com/payments",
+   "csv": true,
+   "color": "#635bff"
+  },
+  {
+   "id": "gumroad-sw",
+   "name": "Gumroad",
+   "industry": "software",
+   "reports": "https://app.gumroad.com/dashboard",
+   "csv": true,
+   "color": "#ff90e8"
+  },
+  {
+   "id": "tiktok-fund",
+   "name": "TikTok Creator",
+   "industry": "creator",
+   "reports": "https://www.tiktok.com/creator-center/",
+   "csv": false,
+   "color": "#000000"
+  },
+  {
+   "id": "meta-payouts",
+   "name": "Meta (IG/FB) Payouts",
+   "industry": "creator",
+   "reports": "https://business.facebook.com/creatorstudio/",
+   "csv": true,
+   "color": "#1877f2"
+  },
+  {
+   "id": "twitch",
+   "name": "Twitch",
+   "industry": "creator",
+   "reports": "https://dashboard.twitch.tv/",
+   "csv": true,
+   "color": "#9146ff"
+  },
+  {
+   "id": "patreon-c",
+   "name": "Patreon",
+   "industry": "creator",
+   "reports": "https://www.patreon.com/dashboard/earnings",
+   "csv": true,
+   "color": "#ff424d"
+  },
+  {
+   "id": "kofi",
+   "name": "Ko-fi",
+   "industry": "creator",
+   "reports": "https://ko-fi.com/manage/payments",
+   "csv": true,
+   "color": "#ff5e5b"
+  },
+  {
+   "id": "einpresswire",
+   "name": "EIN Presswire",
+   "industry": "press",
+   "reports": "https://www.einpresswire.com/my-account",
+   "csv": false,
+   "color": "#2b6cb0"
+  },
+  {
+   "id": "prnewswire",
+   "name": "PR Newswire",
+   "industry": "press",
+   "reports": "https://portal.prnewswire.com/",
+   "csv": false,
+   "color": "#0057b8"
+  },
+  {
+   "id": "businesswire",
+   "name": "Business Wire",
+   "industry": "press",
+   "reports": "https://services.businesswire.com/",
+   "csv": false,
+   "color": "#005daa"
+  },
+  {
+   "id": "prweb",
+   "name": "PRWeb",
+   "industry": "press",
+   "reports": "https://dashboard.prweb.com/",
+   "csv": false,
+   "color": "#e0672a"
+  },
+  {
+   "id": "accesswire",
+   "name": "ACCESS Newswire",
+   "industry": "press",
+   "reports": "https://www.accessnewswire.com/login",
+   "csv": false,
+   "color": "#1f9d55"
+  },
+  {
+   "id": "prlog",
+   "name": "PRLog",
+   "industry": "press",
+   "reports": "https://www.prlog.org/user/",
+   "csv": false,
+   "color": "#888888"
+  }
+ ]
 }
