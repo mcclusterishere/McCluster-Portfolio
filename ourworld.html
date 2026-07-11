@@ -420,6 +420,20 @@
          every finish files an event, so the desk's Pulse sees the floor
          being driven. */
       var SPOTS = [];
+      /* THE PULL-UP: rolling to somebody's spot taps their pocket — the
+         back end holds their on/off switch and a 30-minute cooldown */
+      var pinged = {}, pingTick = 0;
+      function pingVisit(slug) {
+        if (!slug || pinged[slug]) return;
+        pinged[slug] = 1;
+        var S0 = window.MCC_SUPA;
+        if (!S0) return;
+        (S0.token ? S0.token() : Promise.resolve(null)).then(function (t) {
+          return fetch(S0.url + "/rest/v1/rpc/ping_visit", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S0.key, Authorization: "Bearer " + (t || S0.key) },
+            body: JSON.stringify({ p_slug: slug }) });
+        }).catch(function () {});
+      }
       var RUNS = (function () {
         var st = J("mcc_ow_runs", { score: 0, streak: 0, done: 0 });
         var mkA = null, mkB = null, A = null, B = null, active = false, deadline = 0, par = 0;
@@ -451,6 +465,13 @@
         }
         function tick() {
           if (!player || !SPOTS.length) return;
+          /* the pull-up: near somebody's spot = their pocket buzzes */
+          if (++pingTick % 45 === 0) {
+            for (var pv = 0; pv < SPOTS.length; pv++) {
+              var s0 = SPOTS[pv];
+              if (!pinged[s0.slug] && dist(player, s0) < 60) pingVisit(s0.slug);
+            }
+          }
           if (!A) { contract(); return; }
           if (!active) {
             if (dist(player, A) < 55) {

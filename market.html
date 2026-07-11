@@ -2651,6 +2651,8 @@
                 '<p class="mp__msg" id="dkPushMsg"></p>' +
                 '<p class="mp__note">Paid, booked, awarded, spoken to — the word reaches your lock screen even with the app closed.</p>'
               : '<p class="mp__note" style="margin-top:0.4rem">On iPhone: tap <b style="color:var(--cream)">Share → Add to Home Screen</b>, open the app from its icon, and this switch appears. Installed apps get the word on the lock screen.</p>');
+          html += '<div class="mp__linkrow" style="margin-top:0.55rem"><button class="btn btn--ghost" id="dkVisitTgl" type="button" style="flex:1">🚗 Visit pings: checking…</button></div>' +
+            '<p class="mp__note">Somebody pulls up to your spot in Uprise Nation — your pocket gets tapped. Tap the switch to flip it.</p>';
           html += "</div>";
           /* the distro: upload the record, keep everything */
           html += '<div class="mp__card"><span class="mp__lblx">🎵 Your catalog — the distro</span>' +
@@ -2754,6 +2756,28 @@
                 /signed out/.test(why) ? "Your session blinked — sign in again and retap." :
                 "It didn't take — retap in a moment.";
             });
+          });
+        }
+        /* the pull-up switch: visit pings on/off, banked in member_prefs */
+        var vtgl = body.querySelector("#dkVisitTgl");
+        if (vtgl) {
+          var vOn = true;
+          var paintV = function () { vtgl.textContent = "🚗 Visit pings: " + (vOn ? "ON — tap to mute" : "OFF — tap to arm"); };
+          window.MCC_SUPA.token().then(function (t) {
+            return fetch(window.MCC_SUPA.url + "/rest/v1/member_prefs?select=visit_pings", {
+              headers: { apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t } });
+          }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
+            if (rows && rows[0]) vOn = rows[0].visit_pings !== false;
+            paintV();
+          }).catch(paintV);
+          vtgl.addEventListener("click", function () {
+            vOn = !vOn; paintV();
+            window.MCC_SUPA.token().then(function (t) {
+              return fetch(window.MCC_SUPA.url + "/rest/v1/member_prefs", { method: "POST",
+                headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t,
+                  Prefer: "resolution=merge-duplicates" },
+                body: JSON.stringify({ visit_pings: vOn }) });
+            }).then(function () { track("visit_pings", { on: vOn }); }).catch(function () {});
           });
         }
         /* the distro: the catalog rides the desk */
