@@ -642,6 +642,13 @@
   var cart = null;
   try { cart = JSON.parse(localStorage.getItem("mcc_cart") || "null"); } catch (e) {}
   if (!cart || !cart.at || !cart.href || Date.now() - cart.at > 48 * 3600 * 1000) return;
+  if (cart.kind === "rise") {
+    // a dealt card silences the rise breadcrumb forever
+    try {
+      var rz9 = JSON.parse(localStorage.getItem("mcc_rise") || "null");
+      if (rz9 && rz9.arch) { localStorage.removeItem("mcc_cart"); return; }
+    } catch (e9) {}
+  }
   try { if (sessionStorage.getItem("mcc_cart_hush")) return; } catch (e2) {}
   var here = location.pathname.split("/").pop() || "index.html";
   if (here === String(cart.href).split(/[?#]/)[0]) return;   // already back in the flow

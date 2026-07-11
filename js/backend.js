@@ -239,3 +239,27 @@
   // same public anon key, same RLS wall — never a secret
   window.MCC_SUPA = { url: URL_, key: KEY, token: token, uid: uid, email: email };
 })();
+
+/* THE CARD STAYS DEALT — the E⤴ Card lives on the ACCOUNT, not the
+   device. Any page, any browser: if this device lost the card (new
+   phone, cleared storage) but the member is signed in, pull it back
+   from the imprint once per session — so nothing ever nags a member
+   who already played RISE. */
+(function () {
+  try {
+    if (localStorage.getItem("mcc_rise")) return;
+    if (!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user())) return;
+    if (sessionStorage.getItem("mcc_rise_pulled")) return;
+    sessionStorage.setItem("mcc_rise_pulled", "1");
+    window.MCC_SUPA.token().then(function (t) {
+      if (!t) return null;
+      return fetch(window.MCC_SUPA.url + "/rest/v1/rpc/my_imprint", { method: "POST",
+        headers: { "Content-Type": "application/json", apikey: window.MCC_SUPA.key, Authorization: "Bearer " + t },
+        body: "{}" });
+    }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (imp) {
+      if (imp && imp.paths && imp.paths.length) {
+        localStorage.setItem("mcc_rise", JSON.stringify({ entry: "imprint", arch: imp.paths, v: {}, at: new Date().toISOString() }));
+      }
+    }).catch(function () {});
+  } catch (e) {}
+})();
