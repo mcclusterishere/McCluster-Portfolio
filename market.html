@@ -2876,8 +2876,16 @@
           pl.innerHTML = '<span class="mp__lblx" style="color:#ff6b6b">Claim your plays — the outside numbers</span>' +
             '<p class="mp__note" style="margin:0.3rem 0 0.6rem"><b>One tap:</b> log in at the platform and your account connects itself — banked, <b style="color:#2fbf71">verified on the spot</b>, and your real numbers file immediately.</p>' +
             '<div style="display:grid;gap:0.45rem;margin-bottom:0.7rem">' +
-            '<button class="btn btn--xc" data-oauth="youtube" style="justify-content:center;background:linear-gradient(180deg,#ff4e45,#c4302b);color:#fff">▶ Connect YouTube — log in &amp; done</button>' +
-            '<button class="btn btn--xc" data-oauth="spotify" style="justify-content:center;background:linear-gradient(180deg,#1ed760,#169c46);color:#0a0807">● Connect Spotify — log in &amp; done</button></div>' +
+            /* THE HANDSHAKE registry: one list, every platform the
+               function speaks — unarmed ones answer honestly on tap */
+            [["youtube", "▶ Connect YouTube", "#ff4e45,#c4302b", "#fff"],
+             ["spotify", "● Connect Spotify", "#1ed760,#169c46", "#0a0807"],
+             ["github", "⌥ Connect GitHub", "#6e7681,#24292f", "#fff"],
+             ["twitch", "⏵ Connect Twitch", "#a970ff,#6441a5", "#fff"],
+             ["reddit", "◉ Connect Reddit", "#ff6a2c,#d93a00", "#fff"],
+             ["x", "𝕏 Connect X", "#3a3a3a,#111", "#fff"]].map(function (c) {
+              return '<button class="btn btn--xc" data-oauth="' + c[0] + '" style="justify-content:center;background:linear-gradient(180deg,' + c[2] + ');color:' + c[3] + '">' + c[1] + " — log in &amp; done</button>";
+            }).join("") + "</div>" +
             '<p class="mp__note" style="margin:0 0 0.6rem">Or paste links by hand — same machine, same nightly 8:17 sweep:</p>' +
             '<input class="mk__in" data-pk="youtube_channel" placeholder="YouTube channel link (youtube.com/@you or /channel/…)" style="margin-bottom:0.45rem">' +
             '<input class="mk__in" data-pk="spotify_artist" placeholder="Spotify artist link (open.spotify.com/artist/…)" style="margin-bottom:0.45rem">' +
@@ -2893,9 +2901,9 @@
               window.MCC_SUPA.token().then(function (t) {
                 return fetch(window.MCC_SUPA.url + "/functions/v1/oauth-connect/start?provider=" + prov + "&t=" + encodeURIComponent(t || ""), {
                   headers: { apikey: window.MCC_SUPA.key } });
-              }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+              }).then(function (r) { return r.json().catch(function () { return null; }); }).then(function (j) {
                 if (j && j.url) { track("oauth_start", { p: prov }); location.href = j.url; }
-                else { b.disabled = false; b.textContent = "Connect " + prov + " — the rail is being armed"; }
+                else { b.disabled = false; b.textContent = (j && j.error) ? prov + ": " + j.error : "Connect " + prov + " — the rail is being armed"; }
               }).catch(function () { b.disabled = false; b.textContent = "Connect " + prov + " — try again"; });
             });
           });
