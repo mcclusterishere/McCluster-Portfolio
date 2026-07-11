@@ -491,6 +491,20 @@
       #sheet .sig { margin-top: 1.4rem; padding-top: 0.8rem; border-top: 1px solid #000; }
       #sheet .fine { font-size: 0.84rem; color: #444; margin-top: 1.6rem; line-height: 1.5; }
     }
+    /* THE WIRE, consolidated: reactions ride the market pane now */
+    .wr-post { padding: 0.85rem 0.2rem; border-bottom: 1px dashed rgba(244,239,230,0.12); }
+    .wr-post__head { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--cream); }
+    .wr-post__pic { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex: none;
+      display: inline-grid; place-items: center; background: rgba(201,157,69,0.18); color: #c99d45; font-weight: 800; }
+    .wr-post__head small { display: block; color: var(--cream-dim); font-size: 0.78rem; margin-top: 0.1rem; }
+    .wr-post__body { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+    .wr-acts { display: flex; gap: 0.45rem; margin-top: 0.55rem; }
+    .wr-react { border: 1px solid rgba(244,239,230,0.16); background: rgba(244,239,230,0.04); color: var(--cream-dim);
+      border-radius: 100px; padding: 0.35em 0.85em; font: inherit; font-size: 0.85rem; cursor: pointer;
+      text-decoration: none; transition: transform 0.12s, border-color 0.2s, background 0.2s; }
+    .wr-react:active { transform: scale(0.94); }
+    .wr-react.is-mine { border-color: rgba(229,56,59,0.7); background: rgba(229,56,59,0.14); color: var(--cream); }
+    .wr-react b { font-variant-numeric: tabular-nums; font-weight: 700; }
   </style>
 </head>
 <body class="songpage hirepage">
@@ -916,6 +930,7 @@
   <script src="js/door.js?v=__STAMP__"></script>
   <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
+  <script src="js/social.js?v=__STAMP__"></script>
   <script src="js/mstock.js?v=__STAMP__"></script>
   <script src="js/distribution.js?v=__STAMP__"></script>
   <script src="js/mworth.js?v=__STAMP__"></script>
@@ -3503,7 +3518,64 @@
         if (m < 1440) return Math.round(m / 60) + "h";
         return Math.round(m / 1440) + "d";
       }
+      /* ONE WIRE: the old wire.html feed lives HERE now — reactions and
+         all. The rich feed (wire_feed rpc) paints when the paste is in;
+         the plain posts feed is the fallback so the pane never blanks. */
       function paintFeed() {
+        var host = $("wireFeed");
+        if (!host) return;
+        var rich = (window.MCC_SOCIAL && window.MCC_SOCIAL.wire) ? window.MCC_SOCIAL.wire(60) : Promise.resolve([]);
+        rich.then(function (rows) {
+          if (rows && rows.length) paintRich(host, rows);
+          else paintPlain();
+        }).catch(function () { paintPlain(); });
+      }
+      function wireAgo(t) {
+        var sec = (Date.now() - new Date(t).getTime()) / 1000;
+        if (sec < 3600) return Math.max(1, Math.round(sec / 60)) + "m";
+        if (sec < 86400) return Math.round(sec / 3600) + "h";
+        return Math.round(sec / 86400) + "d";
+      }
+      function paintRich(host, rows) {
+        var KINDS = [["heart", "\u2764\uFE0F"], ["fire", "\ud83d\udd25"], ["up", "\ud83d\udcc8"]];
+        host.innerHTML = "";
+        rows.forEach(function (pp) {
+          var mine2 = pp.my_reactions || [];
+          var el = document.createElement("div");
+          el.className = "wr-post";
+          el.innerHTML =
+            '<a class="wr-post__head" href="page.html?who=' + encodeURIComponent(pp.slug) + '">' +
+            (pp.photo ? '<img class="wr-post__pic" src="' + esc(pp.photo) + '" alt="">' :
+              '<span class="wr-post__pic">' + esc((pp.creator || "?").slice(0, 1).toUpperCase()) + "</span>") +
+            "<span><b>" + esc(pp.creator) + "</b><small>$" + esc(String(pp.slug).toUpperCase()) + " \u00b7 " + wireAgo(pp.created_at) + "</small></span></a>" +
+            '<div class="wr-post__body">' + esc(pp.body) + "</div>" +
+            '<div class="wr-acts">' +
+            KINDS.map(function (k) {
+              var n = +pp[k[0] + "s"] || 0;
+              return '<button class="wr-react' + (mine2.indexOf(k[0]) !== -1 ? " is-mine" : "") + '" type="button" data-react="' + k[0] + '">' +
+                k[1] + " <b>" + (n || "") + "</b></button>";
+            }).join("") +
+            '<a class="wr-react" href="page.html?who=' + encodeURIComponent(pp.slug) + '">\ud83d\udcac <b>' + (+pp.comments || "") + "</b></a>" +
+            "</div>";
+          el.querySelectorAll("[data-react]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var kind = b.dataset.react;
+              var countEl = b.querySelector("b");
+              var was = +countEl.textContent || 0;
+              var on = b.classList.toggle("is-mine");           // optimistic
+              countEl.textContent = Math.max(0, was + (on ? 1 : -1)) || "";
+              window.MCC_SOCIAL.react(pp.id, kind).then(function () {
+                if (window.MCC_TRACK) window.MCC_TRACK("wire_react", { kind: kind });
+              }).catch(function () {
+                b.classList.toggle("is-mine");                  // roll it back
+                countEl.textContent = was || "";
+              });
+            });
+          });
+          host.appendChild(el);
+        });
+      }
+      function paintPlain() {
         var host = $("wireFeed");
         if (!host) return;
         Promise.all([
