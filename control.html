@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>The Control Room · Steer the Ship · Equity Uprise</title>
-  <meta name="description" content="The second way equity rises: govern the platform. Propose how the app is built, vote on what ships, and take a real position in your city. The floor decides; the desk builds.">
+  <meta name="description" content="The second way equity rises: govern the platform. Propose how the app is built, vote on what ships, and take a real position in your city. Our Street decides; the desk builds.">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -63,19 +63,19 @@
 
     <div class="ct__routes">
       <a class="ct__route is-money" href="market.html#yours" style="text-decoration:none">
-        <b>The money route ↗</b><small>Services, deals, the rack, the plug. You provide; the floor pays. Every deal mints.</small></a>
+        <b>The money route ↗</b><small>Services, deals, the rack, the plug. You provide; Our Street pays. Every deal mints.</small></a>
       <div class="ct__route is-control">
-        <b>The control route</b><small>Propose how the app grows, vote on what ships, take a civic position. The floor decides; the desk builds.</small></div>
+        <b>The control route</b><small>Propose how the app grows, vote on what ships, take a civic position. Our Street decides; the desk builds.</small></div>
     </div>
 
     <section class="ct__card">
       <p class="ct__k">File a proposal</p>
-      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.3rem;margin-bottom:0.4rem">Bring it to the floor.</h2>
+      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.3rem;margin-bottom:0.4rem">Bring it to Our Street.</h2>
       <div id="ctFileHost"><p class="ct__sub" style="margin-top:0.2rem">Checking your seat…</p></div>
     </section>
 
     <section class="ct__card">
-      <p class="ct__k">The board — what the floor is deciding</p>
+      <p class="ct__k">The board — what Our Street is deciding</p>
       <div class="ct__chips" id="ctFilter">
         <button class="ct__chip is-on" data-f="all" type="button">Everything</button>
         <button class="ct__chip" data-f="app" type="button">The app</button>
@@ -122,7 +122,7 @@
       function mountFiler() {
         var host = $("ctFileHost");
         if (!AUTHED) {
-          host.innerHTML = '<p class="ct__sub" style="margin-top:0.2rem">The floor votes with a face. Open your account and take your seat.</p><div id="ctDoor" style="margin-top:0.8rem"></div>';
+          host.innerHTML = '<p class="ct__sub" style="margin-top:0.2rem">Our Street votes with a face. Open your account and take your seat.</p><div id="ctDoor" style="margin-top:0.8rem"></div>';
           if (window.MCC_DOOR) window.MCC_DOOR.mount($("ctDoor"), { ticker: true, context: "control", onDone: function () { location.reload(); } });
           return;
         }
@@ -133,8 +133,8 @@
           '<button class="ct__chip" data-k="city" type="button">Something in my city</button>' +
           '<button class="ct__chip" data-k="policy" type="button">A stance on policy</button></div>' +
           '<input class="ct__in" id="ctTitle" type="text" maxlength="120" placeholder="The proposal, in one line — e.g. Add a producer leaderboard">' +
-          '<textarea class="ct__in" id="ctBody" maxlength="2000" placeholder="Make the case (optional) — what changes, and why it helps the floor."></textarea>' +
-          '<button class="btn btn--ruby" id="ctFile" type="button" style="width:100%;justify-content:center">Bring it to the floor</button>' +
+          '<textarea class="ct__in" id="ctBody" maxlength="2000" placeholder="Make the case (optional) — what changes, and why it helps Our Street."></textarea>' +
+          '<button class="btn btn--ruby" id="ctFile" type="button" style="width:100%;justify-content:center">Bring it to Our Street</button>' +
           '<p class="ct__msg" id="ctFileMsg"></p>';
         host.querySelector("#ctKind").addEventListener("click", function (e) {
           var b = e.target.closest("[data-k]"); if (!b) return;
@@ -155,7 +155,7 @@
             });
           }).then(function (r) {
             if (r && (r.ok || r.status === 201)) {
-              $("ctFileMsg").textContent = "On the floor — the room votes now.";
+              $("ctFileMsg").textContent = "On Our Street — the room votes now.";
               $("ctTitle").value = ""; $("ctBody").value = "";
               track("proposal_filed", { kind: kind });
               loadBoard();
@@ -173,7 +173,7 @@
         if (!rows.length) {
           host.innerHTML = '<p class="ct__sub" style="margin-top:0.2rem">' +
             (BOARD.length ? "Nothing in that lane yet — file the first one." :
-              "The board is empty. Be the first to bring something to the floor.") + "</p>";
+              "The board is empty. Be the first to bring something to Our Street.") + "</p>";
           return;
         }
         host.innerHTML = rows.map(function (p) {

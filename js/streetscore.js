@@ -93,7 +93,7 @@
       { key: "cash", label: "Cash flow", w: 0.20, v: cash, tip: "Steady months beat one big month — keep deals landing." },
       { key: "community", label: "Community word", w: 0.20, v: community, tip: "Finished work earns client stars; they carry 3× a peer's." },
       { key: "behavior", label: "Behavior", w: 0.15, v: behavior, tip: "Show up daily — streaks and depth read as reliability." },
-      { key: "tenure", label: "Tenure & seat", w: 0.10, v: tenure, tip: "Dress the listing fully and let time on the floor accrue." },
+      { key: "tenure", label: "Tenure & seat", w: 0.10, v: tenure, tip: "Dress the listing fully and let time on Our Street accrue." },
     ];
     var unit = books.reduce(function (a, b) { return a + b.w * b.v; }, 0);
     var s = Math.round(300 + 550 * clamp01(unit));

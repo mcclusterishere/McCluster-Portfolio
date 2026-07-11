@@ -53,7 +53,7 @@
 
   /* ---- the task board: always more on offer than a day can cash ---- */
   var TASKS = [
-    { id: "floor", label: "Walk the floor — open the live market", href: "market.html#floor" },
+    { id: "floor", label: "Walk Our Street — open the live market", href: "market.html#floor" },
     { id: "play", label: "Play a track — press play on any song", href: "app.html" },
     { id: "spaces", label: "Scout a room — open the Spaces floor", href: "spaces.html" },
     { id: "mpay", label: "Touch the money — open E-Up Pay", href: "market.html#pay" },

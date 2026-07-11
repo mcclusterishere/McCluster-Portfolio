@@ -185,15 +185,15 @@
 
       <section class="mc__card" id="pane-mcPulse">
         <h2>The pulse — what needs you, computed</h2>
-        <p class="mc__obj"><b>Objective</b> Clear this list, then read the floor. Start every session here — when the pulse is empty, the machine is current.</p>
+        <p class="mc__obj"><b>Objective</b> Clear this list, then read Our Street. Start every session here — when the pulse is empty, the machine is current.</p>
         <div id="mcPulse"><p class="mc__empty">Loading…</p></div>
-        <h2 style="margin-top:1.6rem">The floor, live — every member's moves</h2>
+        <h2 style="margin-top:1.6rem">Our Street, live — every member's moves</h2>
         <div id="mcLive"><p class="mc__empty">Reading the tape…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcBrain">
         <h2>The Brain — the platform pitches, you decide</h2>
-        <p class="mc__obj"><b>Objective</b> Decide. The platform pitches, the floor proposes — approve what serves the mission, decline the rest, never let a pitch sit.</p>
+        <p class="mc__obj"><b>Objective</b> Decide. The platform pitches, Our Street proposes — approve what serves the mission, decline the rest, never let a pitch sit.</p>
         <p class="mc__empty" style="margin-bottom:0.8rem">Two minds file to this docket: the <b>algorithm</b> (pure
           rules over the live tables, runs nightly on the worker) and the <b>AI strategist</b> (reads the whole
           picture on demand and pitches upgrades with evidence). Nothing ships itself — approve a pitch and it
@@ -201,15 +201,15 @@
         <button class="btn btn--ruby" id="brainRun" type="button">🧠 Run the deep brain</button>
         <p class="mc__msg" id="brainMsg"></p>
         <div id="mcBrain"><p class="mc__empty">Loading…</p></div>
-        <h2 style="margin-top:1.4rem">The People's Board — the floor's proposals</h2>
-        <p class="mc__empty" style="margin-bottom:0.6rem">What the members brought to the floor and how the room voted.
+        <h2 style="margin-top:1.4rem">The People's Board — Our Street's proposals</h2>
+        <p class="mc__empty" style="margin-bottom:0.6rem">What the members brought to Our Street and how the room voted.
           Approve an app proposal and it becomes a build order; city and policy proposals route to the Street Cred Portal's work.</p>
         <div id="mcProps"><p class="mc__empty">Loading…</p></div>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcListings">
         <h2>Listings to review</h2>
-        <p class="mc__obj"><b>Objective</b> Keep the floor honest. Every new listing lands here in review — approve it and it goes live on the market; until you do, the member waits.</p>
+        <p class="mc__obj"><b>Objective</b> Keep Our Street honest. Every new listing lands here in review — approve it and it goes live on the market; until you do, the member waits.</p>
         <div id="mcListings"><p class="mc__empty">Loading…</p></div>
       </section>
 
@@ -293,7 +293,7 @@
         <input class="mc__in" id="fundWhy" type="text" placeholder="What it's for — artist development, education, community, contest win">
         <button class="btn btn--ruby" id="fundGrant" type="button">Award from the fund</button>
         <p class="mc__msg" id="fundMsg"></p>
-        <p class="mc__empty" style="margin-top:0.6rem">Awards are granted credit — they spend across the floor and build the member's record, but never cash out. The chest can only give what it holds.</p>
+        <p class="mc__empty" style="margin-top:0.6rem">Awards are granted credit — they spend across Our Street and build the member's record, but never cash out. The chest can only give what it holds.</p>
       </section>
 
       <section class="mc__card mc__hidden" id="pane-mcAnalytics">
@@ -596,7 +596,7 @@
           stat("events today", today) + "</div>";
         if (R > 1) html += "<p class='mc__empty' style='margin:0.9rem 0 0'>The heartbeat — events per day</p>" +
           annaCols(byDay, [new Date(now - (R - 1) * day).toLocaleDateString(undefined, { month: "short", day: "numeric" }), "today"]);
-        html += "<p class='mc__empty' style='margin:0.9rem 0 0'>The clock — when the floor moves (hour of day)</p>" +
+        html += "<p class='mc__empty' style='margin:0.9rem 0 0'>The clock — when Our Street moves (hour of day)</p>" +
           annaCols(byHour, ["12am", "11pm"]) +
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>What they do</p>" + annaBars(top(byName, 14)) +
           "<p class='mc__empty' style='margin:0.9rem 0 0.3rem'>Where they do it</p>" + annaBars(top(byPage, 10)) +
@@ -977,15 +977,15 @@
         });
       })();
 
-      /* ---- THE PEOPLE'S BOARD: the floor proposes, the desk rules ---- */
+      /* ---- THE PEOPLE'S BOARD: Our Street proposes, the desk rules ---- */
       function paintProps(rows) {
         var el = $("mcProps");
         if (!el) return;
         if (rows === null) {
-          el.innerHTML = "<p class='mc__empty'>The board needs one paste: docs/control-schema.sql — then the floor starts steering.</p>";
+          el.innerHTML = "<p class='mc__empty'>The board needs one paste: docs/control-schema.sql — then Our Street starts steering.</p>";
           return;
         }
-        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nothing from the floor yet.</p>"; return; }
+        if (!rows.length) { el.innerHTML = "<p class='mc__empty'>Nothing from Our Street yet.</p>"; return; }
         el.innerHTML = rows.map(function (p) {
           return '<div class="mc__row' + (p.status === "open" ? " is-hot" : "") + '"><div>' +
             "<h3>" + esc(p.title) +
@@ -1011,7 +1011,7 @@
             var kv = b.getAttribute("data-prop").split(":");
             var note;
             if (kv[1] === "building" || kv[1] === "shipped" || kv[1] === "closed") {
-              note = prompt("Your word back to the floor (they see this):") || undefined;
+              note = prompt("Your word back to Our Street (they see this):") || undefined;
             }
             b.textContent = "…";
             A.setProposal(kv[0], kv[1], note).then(function (rows2) {
@@ -1190,7 +1190,7 @@
               body: JSON.stringify({ p_limit: 60 }) });
           }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (rows) {
             if (!rows) { host.innerHTML = '<p class="mc__empty">One paste arms this feed: <b>desk_pulse()</b> from the chat — then every member move streams here.</p>'; return; }
-            if (!rows.length) { host.innerHTML = '<p class="mc__empty">Silence on the floor — no member moves recorded yet.</p>'; return; }
+            if (!rows.length) { host.innerHTML = '<p class="mc__empty">Silence on Our Street — no member moves recorded yet.</p>'; return; }
             host.innerHTML = rows.map(function (e) {
               var when = new Date(e.at); var mins = Math.round((Date.now() - when) / 60000);
               var ago = mins < 60 ? mins + "m" : mins < 1440 ? Math.round(mins / 60) + "h" : Math.round(mins / 1440) + "d";
@@ -1330,14 +1330,14 @@
       var KEY = "mcc_admin_walk_done";
       var STEPS = [
         { tab: null, t: "This is the house desk.", b: "Mission Control is <b>yours alone</b> — the whole platform on one screen. Members never see this room; they run <b>Your Mission Control</b>, the member desk, with their own numbers only. Sixteen rooms in four groups — this walk takes you through every one." },
-        { tab: "mcPulse", t: "The pulse.", b: "The platform computes what's waiting on you — listings in review, requests unanswered, deals mid-flight. Below it, <b>the floor live</b>: every member's move as it lands. Open here every session; clear the list, read the tape." },
-        { tab: "mcBrain", t: "The Brain.", b: "The platform pitches you moves, and <b>the People's Board</b> carries the floor's proposals. Yours is the only vote that ships anything — approve or decline, and never let a pitch age." },
-        { tab: "mcListings", t: "Listings — the review gate.", b: "Every listing a member creates lands here in <b>review</b> — nothing reaches the market floor until you approve it. When somebody says &ldquo;my listing didn't go through,&rdquo; this room is why. Approve it and it goes live with a price tape of its own." },
-        { tab: "mcRequests", t: "Requests.", b: "Booking requests off the floor — real people asking for real dates. Confirm or decline the same day; a stale request is a lost deal." },
-        { tab: "mcMembers", t: "Members.", b: "Applications to go deeper on the floor. You read them, you open the door — the card at the front gate is self-serve, but this room is yours." },
+        { tab: "mcPulse", t: "The pulse.", b: "The platform computes what's waiting on you — listings in review, requests unanswered, deals mid-flight. Below it, <b>Our Street live</b>: every member's move as it lands. Open here every session; clear the list, read the tape." },
+        { tab: "mcBrain", t: "The Brain.", b: "The platform pitches you moves, and <b>the People's Board</b> carries Our Street's proposals. Yours is the only vote that ships anything — approve or decline, and never let a pitch age." },
+        { tab: "mcListings", t: "Listings — the review gate.", b: "Every listing a member creates lands here in <b>review</b> — nothing reaches Our Street until you approve it. When somebody says &ldquo;my listing didn't go through,&rdquo; this room is why. Approve it and it goes live with a price tape of its own." },
+        { tab: "mcRequests", t: "Requests.", b: "Booking requests off Our Street — real people asking for real dates. Confirm or decline the same day; a stale request is a lost deal." },
+        { tab: "mcMembers", t: "Members.", b: "Applications to go deeper on Our Street. You read them, you open the door — the card at the front gate is self-serve, but this room is yours." },
         { tab: "mcIntake", t: "The intake.", b: "Every ask on the record, plus the mission-proof docket. If anyone asked the platform for anything, it sits here until you deal with it — nothing asked gets lost." },
         { tab: "mcPeople", t: "People.", b: "The whole person on one card — every engine's read on each human. And the civic chairs: seat real people into the Street Cred Portal's appointments from right here." },
-        { tab: "mcDeals", t: "The deal ledger.", b: "Every offer, signature and payment on the floor. The money law: approving and signing move <b>paper</b> — money only moves when a buyer pays by card on a signed deal." },
+        { tab: "mcDeals", t: "The deal ledger.", b: "Every offer, signature and payment on Our Street. The money law: approving and signing move <b>paper</b> — money only moves when a buyer pays by card on a signed deal." },
         { tab: "mcGrind", t: "The Grind.", b: "Who's really playing. Every account graded S to F off energy, streaks, tasks and idle days — push the S players, catch the quiet ones before they go cold." },
         { tab: "mcHouse", t: "The House.", b: "What the house owes: claims members are waiting on, and earned credit cashing out. Keep both columns current — this room is the platform's word." },
         { tab: "mcFund", t: "The Fund.", b: "The community chest. Award it with a reason attached — every grant lands on the member's record and moves their tape." },

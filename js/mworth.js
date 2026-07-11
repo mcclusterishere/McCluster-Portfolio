@@ -22,7 +22,7 @@
                a stage stays on the résumé).
    · MOMENTUM — activity in the last 7 days vs the last 30:
                a hot week multiplies up to 1.25×, a silent month
-               drifts to 0.85×. The floor never sleeps, neither
+               drifts to 0.85×. Our Street never sleeps, neither
                does the number.
 
    THE PRIVACY WALL:

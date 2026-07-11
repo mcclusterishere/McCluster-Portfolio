@@ -1,4 +1,4 @@
-/* MCC_FLOOR — one fetch feeds the whole floor.
+/* MCC_FLOOR — one fetch feeds all of Our Street.
    Before this, every engine on a page (exchange, deal builder, pay
    keypad, desk, spaces) pulled data/providers.json and the cloud
    listing independently — the same bytes three and four times per
@@ -41,7 +41,7 @@
     return pending;
   }
 
-  /* a save that changes the floor can drop the cache so the next
+  /* a save that changes Our Street can drop the cache so the next
      reader sees the new world */
   function invalidate() { pending = null; }
 

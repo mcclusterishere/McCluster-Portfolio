@@ -27,7 +27,7 @@
       font-size: clamp(0.85rem, 2.8vw, 0.98rem); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
       padding: 0.75em 1.35em; transition: border-color 0.2s, color 0.2s, background 0.2s; }
     .mk__jump:hover, .mk__jump.is-on { border-color: var(--ruby-hot); color: #fff; background: rgba(193, 18, 31, 0.35); }
-    /* the money door stands as tall as the floor's — market green, full voice */
+    /* the money door stands as tall as Our Street's — market green, full voice */
     .mk__jump--pay { font-size: clamp(0.9rem, 3.2vw, 1.05rem); border-color: rgba(47, 191, 113, 0.65);
       color: #eafff3; background: rgba(47, 191, 113, 0.16); }
     .mk__jump--pay:hover, .mk__jump--pay.is-on { border-color: #2fbf71; background: rgba(47, 191, 113, 0.32); color: #fff; }
@@ -511,7 +511,7 @@
   <div class="grain" aria-hidden="true"></div>
   <main class="mk">
     <nav class="mk__rail" aria-label="Market sections">
-      <a class="mk__jump mk__jump--glow" href="#floor">&#9650; The floor</a>
+      <a class="mk__jump mk__jump--glow" href="#floor">&#9650; Our Street</a>
       <a class="mk__jump mk__jump--pay" href="#pay">$ Money</a>
       <a class="mk__jump" href="#yours">Your desk</a>
       <a class="mk__jump" href="#providers">People</a>
@@ -526,7 +526,7 @@
         <small>M-100 &middot; the network index</small>
         <b id="xcIndexVal">—</b>
         <span class="xc__chg" id="xcIndexChg"></span>
-        <span style="margin-left:0.8rem" class="xc__live"><i></i> Live &middot; the floor never closes</span>
+        <span style="margin-left:0.8rem" class="xc__live"><i></i> Live &middot; Our Street never closes</span>
         <canvas class="xc__indexchart" id="xcIndexChart"></canvas>
       </div>
 
@@ -542,7 +542,7 @@
       <div class="xc__biz mk__hidden" id="xcBiz">
         <h3>Your business, its own symbol</h3>
         <p>You trade as you — your company trades as itself. Separate ticker, separate card, same desk.
-          File it here; it lists on the floor once it's verified.</p>
+          File it here; it lists on Our Street once it's verified.</p>
         <input class="mk__in" id="xcBizName" type="text" placeholder="Business name — e.g. Whip Equipped">
         <input class="mk__in" id="xcBizTick" type="text" maxlength="5" placeholder="Ticker — 2–5 letters, like WHIP" autocapitalize="characters" style="text-transform:uppercase">
         <select class="mk__in" id="xcBizLane">
@@ -558,7 +558,7 @@
         <p class="mk__msg" id="xcBizMsg"></p>
       </div>
 
-      <div class="xc__list" id="xcList"><p class="mk__note">Opening the floor…</p></div>
+      <div class="xc__list" id="xcList"><p class="mk__note">Opening Our Street…</p></div>
 
       <!-- the outside board: real markets, our record -->
       <div id="xcOutside" style="margin-top:1.6rem"></div>
@@ -596,7 +596,7 @@
         <a class="btn btn--ghost" id="xcDPage" href="#">The page</a>
         <a class="btn btn--ghost" id="xcDPay" href="#">E-Up Pay</a>
       </div>
-      <p class="xc__deep">The score is the work: bookings, signed deals, drops, and time on the floor move it.
+      <p class="xc__deep">The score is the work: bookings, signed deals, drops, and time on Our Street move it.
         <b style="color:var(--cream)">Dollar worth is private</b> — every member sees their own true number and nobody else's.
         Investing here means dealing with the human — the returns are songs, shoots, and rooms that exist because you did.</p>
     </div>
@@ -724,7 +724,7 @@
           <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="3 17 9 10 13 13 21 5"/><polyline points="15 5 21 5 21 11"/>
           </svg>
-          <span><b>The trading floor</b><small>every ticker · the full board · live</small></span>
+          <span><b>Our Street</b><small>every ticker · the full board · live</small></span>
           <span class="mp__floorarw">&#8594;</span>
         </a>
       </div>
@@ -761,7 +761,7 @@
 
       <div class="mk__card scb__hidden" id="scbOut">
         <p class="mk__note" style="margin-top:0">The dial runs on YOUR books — deals, payment punctuality, the community's word,
-          your presence on the floor. Sign in and it computes from your own records; only you see the number.</p>
+          your presence on Our Street. Sign in and it computes from your own records; only you see the number.</p>
         <a class="btn btn--ruby" href="profile.html" style="margin-top:0.9rem">Sign in — open your file</a>
         <div class="scb__books" id="scbBooksOut" style="margin-top:1.2rem"></div>
         <p class="mk__note">The model comes from a real white paper:
@@ -783,10 +783,10 @@
       </div>
     </section>
 
-    <!-- THE WIRE: the floor's open feed -->
+    <!-- THE WIRE: Our Street's open feed -->
     <section id="wire">
       <p class="mk__k">The Wire</p>
-      <h2 class="mk__h2">What the floor is saying</h2>
+      <h2 class="mk__h2">What Our Street is saying</h2>
       <div class="mk__card">
         <div id="wireCompose"></div>
         <div id="wireTracks"></div>
@@ -883,7 +883,7 @@
     <button class="mp__x" id="shX" type="button" aria-label="Close">✕</button>
     <div id="shWho">
       <h2><small id="shAmtK">PAY</small><span id="shAmt1">$0</span> — to who?</h2>
-      <input class="mp__in" id="shSearch" type="search" placeholder="Search the floor…">
+      <input class="mp__in" id="shSearch" type="search" placeholder="Search Our Street…">
       <div id="shList"></div>
     </div>
     <div id="shFor" class="mp__hidden">
@@ -1020,7 +1020,7 @@
           : "";
       });
 
-      /* ---------- lanes preset the whole floor ---------- */
+      /* ---------- lanes preset all of Our Street ---------- */
       document.querySelectorAll(".mk__lane").forEach(function (b) {
         if (!b.getAttribute("data-lane")) return; // the Spaces lane is a real link out
         b.addEventListener("click", function () {
@@ -1079,7 +1079,7 @@
         window.MCC_FLOOR.load().then(function (floor) {
           DATA = floor;
           DIR = DATA.providers.filter(function (p) { return !ME || (p.slug || p.id) !== ME.slug; });
-          $("pWho").innerHTML = '<option value="">Pick from the floor…</option>' +
+          $("pWho").innerHTML = '<option value="">Pick from Our Street…</option>' +
             DIR.map(function (p) { return '<option value="' + esc(p.slug || p.id) + '">' + esc(p.name) + " — " + esc(p.headline || "") + "</option>"; }).join("");
           renderChips(); render();
           if (Q.get("with")) {
@@ -1523,7 +1523,7 @@
       /* the real book, fetched once and shared with the outside board:
          actual public companies the platform has dealings with, priced by
          the market-sweep workflow — real dollars, never jittered, never
-         faked. They stand on the floor beside the members. */
+         faked. They stand on Our Street beside the members. */
       var REAL = [];
       window.MCC_REALBOOK = fetch("data/realstocks.json", { cache: "no-cache" })
         .then(function (r) { return r.json(); })
@@ -1685,7 +1685,7 @@
       var current = null, curTF = "1W";
 
       /* deterministic depth: every symbol carries its own history, book and
-         prints, seeded from the slug so the floor reads the same for everyone
+         prints, seeded from the slug so Our Street reads the same for everyone
          until live signals take over */
       function seed(s) { var h = 0; for (var k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) >>> 0; return h; }
       function walk(slug, n, amp, endVal) {
@@ -1919,7 +1919,7 @@
           name: name, ticker: tick, roles: [$("xcBizLane").value],
           headline: "Listed on the M exchange", terms: { entity: "business" },
         }).then(function () {
-          $("xcBizMsg").textContent = "Filed — $" + tick + " lists on the floor once it's verified.";
+          $("xcBizMsg").textContent = "Filed — $" + tick + " lists on Our Street once it's verified.";
           if (window.MCC_FLOOR) window.MCC_FLOOR.invalidate();
           track("xc_business_filed", { tick: tick });
         }).catch(function (e) {
@@ -2259,7 +2259,7 @@
         });
       })();
 
-      /* ---------- the floor data: same shared fetch as everyone else ---------- */
+      /* ---------- Our Street data: same shared fetch as everyone else ---------- */
       function tickOf(p) { return window.MCC_STOCK.ticker(p.ticker, p.name); }
       function loadFloor() {
         return window.MCC_FLOOR.load().then(function (floor) {
@@ -2387,7 +2387,7 @@
             '<span class="mp__tick">$' + esc(tickOf(p)) + "</span>" +
             "<span><b>" + esc(p.name) + "</b><small>" + esc(p.headline || (p.roles || []).join(" · ") || "M-Verified") + "</small></span>" +
             '<span class="mp__val"><small class="up">→</small></span></button>';
-        }).join("") || '<p class="mp__note">Nobody matches that — the floor is always growing.</p>';
+        }).join("") || '<p class="mp__note">Nobody matches that — Our Street is always growing.</p>';
         $("shList").querySelectorAll(".mp__row").forEach(function (b) {
           b.addEventListener("click", function () {
             pick = ALL[+b.getAttribute("data-i")];
@@ -2568,7 +2568,7 @@
           '<div class="mp__idcard" style="--badge-c:' + esc(color) + '">' +
           '<span class="mp__idtick">$' + esc(tick) + "</span>" +
           "<span><b>" + esc((ME && ME.name) || (window.MCC_SUPA.email() || "Your room")) + "</b>" +
-          "<small>" + (ME ? esc(ME.status === "live" ? "● Live on the floor" : ME.status) : "No listing yet") + "</small>" +
+          "<small>" + (ME ? esc(ME.status === "live" ? "● Live on Our Street" : ME.status) : "No listing yet") + "</small>" +
           faces.map(function (f) {
             return '<span class="mp__role" style="margin-right:0.3rem;border:1px solid rgba(201,157,69,0.5);border-radius:100px;padding:0.2em 0.8em;color:#c99d45">' + esc(FACE_LABEL[f]) + "</span>";
           }).join("") + "</span></div>" +
@@ -2577,7 +2577,7 @@
         if (welcomeDue) {
           html += '<a class="mp__card" href="welcome.html" style="display:block;text-decoration:none;border-color:rgba(201,157,69,0.55)">' +
             '<span class="mp__lblx" style="color:#c99d45">Finish your walk-in — two minutes</span>' +
-            '<p class="mp__note" style="margin:0.3rem 0 0;color:var(--cream)">Dress your card for the floor and get the whole economy explained — your hustles, your rate, what E⤴︎\uFE0E is, how the score works. It\u2019s how the floor finds you.</p></a>';
+            '<p class="mp__note" style="margin:0.3rem 0 0;color:var(--cream)">Dress your card for Our Street and get the whole economy explained — your hustles, your rate, what E⤴︎\uFE0E is, how the score works. It\u2019s how Our Street finds you.</p></a>';
         }
 
         if (!ME) {
@@ -2642,10 +2642,10 @@
           var idVerified = ME.id_verified === true || ME.charges_enabled === true;
           if (idVerified) {
             html += '<div class="mp__card"><span class="mp__lblx">The verified mark</span>' +
-              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● ID-Verified — a real identity and a real bank stand behind this listing. The floor sees the mark; nobody sees the paperwork.</p></div>';
+              '<p class="mp__note" style="color:#2fbf71;margin-top:0.4rem">● ID-Verified — a real identity and a real bank stand behind this listing. Our Street sees the mark; nobody sees the paperwork.</p></div>';
           } else {
             html += '<div class="mp__card"><span class="mp__lblx">The verified mark — prove it’s really you</span>' +
-              '<p class="mp__note" style="margin-top:0.4rem">The mark rides the money: finish <b style="color:var(--cream)">Set up payouts</b> above — identity and a bank account on Stripe’s secure page, free — and your listing wears <b style="color:#2fbf71">✓ ID-Verified</b> everywhere on the floor. Verified members get booked first.</p></div>';
+              '<p class="mp__note" style="margin-top:0.4rem">The mark rides the money: finish <b style="color:var(--cream)">Set up payouts</b> above — identity and a bank account on Stripe’s secure page, free — and your listing wears <b style="color:#2fbf71">✓ ID-Verified</b> everywhere on Our Street. Verified members get booked first.</p></div>';
           }
           /* the plug: bring three real ones, earn one E⤴︎ — and "real"
              means full accounts that move, not clicks */
@@ -2653,7 +2653,7 @@
           html += '<div class="mp__card"><span class="mp__lblx">The plug — share it, stack it</span>' +
             '<p class="mp__note" style="margin:0.3rem 0 0.5rem"><b style="color:var(--cream)">Three real ones = 1 E⤴︎ — plus 1% of everything they ever earn here, for life.</b> ' +
             'Your link puts your ticker on their door. They count when they finish the walk — full account, agreement signed, ' +
-            'actually moving on the floor and putting their own people on. Clicks count for nothing; people do. ' +
+            'actually moving on Our Street and putting their own people on. Clicks count for nothing; people do. ' +
             'And every time someone you brought earns credit on a deal, the house cuts you 1% of it off its own take — forever.</p>' +
             '<div class="mp__linkrow"><input class="mp__in" id="dkRef" readonly value="' + esc(base + "market.html?ref=" + refCode) + '">' +
             '<button class="btn btn--ghost" id="dkRefCopy" type="button">Copy</button>' +
@@ -2672,7 +2672,7 @@
           html += "</div>";
           /* the distro: upload the record, keep everything */
           html += '<div class="mp__card"><span class="mp__lblx">🎵 Your catalog — the distro</span>' +
-            '<p class="mp__note" style="margin:0.3rem 0 0.5rem">Upload the record straight to the floor — no distributor, no upload fee, and you keep <b style="color:var(--cream)">100% of every backing</b>. Name a suggested support in E⤴︎, or 0 to just let it play.</p>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0.5rem">Upload the record straight to Our Street — no distributor, no upload fee, and you keep <b style="color:var(--cream)">100% of every backing</b>. Name a suggested support in E⤴︎, or 0 to just let it play.</p>' +
             '<input class="mp__in" id="dkTrTitle" type="text" maxlength="80" placeholder="Track title">' +
             '<input class="mp__in" id="dkTrPrice" type="number" min="0" step="1" placeholder="Suggested support in E⤴︎ — like 3 (0 = free)">' +
             '<div class="mp__linkrow"><button class="btn btn--ruby" id="dkTrBtn" type="button" style="flex:1">Upload the track</button>' +
@@ -2703,7 +2703,7 @@
               '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkAvSave" type="button" style="flex:1">Save availability</button></div>' +
               '<p class="mp__msg" id="dkAvMsg"></p></div>';
           }
-          html += '<div class="mp__card"><span class="mp__lblx">Promote — lead the floor</span>' +
+          html += '<div class="mp__card"><span class="mp__lblx">Promote — lead Our Street</span>' +
             '<input class="mp__in" id="dkPromo" type="text" maxlength="40" placeholder="The line — e.g. 10% off weekdays" value="' + esc((ME.terms && ME.terms.promo) || "") + '">' +
             '<div class="mp__linkrow"><button class="btn btn--ghost" id="dkPromoSave" type="button" style="flex:1">Set it live</button></div>' +
             '<p class="mp__msg" id="dkPromoMsg"></p>' +
@@ -2855,7 +2855,7 @@
           var refShareB = body.querySelector("#dkRefShare");
           if (refShareB) refShareB.addEventListener("click", function () {
             track("ref_share", {});
-            if (navigator.share) navigator.share({ title: "Get on the floor", text: "Claim your ticker on Equity Uprise — my link puts you in:", url: refIn.value }).catch(function () {});
+            if (navigator.share) navigator.share({ title: "Get on Our Street", text: "Claim your ticker on Equity Uprise — my link puts you in:", url: refIn.value }).catch(function () {});
             else if (refMsg) refMsg.textContent = "Copy it instead — this browser doesn't share.";
           });
           window.MCC_SUPA.token().then(function (t) {
@@ -3077,7 +3077,7 @@
           dn.innerHTML = '🃏 <b>GET YOUR CARD</b> — play WHAT MAKES YOU RISE? (2 min). It deals your E⤴ Card and shapes the whole app to you. <a href="rise.html" style="color:#e8c877;font-weight:800">Deal me in &#8594;</a>';
         } else if (dn && dn.style.display === "none" && AUTHED && !ME) {
           dn.style.display = "";
-          dn.innerHTML = '🃏 <b>Next move:</b> dress your card so the floor can find you — <a href="#" style="color:#e8c877;font-weight:800" data-nextfold>open the listing</a>';
+          dn.innerHTML = '🃏 <b>Next move:</b> dress your card so Our Street can find you — <a href="#" style="color:#e8c877;font-weight:800" data-nextfold>open the listing</a>';
           var a = dn.querySelector("[data-nextfold]");
           if (a) a.addEventListener("click", function (e) { e.preventDefault(); openFold("your-listing"); });
         }
@@ -3213,7 +3213,7 @@
           $("dkPromoMsg").textContent = "Saving…";
           window.MCC_NET.saveListing({ terms: terms }).then(function () {
             ME.terms = terms;
-            $("dkPromoMsg").textContent = line ? "Live — your card leads the floor." : "Promotion off.";
+            $("dkPromoMsg").textContent = line ? "Live — your card leads Our Street." : "Promotion off.";
             track("desk_promo_saved", { on: !!line });
           }).catch(function (e) { $("dkPromoMsg").textContent = "Couldn't save: " + String(e.message || e); });
         });
@@ -3386,10 +3386,10 @@
               $("mpHint").textContent = "Sending to " + target.name + " — punch in the amount.";
             }
           } else {
-            // a pay link naming a ticker that isn't on the floor must never
+            // a pay link naming a ticker that isn't on Our Street must never
             // die silently — open the keypad and say so
             if (window.MK_SHOW) window.MK_SHOW("pay");
-            $("mpHint").textContent = "That ticker isn't on the floor yet — search below or pick anyone.";
+            $("mpHint").textContent = "That ticker isn't on Our Street yet — search below or pick anyone.";
             track("mpay_paylink_miss", { to: Q.get("to") });
           }
         }
@@ -3407,9 +3407,9 @@
           }).catch(function () { paintYou(); });
         } else paintYou();
       });
-      /* THE BOARD: the tape's top desks on the floor — real nightly
+      /* THE BOARD: the tape's top desks on Our Street — real nightly
          scores from score_board(). Paints only when the tape has lines;
-         until seal #2 runs and the cron writes, the floor is unchanged. */
+         until seal #2 runs and the cron writes, Our Street is unchanged. */
       (function () {
         if (!window.MCC_SUPA || !window.MCC_SUPA.url) return;
         fetch(window.MCC_SUPA.url + "/rest/v1/rpc/score_board", { method: "POST",
@@ -3499,7 +3499,7 @@
     })();
   </script>
   <script>
-    /* ============ THE WIRE: the floor's open feed ============
+    /* ============ THE WIRE: Our Street's open feed ============
        Posts ride the same table the member pages use; the feed is the
        cross-cut. Writing takes a listing — RLS checks the slug, not
        the UI. Names and colors resolve from the shared floor cache. */
@@ -3616,7 +3616,7 @@
           host.innerHTML =
             '<textarea class="mk__in" id="wireBody" rows="3" maxlength="2000" placeholder="Put it on the wire — a drop, a booking window, a win…"></textarea>' +
             '<div style="display:flex;gap:0.6rem;align-items:center;margin:0.4rem 0 1rem">' +
-            '<button class="btn btn--ruby" id="wireSend" type="button">Post to the floor</button>' +
+            '<button class="btn btn--ruby" id="wireSend" type="button">Post to Our Street</button>' +
             '<span class="mk__msg" id="wireMsg"></span></div>';
           $("wireSend").addEventListener("click", function () {
             var body = ($("wireBody").value || "").trim();

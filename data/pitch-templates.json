@@ -23,7 +23,7 @@
       "tagline": "Your booking system, invoices, promotion, and messages — one app",
       "price": 400,
       "monthly": 300,
-      "body": "{CLIENT} — one link replaces four tools.\n\nYour space gets a booking page (calendar, time windows, your availability rules — like a Calendly you own), payment-request links you can text to anybody (like a cash app, but the record is a signed deal), self-serve promotion on the network floor, and a message thread inside every booking so nothing lives in DMs.\n\nGoogle bookings still find you — but now they land in YOUR system, not a third party's.\n\n{PRICE} to onboard the room, {MONTHLY}/month to run it. Your page would be live this week: {LINK}"
+      "body": "{CLIENT} — one link replaces four tools.\n\nYour space gets a booking page (calendar, time windows, your availability rules — like a Calendly you own), payment-request links you can text to anybody (like a cash app, but the record is a signed deal), self-serve promotion on Our Street, and a message thread inside every booking so nothing lives in DMs.\n\nGoogle bookings still find you — but now they land in YOUR system, not a third party's.\n\n{PRICE} to onboard the room, {MONTHLY}/month to run it. Your page would be live this week: {LINK}"
     },
     {
       "id": "limited",
@@ -31,7 +31,7 @@
       "tagline": "The weekly content system — three seats, ever",
       "price": 14400,
       "monthly": 0,
-      "body": "{CLIENT} — this is the one I only sell three of.\n\nA full year of the machine: a weekly content day (shoot, edit, deliver), the platform build, and the strategy that makes each week compound instead of evaporate. You're not buying videos; you're buying a system that shows up every seven days.\n\n{PRICE} for the year \u2014 monthly plans available, or 9,648 E\u2934 through the floor (33% off every rate) with the deal on the record. Two of three seats remain. The work speaks first — the portfolio is the pitch: {LINK}"
+      "body": "{CLIENT} — this is the one I only sell three of.\n\nA full year of the machine: a weekly content day (shoot, edit, deliver), the platform build, and the strategy that makes each week compound instead of evaporate. You're not buying videos; you're buying a system that shows up every seven days.\n\n{PRICE} for the year \u2014 monthly plans available, or 9,648 E\u2934 through Our Street (33% off every rate) with the deal on the record. Two of three seats remain. The work speaks first — the portfolio is the pitch: {LINK}"
     },
     {
       "id": "artist",

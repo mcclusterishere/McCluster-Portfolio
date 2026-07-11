@@ -57,7 +57,7 @@
     }).catch(function () {});
   }
 
-  /* the whole floor's numbers: {slug: plays}. Missing table → {} and the
+  /* all of Our Street's numbers: {slug: plays}. Missing table → {} and the
      chart runs on device plays alone until the counter lands. */
   function cloud() {
     var s = supa();

@@ -261,8 +261,8 @@
           ms: [["First spin", "app.html#music"], ["Study the charts", "app.html#music"]] },
         { id: "lot",     name: "The Lot",     k: "Whip Equipped",      c: "#ff7a00", lng: -73.1850, lat: 41.1820, d: "Dealer plates on everything — the come-up on wheels.",
           ms: [["Episode one", "song-dealer-plates.html"], ["The B-side film", "song-dealer-plates-b.html"], ["Board the jet", "vr-vaunt.html"]] },
-        { id: "exchange", name: "The Exchange", k: "The market floor", c: "#00c805", lng: -72.6735, lat: 41.7675, d: "The floor that never sleeps. Everybody trades on their own name.",
-          ms: [["Walk the floor", "market.html#floor"], ["Touch the money", "market.html#pay"], ["Claim your name", "profile.html"]] },
+        { id: "exchange", name: "The Exchange", k: "The Our Street", c: "#00c805", lng: -72.6735, lat: 41.7675, d: "Our Street that never sleeps. Everybody trades on their own name.",
+          ms: [["Walk Our Street", "market.html#floor"], ["Touch the money", "market.html#pay"], ["Claim your name", "profile.html"]] },
         { id: "backlots", name: "The Back Lots", k: "The claim run",   c: "#8b5cf6", lng: -73.1960, lat: 41.1760, d: "Every door with somebody else's name on it — until you run the run.",
           ms: [["Case the block", "backend.html"], ["Operator", "backend.html"]] },
         { id: "bureau",  name: "The Bureau",  k: "Street Credit Bureau", c: "#d8ba7c", lng: -72.6800, lat: 41.7620, d: "Marble, gold, and a dial that only answers to your own books.",
@@ -344,7 +344,7 @@
           el.style.background = m.c; el.style.color = m.c; el.textContent = TSTATE.got.indexOf(m.id) !== -1 ? "✓" : m.icon;
           m._el = el; mk(el, m.lng, m.lat);
         });
-        // members from the real floor directory
+        // members from the real Street directory
         if (window.MCC_FLOOR) MCC_FLOOR.load().then(function (floor) {
           (floor.providers || []).forEach(function (p) { addMember(p, false); });
           var u = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
@@ -457,7 +457,7 @@
          A contract glows at one member's spot. Pull up, the clock starts,
          deliver to the drop before it dies. Perfect runs build a streak;
          a bust resets it. Run score is the game's own tape (not E⤴︎) —
-         every finish files an event, so the desk's Pulse sees the floor
+         every finish files an event, so the desk's Pulse sees Our Street
          being driven. */
       var SPOTS = [];
       /* THE PULL-UP: rolling to somebody's spot taps their pocket — the

@@ -68,7 +68,7 @@
        opens — pending review, but real, and it belongs to this session */
     var nameIn = el("input", "door__in");
     nameIn.type = "text";
-    nameIn.placeholder = "Your name — how the floor knows you";
+    nameIn.placeholder = "Your name — how Our Street knows you";
     nameIn.autocomplete = "name";
     try {
       var heldName = JSON.parse(localStorage.getItem("mcc_onboard") || "{}").name;
@@ -153,7 +153,7 @@
     instant.addEventListener("click", function () {
       var nm = nameIn.value.trim();
       var tk = tickerVal();
-      if (!nm) { msg.textContent = "Your name first — the floor doesn't trade with ghosts."; nameIn.focus(); return; }
+      if (!nm) { msg.textContent = "Your name first — Our Street doesn't trade with ghosts."; nameIn.focus(); return; }
       if (tick && !tk) { msg.textContent = "Pick your ticker — 3–5 letters, it's yours."; tick.focus(); return; }
       if (!agreeBox.checked) { msg.textContent = "The Association runs on the Agreement — one box, then you're in."; return; }
       instant.textContent = "Opening your account…";
@@ -162,7 +162,7 @@
         // the ticker hits the market NOW: the listing files under this
         // account (pending review), and the session stays on this device
         if (window.MCC_NET && window.MCC_NET.saveListing) {
-          instant.textContent = "Filing your ticker on the floor…";
+          instant.textContent = "Filing your ticker on Our Street…";
           var fields = { name: nm, ticker: tk || null, roles: [] };
           var ref = null;
           try { ref = localStorage.getItem("mcc_ref"); } catch (eR) {}
@@ -256,7 +256,7 @@
       var e = pem.value.trim(), p = pw.value;
       var nm = nameIn.value.trim(), tk = tickerVal();
       if (!e || p.length < 6) { msg.textContent = "An email and a password (6+ characters)."; return; }
-      if (!nm) { msg.textContent = "Your name first — the floor doesn't trade with ghosts."; nameIn.focus(); return; }
+      if (!nm) { msg.textContent = "Your name first — Our Street doesn't trade with ghosts."; nameIn.focus(); return; }
       if (tick && !tk) { msg.textContent = "Pick your ticker — 3–5 letters, it's yours."; tick.focus(); return; }
       if (!agreeBox.checked) { msg.textContent = "The Association runs on the Agreement — one box, then you're in."; return; }
       bank();
@@ -309,7 +309,7 @@
     });
 
     wrap.appendChild(el("p", "door__fine",
-      "Instant accounts are real accounts: your name and ticker file onto the floor (pending review), " +
+      "Instant accounts are real accounts: your name and ticker file onto Our Street (pending review), " +
       "this device stays signed in so you can come right back, and attaching an email later carries it anywhere."));
     wrap.appendChild(msg);
 

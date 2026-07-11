@@ -33,6 +33,15 @@
       50% { border-color: rgba(201,157,69,0.75); box-shadow: 0 0 16px rgba(201,157,69,0.25); } }
     @media (prefers-reduced-motion: reduce) { .rz__chips .rz__chip { animation: none !important; } }
     .rz__echo { min-height: 2.4em; color: #d8ba7c; font-size: 0.9rem; line-height: 1.6; margin-top: 1rem; font-style: italic; }
+    /* THE ECHO POP: what your decision did — front and center, read it,
+       tap OK. Nothing hides behind a browser bar. */
+    .rz__pop { position: fixed; inset: 0; z-index: 220; display: grid; place-items: center;
+      padding: 1.2rem; background: rgba(5,4,3,0.88); }
+    .rz__pop__card { max-width: 30rem; width: 100%; border: 1.5px solid #c99d45; border-radius: 18px;
+      background: #14100e; padding: 1.4rem 1.3rem; box-shadow: 0 20px 60px rgba(0,0,0,0.75); }
+    .rz__pop__k { color: #c99d45; font-size: 0.78rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 800; }
+    .rz__pop__what { font-size: 1.12rem; line-height: 1.65; margin-top: 0.6rem; color: var(--cream); }
+    .rz__pop__gain { margin-top: 0.9rem; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
     .rz__forming { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.7rem; min-height: 1.6em; }
     .rz__gain { border: 1px solid rgba(0,200,5,0.5); color: #00c805; border-radius: 100px; font-size: 0.78rem;
       font-weight: 800; letter-spacing: 0.08em; padding: 0.2em 0.65em; animation: rzIn 0.4s; }
@@ -100,7 +109,7 @@
           roles: "organizer · policy researcher · advocate", collab: "a signal-carrier and a proof-keeper", move: "File one civic card and put one issue on the record." },
         access:  { n: "The Access Chaser", line: "You connect people to rooms, tools and entry points.",
           strength: "You know every door in the city and who it opens for.", blind: "You can give away access the system needed to price.",
-          roles: "venue operator · community liaison · coordinator", collab: "an infrastructure-builder and a storyteller", move: "Put one under-used room on the floor as a bookable space." },
+          roles: "venue operator · community liaison · coordinator", collab: "an infrastructure-builder and a storyteller", move: "Put one under-used room on Our Street as a bookable space." },
         proof:   { n: "The Proof Chaser", line: "You document the work, verify the claims, keep the receipts.",
           strength: "When it's disputed, you're the one holding the record.", blind: "You can archive the movement instead of moving it.",
           roles: "photographer · archivist · analyst", collab: "a commander and a culture-carrier", move: "Verify your identity and stamp your first seal." },
@@ -347,10 +356,24 @@
           Object.keys(c[3]).forEach(function (k) { A[k] += c[3][k]; });
           echoes.push(c[4]);
           track("quiz_answer", { game: "rise", q: s.k, pick: c[0] });
-          $("rzEcho").textContent = c[4];
-          $("rzForm").innerHTML = '<span style="color:rgba(244,239,230,0.7);font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:800;margin-right:0.2rem">Your card is forming</span>' + gains(c[2]);
           document.querySelectorAll(".rz__chip").forEach(function (b) { b.disabled = true; b.style.opacity = b.getAttribute("data-i") == i ? "1" : "0.3"; });
-          setTimeout(function () { si + 1 < RUN.length ? paintScene(si + 1) : paintCard(); }, 2100);
+          popEcho(c[4], gains(c[2]), si + 1 >= RUN.length, function () {
+            si + 1 < RUN.length ? paintScene(si + 1) : paintCard();
+          });
+        });
+      }
+      function popEcho(what, gainHtml, lastOne, then) {
+        var pop = document.createElement("div");
+        pop.className = "rz__pop";
+        pop.innerHTML = '<div class="rz__pop__card"><p class="rz__pop__k">What just happened</p>' +
+          '<p class="rz__pop__what">' + esc(what) + "</p>" +
+          '<div class="rz__pop__gain"><span style="color:rgba(244,239,230,0.7);font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:800;margin-right:0.2rem">Your card is forming</span>' + gainHtml + "</div>" +
+          '<div class="finale__actions" style="margin-top:1.2rem"><button class="btn btn--ruby" data-ok type="button" style="width:100%;justify-content:center;font-size:1rem">' +
+          (lastOne ? "OK — show my card &#8599;" : "OK — next &#8594;") + "</button></div></div>";
+        document.body.appendChild(pop);
+        pop.querySelector("[data-ok]").addEventListener("click", function () {
+          pop.remove();
+          then();
         });
       }
       function wire(fn) {

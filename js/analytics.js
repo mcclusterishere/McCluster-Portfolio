@@ -227,7 +227,7 @@ window.MCC_MODEL = (function () {
         w = MAP[i][2];
         if (name === "dwell") {
           w = Math.min(3, (params && params.s || 0) / 45);
-          if (params && params.depth >= 75) w += 1; // they read to the floor
+          if (params && params.depth >= 75) w += 1; // they read to Our Street
         }
         S.doms[d] = +((S.doms[d] || 0) + w).toFixed(3);
         break;
