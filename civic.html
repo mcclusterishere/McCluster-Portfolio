@@ -118,6 +118,16 @@
       </div>
     </section>
 
+    <section class="cv__card" style="border-color:rgba(69,182,255,0.4)">
+      <p class="cv__k" style="color:#45b6ff">The Press Desk — your reach on the record</p>
+      <h2>PR rides the same rails.</h2>
+      <p class="cv__sub" style="margin-top:0.2rem">EIN Presswire, PR Newswire, Business Wire, PRWeb, ACCESS and PRLog
+        now live in the Distribution Desk as their own lane. Pick <b>Press &amp; PR</b> in the interview and every
+        wire you publish through connects like a distributor — your releases and reach counted on the same record
+        as everything else.</p>
+      <a class="btn btn--ghost" href="distribution.html" style="margin-top:0.8rem;display:inline-flex">Open the Press lane &#8594;</a>
+    </section>
+
     <section class="cv__card" style="border-color:rgba(138,180,248,0.4)">
       <p class="cv__k" style="color:#8ab4f8">The two routes to rising</p>
       <h2>Money, control, or both.</h2>
@@ -211,6 +221,63 @@
           tiktok: "#69c9d0", x: "#9aa2ad", twitch: "#a970ff", reddit: "#ff6a2c", github: "#c9d1d9",
           threads: "#f4efe6", snapchat: "#fffc00", linkedin: "#0a66c2", lastfm: "#d51007", songstats: "#45b6ff" };
         var days = 90, hidden = {}, SERIES = {};
+        /* THE SOCIAL WALK: the chart has its own onboarding — nobody
+           sees it until they say which platforms they actually post on.
+           One tap-set, saved once, and every surface scopes to it. */
+        var social = null;
+        try { social = JSON.parse(localStorage.getItem("mcc_social")); } catch (eS) {}
+        var PLATS = [["instagram", "Instagram"], ["tiktok", "TikTok"], ["youtube", "YouTube"],
+          ["facebook", "Facebook"], ["x", "X"], ["threads", "Threads"], ["snapchat", "Snapchat"],
+          ["linkedin", "LinkedIn"], ["twitch", "Twitch"], ["reddit", "Reddit"],
+          ["spotify", "Spotify"], ["github", "GitHub"]];
+        var AUTO = { youtube: 1, spotify: 1, github: 1, twitch: 1, reddit: 1, x: 1 };
+        function socialWalk() {
+          rng.style.display = "none"; cv.style.display = "none";
+          var picked = {};
+          leg.innerHTML = '<div style="border:1.5px solid rgba(232,200,119,0.55);border-radius:14px;padding:0.9rem;width:100%">' +
+            '<p class="cv__k" style="color:#e8c877;margin:0">The social walk · 1 question</p>' +
+            '<p class="cv__sub" style="margin:0.3rem 0 0.6rem">Which platforms do you actually post on? Tap all of them — the chart builds itself around your answer.</p>' +
+            '<div id="svWalkChips" style="display:flex;flex-wrap:wrap;gap:0.4rem">' +
+            PLATS.map(function (p) {
+              return '<button type="button" data-plat="' + p[0] + '" style="font:inherit;font-size:0.78rem;font-weight:700;cursor:pointer;border-radius:100px;padding:0.5em 1em;border:1.5px solid rgba(244,239,230,0.35);background:rgba(10,8,7,0.5);color:#f4efe6">' + p[1] + "</button>";
+            }).join("") + "</div>" +
+            '<button class="btn btn--ruby" id="svWalkGo" type="button" style="margin-top:0.8rem;width:100%;justify-content:center">Arm my chart</button>' +
+            '<p class="cv__sub" id="svWalkMsg" style="min-height:1.1em;font-size:0.78rem;margin-top:0.4rem"></p></div>';
+          leg.querySelectorAll("[data-plat]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var k = b.getAttribute("data-plat");
+              picked[k] = !picked[k];
+              b.style.borderColor = picked[k] ? "#e8c877" : "rgba(244,239,230,0.35)";
+              b.style.background = picked[k] ? "rgba(201,157,69,0.28)" : "rgba(10,8,7,0.5)";
+            });
+          });
+          $("svWalkGo").addEventListener("click", function () {
+            var list = Object.keys(picked).filter(function (k) { return picked[k]; });
+            if (!list.length) { $("svWalkMsg").textContent = "Tap at least one — the chart needs a platform to watch."; return; }
+            social = { platforms: list, at: new Date().toISOString() };
+            try { localStorage.setItem("mcc_social", JSON.stringify(social)); } catch (eW) {}
+            track("social_walk", { n: list.length });
+            finishSetup();
+            load();
+          });
+        }
+        function finishSetup() {
+          rng.style.display = ""; cv.style.display = "";
+          leg.innerHTML = "";
+          // the member's platforms lead the import picker, in their order
+          var sel = $("svSrc");
+          if (sel && social && social.platforms) {
+            var opts = {};
+            Array.prototype.forEach.call(sel.options, function (o) { opts[o.value] = o.textContent; });
+            var ordered = social.platforms.filter(function (k) { return opts[k]; })
+              .concat(Object.keys(opts).filter(function (k) { return social.platforms.indexOf(k) === -1; }));
+            sel.innerHTML = ordered.map(function (k) { return '<option value="' + k + '">' + esc(opts[k]) + "</option>"; }).join("");
+            var autos = social.platforms.filter(function (k) { return AUTO[k]; });
+            var imps = social.platforms.filter(function (k) { return !AUTO[k]; });
+            impMsg.innerHTML = (autos.length ? "<b style='color:#2fbf71'>" + esc(autos.join(", ")) + "</b> pull automatically — connect above once. " : "") +
+              (imps.length ? "<b style='color:#e8c877'>" + esc(imps.join(", ")) + "</b> ride this import door until their review clears." : "");
+          }
+        }
         function paintRange() {
           rng.innerHTML = [30, 90, 365].map(function (d) {
             return '<button type="button" data-days="' + d + '" style="font:inherit;font-weight:800;font-size:0.7rem;letter-spacing:0.06em;cursor:pointer;border-radius:100px;padding:0.35em 0.95em;border:1.5px solid ' +
@@ -290,7 +357,8 @@
             paintLegend(); draw();
           }).catch(function () { draw(); });
         }
-        load();
+        if (!social || !(social.platforms || []).length) socialWalk();
+        else { finishSetup(); load(); }
         /* the import door: a number now, or the platform's own export */
         function fileRows(rows) {
           impMsg.textContent = "Filing…";
