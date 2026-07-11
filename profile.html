@@ -3,241 +3,189 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Your Profile · Equity Uprise · McCluster</title>
-  <meta name="description" content="Your room on the platform: your listing, your M Stock, your deals, your persona — one email signs you in, no password, no app store.">
+  <title>Your Profile · Equity Uprise</title>
+  <meta name="description" content="One profile, two sides: the public face the floor sees, and the private rooms where you work — filtered to the path you chase.">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
   <style>
-    .pf { min-height: 100dvh; padding: clamp(5.4rem, 10vh, 7rem) clamp(1rem, 4vw, 2.4rem) 8rem; max-width: 46rem; margin: 0 auto; }
-    .pf h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.4rem, 9vw, 4rem); }
-    .pf__sub { color: var(--cream-dim); margin-top: 0.7rem; line-height: 1.65; max-width: 52ch; }
+    .pf { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 34rem; margin: 0 auto; }
+    .pf h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.95; font-size: clamp(2.2rem, 9vw, 3.4rem); }
+    .pf__sub { color: var(--cream-dim); line-height: 1.7; margin-top: 0.7rem; font-size: 0.95rem; }
     .pf__sub b { color: var(--cream); }
-    .pf__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px; background: rgba(20, 16, 14, 0.6);
-      padding: 1.4rem 1.3rem 1.5rem; margin-top: 1.4rem; }
-    .pf__card h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.3rem; margin-bottom: 0.9rem; }
-    .pf__in { width: 100%; background: rgba(10, 8, 7, 0.7); border: 1px solid rgba(244, 239, 230, 0.2); border-radius: 10px;
-      color: var(--cream); font: inherit; font-size: 0.95rem; padding: 0.8em 1em; margin-bottom: 0.7rem; }
-    .pf__in:focus { outline: none; border-color: var(--ruby-hot); }
-    .pf__msg { color: var(--ruby-hot); font-size: 0.85rem; margin-top: 0.6rem; min-height: 1.2em; }
-    .pf__note { font-size: 0.78rem; color: var(--cream-dim); line-height: 1.6; margin-top: 0.8rem; }
-    .pf__hidden { display: none !important; }
-    .pf__gets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem; margin: 1rem 0 0; }
-    .pf__get { border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.9rem; background: rgba(10, 8, 7, 0.45); }
-    .pf__get b { display: block; color: var(--cream); font-size: 0.9rem; }
-    .pf__get small { color: var(--cream-dim); font-size: 0.76rem; line-height: 1.45; display: block; margin-top: 0.2rem; }
-    .pf__who { display: flex; align-items: center; gap: 0.8rem; }
-    .pf__who img { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(229, 56, 59, 0.6); padding: 8px; background: var(--ink-2); }
-    .pf__who b { display: block; font-size: 1rem; }
-    .pf__who small { color: var(--cream-dim); font-size: 0.76rem; }
-    .pf__rooms { display: grid; gap: 0.6rem; margin-top: 0.4rem; }
-    .pf__room { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; text-decoration: none;
-      color: var(--cream); border: 1px solid rgba(244, 239, 230, 0.12); border-radius: 12px; padding: 0.9rem 1rem;
-      transition: border-color 0.25s; }
-    .pf__room:hover { border-color: var(--ruby-hot); }
-    .pf__room b { font-size: 0.92rem; }
-    .pf__room small { display: block; color: var(--cream-dim); font-size: 0.74rem; margin-top: 0.15rem; }
-    .pf__room span:last-child { color: var(--ruby-hot); }
-    .ta__status { display: inline-flex; align-items: center; gap: 0.5em; font-size: 0.62rem; letter-spacing: 0.2em;
-      text-transform: uppercase; border-radius: 100px; padding: 0.5em 1.1em; border: 1px solid rgba(244, 239, 230, 0.25); color: var(--cream-dim); }
-    .ta__status.is-live { border-color: #2fbf71; color: #2fbf71; }
+    .pf__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(20,16,14,0.7); padding: 1.1rem 1.15rem; margin-top: 1rem; }
+    .pf__arch { display: inline-flex; align-items: center; gap: 0.45em; border: 1px solid rgba(201,157,69,0.55); color: #e8c877;
+      border-radius: 100px; padding: 0.3em 0.85em; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    /* the two sides */
+    .pf__sides { display: flex; gap: 0.5rem; margin-top: 1.3rem; }
+    .pf__side { flex: 1; font: inherit; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.86rem;
+      border: 2px solid rgba(244,239,230,0.25); background: rgba(14,11,9,0.7); color: var(--cream-dim);
+      border-radius: 14px; padding: 0.85rem 0.5rem; cursor: pointer; transition: all 0.2s; }
+    .pf__side.is-on { border-color: #e8c877; color: #0a0807; background: linear-gradient(180deg, #e8c877, #c99d45); box-shadow: 0 0 24px rgba(201,157,69,0.35); }
+    .pf__pane { display: none; animation: pfIn 0.4s cubic-bezier(0.2,0.9,0.2,1); }
+    .pf__pane.is-on { display: block; }
+    @keyframes pfIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    /* the doors */
+    .pf__doors { display: grid; gap: 0.55rem; margin-top: 1rem; }
+    .pf__door { display: flex; align-items: center; gap: 0.75rem; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px;
+      background: rgba(18,14,11,0.85); padding: 0.95rem 1rem; text-decoration: none; color: var(--cream);
+      border-left: 3px solid var(--dc, #c99d45); transition: transform 0.12s; }
+    .pf__door:active { transform: scale(0.98); }
+    .pf__door b { display: block; font-size: 0.96rem; }
+    .pf__door small { display: block; color: var(--cream-dim); font-size: 0.72rem; margin-top: 0.15rem; line-height: 1.45; }
+    .pf__door .ic { flex: none; font-size: 1.15rem; }
+    .pf__door .go { flex: none; color: var(--dc, #c99d45); font-weight: 800; }
+    .pf__tag { display: inline-block; font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800;
+      color: var(--dc, #c99d45); margin-left: 0.4em; vertical-align: 0.12em; }
+    .pf__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 0.5rem; margin-top: 0.9rem; }
+    .pf__stat { border: 1px solid rgba(244,239,230,0.13); border-radius: 12px; padding: 0.7rem; text-align: center; }
+    .pf__stat b { display: block; font-size: 1.25rem; font-variant-numeric: tabular-nums; color: #e8c877; }
+    .pf__stat small { color: var(--cream-dim); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .pf__out { background: none; border: 1px solid rgba(244,239,230,0.22); border-radius: 100px; color: var(--cream-dim);
+      font: inherit; font-size: 0.74rem; padding: 0.4em 1em; cursor: pointer; margin-top: 1.6rem; }
   </style>
 </head>
 <body class="songpage">
   <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="market.html">The Market</a>
-      <a href="app.html">Music</a>
-    </nav>
-  </header>
-  <main class="pf">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> Your room on the platform</p>
-    <h1 id="pfTitle">Your<br>Profile.</h1>
-
-    <!-- signed out: the sign-up -->
-    <div id="pfOut">
-      <p class="pf__sub">One email and the platform knows you — <b>no password, no app store, no forms.</b>
-        The link signs you in on this device and your room is waiting.</p>
-      <section class="pf__card">
-        <h2>Step inside</h2>
-        <div id="pfDoor" style="margin:0.4rem 0 0.6rem"></div>
-        <div class="pf__gets">
-          <div class="pf__get"><b>Your ticker</b><small>Your own symbol — you trade on the floor like a stock, moved by real work.</small></div>
-          <div class="pf__get"><b>Your deals</b><small>Propositions, splits, signatures — the full trail in the Market.</small></div>
-          <div class="pf__get"><b>Your listing</b><small>Get found and booked — you keep 100% of your rate.</small></div>
-          <div class="pf__get"><b>Follows you</b><small>Your music, model, and persona ride between your devices.</small></div>
-        </div>
-        <p class="pf__note">Signing up is free. The network runs under the Equity Uprise nonprofit —
-          part of every dollar spent here builds the next artist.</p>
-      </section>
-    </div>
-
-    <!-- signed in: the room -->
-    <div id="pfIn" class="pf__hidden">
-      <section class="pf__card">
-        <div class="pf__who">
-          <img src="assets/img/m-mark.png" alt="">
-          <span><b id="pfWho">—</b><small id="pfListing">Checking your listing…</small><small id="pfRead"></small></span>
-        </div>
-      </section>
-
-      <section class="pf__card" id="pfWorthCard" style="display:none">
-        <h2>Your true worth <span class="ta__status">🔒 only you see this</span></h2>
-        <p style="font-size:2.2rem;font-weight:800;font-variant-numeric:tabular-nums" id="pfWorthN">—</p>
-        <div id="pfWorthRows" style="margin-top:0.5rem"></div>
-        <p class="pf__note">Priced by the M-Worth algorithm from your own books — the seat, the labor,
-          the demand, the stage, and your momentum. The floor shows the world your score in points;
-          the dollars live here, with you.</p>
-      </section>
-
-      <section class="pf__card" id="pfStreetCard" style="display:none">
-        <h2>Your Street Score <span class="ta__status">🔒 only you see this</span></h2>
-        <p style="margin:0.1rem 0 0.2rem"><span id="pfStreetN" style="font-size:2.6rem;font-weight:800;font-variant-numeric:tabular-nums">—</span>
-          <b id="pfStreetBand" style="color:#00c805;margin-left:0.4rem"></b></p>
-        <div id="pfStreetBooks" style="margin-top:0.6rem"></div>
-        <p class="pf__note" id="pfStreetNext" style="border-left:3px solid #00c805;padding-left:0.8rem"></p>
-        <p class="pf__note">The credit the bureaus can't see: payment history on the platform, cash-flow cadence,
-          the community's word, behavior, and tenure — the Street Credit Bureau model. It grows the same way
-          real credit does: finish what you sign.</p>
-      </section>
-
-      <section class="pf__card" id="pfStockCard" style="display:none">
-        <h2>Your M Stock <span class="ta__status">live on your labor</span></h2>
-        <div id="pfStock"></div>
-      </section>
-
-      <section class="pf__card">
-        <h2>Your rooms</h2>
-        <div class="pf__rooms">
-          <a class="pf__room" href="market.html#yours"><span><b>Your deals</b><small id="pfDeals">The Market · the full trail</small></span><span>→</span></a>
-          <a class="pf__room" href="market.html#yours"><span><b>Your listing &amp; inbox</b><small>The Talent App — rate, roles, requests</small></span><span>→</span></a>
-          <a class="pf__room" href="packet.html"><span><b>Your performances</b><small>PRO packets — get paid for the stage</small></span><span>→</span></a>
-          <a class="pf__room" href="market.html#providers"><span><b>The organization</b><small>Boards · programs · the donor circle</small></span><span>→</span></a>
-          <a class="pf__room" href="app.html"><span><b>Your music</b><small>The player that remembers you</small></span><span>→</span></a>
-        </div>
-        <p class="pf__note"><button class="btn btn--ghost" id="pfSignOut" type="button" style="margin-top:0.4rem">Sign out</button></p>
-      </section>
-    </div>
-  </main>
+  <main class="pf" id="pfMain"><p class="pf__sub">Opening your profile…</p></main>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
-  <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
-  <script src="js/door.js?v=__STAMP__"></script>
-  <script src="js/sync.js?v=__STAMP__"></script>
   <script src="js/network.js?v=__STAMP__"></script>
-  <script src="js/mstock.js?v=__STAMP__"></script>
-  <script src="js/mworth.js?v=__STAMP__"></script>
-  <script src="js/streetscore.js?v=__STAMP__"></script>
+  <script src="js/door.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
-      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       function $(id) { return document.getElementById(id); }
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+      var main = $("pfMain");
+      var S = window.MCC_SUPA;
 
-      /* the one door — same component as every other sign-in on the site */
-      if (window.MCC_DOOR && $("pfDoor")) {
-        window.MCC_DOOR.mount($("pfDoor"), { ticker: true, context: "profile" });
+      /* PERSONA: the RISE card colors and orders everything here */
+      var PATH_META = {
+        signal: ["Signal", "#45b6ff"], infra: ["Infrastructure", "#c99d45"],
+        capital: ["Capital", "#00c805"], culture: ["Culture", "#e5383b"],
+        justice: ["Justice", "#8b5cf6"], access: ["Access", "#a3e635"],
+        proof: ["Proof", "#2aa8a0"], command: ["Command", "#ff7a00"] };
+      var rise = null;
+      try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
+      var myPaths = (rise && rise.arch) || [];
+
+      /* THE PRIVATE ROOMS — each door belongs to a path; your paths float
+         to the top, so the private side reads as YOUR workspace, not a menu */
+      var ROOMS = [
+        ["market.html#yours", "🏦", "Your desk", "Listing, wallet, deals, payouts, claim your plays.", "capital"],
+        ["mymission.html", "🎯", "Your missions", "The Trap: 100,000 points of real moves, filtered by your path.", "command"],
+        ["civic.html", "🗳", "Civic HQ", "Your civic card, your vote, your connected accounts.", "justice"],
+        ["distribution.html", "🎛", "Distribution & identifiers", "The locker: the IDs your work pays through, seals, earnings.", "infra"],
+        ["market.html#wire", "💬", "The Wire", "Speak to the whole floor.", "signal"],
+        ["academy.html", "🎓", "The Academy", "Six lessons, a real wallet, gas on the house.", "culture"],
+        ["ourworld.html", "🕹", "The Game", "Our World and BLOCK OPS — plays that move your ticker.", "access"],
+        ["chain.html", "⛓", "The M Chain", "Every record and badge, hashed and verifiable.", "proof"],
+      ];
+
+      function doorHtml(d, tagged) {
+        var pm = PATH_META[d[4]] || ["", "#c99d45"];
+        return '<a class="pf__door" href="' + d[0] + '" style="--dc:' + pm[1] + '">' +
+          '<span class="ic">' + d[1] + '</span><span style="flex:1"><b>' + d[2] +
+          (tagged ? '<span class="pf__tag">your path · ' + pm[0] + "</span>" : "") +
+          "</b><small>" + d[3] + '</small></span><span class="go">&#8594;</span></a>';
       }
-      $("pfSignOut").addEventListener("click", function () {
-        window.MCC_AUTH.signOut().then(function () { location.reload(); });
-      });
 
-      if (window.MCC_AUTH.user && window.MCC_AUTH.user()) {
-        $("pfOut").classList.add("pf__hidden");
-        $("pfIn").classList.remove("pf__hidden");
-        $("pfWho").textContent = window.MCC_SUPA.email() || "Instant account — this device is the key";
-        // the archetype: what the model reads in you, and how deep you're standing
-        if (window.MCC_MODEL) {
-          var pr = window.MCC_MODEL.profile();
-          if (pr.archetype) $("pfRead").textContent = "The read: " + pr.archetype + " · " + pr.depth;
+      function paintOut() {
+        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
+          "<h1>Your<br>Profile.</h1>" +
+          '<p class="pf__sub"><b>Two sides to every member:</b> the public face the floor sees, and the private rooms where you work. ' +
+          "It starts with your card.</p>" +
+          '<div class="pf__card"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 Play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
+          '<span style="font-size:0.82rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
+          '<div class="pf__card"><div id="pfDoor"></div></div>';
+        if (window.MCC_DOOR && window.MCC_DOOR.mount) {
+          window.MCC_DOOR.mount($("pfDoor"), { ticker: true, context: "profile", onDone: function () { location.reload(); } });
         }
-        window.MCC_NET.myListing().then(function (mine) {
-          var tick = "";
-          if (mine && window.MCC_STOCK) tick = "$" + window.MCC_STOCK.ticker(mine.ticker, mine.name) + " · ";
-          $("pfListing").textContent = mine
-            ? tick + "Listing: " + mine.name + " · " + mine.status
-            : "No listing yet — set one up in the Talent App";
-        }).catch(function () { $("pfListing").textContent = "Your room, your rules."; });
-        window.MCC_NET.myDeals().then(function (res) {
-          var n = (res.rows || []).length;
-          if (n) $("pfDeals").textContent = n + (n === 1 ? " deal" : " deals") + " on the record · the Market";
-          // the stock rides here too
-          Promise.all([
-            window.MCC_NET.myRequests().catch(function () { return []; }),
-            window.MCC_NET.myPerformances().catch(function () { return []; }),
-            window.MCC_NET.listProviders().catch(function () { return []; }),
-            (res.mine && res.mine.slug && window.MCC_NET.listRatings
-              ? window.MCC_NET.listRatings(res.mine.slug).catch(function () { return []; })
-              : Promise.resolve([])),
-          ]).then(function (r) {
-            var data = window.MCC_STOCK.build({
-              uid: window.MCC_SUPA.uid() || "guest",
-              listing: res.mine, requests: r[0], deals: res.rows, performances: r[1],
-              marketN: (r[2] || []).length,
-            });
-            $("pfStockCard").style.display = "";
-            window.MCC_STOCK.mount($("pfStock"), data);
-            // the true number — computed from your own books, shown to you alone
-            if (window.MCC_WORTH) {
-              var beh = { devices: 1 };
-              try {
-                if (window.MCC_MODEL) {
-                  var prof = window.MCC_MODEL.profile();
-                  beh.depth = { surface: 1, warm: 2, deep: 3 }[prof.depth] || 1;
-                  beh.sessions = prof.visits || 0;
-                }
-                if (window.MCC_GRIND) beh.grindE = window.MCC_GRIND.state().E || 0;
-              } catch (e) {}
-              var w = window.MCC_WORTH.appraise({
-                uid: window.MCC_SUPA.uid(),
-                listing: res.mine, deals: res.rows, requests: r[0], performances: r[1],
-                behavior: beh, ratings: r[3] || [],
-              });
-              // the staging model bends the number the member watches
-              var gb = (window.MCC_GRIND && window.MCC_GRIND.boost()) || 0;
-              var sw = +(w.worth * (1 + gb / 100)).toFixed(2);
-              w.breakdown.push({ label: "The grind — showing up (" + (gb >= 0 ? "+" : "") + gb + "% today)", dollars: +(sw - w.worth).toFixed(2) });
-              w.worth = sw;
-              $("pfWorthN").textContent = w.worth.toLocaleString() + " E⤴︎\uFE0E";
-              $("pfWorthRows").innerHTML = w.breakdown.map(function (b) {
-                return '<p style="display:flex;justify-content:space-between;gap:1rem;font-size:0.84rem;' +
-                  'border-bottom:1px dashed rgba(244,239,230,0.12);padding:0.35em 0">' +
-                  "<span style=\"color:var(--cream-dim)\">" + b.label + "</span><b style=\"font-variant-numeric:tabular-nums\">$" +
-                  b.dollars.toLocaleString() + "</b></p>";
-              }).join("");
-              $("pfWorthCard").style.display = "";
-              // the Street Score rides the same private books
-              if (window.MCC_STREET) {
-                var g0 = {};
-                try {
-                  var stg = window.MCC_GRIND ? window.MCC_GRIND.state() : {};
-                  var dday = new Date().toISOString().slice(0, 10);
-                  g0 = { E: stg.E || 0, streak: stg.streak || 0, idle: stg.idleDays || 0,
-                    shadow: (stg.shadow && stg.shadow[dday] || []).length };
-                } catch (e0) {}
-                var sc = window.MCC_STREET.score({ deals: res.rows, ratings: r[3] || [], listing: res.mine, grind: g0 });
-                try { localStorage.setItem("mcc_street_last", JSON.stringify({ s: sc.score, at: Date.now() })); } catch (e1) {}
-                $("pfStreetN").textContent = sc.score;
-                $("pfStreetBand").textContent = sc.band;
-                $("pfStreetBooks").innerHTML = sc.books.map(function (bk) {
-                  return '<div style="margin:0.45rem 0"><p style="display:flex;justify-content:space-between;font-size:0.78rem">' +
-                    "<span style=\"color:var(--cream-dim)\">" + bk.label + " · " + Math.round(bk.weight * 100) + "%</span><b>" + bk.value + "</b></p>" +
-                    '<div style="height:6px;border-radius:6px;background:rgba(244,239,230,0.1)">' +
-                    '<div style="height:6px;border-radius:6px;width:' + bk.value + '%;background:linear-gradient(90deg,#008f04,#00c805)"></div></div></div>';
-                }).join("");
-                $("pfStreetNext").innerHTML = "<b style=\"color:var(--cream)\">Next move:</b> " + sc.next;
-                $("pfStreetCard").style.display = "";
-              }
-            }
+      }
+
+      function paintIn(mine) {
+        var ADMIN = (S.email && S.email()) === "matthew@mccluster.org";
+        var name = (mine && mine.name) || "Chaser";
+        var slug = mine && mine.slug;
+        var tick = mine && mine.ticker ? "$" + String(mine.ticker).toUpperCase() : "";
+        var archLine = myPaths.length
+          ? '<span class="pf__arch">🃏 ' + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ") + "</span>"
+          : '<a class="pf__arch" href="rise.html" style="text-decoration:none">🃏 no card yet — play RISE &#8594;</a>';
+        // your paths float their rooms to the top
+        var rooms = ROOMS.slice().sort(function (a, b) {
+          return (myPaths.indexOf(b[4]) !== -1 ? 1 : 0) - (myPaths.indexOf(a[4]) !== -1 ? 1 : 0);
+        });
+        var privateDoors = (ADMIN
+          ? '<a class="pf__door" href="mission.html" style="--dc:#e5383b"><span class="ic">🎛</span><span style="flex:1"><b>Mission Control<span class="pf__tag" style="--dc:#e5383b">the admin desk</span></b><small>The whole system: pulse, brain, fund, decks, the live floor.</small></span><span class="go" style="--dc:#e5383b">&#8594;</span></a>'
+          : "") +
+          rooms.map(function (d) { return doorHtml(d, myPaths.indexOf(d[4]) !== -1); }).join("");
+        main.innerHTML = '<p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> One profile · two sides</p>' +
+          "<h1>" + esc(name) + (tick ? ' <span style="color:#e8c877;font-size:0.5em;vertical-align:0.4em">' + esc(tick) + "</span>" : "") + "</h1>" +
+          '<div style="margin-top:0.6rem">' + archLine + "</div>" +
+          '<div class="pf__sides">' +
+          '<button class="pf__side is-on" type="button" data-side="pub">🌍 Public — the floor sees</button>' +
+          '<button class="pf__side" type="button" data-side="priv">🔒 Private — your rooms</button></div>' +
+
+          '<div class="pf__pane is-on" data-pane="pub">' +
+          (slug
+            ? '<div class="pf__doors">' +
+              '<a class="pf__door" href="page.html?who=' + esc(slug) + '" style="--dc:#e8c877"><span class="ic">📄</span><span style="flex:1"><b>Your public page</b><small>Films, music, receipts, your ticker — what any visitor sees.</small></span><span class="go">&#8594;</span></a>' +
+              '<a class="pf__door" href="market.html?to=' + esc((mine.ticker || slug)) + '" style="--dc:#00c805"><span class="ic">📈</span><span style="flex:1"><b>Your ticker on the floor</b><small>The real chart, real prints, real stats.</small></span><span class="go">&#8594;</span></a>' +
+              '<button class="pf__door" type="button" id="pfShare" style="--dc:#45b6ff;font:inherit;text-align:left;cursor:pointer;background:rgba(18,14,11,0.85)"><span class="ic">🔗</span><span style="flex:1"><b>Share your page</b><small id="pfShareNote">One link carries all of it: page.html?who=' + esc(slug) + "</small></span><span class=\"go\">&#8594;</span></button></div>" +
+              '<div class="pf__stats" id="pfStats"></div>'
+            : '<p class="pf__sub">No listing yet — <a href="welcome.html" style="color:#e8c877">finish the walk-in</a> and your public page, ticker and chart go up together.</p>') +
+          "</div>" +
+
+          '<div class="pf__pane" data-pane="priv"><div class="pf__doors">' + privateDoors + "</div></div>" +
+          '<button class="pf__out" id="pfSignOut" type="button">Sign out</button>';
+
+        main.querySelectorAll(".pf__side").forEach(function (b) {
+          b.addEventListener("click", function () {
+            main.querySelectorAll(".pf__side").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+            main.querySelectorAll(".pf__pane").forEach(function (p) { p.classList.toggle("is-on", p.getAttribute("data-pane") === b.getAttribute("data-side")); });
+            try { localStorage.setItem("mcc_pf_side", b.getAttribute("data-side")); } catch (e) {}
+            track("profile_side", { side: b.getAttribute("data-side") });
           });
+        });
+        var savedSide = null;
+        try { savedSide = localStorage.getItem("mcc_pf_side"); } catch (e) {}
+        if (savedSide === "priv") main.querySelector('[data-side="priv"]').click();
+        var sh = $("pfShare");
+        if (sh) sh.addEventListener("click", function () {
+          var link = location.origin + location.pathname.replace(/[^/]*$/, "") + "page.html?who=" + slug;
+          (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(function () {
+            $("pfShareNote").textContent = "✓ Copied — send it anywhere.";
+          }).catch(function () { $("pfShareNote").textContent = link; });
+          track("profile_share", {});
+        });
+        $("pfSignOut").addEventListener("click", function () {
+          window.MCC_AUTH.signOut().then(function () { location.reload(); });
+        });
+        // the public numbers: your price and points, straight off the engine
+        if (slug) S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/my_score", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" });
+        }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (sc) {
+          var g = $("pfStats");
+          if (!g || !sc) return;
+          function stat(n, l) { return '<div class="pf__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
+          g.innerHTML = stat(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "your price on the tape") +
+            stat(sc.points != null ? Math.round(+sc.points).toLocaleString() : "—", "game points") +
+            stat(sc.score != null ? sc.score : "—", "reputation · of 1000");
         }).catch(function () {});
       }
-      track("profile_view", { authed: !!(window.MCC_AUTH.user && window.MCC_AUTH.user()) });
+
+      if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user()) {
+        window.MCC_NET.myListing().then(paintIn).catch(function () { paintIn(null); });
+      } else {
+        paintOut();
+      }
+      track("profile_view", {});
     })();
   </script>
 </body>
