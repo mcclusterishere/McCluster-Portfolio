@@ -63,9 +63,10 @@ jobs:
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(2048,iw)':-1" -q:v 3 "assets/img/${n}.jpg" \
               && rm -f "$f" && echo "converted $n -> jpg"
           done
-          # CHASER WORLDS district heroes: convert whatever extension the
-          # model delivered (png/jpeg) to a capped web-light .jpg
-          for f in assets/img/chaser-*.png assets/img/chaser-*.jpeg; do
+          # CHASER WORLDS district heroes + THE FACES editorial set:
+          # convert whatever extension the model delivered (png/jpeg)
+          # to a capped web-light .jpg
+          for f in assets/img/chaser-*.png assets/img/chaser-*.jpeg assets/img/face-*.png assets/img/face-*.jpeg; do
             [ -f "$f" ] || continue
             n="${f%.*}"
             ffmpeg -hide_banner -loglevel error -y -i "$f" -vf "scale='min(1600,iw)':-1" -q:v 4 "${n}.jpg" \

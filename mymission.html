@@ -78,6 +78,32 @@
     @keyframes mmFlt { 0%, 100% { box-shadow: 0 0 0 rgba(0,0,0,0); } 50% { box-shadow: 0 0 15px var(--fc, #c99d45); } }
     @media (prefers-reduced-motion: reduce) { .mm__filt { animation: none; } }
     .mm__arcwrap.is-hid { display: none; }
+    /* THE FACES: one tap decides which YOU runs the room */
+    .mm__faces { display: flex; gap: 0.45rem; overflow-x: auto; padding: 1rem 0.15rem 0.2rem; scrollbar-width: none; }
+    .mm__faces::-webkit-scrollbar { display: none; }
+    .mm__face { flex: none; display: inline-flex; align-items: center; gap: 0.45em; font: inherit; font-weight: 800;
+      font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fc, #c99d45);
+      background: rgba(12,9,8,0.7); border: 2px solid var(--fc, #c99d45); border-radius: 100px;
+      padding: 0.55em 1.05em; cursor: pointer; transition: transform 0.15s, box-shadow 0.2s, background 0.2s, color 0.2s; }
+    .mm__face:active { transform: scale(0.94); }
+    .mm__face.is-on { background: var(--fc, #c99d45); color: #0a0807; box-shadow: 0 0 22px var(--fc, #c99d45); }
+    .mm__face.is-add { border-style: dashed; font-weight: 400; text-transform: none; letter-spacing: 0;
+      color: var(--cream-dim); border-color: rgba(244,239,230,0.35); }
+    .mm__facecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; }
+    .mm__fc { position: relative; border-radius: 14px; overflow: hidden; min-height: 7.6rem; display: flex; align-items: flex-end;
+      border: 2px solid var(--fc, #c99d45); background: linear-gradient(140deg, #1a1210, #0d0a08); background-size: cover;
+      background-position: center; cursor: pointer; font: inherit; color: var(--cream); text-align: left; padding: 0;
+      transition: transform 0.15s, box-shadow 0.2s; }
+    .mm__fc:active { transform: scale(0.96); }
+    .mm__fc:hover { box-shadow: 0 0 20px var(--fc, #c99d45); }
+    .mm__fc::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,8,7,0.05), rgba(10,8,7,0.86) 92%); }
+    .mm__fc > span { position: relative; z-index: 2; width: 100%; padding: 2.6rem 0.75rem 0.6rem; font-weight: 800;
+      font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+    .mm__fc small { display: block; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--cream-dim);
+      font-size: 0.68rem; margin-top: 0.15rem; }
+    .mm__runas { position: absolute; top: 0.8rem; left: 0.9rem; z-index: 2; font-size: 0.6rem; letter-spacing: 0.24em;
+      text-transform: uppercase; font-weight: 800; color: #0a0807; background: var(--fc, #e8c877); border-radius: 100px;
+      padding: 0.45em 1.05em; }
   </style>
 </head>
 <body class="songpage">
@@ -90,10 +116,9 @@
   <main class="mm">
     <p class="kicker"><img class="kicker__mark" src="assets/img/m-mark.png" alt="M"> THE MEMBER DESK · yours only — nobody else's numbers live here</p>
     <h1>Your Mission<br>Control.</h1>
-    <p class="mm__sub">The same command room the house runs — scoped to <b>you</b>: your traffic, your listing,
-      your books, and <b>the Trap</b>: run literally everything in this app for real — identity, craft, business,
-      community, the academy — and the house pays you <b>up to 1,000 E⤴︎, once</b>. Every milestone is verified
-      against the record — the machine checks, not the honor system.</p>
+    <p class="mm__sub">The house's command room, scoped to <b>you</b>. Pick your face up top — the whole desk
+      sorts to it and <b>stays</b> sorted, on your account, every device. Run <b>the Trap</b> and the house pays
+      <b>up to 1,000 E⤴︎, once</b> — every milestone verified against the record.</p>
 
     <div id="mmHost"><p class="mm__sub">Opening your room…</p></div>
 
@@ -192,16 +217,36 @@
             headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t },
             body: JSON.stringify(body || {}),
           }).then(function (r) { return r.ok ? r.json() : null; });
-        });
+        }).catch(function () { return null; });   // a stale key never blanks the room
       }
 
       var ADMIN = (window.MCC_SUPA.email && window.MCC_SUPA.email()) === "matthew@mccluster.org";
-      var FACE_BADGE = { Music: "🎙 Artist", Beats: "🎛 Producer", Photo: "📸 Photographer",
-        Video: "🎬 Videographer", Web: "💻 Builder", Studios: "🎚 Studio", Stages: "🏟 Stage" };
+      /* THE FACES: role → [name, mark, color, chaser lane, hero photo].
+         The photos are the metro-ATL-meets-metro-BPT editorial set. */
+      var FACES = {
+        Music:   ["Artist", "🎙", "#e5383b", "culture", "assets/img/face-artist.jpg"],
+        Beats:   ["Producer", "🎛", "#8b5cf6", "culture", "assets/img/face-producer.jpg"],
+        Photo:   ["Photographer", "📸", "#2aa8a0", "proof", "assets/img/face-photographer.jpg"],
+        Video:   ["Videographer", "🎬", "#45b6ff", "signal", "assets/img/face-videographer.jpg"],
+        Web:     ["Builder", "💻", "#c99d45", "infra", "assets/img/face-builder.jpg"],
+        Studios: ["Studio", "🎚", "#ff7a00", "access", "assets/img/face-studio.jpg"],
+        Stages:  ["Stage", "🏟", "#a3e635", "access", "assets/img/face-stage.jpg"],
+      };
+      function faceMeta(role) { return FACES[role] || [role, "★", "#e8c877", "command", "assets/img/mc-hero.jpg"]; }
+      function loadBgs(scope) {
+        scope.querySelectorAll("[data-mmbg]").forEach(function (el) {
+          if (el.dataset.bgdone) return;
+          el.dataset.bgdone = "1";
+          var im = new Image();
+          im.onload = function () { el.style.backgroundImage = "url(" + el.getAttribute("data-mmbg") + ")"; };
+          im.src = el.getAttribute("data-mmbg");
+        });
+      }
 
       Promise.all([auth("my_mission"), auth("claim_gauntlet"),
-        window.MCC_NET.myListing().catch(function () { return null; })]).then(function (r) {
-        var m = r[0], g = r[1], mine = r[2];
+        window.MCC_NET.myListing().catch(function () { return null; }),
+        auth("my_imprint").catch(function () { return null; })]).then(function (r) {
+        var m = r[0], g = r[1], mine = r[2], imp = r[3] || {};
         if (!m) {
           // paste talk is for the admin ONLY — a member gets a human
           // answer and the card call keeps flashing even here
@@ -215,9 +260,56 @@
                 '<p class="mm__sub card-call" style="padding:0.7rem 0.85rem;margin-bottom:0.7rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
                 '<span style="font-size:0.8rem">It deals your E⤴ Card and lines these missions up to your path.</span></p>') +
               "<h2>Your numbers are waking up.</h2>" +
-              '<p class="mm__sub" style="margin-top:0.2rem">The Trap loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p></div>';
+              '<p class="mm__sub" style="margin-top:0.2rem">The Trap loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p>' +
+              '<p class="mm__sub" style="font-size:0.78rem">Still blank after a refresh? Your key may have gone stale — <a href="#" id="mmRekey" style="color:#e8c877">sign back in fresh &#8594;</a></p></div>';
+          var rk = document.getElementById("mmRekey");
+          if (rk) rk.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            try { localStorage.removeItem("mccdb_session"); } catch (e3) {}
+            location.reload();
+          });
           return;
         }
+        /* THE IMPRINT SYNC: the account beats the device. A card claimed
+           on this device rides UP to the account; an account that already
+           claimed rides DOWN onto this device — so nobody is ever asked
+           twice, on any phone, and two accounts on one phone never mix. */
+        (function () {
+          var rz = null; try { rz = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
+          var ips = imp.paths || [];
+          if (rz && rz.arch && rz.arch.length && !ips.length) {
+            auth("imprint_desk", { p_face: null, p_paths: rz.arch });
+          } else if (ips.length && !(rz && rz.arch && rz.arch.length)) {
+            try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "imprint", arch: ips, v: {}, at: new Date().toISOString() })); } catch (e) {}
+          }
+        })();
+        var FACE_ON = imp.face || null;
+        var roles = (mine && mine.roles) || [];
+
+        function walkCards(list, label) {
+          return '<div class="mm__card" style="border-color:rgba(201,157,69,0.5)"><p class="mm__k" style="color:#e8c877">' + label + "</p>" +
+            "<h2>Who&rsquo;s running this desk?</h2>" +
+            '<p class="mm__sub" style="margin-top:0.1rem;font-size:0.85rem">One tap — it imprints on your <b>account</b>, not this device. Every visit, every phone, the desk opens already sorted to you. Change it any time up top.</p>' +
+            '<div class="mm__facecards">' + list.map(function (rr) {
+              var fm = faceMeta(rr);
+              var lane = PATH_META[fm[3]] ? PATH_META[fm[3]][0] : fm[3];
+              return '<button class="mm__fc" type="button" data-face="' + esc(rr) + '" data-mmbg="' + fm[4] + '" style="--fc:' + fm[2] + '"><span>' + fm[1] + " " + esc(fm[0]) + "<small>sorts the desk to the " + lane + " lane</small></span></button>";
+            }).join("") + "</div></div>";
+        }
+        function pickFace(rr) {
+          FACE_ON = rr;
+          var fm = faceMeta(rr);
+          try { localStorage.setItem("mcc_mm_mode", "path"); localStorage.setItem("mcc_mm_pick", fm[3]); } catch (e) {}
+          auth("imprint_desk", { p_face: rr, p_paths: null });
+          if (roles.indexOf(rr) === -1 && FACES[rr]) {
+            roles.push(rr);
+            window.MCC_NET.saveListing({ roles: roles }).catch(function () {});
+          }
+          track("face_pick", { f: rr });
+          paintRoom();
+        }
+
+        function paintRoom() {
         var done = (g && g.done) || [];
         var paid = (g && +g.paid_total) || 0;
         var minted = (g && +g.minted) || 0;
@@ -231,16 +323,21 @@
         }
         function lockCls(key) { return unlocked(key) ? "" : " is-locked"; }
 
-        /* one profile, every personality — worn as badges */
-        var roles = (mine && mine.roles) || [];
-        var badges = roles.map(function (rr) {
-          return '<span class="mm__badge">' + (FACE_BADGE[rr] || "★ " + esc(rr)) + "</span>";
-        }).join("") + '<a class="mm__badge is-add" href="welcome.html">+ add a personality</a>';
+        /* THE FACES rail: which YOU runs this room — one tap sorts the
+           whole desk to that lane and imprints on the account */
+        var fOn = FACE_ON ? faceMeta(FACE_ON) : null;
+        var railRoles = roles.slice();
+        if (FACE_ON && railRoles.indexOf(FACE_ON) === -1) railRoles.push(FACE_ON);
+        var html = '<div class="mm__faces" id="mmFaces">' + railRoles.map(function (rr) {
+          var fm = faceMeta(rr);
+          return '<button class="mm__face' + (FACE_ON === rr ? " is-on" : "") + '" type="button" data-face="' + esc(rr) +
+            '" style="--fc:' + fm[2] + '">' + fm[1] + " " + esc(fm[0]) + "</button>";
+        }).join("") + '<button class="mm__face is-add" type="button">+ add a face</button></div>' +
+        '<div id="mmFaceWalk"></div>';
 
-        var html = '<div class="mm__badges">' + badges + "</div>";
-
-        /* the command room hero: your points on the board, big */
-        html += '<div class="mm__hero" data-mmbg="assets/img/mc-hero.jpg"><div>' +
+        /* the command room hero wears your face's scene */
+        html += '<div class="mm__hero" data-mmbg="' + (fOn ? fOn[4] : "assets/img/mc-hero.jpg") + '" style="--fc:' + (fOn ? fOn[2] : "#e8c877") + '">' +
+          (fOn ? '<span class="mm__runas">Running as ' + esc(fOn[0]) + "</span>" : "") + "<div>" +
           '<b class="mm__pts">' + pts(paid) + " pts</b>" +
           "<small>of 100,000 — the full run · 1 E⤴︎ = 100 points</small></div></div>";
 
@@ -254,7 +351,8 @@
              you to go earn one in RISE */
           (function () {
             var rise = null; try { rise = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e) {}
-            var myPaths = rise && rise.arch ? rise.arch : null;
+            var myPaths = rise && rise.arch ? rise.arch.slice() : null;
+            if (FACE_ON) myPaths = [faceMeta(FACE_ON)[3]].concat(myPaths || []);
             var undone = GAUNTLET.filter(function (mi) { return done.indexOf(mi[0]) === -1; });
             var next = myPaths ? undone.filter(function (mi) { return myPaths.indexOf(PATH_OF[mi[0]]) !== -1; }) : [];
             undone.forEach(function (mi) { if (next.length < 3 && next.indexOf(mi) === -1) next.push(mi); });
@@ -342,6 +440,33 @@
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
+        /* THE FACES: rail taps + the pick walk (photo cards) */
+        (function () {
+          var rail = $("mmFaces");
+          function wireWalkBtns() {
+            var w = $("mmFaceWalk");
+            if (!w) return;
+            w.querySelectorAll("[data-face]").forEach(function (b) {
+              b.addEventListener("click", function () { pickFace(b.getAttribute("data-face")); });
+            });
+            loadBgs(w);
+          }
+          if (rail) rail.addEventListener("click", function (e) {
+            if (e.target.closest(".is-add")) {
+              var missing = Object.keys(FACES).filter(function (k) { return roles.indexOf(k) === -1; });
+              $("mmFaceWalk").innerHTML = walkCards(missing.length ? missing : Object.keys(FACES),
+                "Add a face — it saves to your account");
+              wireWalkBtns();
+              return;
+            }
+            var b = e.target.closest("[data-face]");
+            if (b) pickFace(b.getAttribute("data-face"));
+          });
+          if (!FACE_ON) {
+            $("mmFaceWalk").innerHTML = walkCards(roles.length ? roles : Object.keys(FACES), "First, your face");
+            wireWalkBtns();
+          }
+        })();
         /* THE FILTER DESK: two modes, one law. BY HUSTLE scopes whole
            arcs; BY PATH scopes individual missions to a Chaser lane.
            Both picks survive the visit. */
@@ -356,8 +481,9 @@
             var rz = null;
             try { rz = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e2) {}
             var prim = rz && rz.arch && rz.arch[0];
-            mode = localStorage.getItem("mcc_mm_mode") || (prim ? "path" : "arc");
-            pick = localStorage.getItem("mcc_mm_pick") || (prim && mode === "path" ? prim : "all");
+            var fLane = FACE_ON ? faceMeta(FACE_ON)[3] : null;
+            mode = localStorage.getItem("mcc_mm_mode") || (fLane || prim ? "path" : "arc");
+            pick = localStorage.getItem("mcc_mm_pick") || (mode === "path" ? (fLane || prim || "all") : "all");
           } catch (e) {}
           function chipsFor(m) {
             if (m === "arc") {
@@ -412,14 +538,21 @@
         })();
         /* the art: each room wears its generated scene the moment the
            asset exists — the gradient holds the frame until then */
-        host.querySelectorAll("[data-mmbg]").forEach(function (el) {
-          var im = new Image();
-          im.onload = function () { el.style.backgroundImage = "url(" + el.getAttribute("data-mmbg") + ")"; };
-          im.src = el.getAttribute("data-mmbg");
-        });
+        loadBgs(host);
         track("mymission_view", { done: done.length });
-      }).catch(function () {
-        host.innerHTML = '<div class="mm__card"><h2>The room blinked.</h2><p class="mm__sub">Pull to refresh — or the paste (docs/gauntlet-schema.sql) hasn\'t run yet.</p></div>';
+        }
+        paintRoom();
+      }).catch(function (err) {
+        host.innerHTML = '<div class="mm__card"><h2>The room blinked.</h2>' +
+          '<p class="mm__sub">Pull to refresh. If it keeps blinking, your key went stale — ' +
+          '<a href="#" id="mmRekey2" style="color:#e8c877">sign back in fresh &#8594;</a></p>' +
+          '<p class="mm__fine" style="margin-top:0.5rem">' + esc(String((err && err.message) || err)) + "</p></div>";
+        var rk2 = document.getElementById("mmRekey2");
+        if (rk2) rk2.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          try { localStorage.removeItem("mccdb_session"); } catch (e4) {}
+          location.reload();
+        });
       });
     })();
   </script>

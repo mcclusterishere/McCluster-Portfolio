@@ -226,6 +226,32 @@
     pwBtns.appendChild(mkAcct); pwBtns.appendChild(signIn);
     wrap.appendChild(pwBtns);
 
+    /* the self-healing door: a returning member who taps Create by
+       mistake gets SIGNED IN with the same key instead of an error;
+       a jammed confirmation-email pipe falls back the same way. */
+    function trySignIn(e, p, fallbackMsg) {
+      msg.textContent = "You already hold a key — turning it…";
+      return window.MCC_AUTH.signInPassword(e, p).then(function () {
+        track("door_open", { how: "password_signin_auto", context: ctx });
+        if (opts.onDone) opts.onDone(); else location.reload();
+      }).catch(function () {
+        msg.textContent = fallbackMsg;
+      });
+    }
+    function humanAuthErr(raw) {
+      var t = String(raw || "");
+      if (/invalid login credentials/i.test(t)) {
+        return "That email and password don't match. New here? Tap Create account. Lost the password? Use the email link above — it signs you straight in.";
+      }
+      if (/not confirmed/i.test(t)) {
+        return "That account is waiting on its confirmation email. Check the inbox (and spam) — or use the email sign-in link above; it confirms and opens in one tap.";
+      }
+      if (/confirmation email|error sending/i.test(t)) {
+        return "The confirmation mail pipe is jammed right now. If you already have an account, tap Sign in. Otherwise give it a few minutes — or use Start instantly and attach your email later.";
+      }
+      return t;
+    }
+
     mkAcct.addEventListener("click", function () {
       var e = pem.value.trim(), p = pw.value;
       var nm = nameIn.value.trim(), tk = tickerVal();
@@ -256,7 +282,16 @@
         if (window.MCC_AUTH.user && window.MCC_AUTH.user()) finish("password");
       }).catch(function (err) {
         mkAcct.textContent = "Create account";
-        msg.textContent = String((err && err.message) || err);
+        var t = String((err && err.message) || err);
+        if (/already|registered|exists/i.test(t)) {
+          trySignIn(e, p, "That email already holds an account, but this password doesn't open it. Use the email link above to get back in.");
+          return;
+        }
+        if (/confirmation email|error sending/i.test(t)) {
+          trySignIn(e, p, humanAuthErr(t));
+          return;
+        }
+        msg.textContent = humanAuthErr(t);
       });
     });
 
@@ -269,7 +304,7 @@
         if (opts.onDone) opts.onDone(); else location.reload();
       }).catch(function (err) {
         signIn.textContent = "Sign in";
-        msg.textContent = String((err && err.message) || err);
+        msg.textContent = humanAuthErr(String((err && err.message) || err));
       });
     });
 
