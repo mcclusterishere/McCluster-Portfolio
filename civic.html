@@ -99,7 +99,7 @@
       <h2>Run the civic arc.</h2>
       <div id="cvMissions"></div>
       <p class="cv__sub" style="font-size:0.8rem;margin-top:0.7rem">Civic points ride the same engine as everything
-        else — the <b>Please Set Me Free</b> ride mints them, City Hall in Our World unlocks on them, and the desk sees
+        else — the <b>Please Set Me Free</b> ride mints them, City Hall in Uprise Nation unlocks on them, and the desk sees
         who's really carrying the work.</p>
     </section>
 
@@ -325,7 +325,7 @@
           ["Enter the evidence room", "docket-516.html", "Docket 516 — the monopoles, the money, the record.", false],
           ["Register to vote — for real", "https://vote.gov", "Five minutes, official site, every state. The realest mission on the board.", false],
           ["Take the oath", "fellowship.html", "The Policy Fellowship — from witness to advocate.", false],
-          ["Unlock City Hall", "mcity.html", "Ten civic points open the political district in Our World. The Docket badge lives there.", cp >= 10],
+          ["Unlock City Hall", "ourworld.html", "Ten civic points open the political district in Uprise Nation. The Docket badge lives there.", cp >= 10],
         ];
         $("cvMissions").innerHTML = M.map(function (m) {
           return '<a class="cv__mi" href="' + m[1] + '"' + (/^https:/.test(m[1]) ? ' target="_blank" rel="noopener"' : "") + ">" +

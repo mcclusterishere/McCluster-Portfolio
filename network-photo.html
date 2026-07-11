@@ -3,67 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>The Photo Network — M Network</title>
-  <meta name="description" content="The Photo Network — M-Verified photographers, booked direct. Editorial, events, and campaigns without the agency wall.">
+  <title>Photo studios moved · Equity Uprise</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Photo studio booking lives on the hire desk of the live Equity Uprise platform now; this page takes you straight there.">
+  <meta http-equiv="refresh" content="0; url=hire.html">
+  <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/hire.html">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
-  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0a0807; color: #f4efe6;
+      font: 400 1rem/1.6 system-ui, sans-serif; text-align: center; }
+    a { color: #e5383b; }
+  </style>
 </head>
-<body class="songpage">
-  <div class="grain" aria-hidden="true"></div>
-  <header class="site-head">
-    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
-    <nav class="site-head__nav">
-      <a href="index.html">← Back to the site</a>
-      <a class="head-cta" href="welcome.html?as=space">List your space</a>
-    </nav>
-  </header>
-  <main>
-    <section class="verify net--photo">
-      <p class="kicker">M Network · Photo &amp; Studio</p>
-      <h1 class="section-title">The Photo<br>Network</h1>
-      <p class="songhero__sub" style="margin-top:1rem; text-align:left">Cycs, naturals, rooftops, blackout rooms — M-Verified shoot spaces with real published rates and the lighting already hung. <span class="glitch-hint">One door books any of them.</span></p>
-      <div class="idcards" style="margin-top:2.2rem">
-        <article class="idcard"><h3>01 · Browse</h3><p>Verified rooms with honest photos, specs that match reality, and rates in the open — cyc walls, natural-light lofts, product tables, full grip.</p></article>
-        <article class="idcard"><h3>02 · Book through one door</h3><p>One request to the network books the room — we route it, confirm it, and hold the published rate. No phone tag, no mystery pricing.</p></article>
-        <article class="idcard"><h3>03 · Shoot covered</h3><p>Every space carries verified insurance and the network's standard: the room you book is the room you get, at the rate you saw.</p></article>
-      </div>
-      <div class="sysid" style="margin-top:2.5rem">
-        <h3 class="sysid__title">The badges — org types we verify</h3>
-        <div class="badge-legend" id="orgBadges"></div>
-      </div>
-      <div class="finale__actions" style="margin-top:2.2rem">
-        <a class="btn btn--ruby" data-cta="photo-examples" href="song-who-did-the-shoot.html#gallery">See the work — The Gallery &#8594;</a>
-        <a class="btn btn--ghost" data-cta="photo-booking" href="mailto:matthew@mccluster.org?subject=Photo%20Network%20booking">Request a booking</a>
-        <a class="btn btn--ghost" data-cta="photo-booking-join" href="welcome.html?as=space">Get your space listed</a>
-      </div>
-    </section>
-  </main>
-  <footer class="site-foot">
-    <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
-    <p class="site-foot__note">&#169; 2026 Matthew McCluster &#183; McCluster Corp.</p>
-  </footer>
-  <script src="js/analytics.js?v=__STAMP__"></script>
-  <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/entities.js?v=__STAMP__"></script>
-  <script>
-    // the original org-type badges: every entity type the network verifies
-    (function () {
-      var box = document.getElementById("orgBadges");
-      if (box && window.MCC_ENTITIES) {
-        box.innerHTML = Object.keys(MCC_ENTITIES).map(function (k) {
-          var e = MCC_ENTITIES[k];
-          return '<a class="badge-legend__item" href="verify.html" data-cta="orgbadge-' + k + '" style="text-decoration:none;color:inherit">' +
-            '<span class="mbadge" style="--badge-c:' + e.color + '"><img src="assets/img/m-mark.png" alt=""></span>' +
-            '<span><strong style="color:var(--cream)">' + e.badge + "</strong><br>" + e.desc + "</span></a>";
-        }).join("");
-      }
-    })();
-    document.querySelectorAll("a[data-cta]").forEach(function (el) {
-      el.addEventListener("click", function () {
-        if (window.MCC_TRACK) window.MCC_TRACK("cta_click", { label: el.getAttribute("data-cta"), page: "network-photo" });
-      });
-    });
-  </script>
+<body>
+  <p>Book the shoot on <a href="hire.html">the hire desk</a>.<br>Taking you there&hellip;</p>
+  <script>location.replace("hire.html");</script>
 </body>
 </html>
