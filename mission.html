@@ -325,6 +325,8 @@
         <h2 style="margin-top:1.6rem">Push — speak to every pocket</h2>
         <p class="mc__obj"><b>Objective</b> Reach every pocket. Push speaks to installed devices in one shot; the text list below is the fallback line.</p>
         <p class="mc__empty" style="margin-bottom:0.6rem" id="pushCount">Counting the armed devices…</p>
+        <button class="btn btn--ghost" id="mcRingMe" type="button" style="margin-bottom:0.8rem">&#128276; Ring my own pocket — prove the horn works</button>
+        <p class="mc__msg" id="mcRingMsg" style="margin-top:0;margin-bottom:0.6rem"></p>
         <input class="mc__in" id="pushTitle" type="text" maxlength="80" placeholder="Title — e.g. The shelf just restocked">
         <input class="mc__in" id="pushBody" type="text" maxlength="240" placeholder="The word — one or two sentences">
         <input class="mc__in" id="pushUrl" type="text" placeholder="Where a tap lands (optional) — e.g. house.html">
@@ -884,6 +886,22 @@
             "Members arm theirs with one tap on the desk — 🔔 Notifications.";
         }).catch(function () {
           $("pushCount").textContent = "The horn needs one paste (docs/push-schema.sql) and one deploy (push-send).";
+        });
+        $("mcRingMe").addEventListener("click", function () {
+          $("mcRingMsg").textContent = "Ringing your devices\u2026";
+          window.MCC_NET.myListing().then(function (row) {
+            if (!row || !row.ticker) {
+              $("mcRingMsg").textContent = "Your listing has no ticker yet — the test needs one so it rings only YOU.";
+              return null;
+            }
+            return A.pushSend("Test ring \ud83d\udd14", "The horn works — this landed straight from Mission Control.", "mission.html", row.ticker);
+          }).then(function (j) {
+            if (!j) return;
+            if (j.error) { $("mcRingMsg").textContent = "The horn answered: " + j.error; return; }
+            $("mcRingMsg").textContent = (j.sent > 0)
+              ? "Rang " + j.sent + " of your device(s) \u2014 check the pocket. The bell + pushes are alive."
+              : "The horn works but found no armed device on your account \u2014 arm \ud83d\udd14 Notifications on your desk from the phone, then ring again.";
+          }).catch(function (e) { $("mcRingMsg").textContent = String(e && e.message || e); });
         });
         go.addEventListener("click", function () {
           var title = $("pushTitle").value.trim(), body = $("pushBody").value.trim();

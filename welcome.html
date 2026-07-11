@@ -347,6 +347,7 @@
         }).catch(function () {}).then(function () {
           try {
             localStorage.removeItem("mcc_welcome_pending");
+            localStorage.setItem("mcc_walk", JSON.stringify({ done: true, t: Date.now() }));
             try { var cW = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (cW && cW.kind === "walk") localStorage.removeItem("mcc_cart"); } catch (eW) {}
             localStorage.setItem("mcc_goals", JSON.stringify(A.goals));
           } catch (e) {}
@@ -363,9 +364,13 @@
           harvest();
           if (at === STEPS - 1) { save(function () { location.href = "market.html#yours"; }); return; }
           at++; track("welcome_step", { step: at }); paint();
+          try { localStorage.setItem("mcc_walk", JSON.stringify({ at: at, t: Date.now() })); } catch (eS) {}
         });
         var bk = stage.querySelector("[data-back]");
-        if (bk) bk.addEventListener("click", function () { harvest(); at--; paint(); });
+        if (bk) bk.addEventListener("click", function () {
+          harvest(); at--; paint();
+          try { localStorage.setItem("mcc_walk", JSON.stringify({ at: at, t: Date.now() })); } catch (eS2) {}
+        });
         /* the voice door: on steps with options, the member can just SAY it —
            "I'm an artist and I do photo" lights the matching chips */
         (function voice() {
@@ -405,8 +410,39 @@
           save(function () { location.href = "market.html?tour=1#floor"; });
         });
       }
+      function paintWalked() {
+        stage.innerHTML = '<div class="wl__step" style="text-align:left">' +
+          '<p class="kicker" style="color:#2fbf71">Walk-in complete &#10003;</p>' +
+          '<h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.7rem;margin-top:0.4rem">You already walked in.</h2>' +
+          '<p style="color:var(--cream-dim);line-height:1.7;margin-top:0.7rem;font-size:1rem">Your interview is on the record and the desk knows you — no need to run it twice. Your points for this are already paid.</p>' +
+          '<div class="finale__actions" style="margin-top:1.2rem">' +
+          '<a class="btn btn--ruby" href="mymission.html">Your Mission Control &#8594;</a>' +
+          '<a class="btn btn--ghost" href="market.html#yours">Open your desk</a>' +
+          '<button class="btn btn--ghost" id="wlAgain" type="button">Walk it again</button></div></div>';
+        var ag = document.getElementById("wlAgain");
+        if (ag) ag.addEventListener("click", function () {
+          try { localStorage.removeItem("mcc_walk"); } catch (e) {}
+          at = 0; track("welcome_rewalk", {}); paint();
+        });
+      }
       track("welcome_start", {});
-      paint();
+      var wk = null;
+      try { wk = JSON.parse(localStorage.getItem("mcc_walk")); } catch (e) {}
+      if (wk && wk.done) {
+        paintWalked();
+      } else {
+        if (wk && wk.at > 0 && wk.at < STEPS) at = wk.at;
+        paint();
+        // cross-device: a finished interview lives on the listing itself
+        if (window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user() && window.MCC_NET && window.MCC_NET.myListing) {
+          window.MCC_NET.myListing().then(function (row) {
+            if (row && row.terms && row.terms.intake) {
+              try { localStorage.setItem("mcc_walk", JSON.stringify({ done: true, t: Date.now() })); } catch (e2) {}
+              if (at === 0) paintWalked();
+            }
+          }).catch(function () {});
+        }
+      }
     })();
   </script>
 </body>

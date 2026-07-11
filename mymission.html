@@ -307,6 +307,10 @@
 
         function paintRoom() {
         var done = (g && g.done) || [];
+        try {
+          if (!g) done = JSON.parse(localStorage.getItem("mcc_gauntlet_done")) || [];
+          else localStorage.setItem("mcc_gauntlet_done", JSON.stringify(done));
+        } catch (eD) {}
         var paid = (g && +g.paid_total) || 0;
         var minted = (g && +g.minted) || 0;
         function stat(n, l) { return '<div class="mm__stat"><b>' + n + "</b><small>" + l + "</small></div>"; }
@@ -418,10 +422,10 @@
           '<a class="btn btn--ghost" href="page.html?who=' + esc(m.slug || "") + '">See your public page</a></div></div>';
 
         html += lockLine("first_track", "rack your first record", "market.html#yours");
-        html += '<div class="mm__card' + lockCls("first_track") + '"><p class="mm__k">The outside platforms</p>' +
-          "<h2>Spotify · Apple · the merge.</h2>" +
-          '<p class="mm__sub" style="margin-top:0.2rem">Your streaming numbers from the outside platforms merge into this room when the ' +
-          "platform keys land — one place for everything your music does, here and out there. Dark until real, never fake.</p></div>";
+        html += '<div class="mm__card"><p class="mm__k">The outside numbers</p>' +
+          "<h2>Every platform, one line.</h2>" +
+          '<div id="mmOutside"><p class="mm__sub" style="margin-top:0.2rem;font-size:0.9rem">Reading your connected platforms\u2026</p></div>' +
+          '<div class="finale__actions" style="margin-top:0.9rem"><a class="btn btn--ghost" href="civic.html">Open THE ONE CHART &#8594;</a></div></div>';
 
         /* the deck rack — BETA. Members get their own pitch decks built from
            their numbers; until it stabilizes it ships behind a plain warning.
@@ -541,6 +545,29 @@
         /* the art: each room wears its generated scene the moment the
            asset exists — the gradient holds the frame until then */
         loadBgs(host);
+        (function fillOutside() {
+          var ho = document.getElementById("mmOutside");
+          var u = window.MCC_AUTH.user();
+          if (!ho || !u) return;
+          S.token().then(function (t) {
+            return fetch(S.url + "/rest/v1/external_signals?owner=eq." + u.id + "&order=at.desc&select=source,kind,value,at&limit=80", {
+              headers: { apikey: S.key, Authorization: "Bearer " + (t || S.key) } });
+          }).then(function (r) { return r && r.ok ? r.json() : null; }).then(function (rows) {
+            if (!rows || !rows.length) {
+              ho.innerHTML = '<p class="mm__sub" style="margin-top:0.2rem;font-size:0.92rem"><b>Nothing connected yet.</b> Connect a platform in the Street Cred Portal — one login each — and its numbers land here the same minute.</p>';
+              return;
+            }
+            var seen = {}, cells = [];
+            rows.forEach(function (gg) {
+              var k = gg.source + " \u00b7 " + (gg.kind || "");
+              if (seen[k]) return;
+              seen[k] = 1;
+              cells.push('<div class="mm__stat"><b style="font-size:1.25rem">' + (+gg.value).toLocaleString() + "</b><small>" + esc(k) + "</small></div>");
+            });
+            ho.innerHTML = '<div class="mm__grid">' + cells.slice(0, 8).join("") + "</div>" +
+              '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.5rem">Latest reading per platform \u00b7 the full history draws on THE ONE CHART.</p>';
+          }).catch(function () {});
+        })();
         track("mymission_view", { done: done.length });
         }
         paintRoom();
