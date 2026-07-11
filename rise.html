@@ -262,6 +262,37 @@
           .map(function (k) { return '<span class="rz__gain">+' + VLABEL[k] + "</span>"; }).join("");
       }
       function paintIntro() {
+        /* CARD IN HAND: a member who already rose never gets re-dealt —
+           the card greets them and hands them back to the house. */
+        var held = null;
+        try { held = JSON.parse(localStorage.getItem("mcc_rise")); } catch (eH) {}
+        if (held && held.arch && held.arch.length) { paintHeld(held); return; }
+        paintFresh();
+      }
+      function paintHeld(held) {
+        try {
+          var c0 = JSON.parse(localStorage.getItem("mcc_cart") || "null");
+          if (c0 && c0.kind === "rise") localStorage.removeItem("mcc_cart");
+        } catch (eC0) {}
+        var names = (held.arch || []).map(function (k) {
+          return ARCH[k] ? ARCH[k].n.replace("The ", "").replace(" Chaser", "") : k;
+        }).join(" × ");
+        var nx = null;
+        try { nx = sessionStorage.getItem("mcc_rope_next"); } catch (eN) {}
+        stage.innerHTML = '<div class="rz__step"><p class="rz__k">Card in hand</p>' +
+          "<h1>You already<br>rose.</h1>" +
+          '<p class="rz__lede" style="font-size:1.1rem">Your E&#10548; Card reads <b>' + esc(names) + "</b>. It opens every door in the house.</p>" +
+          '<div class="finale__actions" style="margin-top:1.4rem">' +
+          (nx && /^[a-z0-9-]+\.html/.test(nx)
+            ? '<a class="btn btn--ruby" href="' + esc(nx) + '">Carry on where you were headed &#8594;</a>'
+            : '<a class="btn btn--ruby" href="welcome.html">Walk in &#8594;</a>') +
+          '<a class="btn btn--ghost" href="profile.html">Your profile</a>' +
+          '<button class="btn btn--ghost" id="rzRedeal" type="button">Re-deal</button></div></div>';
+        var rd = document.getElementById("rzRedeal");
+        if (rd) rd.addEventListener("click", function () { track("rise_redeal", {}); paintFresh(); });
+        track("rise_held", {});
+      }
+      function paintFresh() {
         stage.innerHTML = '<div class="rz__step"><p class="rz__k">Equity Uprise · the signal</p>' +
           "<h1>What makes<br>you rise?</h1>" +
           '<p class="rz__lede" style="font-size:1.15rem">Most people scroll. <b>You didn&rsquo;t.</b><br><br>' +
