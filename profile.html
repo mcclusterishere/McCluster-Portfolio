@@ -102,7 +102,7 @@
           "<h1>Your<br>Profile.</h1>" +
           '<p class="pf__sub"><b>Two sides to every member:</b> the public face the floor sees, and the private rooms where you work. ' +
           "It starts with your card.</p>" +
-          '<div class="pf__card"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 Play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
+          '<div class="pf__card card-call"><p class="pf__sub" style="margin-top:0"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
           '<span style="font-size:0.82rem">It deals your E⤴ Card and shapes everything in here to your path.</span></p></div>' +
           '<div class="pf__card"><div id="pfDoor"></div></div>';
         if (window.MCC_DOOR && window.MCC_DOOR.mount) {
@@ -120,7 +120,7 @@
         var pc = prim && PATH_META[prim] ? PATH_META[prim][1] : "#e8c877";
         var archLine = myPaths.length
           ? '<span class="pf__arch" style="border-color:' + pc + ";color:" + pc + '">🃏 ' + myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ") + "</span>"
-          : '<a class="pf__arch" href="rise.html" style="text-decoration:none">🃏 no card yet — play RISE &#8594;</a>';
+          : '<a class="pf__arch card-call" href="rise.html" style="text-decoration:none">🃏 GET YOUR CARD — play RISE &#8594;</a>';
         /* CHASER WORLDS: the private side opens on YOUR district — the
            banner is a door to your home turf, whoever you are */
         var worldDoor = "";

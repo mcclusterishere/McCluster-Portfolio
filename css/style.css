@@ -4336,3 +4336,13 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   html { scroll-behavior: auto; }
   .btn:active, .btn--ruby:hover, .mp__card:hover, .appbar__tab:hover { transform: none; }
 }
+
+/* THE CARD CALL — a member without an E⤴ Card sees this pulse wherever
+   they stand: the card is the key to everything, get it ASAP. */
+@keyframes mccCardCall {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 200, 119, 0); }
+  50% { box-shadow: 0 0 24px rgba(232, 200, 119, 0.85); border-color: #e8c877; }
+}
+.card-call { border: 1.5px solid rgba(232, 200, 119, 0.55); border-radius: 14px;
+  animation: mccCardCall 1.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .card-call { animation: none; border-color: #e8c877; } }
