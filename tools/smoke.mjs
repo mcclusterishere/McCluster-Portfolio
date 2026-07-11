@@ -43,9 +43,12 @@ async function boot(path, opts = {}) {
   // THE VELVET ROPE: app pages require an E⤴ Card — smoke walks in
   // holding one, like every real member past the landing pages
   await page.goto(B + "/index.html", { waitUntil: "domcontentloaded" });
-  await page.evaluate(() => {
+  await page.evaluate((wantWalk) => {
     try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "create", arch: ["culture", "signal"], v: {}, at: "smoke" })); } catch (e) {}
-  });
+    // THE DOCK WALK is its own tested invariant on the market boot; every
+    // other page walks in already classed, like a member on day two
+    if (!wantWalk) try { localStorage.setItem("mcc_dock_walk", "1"); } catch (e) {}
+  }, !!opts.dockwalk);
   await page.goto(B + path, { waitUntil: "networkidle", timeout: 30000 });
   await page.waitForTimeout(opts.settle || 1200);
   return { page, errors, netCounts };
@@ -83,12 +86,31 @@ function check(name, cond, detail) {
 
 // the market: one shared floor fetch, the first-visit tour, all panes alive
 {
-  const { page, errors, netCounts } = await boot("/market.html", { settle: 1800 });
+  const { page, errors, netCounts } = await boot("/market.html", { settle: 1800, dockwalk: true });
   check("market", errors.length === 0, "page errors: " + errors.join(" | "));
-  // a cold signed-out boot MUST open the tour — it replaced the sandbox
-  // and is a tested invariant now; skipping it frees the pane checks
+  // a cold boot MUST open THE DOCK WALK — the gate that teaches the bar's
+  // grammar (2 taps morph · 1 tap goes · 2 taps back · 3 through); the
+  // whole lesson is driven here so the gate stays a tested invariant
+  const walk = await page.$(".dockwalk");
+  check("market", walk, "the dock walk gate did not appear on a cold boot");
+  if (walk) {
+    await page.click("#dwBtn"); // Show me
+    await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
+    await page.waitForTimeout(500);
+    check("market", await page.$(".appbar--morph"), "double-tap did not morph the bar");
+    await page.click('.appbar [data-dock]'); // one tap on a slot (travel off in class)
+    await page.waitForTimeout(200);
+    await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
+    await page.waitForTimeout(500);
+    check("market", !(await page.$(".appbar--morph")), "double-tap did not bring the main bar back");
+    await page.click("#dwBtn"); // I got it — open the doors
+    await page.waitForTimeout(300);
+    check("market", !(await page.$(".dockwalk")), "the gate did not lift after the lesson");
+  }
+  // …and the tour follows the lesson — it waits its turn behind the walk
+  await page.waitForTimeout(1400);
   const tour = await page.$("#mccTour");
-  check("market", tour, "first-visit tour did not appear");
+  check("market", tour, "first-visit tour did not appear after the dock walk");
   if (tour) {
     await page.click("[data-tour-skip]");
     await page.waitForTimeout(300);
@@ -139,6 +161,7 @@ for (const [from, to] of [["/pay.html?to=x&amt=5", "market.html"], ["/talent.htm
   await page.goto(B + "/index.html", { waitUntil: "domcontentloaded" });
   await page.evaluate(() => {
     try { localStorage.setItem("mcc_rise", JSON.stringify({ entry: "create", arch: ["culture", "signal"], v: {}, at: "smoke" })); } catch (e) {}
+    try { localStorage.setItem("mcc_dock_walk", "1"); } catch (e) {}
   });
   await page.goto(B + from, { waitUntil: "load" });
   await page.waitForTimeout(800);

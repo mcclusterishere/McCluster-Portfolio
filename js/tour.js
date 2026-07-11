@@ -258,7 +258,13 @@
   var done = false;
   try { done = !!localStorage.getItem(DONE_KEY); } catch (e) {}
   var signedIn = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
-  if (forced || (!done && !signedIn)) setTimeout(start, 900);
+  if (forced || (!done && !signedIn)) {
+    // the dock walk teaches the bar first; the tour waits its turn
+    var classed = false;
+    try { classed = !!localStorage.getItem("mcc_dock_walk"); } catch (e) {}
+    if (!forced && !classed) document.addEventListener("mcc:dockwalk-done", function () { setTimeout(start, 700); });
+    else setTimeout(start, 900);
+  }
 
   window.MCC_TOUR = { start: start, end: end };
 })();

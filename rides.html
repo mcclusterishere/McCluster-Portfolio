@@ -50,6 +50,18 @@
     .rd__drv-txt { flex: 1; min-width: 0; }
     .rd__drv-txt b { display: block; font-size: 0.98rem; }
     .rd__drv-txt small { color: var(--cream-dim); font-size: 0.8rem; }
+    /* THE WE WORLD — booking pops up, never navigates away */
+    .we-pop { position: fixed; inset: 0; z-index: 210; display: grid; place-items: end center; }
+    .we-pop[hidden] { display: none; }
+    .we-pop__bg { position: absolute; inset: 0; background: rgba(5,4,3,0.72); backdrop-filter: blur(3px); }
+    .we-pop__card { position: relative; width: min(100% - 1.6rem, 30rem);
+      margin: 0 0 calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 1.2rem);
+      border-radius: 20px; border: 1px solid rgba(255,92,46,0.55); background: rgba(18,14,11,0.97);
+      padding: 1.2rem 1.2rem 1.3rem; box-shadow: 0 18px 60px rgba(0,0,0,0.6);
+      animation: wePopUp 0.3s cubic-bezier(0.2,0.9,0.2,1); }
+    @keyframes wePopUp { from { transform: translateY(26px); opacity: 0; } }
+    .we-pop__acts { display: grid; gap: 0.55rem; margin-top: 1rem; }
+    .we-pop__quote { margin-top: 0.6rem; color: var(--cream-dim); font-size: 0.95rem; line-height: 1.6; }
   </style>
 </head>
 <body class="songpage">
@@ -65,7 +77,7 @@
     <p class="rd__sub"><b>Whip Equipped.</b> Real drivers, one honest meter, no dispatcher eating the night.
       Run the fare before you ride; at the curb you tap the driver's phone and it's paid.</p>
 
-    <div class="rd__card" style="--rc:#ff5c2e">
+    <div class="rd__card" id="meter" style="--rc:#ff5c2e">
       <p class="rd__k">The meter</p>
       <h2>Know the fare before the wheels move.</h2>
       <input class="rd__in" id="weFrom" type="text" placeholder="Pickup — address or place" autocomplete="off">
@@ -85,7 +97,7 @@
       </div>
     </div>
 
-    <div class="rd__card" style="--rc:#c99d45">
+    <div class="rd__card" id="drivers" style="--rc:#c99d45">
       <p class="rd__k">Drivers on the road</p>
       <h2>Ride with somebody real.</h2>
       <div id="weDrivers"><p class="rd__sub" style="font-size:0.92rem;margin-top:0.4rem">Checking who's on the road…</p></div>
@@ -113,6 +125,22 @@
       <div class="rd__row"><b>3 · Pay</b><span>Card or E&#10548; — one price, no fee lines. The deal goes on the record; both sides keep the receipt.</span></div>
     </div>
   </main>
+
+  <!-- THE WE WORLD: the booking sheet — pops up, pops down, never leaves -->
+  <div class="we-pop" id="wePop" hidden>
+    <div class="we-pop__bg" data-wp-close></div>
+    <div class="we-pop__card">
+      <p class="rd__k">Whip Equipped · your ride</p>
+      <h2 style="font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.4rem;margin-top:0.2rem" id="wpName"></h2>
+      <p style="color:var(--cream-dim);font-size:0.88rem" id="wpArea"></p>
+      <p class="we-pop__quote" id="wpQuote"></p>
+      <div class="we-pop__acts">
+        <a class="btn btn--ruby" id="wpPay" href="#">Tap to pay — open the deal desk &#8594;</a>
+        <button class="btn btn--ghost" type="button" data-wp-meter>&#129518; Back to the meter</button>
+        <button class="btn btn--ghost" type="button" data-wp-close>&#8595; Back to the drivers</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
@@ -178,11 +206,36 @@
           $("weTotal").textContent = usd(m.total);
           $("weEup").textContent = m.eup.toLocaleString() + " E⤴";
           $("weTape").classList.add("is-on");
+          LAST = m;
           track("we_meter", { mi: +leg.miles.toFixed(1), min: Math.round(leg.minutes), total: +m.total.toFixed(2) });
         }).catch(function (e) {
           err.textContent = typeof e === "string" ? e : "The meter hiccuped — try again in a second.";
         }).then(function () { btn.disabled = false; btn.innerHTML = "Run the meter &#8594;"; });
       });
+
+      /* THE WE WORLD — booking pops up in place; the page never leaves.
+         Every road back stays open: the meter, the drivers, the backdrop. */
+      var LAST = null;
+      var pop = $("wePop");
+      function popDown() { pop.hidden = true; }
+      function popUp(b) {
+        var slug = b.getAttribute("data-book");
+        $("wpName").textContent = b.getAttribute("data-name") || "Your driver";
+        $("wpArea").textContent = b.getAttribute("data-area") || "On the road";
+        $("wpQuote").innerHTML = LAST
+          ? 'The meter says <b style="color:#ff5c2e">$' + LAST.total.toFixed(2) + '</b> — or <b style="color:#e8c877">' +
+            LAST.eup.toLocaleString() + " E⤴</b>. Confirm the number with your driver at the curb."
+          : "No quote on the tape yet — run the meter first and the fare rides in here.";
+        $("wpPay").href = "market.html?to=" + encodeURIComponent(slug);
+        pop.hidden = false;
+        track("we_book_pop", { slug: slug });
+      }
+      pop.querySelectorAll("[data-wp-close]").forEach(function (x) { x.addEventListener("click", popDown); });
+      pop.querySelector("[data-wp-meter]").addEventListener("click", function () {
+        popDown();
+        var m = $("meter"); if (m) m.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") popDown(); });
 
       /* DRIVERS ON THE ROAD — anyone on Our Street carrying the Rides lane */
       function paintDrivers(floor) {
@@ -200,9 +253,13 @@
           return '<div class="rd__drv">' +
             '<span class="rd__drv-face">' + face + "</span>" +
             '<span class="rd__drv-txt"><b>' + esc(p.name) + "</b><small>" + esc(p.area || p.headline || "On the road") + "</small></span>" +
-            '<a class="btn btn--ghost" style="font-size:0.76rem;padding:0.5em 1.1em" href="market.html?to=' + esc(p.slug || p.id) + '">Book &#8594;</a>' +
+            '<button class="btn btn--ghost" type="button" style="font-size:0.76rem;padding:0.5em 1.1em" data-book="' + esc(p.slug || p.id) +
+            '" data-name="' + esc(p.name) + '" data-area="' + esc(p.area || p.headline || "") + '">Book &#8594;</button>' +
             "</div>";
         }).join("");
+        host.querySelectorAll("[data-book]").forEach(function (b) {
+          b.addEventListener("click", function () { popUp(b); });
+        });
       }
       if (window.MCC_FLOOR) {
         window.MCC_FLOOR.load().then(paintDrivers).catch(function () { paintDrivers({ providers: [] }); });

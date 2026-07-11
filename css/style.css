@@ -4069,6 +4069,34 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
   box-shadow: 0 0 16px rgba(255, 92, 46, 0.65), 0 0 0 1px rgba(244, 239, 230, 0.25);
 }
 
+/* ---- THE MORPHING DOCK: the bar becomes each wing's own menu ---- */
+.dk-ic { font-size: 1.3rem; line-height: 1.75rem; display: block; }
+.appbar--morph .appbar__tab { animation: dockIn 0.28s cubic-bezier(0.2, 0.9, 0.2, 1) backwards; }
+.appbar--morph .appbar__tab:nth-child(2) { animation-delay: 0.04s; }
+.appbar--morph .appbar__tab:nth-child(3) { animation-delay: 0.08s; }
+.appbar--morph .appbar__tab:nth-child(4) { animation-delay: 0.12s; }
+.appbar--morph .appbar__tab:nth-child(5) { animation-delay: 0.16s; }
+@keyframes dockIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.appbar__tab--wing { color: #e8c877; }
+@media (prefers-reduced-motion: reduce) { .appbar--morph .appbar__tab { animation: none; } }
+
+/* ---- THE DOCK WALK: the first-boot lesson; the bar stays live above it ---- */
+.dockwalk { position: fixed; inset: 0; z-index: 199; background: rgba(5, 4, 3, 0.88);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 1rem 1rem calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 2.2rem); }
+.dockwalk__card { max-width: 26rem; width: 100%; border: 1px solid rgba(232, 200, 119, 0.4);
+  border-radius: 18px; background: rgba(18, 14, 11, 0.96); padding: 1.2rem 1.25rem 1.3rem;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6); animation: dockIn 0.35s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.dockwalk__k { font-size: 0.74rem; letter-spacing: 0.26em; text-transform: uppercase; color: #e8c877; font-weight: 800; }
+.dockwalk__card h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.5rem; margin-top: 0.35rem; }
+.dockwalk__card p:not(.dockwalk__k) { color: var(--cream-dim); line-height: 1.65; font-size: 0.95rem; margin-top: 0.4rem; }
+.dockwalk__dots { display: flex; gap: 0.4rem; margin-top: 0.9rem; }
+.dockwalk__dots i { width: 1.6rem; height: 4px; border-radius: 4px; background: rgba(244, 239, 230, 0.18); }
+.dockwalk__dots i.is-lit { background: #e8c877; }
+.dockwalk__btn { margin-top: 1rem; font: inherit; font-weight: 900; letter-spacing: 0.04em; border: 0; cursor: pointer;
+  background: linear-gradient(180deg, #e8c877, #c99d45); color: #0a0807; border-radius: 100px; padding: 0.75em 1.6em; }
+
 /* ---- the tab prompt: sound lives in the center tab now ---- */
 .antiabout__tabprompt { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; margin-top: 1.4rem; text-align: center; }
 .antiabout__tabprompt-txt { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.08em;

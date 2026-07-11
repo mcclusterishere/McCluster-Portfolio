@@ -378,6 +378,163 @@
     document.body.classList.add("has-appbar");
   }
 
+  /* ---------- THE MORPHING DOCK: five mini-apps sharing one bar ----------
+     The grammar (the dock walk below teaches it, once, gated):
+       1 tap  — go, same as ever
+       2 taps — morph: the bar becomes that wing's own menu, no nav
+       1 tap on a morphed slot — go there
+       2 taps on the wing again — the main bar comes back
+       3 taps — all the way through: the morph flashes and you land
+                on the wing's front page */
+  (function () {
+    var dock = document.querySelector(".appbar");
+    if (!dock) return;
+    function ic(g) { return '<span class="dk-ic" aria-hidden="true">' + g + "</span>"; }
+    var WINGS = {
+      we: { home: "rides.html", label: "WE", slots: [
+        ["rides.html#meter", "🧮", "Meter"], ["rides.html#drivers", "🚗", "Drivers"],
+        ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"]] },
+      music: { home: "app.html", label: "Only Us", slots: [
+        ["mccluster.html", "🌇", "Penthouse"], ["index.html", "🎬", "Front door"],
+        ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"]] },
+      market: { home: "market.html", label: "Market", slots: [
+        ["market.html#pay", "💸", "Pay"], ["market.html#yours", "🏦", "Your desk"],
+        ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"]] },
+      spaces: { home: "spaces.html", label: "Spaces", slots: [
+        ["list-your-space.html", "📋", "List yours"], ["ourworld.html", "🗺", "The Game"],
+        ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"]] },
+      profile: { home: "profile.html", label: "Profile", slots: [
+        ["rise.html", "🃏", "Your card"], ["mymission.html", "🎯", "Missions"],
+        ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"]] },
+    };
+    var HOME_BAR = dock.innerHTML;
+    var wingOn = null, taps = 0, tapKey = null, timer = null, practice = false;
+    function emit(n, d) { try { document.dispatchEvent(new CustomEvent(n, { detail: d || {} })); } catch (e) {} }
+    function veilOn() { document.documentElement.classList.add("pt-out"); }
+    function veilOff() { document.documentElement.classList.remove("pt-out"); }
+    function sail(dest, wait) {
+      // the actual departure — practice mode reports instead of leaving
+      if (practice) { veilOff(); emit("mcc:dock-goes", { href: dest }); return; }
+      var url = null;
+      try { url = new URL(dest, location.href); } catch (e) {}
+      if (url && url.pathname === location.pathname && url.search === location.search && url.hash) {
+        veilOff(); revert(); location.hash = url.hash; return;
+      }
+      veilOn();
+      setTimeout(function () { location.href = dest; }, wait);
+    }
+    function morph(key) {
+      var w = WINGS[key];
+      if (!w || wingOn === key) return;
+      veilOff();
+      wingOn = key;
+      dock.classList.add("appbar--morph");
+      dock.innerHTML =
+        '<a class="appbar__tab appbar__tab--wing is-active" href="' + w.home + '" data-appnav="' + key + '">' +
+        (key === "we" ? '<img class="appbar__m" src="assets/img/we-mark.png" alt="">' : ic("⌂")) +
+        "<span>" + w.label + "</span></a>" +
+        w.slots.map(function (s) {
+          return '<a class="appbar__tab appbar__tab--slot" href="' + s[0] + '" data-dock="' + s[0] + '">' +
+            ic(s[1]) + "<span>" + s[2] + "</span></a>";
+        }).join("");
+      emit("mcc:dock-morph", { wing: key });
+    }
+    function revert() {
+      if (!wingOn) return;
+      wingOn = null;
+      dock.classList.remove("appbar--morph");
+      dock.innerHTML = HOME_BAR;
+      emit("mcc:dock-revert", {});
+    }
+    dock.addEventListener("click", function (e) {
+      // a tab that consumed its tap (the Music transport) keeps its meaning
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest("a[data-dock],a[data-appnav]");
+      if (!a || !dock.contains(a)) return;
+      e.preventDefault();
+      var slot = a.getAttribute("data-dock");
+      if (slot) { sail(slot, 460); return; } // morphed slots: one tap goes
+      var key = a.getAttribute("data-appnav");
+      var w = WINGS[key];
+      if (key !== tapKey) { taps = 0; tapKey = key; }
+      taps += 1;
+      clearTimeout(timer);
+      if (taps === 1) {
+        // the veil starts rising NOW, so a lone tap still lands at the same
+        // 480ms film-cut it always did — the double-tap window hides inside
+        // the fade instead of adding latency
+        if (!practice) veilOn();
+        var dest = (wingOn === key && w) ? w.home : a.getAttribute("href");
+        timer = setTimeout(function () { taps = 0; sail(dest, 140); }, 340);
+      } else if (taps === 2) {
+        veilOff();
+        timer = setTimeout(function () {
+          taps = 0;
+          if (wingOn === key) revert();
+          else if (w) morph(key);
+        }, 340);
+      } else {
+        taps = 0;
+        if (w) { morph(key); sail(w.home, 460); } // all the way through
+      }
+    });
+    window.MCC_DOCK = { morph: morph, revert: revert, wing: function () { return wingOn; } };
+
+    /* ---------- THE DOCK WALK: learn the bar, then the doors open ----------
+       First boot on any device, the site waits behind this one lesson.
+       Money doors never wait: direct deal/page deep links and the pay
+       pages skip class — a buyer mid-payment is a guest, not a student. */
+    var WALK_KEY = "mcc_dock_walk";
+    var here2 = location.pathname.split("/").pop() || "index.html";
+    var walked = false;
+    try { walked = !!localStorage.getItem(WALK_KEY); } catch (e) {}
+    var guest = /[?&](to|who|tour|deal)=/.test(location.search) ||
+      { "pay.html": 1, "agreement.html": 1, "claim.html": 1, "page.html": 1,
+        "provider.html": 1, "offline.html": 1 }[here2] === 1;
+    if (walked || guest) return;
+    practice = true;
+    var ov = document.createElement("div");
+    ov.className = "dockwalk";
+    ov.innerHTML = '<div class="dockwalk__card"><p class="dockwalk__k">✦ Lesson one — the bar</p>' +
+      '<h3 id="dwT"></h3><p id="dwB"></p><div class="dockwalk__dots" id="dwD"></div>' +
+      '<button class="dockwalk__btn" id="dwBtn" type="button"></button></div>';
+    document.body.appendChild(ov);
+    var STEPS = [
+      { t: "One bar runs the whole world.", b: "Every tab down there is its own mini-app. Thirty seconds to learn the grammar, then every door opens.", btn: "Show me" },
+      { t: "Double-tap WE.", b: "Two quick taps on the WE tab. Watch what the bar does.", ev: "mcc:dock-morph" },
+      { t: "You're halfway in.", b: "That's WE's own menu — you never left this page. One tap on any slot takes you there. Try one (travel is off during class).", ev: "mcc:dock-goes" },
+      { t: "Double-tap brings it back.", b: "Double-tap the wing again and the main bar returns.", ev: "mcc:dock-revert" },
+      { t: "Triple-tap goes all the way.", b: "Three taps carries you straight into a wing. That's the whole grammar — 1 go · 2 look · 3 through.", btn: "I got it — open the doors" },
+    ];
+    var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
+    var at = -1;
+    function classDone() {
+      practice = false;
+      try { localStorage.setItem(WALK_KEY, "1"); } catch (e) {}
+      revert();
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      emit("mcc:dockwalk-done", {});
+      if (window.MCC_TRACK) window.MCC_TRACK("dockwalk_done", {});
+    }
+    function lesson(i) {
+      at = i;
+      if (i >= STEPS.length) { classDone(); return; }
+      var s = STEPS[i];
+      dwT.textContent = s.t;
+      dwB.textContent = s.b;
+      dwD.innerHTML = STEPS.map(function (_, j) { return '<i class="' + (j <= i ? "is-lit" : "") + '"></i>'; }).join("");
+      if (s.btn) { dwBtn.style.display = ""; dwBtn.textContent = s.btn; return; }
+      dwBtn.style.display = "none";
+      document.addEventListener(s.ev, function h() {
+        document.removeEventListener(s.ev, h);
+        lesson(at + 1);
+      });
+    }
+    dwBtn.addEventListener("click", function () { lesson(at + 1); });
+    if (window.MCC_TRACK) window.MCC_TRACK("dockwalk_start", {});
+    lesson(0);
+  })();
+
   /* ---------- the command door: the workstation is never far ----------
      One floating chip on every page: members land in THEIR Mission
      Control; the desk's own email lands in the full command room. */
