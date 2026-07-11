@@ -262,8 +262,7 @@
                 '<p class="mm__sub card-call" style="padding:0.7rem 0.85rem;margin-bottom:0.7rem"><a href="rise.html" style="color:#e8c877;font-weight:800">🃏 GET YOUR CARD — play WHAT MAKES YOU RISE? (2 min) &#8594;</a><br>' +
                 '<span style="font-size:0.9rem">It deals your E⤴ Card and lines these missions up to your path.</span></p>') +
               "<h2>Your numbers are waking up.</h2>" +
-              '<p class="mm__sub" style="margin-top:0.2rem">T.R.A.P.S. loads with your account — give it a breath and refresh. Meanwhile: <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a></p>' +
-              '<p class="mm__sub" style="font-size:0.84rem">Zeros below after a refresh? Your key may have gone stale — <a href="#" id="mmRekey" style="color:#e8c877">sign back in fresh &#8594;</a></p></div>';
+              '<p class="mm__sub" style="margin-top:0.2rem">Give it a breath and refresh — or <a href="welcome.html" style="color:#e8c877;font-weight:700">finish the walk-in &#8594;</a>. Still zeros? <a href="#" id="mmRekey" style="color:#e8c877">Sign back in fresh &#8594;</a></p></div>';
           m = {};
         }
         /* THE IMPRINT SYNC: the account beats the device. A card claimed
@@ -283,6 +282,9 @@
            once. The set imprints on the account; the desk sorts to the
            UNION of every selected face's lane. */
         var FACES_ON = (imp.faces && imp.faces.length) ? imp.faces.slice() : (imp.face ? [imp.face] : []);
+        /* ONE SORTER: your faces ARE the filter; ⚡ All lanes overrides */
+        var SHOW_ALL = false;
+        try { SHOW_ALL = localStorage.getItem("mcc_mm_pick") === "all"; } catch (eSA) {}
         var roles = (mine && mine.roles) || [];
 
         function laneSetOf(list) {
@@ -292,7 +294,7 @@
         }
         function walkSummary() {
           if (!FACES_ON.length) {
-            return "Tap <b>everything</b> you do — one thing or five. The interview bends to the combination.";
+            return "Tap all that's you — one thing or five.";
           }
           var lanes = laneSetOf(FACES_ON);
           var laneKeys = Object.keys(lanes);
@@ -305,7 +307,7 @@
         function walkCards(list, label) {
           return '<div class="mm__card" style="border-color:rgba(201,157,69,0.5)"><p class="mm__k" style="color:#e8c877">' + label + "</p>" +
             "<h2>What do you do? Pick ALL of it.</h2>" +
-            '<p class="mm__sub" style="margin-top:0.1rem;font-size:0.9rem">Tap every face that\u2019s yours — the desk sorts to the whole combination and it imprints on your <b>account</b>, every device, until you change it up top.</p>' +
+            '<p class="mm__sub" style="margin-top:0.1rem;font-size:0.9rem">It saves to your account — every device, until you change it.</p>' +
             '<div class="mm__facecards">' + list.map(function (rr) {
               var fm = faceMeta(rr);
               var lane = PATH_META[fm[3]] ? PATH_META[fm[3]][0] : fm[3];
@@ -321,11 +323,8 @@
           if (i === -1) FACES_ON.push(rr); else FACES_ON.splice(i, 1);
         }
         function commitFaces() {
-          try {
-            localStorage.setItem("mcc_mm_mode", "path");
-            localStorage.setItem("mcc_mm_pick",
-              FACES_ON.length > 1 ? "mine" : (FACES_ON.length ? faceMeta(FACES_ON[0])[3] : "all"));
-          } catch (e) {}
+          try { localStorage.setItem("mcc_mm_pick", FACES_ON.length ? "mine" : "all"); } catch (e) {}
+          SHOW_ALL = !FACES_ON.length;
           auth("imprint_desk", { p_face: FACES_ON[0] || null, p_paths: null, p_faces: FACES_ON });
           var grew = false;
           FACES_ON.forEach(function (rr) {
@@ -359,7 +358,9 @@
         var fOn = FACES_ON.length ? faceMeta(FACES_ON[0]) : null;
         var railRoles = roles.slice();
         FACES_ON.forEach(function (rr) { if (railRoles.indexOf(rr) === -1) railRoles.push(rr); });
-        var html = notice + '<div class="mm__faces" id="mmFaces">' + railRoles.map(function (rr) {
+        var html = notice + '<div class="mm__faces" id="mmFaces">' +
+          '<button class="mm__face' + (SHOW_ALL || !FACES_ON.length ? " is-on" : "") + '" type="button" data-all style="--fc:#c99d45">⚡ All lanes</button>' +
+          railRoles.map(function (rr) {
           var fm = faceMeta(rr);
           return '<button class="mm__face' + (FACES_ON.indexOf(rr) !== -1 ? " is-on" : "") + '" type="button" data-face="' + esc(rr) +
             '" style="--fc:' + fm[2] + '">' + fm[1] + " " + esc(fm[0]) + "</button>";
@@ -372,8 +373,7 @@
           '<b class="mm__pts">' + pts(paid) + " pts</b>" +
           "<small>of 100,000 — the full run · 1 E⤴︎ = 100 points</small></div></div>";
 
-        html += '<div class="mm__card"><p class="mm__k">T.R.A.P.S. · ' + done.length + "/" + GAUNTLET.length + " missions · " +
-          pts(paid) + ' of 97,500 pts here (+2,500 on <a href="backend.html" style="color:#c99d45">the claim run</a>)</p>' +
+        html += '<div class="mm__card"><p class="mm__k">T.R.A.P.S. · ' + done.length + "/" + GAUNTLET.length + " · " + pts(paid) + " pts</p>" +
           "<h2>Do literally everything. 100,000 points.</h2>" +
           '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.2rem;color:#e8c877"><b>T</b>ake <b>R</b>isk <b>A</b>nd <b>P</b>rosper — <b>S</b>ystem.</p>' +
           '<div class="mm__bar"><i style="width:' + Math.min(100, paid / 975 * 100) + '%"></i></div>' +
@@ -401,13 +401,6 @@
                   pm[0] + " path · " + mi[4] + '</small></span><span class="amt">+' + pts(mi[1]) + " pts</span></a>";
               }).join("") + "</div>";
           })() +
-          /* the filter desk: one row of modes, one row of lanes — scope
-             the checklist by HUSTLE (the six arcs) or by PATH (the
-             eight Chaser lanes from RISE) */
-          '<div class="mm__filts" id="mmModes" style="padding-bottom:0">' +
-          '<button class="mm__filt" type="button" data-mode="arc" style="--fc:#f4efe6">By hustle</button>' +
-          '<button class="mm__filt" type="button" data-mode="path" style="--fc:#e8c877">By path</button></div>' +
-          '<div class="mm__filts" id="mmFilts"></div>' +
           ARCS.map(function (arc) {
             var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
             var got = mine2.reduce(function (a, mi) { return a + (done.indexOf(mi[0]) !== -1 ? mi[1] : 0); }, 0);
@@ -423,9 +416,7 @@
                   '<span class="amt">' + (hit ? "✓ " + pts(mi[1]) + " pts" : "+" + pts(mi[1]) + " pts") + "</span></a>";
               }).join("") + "</div>";
           }).join("") +
-          '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.7rem">Milestones pay the moment this room sees them done — come back after each move. ' +
-          "Points are the score of the granted economy: they spend on Our Street as E⤴︎ and never cash out — like a credit union, " +
-          "the record of how you carry yourself IS the asset.</p></div>";
+          '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.7rem">Missions pay the moment the room sees them done. 1 E⤴︎ = 100 pts — spends on Our Street, never cashes out.</p></div>';
 
         html += lockLine("card_live", "dress your card", "market.html#yours");
         html += '<div class="mm__card' + lockCls("card_live") + '"><p class="mm__k">Your traffic — who came to YOU</p>' +
@@ -435,7 +426,7 @@
           stat((+m.plug_landings || 0).toLocaleString(), "souls your plug brought") +
           stat((+m.rack_plays || 0).toLocaleString(), "plays on your records") +
           stat((+m.followers || 0).toLocaleString(), "supporters") + "</div>" +
-          '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.7rem">Your landing page is <b>page.html?who=' + esc(m.slug || "") + "</b> — every visit counts here, nowhere else.</p></div>";
+          '<p class="mm__sub" style="font-size:0.84rem;margin-top:0.7rem">Your door: <b>page.html?who=' + esc(m.slug || "") + "</b>.</p></div>";
 
         html += lockLine("walk_in", "finish the walk-in", "welcome.html");
         html += '<div class="mm__card' + lockCls("walk_in") + '"><p class="mm__k">Your listing data</p>' +
@@ -467,9 +458,7 @@
           "<h2>Your deck rack.</h2>" +
           '<p class="mm__sub" style="margin-top:0.2rem">Auto-built decks that pitch <b>you</b> — your page, your numbers, your story — ' +
           "ready to present from your phone.</p>" +
-          '<p class="mm__fine" style="margin-top:0.4rem">⚠️ <b>Beta warning:</b> member decks are experimental — layouts and ' +
-          "numbers may shift while we tune them, and a deck is only as current as last night's sweep. Don't quote a beta deck in a " +
-          "contract; the record on your desk is the source of truth." +
+          '<p class="mm__fine" style="margin-top:0.4rem">⚠️ <b>Beta</b> — numbers shift while we tune. Your desk record is the source of truth.' +
           (ADMIN ? ' <a href="mission.html" style="color:#c99d45">Your full rack lives in Mission Control →</a>' : " Your rack unlocks as the beta opens.") + "</p></div>";
 
         host.innerHTML = html;
@@ -496,6 +485,12 @@
             loadBgs(w);
           }
           if (rail) rail.addEventListener("click", function (e) {
+            if (e.target.closest("[data-all]")) {
+              SHOW_ALL = !SHOW_ALL;
+              try { localStorage.setItem("mcc_mm_pick", SHOW_ALL ? "all" : "mine"); } catch (eA) {}
+              paintRoom();
+              return;
+            }
             if (e.target.closest(".is-add")) {
               paintWalk(Object.keys(FACES), "Change your faces — it saves to your account");
               return;
@@ -507,77 +502,19 @@
             paintWalk(Object.keys(FACES).filter(function (k) { return !roles.length || roles.indexOf(k) !== -1; }).length && roles.length ? roles.slice() : Object.keys(FACES), "First, your faces");
           }
         })();
-        /* THE FILTER DESK: two modes, one law. BY HUSTLE scopes whole
-           arcs; BY PATH scopes individual missions to a Chaser lane.
-           Both picks survive the visit. */
+        /* ONE SORTER: the faces up top ARE the filter — their lanes
+           light the board; ⚡ All lanes shows everything. One control. */
         (function () {
-          var modes = $("mmModes"), bar = $("mmFilts");
-          if (!modes || !bar) return;
-          var mode = "arc", pick = "all";
-          try {
-            /* CHASER WORLDS: a card holder's first visit opens on THEIR
-               path — universal, whoever is holding the card. A saved
-               choice always wins over the default. */
-            var rz = null;
-            try { rz = JSON.parse(localStorage.getItem("mcc_rise")); } catch (e2) {}
-            var prim = rz && rz.arch && rz.arch[0];
-            var fLane = FACES_ON.length > 1 ? "mine" : (FACES_ON.length ? faceMeta(FACES_ON[0])[3] : null);
-            mode = localStorage.getItem("mcc_mm_mode") || (fLane || prim ? "path" : "arc");
-            pick = localStorage.getItem("mcc_mm_pick") || (mode === "path" ? (fLane || prim || "all") : "all");
-          } catch (e) {}
-          function chipsFor(m) {
-            if (m === "arc") {
-              return '<button class="mm__filt" type="button" data-f="all" style="--fc:#c99d45">⚡ All hustles</button>' +
-                ARCS.map(function (arc) {
-                  var mine2 = GAUNTLET.filter(function (mi) { return mi[5] === arc[0]; });
-                  var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
-                  return '<button class="mm__filt" type="button" data-f="' + arc[0] + '" style="--fc:' + ARC_C[arc[0]] + '">' +
-                    arc[1] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
-                }).join("");
-            }
-            return '<button class="mm__filt" type="button" data-f="all" style="--fc:#e8c877">⚡ All paths</button>' +
-              (FACES_ON.length ? '<button class="mm__filt" type="button" data-f="mine" style="--fc:#e8c877">★ My lanes</button>' : "") +
-              Object.keys(PATH_META).map(function (p) {
-                var mine2 = GAUNTLET.filter(function (mi) { return PATH_OF[mi[0]] === p; });
-                var hitN = mine2.filter(function (mi) { return done.indexOf(mi[0]) !== -1; }).length;
-                return '<button class="mm__filt" type="button" data-f="' + p + '" style="--fc:' + PATH_META[p][1] + '">' +
-                  PATH_META[p][0] + " <i>" + hitN + "/" + mine2.length + "</i></button>";
-              }).join("");
-          }
-          function apply() {
-            modes.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-mode") === mode); });
-            bar.innerHTML = chipsFor(mode);
-            bar.querySelectorAll(".mm__filt").forEach(function (b) { b.classList.toggle("is-on", b.getAttribute("data-f") === pick); });
-            host.querySelectorAll(".mm__arcwrap").forEach(function (w) {
-              if (mode === "arc") {
-                w.querySelectorAll(".mm__mi").forEach(function (mi) { mi.style.display = ""; });
-                w.classList.toggle("is-hid", pick !== "all" && w.getAttribute("data-arcw") !== pick);
-              } else {
-                var vis = 0;
-                var lanesMine = laneSetOf(FACES_ON);
-                w.querySelectorAll(".mm__mi").forEach(function (mi) {
-                  var mp = mi.getAttribute("data-path");
-                  var on = pick === "all" || (pick === "mine" ? !!lanesMine[mp] : mp === pick);
-                  mi.style.display = on ? "" : "none"; if (on) vis++;
-                });
-                w.classList.toggle("is-hid", vis === 0);
-              }
+          var lanesMine = laneSetOf(FACES_ON);
+          var showAll = SHOW_ALL || !FACES_ON.length;
+          host.querySelectorAll(".mm__arcwrap").forEach(function (w) {
+            var vis = 0;
+            w.querySelectorAll(".mm__mi").forEach(function (mi) {
+              var on = showAll || !!lanesMine[mi.getAttribute("data-path")];
+              mi.style.display = on ? "" : "none"; if (on) vis++;
             });
-          }
-          function save() {
-            try { localStorage.setItem("mcc_mm_mode", mode); localStorage.setItem("mcc_mm_pick", pick); } catch (e) {}
-          }
-          modes.addEventListener("click", function (e) {
-            var b = e.target.closest("[data-mode]"); if (!b) return;
-            mode = b.getAttribute("data-mode"); pick = "all"; save(); apply();
-            track("mm_filter_mode", { mode: mode });
+            w.classList.toggle("is-hid", vis === 0);
           });
-          bar.addEventListener("click", function (e) {
-            var b = e.target.closest("[data-f]"); if (!b) return;
-            pick = b.getAttribute("data-f"); save(); apply();
-            track("mm_filter", { mode: mode, pick: pick });
-          });
-          apply();
         })();
         /* the art: each room wears its generated scene the moment the
            asset exists — the gradient holds the frame until then */
