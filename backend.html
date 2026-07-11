@@ -113,12 +113,40 @@
   <script src="js/mgrind.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
   <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/distribution.js?v=__STAMP__"></script>
+  <script src="js/distro-quiz.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
       function $(id) { return document.getElementById(id); }
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
+
+      /* PERSONAL BY LAW: the distributor door wears YOUR distributor's
+         name (UnitedMasters greets a UnitedMasters artist — no more
+         one-brand default). No interview answered = the door is
+         LOCKED and the three questions open right here on the card. */
+      function personalize() {
+        var gen = null, idx = -1;
+        DATA.platforms.forEach(function (p, i) { if (p.id === "distributor") { gen = p; idx = i; } });
+        var already = DATA.platforms.filter(function (p) { return String(p.id).indexOf("distributor-") === 0; });
+        if (!gen && !already.length) return Promise.resolve();
+        return window.MCC_DIST.registry().then(function (REG) {
+          var mine = window.MCC_DQUIZ.mine(REG);
+          if (!mine.length) { if (gen) gen.locked = true; return; }
+          if (!gen) return;   // already personalized this load
+          var entries = mine.map(function (d) {
+            return { id: "distributor-" + d.id, tier: "money",
+              name: "Your distributor — " + d.name, why: gen.why,
+              claim: { label: "Log into " + d.name + "'s reports & bank", url: d.reports || "", pts: 15 },
+              export: gen.export };
+          });
+          // old generic checkmarks carry over to the first personal door
+          if (done["distributor:claim"]) { done[entries[0].id + ":claim"] = true; delete done["distributor:claim"]; save(); }
+          if (done["distributor:export"]) { done[entries[0].id + ":export"] = true; delete done["distributor:export"]; save(); }
+          DATA.platforms.splice.apply(DATA.platforms, [idx, 1].concat(entries));
+        }).catch(function () {});
+      }
 
       var DATA = null;
       var K = "mcc_claimrun_v1";
@@ -217,6 +245,14 @@
             '<small data-tiercount="' + tier.id + '"></small></div>' +
             '<p class="cr__tier-d">' + esc(tier.desc) + "</p>";
           plats.forEach(function (p) {
+            if (p.locked) {
+              html += '<article class="cr__card" data-plat="' + p.id + '"><h3>🔒 Your distributor</h3>' +
+                '<p class="cr__why">' + esc(p.why) + "</p>" +
+                '<p class="cr__why" style="color:#e8c877">Locked — the desk doesn&rsquo;t know who pays you yet. Three questions open it, right here.</p>' +
+                '<button class="btn btn--ruby" type="button" data-unlockdistro style="margin-top:0.6rem">Answer 3 questions — unlock</button>' +
+                '<div data-quizslot style="margin-top:0.8rem"></div></article>';
+              return;
+            }
             html += '<article class="cr__card" data-plat="' + p.id + '"><h3>' + esc(p.name) +
               ' <span class="cr__done" data-donetag="' + p.id + '"></span></h3>' +
               '<p class="cr__why">' + esc(p.why) + "</p>" +
@@ -235,6 +271,12 @@
           html += "</section>";
         });
         $("crTiers").innerHTML = html;
+        var ub = $("crTiers").querySelector("[data-unlockdistro]");
+        if (ub) ub.addEventListener("click", function () {
+          ub.style.display = "none";
+          window.MCC_DQUIZ.mount($("crTiers").querySelector("[data-quizslot]"), { from: "claimrun",
+            onDone: function () { personalize().then(function () { render(); paintHUD(); }); } });
+        });
         refreshCards();
         $("crTiers").querySelectorAll(".cr__check").forEach(function (b) {
           b.addEventListener("click", function () {
@@ -262,9 +304,10 @@
           var ms = moves(p);
           var got = ms.filter(function (m) { return done[p.id + ":" + m[0]]; }).length;
           var card = document.querySelector('[data-plat="' + p.id + '"]');
-          if (card) {
+          var tag = card && card.querySelector("[data-donetag]");
+          if (card && tag) {
             card.classList.toggle("is-done", got === ms.length);
-            card.querySelector("[data-donetag]").textContent = got === ms.length ? "✓ owned" : got ? got + "/" + ms.length : "";
+            tag.textContent = got === ms.length ? "✓ owned" : got ? got + "/" + ms.length : "";
           }
         });
         DATA.tiers.forEach(function (tier) {
@@ -279,7 +322,8 @@
 
       fetch("data/claims.json", { cache: "no-cache" })
         .then(function (r) { return r.json(); })
-        .then(function (d) { DATA = d; render(); paintHUD(); track("claimrun_view", {}); })
+        .then(function (d) { DATA = d; return personalize(); })
+        .then(function () { render(); paintHUD(); track("claimrun_view", {}); })
         .catch(function () { $("crTiers").innerHTML = '<p class="cr__why">The registry didn&rsquo;t load — refresh.</p>'; });
     })();
   </script>

@@ -22,7 +22,7 @@
       turf: ["app.html", "The Music House", "Your home turf: the records, the heat, the registry."] },
     justice: { name: "The Justice Chaser", world: "The Justice Steps", ic: "⚖️", color: "#8b5cf6",
       line: "You answer unequal power with pressure, policy and receipts.",
-      turf: ["civic.html", "Civic HQ", "Your home turf: your card, your vote, the public record."] },
+      turf: ["civic.html", "The Street Cred Portal", "Your home turf: reputation in the open — your card, your vote, the record."] },
     access: { name: "The Access Chaser", world: "The Access Row", ic: "🗝", color: "#a3e635",
       line: "You connect people to rooms, tools and entry points.",
       turf: ["spaces.html", "The Spaces", "Your home turf: every door in the city and who it opens for."] },

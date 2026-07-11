@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>The Civic HQ · Equity Uprise</title>
-  <meta name="description" content="Equity Uprise's Civic HQ: fan accounts and policy accounts, the moving docket of live state bills, civic missions, and a younger-voter activation engine — run in the open.">
+  <title>The Street Cred Portal · Equity Uprise</title>
+  <meta name="description" content="The Street Cred Portal: your street credit score in the open, the accounts that verify you, your civic card and vote — the reputation engine of Equity Uprise, run in public.">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -48,8 +48,9 @@
   </header>
 
   <main class="cv">
-    <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · the civic wing</p>
-    <h1>The Civic<br>HQ.</h1>
+    <p class="kicker"><img class="kicker__mark" src="assets/img/equity-uprise-logo.webp" alt="" style="filter:none"> Equity Uprise · reputation, in the open</p>
+    <h1>The Street<br>Cred Portal.</h1>
+    <div id="svCred"></div>
     <p class="cv__sub"><b>Two ways to ride:</b> a <b>fan account</b> is here for the music and the movement — a
       <b>policy account</b> is here to work: state law, federal law, trade policy, and the local organizing that
       actually moves them. This is younger-voter activation run like everything else on this floor — as a game
@@ -130,6 +131,37 @@
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
       var S = window.MCC_SUPA;
+
+      /* THE CREDIT LINE: the portal opens on YOUR street credit —
+         the number, what it pays into your price, and how to raise
+         it. Signed out it stays honest: an invitation, never a fake. */
+      (function () {
+        var host = $("svCred");
+        if (!host) return;
+        var authed0 = window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user();
+        function cred(n, l, col) {
+          return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:12px;padding:0.7rem;text-align:center;flex:1;min-width:96px">' +
+            '<b style="display:block;font-size:1.35rem;font-variant-numeric:tabular-nums;color:' + (col || "#2fbf71") + '">' + n + "</b>" +
+            '<small style="color:rgba(244,239,230,0.55);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
+        }
+        if (!authed0) {
+          host.innerHTML = '<p class="cv__sub" style="margin-top:0.6rem">Your street credit score lives here — earned by showing up, verified accounts, votes and receipts. <a href="market.html#yours" style="color:#e8c877;font-weight:800">Open your account &#8594;</a> and the number appears.</p>';
+          return;
+        }
+        S.token().then(function (t) {
+          return fetch(S.url + "/rest/v1/rpc/my_score", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" });
+        }).then(function (r) { return r.ok ? r.json() : null; }).then(function (sc) {
+          if (!sc) return;
+          var trust = sc.game && sc.game.trust != null ? Math.round(+sc.game.trust) : null;
+          host.innerHTML = '<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.9rem">' +
+            cred(sc.score != null ? sc.score + " / 1000" : "—", "street credit score") +
+            cred(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "your price — the person", "#e8c877") +
+            (trust != null ? cred(trust.toLocaleString() + " pts", "credit paying your price", "#e8c877") : "") +
+            "</div>" +
+            '<p class="cv__sub" style="font-size:0.82rem;margin-top:0.5rem">Every point of street credit pays 2 game points into your price. Raise it below: connect accounts, file your card, vote, keep showing up.</p>';
+        }).catch(function () {});
+      })();
 
       /* ---- the handshake: connect accounts by logging in ----
          Same rail as the desk (oauth-connect): /start returns the
