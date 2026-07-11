@@ -2840,13 +2840,40 @@
           pl.className = "mp__card";
           pl.style.cssText = "border-color:rgba(255,0,0,0.35)";
           pl.innerHTML = '<span class="mp__lblx" style="color:#ff6b6b">Claim your plays — the outside numbers</span>' +
-            '<p class="mp__note" style="margin:0.3rem 0 0.6rem">Paste your links once. The machine pulls your <b>real</b> YouTube views and subscribers and Spotify followers every night at 8:17, prints them on your ticker sheet, and feeds your price. Nothing manual, nothing invented.</p>' +
+            '<p class="mp__note" style="margin:0.3rem 0 0.6rem"><b>One tap:</b> log in at the platform and your account connects itself — banked, <b style="color:#2fbf71">verified on the spot</b>, and your real numbers file immediately.</p>' +
+            '<div style="display:grid;gap:0.45rem;margin-bottom:0.7rem">' +
+            '<button class="btn btn--xc" data-oauth="youtube" style="justify-content:center;background:linear-gradient(180deg,#ff4e45,#c4302b);color:#fff">▶ Connect YouTube — log in &amp; done</button>' +
+            '<button class="btn btn--xc" data-oauth="spotify" style="justify-content:center;background:linear-gradient(180deg,#1ed760,#169c46);color:#0a0807">● Connect Spotify — log in &amp; done</button></div>' +
+            '<p class="mp__note" style="margin:0 0 0.6rem">Or paste links by hand — same machine, same nightly 8:17 sweep:</p>' +
             '<input class="mk__in" data-pk="youtube_channel" placeholder="YouTube channel link (youtube.com/@you or /channel/…)" style="margin-bottom:0.45rem">' +
             '<input class="mk__in" data-pk="spotify_artist" placeholder="Spotify artist link (open.spotify.com/artist/…)" style="margin-bottom:0.45rem">' +
             '<input class="mk__in" data-pk="lastfm_user" placeholder="Last.fm username (optional)" style="margin-bottom:0.6rem">' +
             '<button class="btn btn--xc" data-pgo="1" style="width:100%;justify-content:center">Claim my plays — start tracking</button>' +
             '<p class="mp__note" data-pmsg="1" style="min-height:1.2em;margin-top:0.5rem"></p>';
           body.appendChild(pl);
+          // the handshake: /start hands back the provider's login door
+          pl.querySelectorAll("[data-oauth]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var prov = b.getAttribute("data-oauth");
+              b.disabled = true; b.textContent = "Opening " + prov + "…";
+              window.MCC_SUPA.token().then(function (t) {
+                return fetch(window.MCC_SUPA.url + "/functions/v1/oauth-connect/start?provider=" + prov + "&t=" + encodeURIComponent(t || ""), {
+                  headers: { apikey: window.MCC_SUPA.key } });
+              }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+                if (j && j.url) { track("oauth_start", { p: prov }); location.href = j.url; }
+                else { b.disabled = false; b.textContent = "Connect " + prov + " — the rail is being armed"; }
+              }).catch(function () { b.disabled = false; b.textContent = "Connect " + prov + " — try again"; });
+            });
+          });
+          // coming back from the handshake: say it landed
+          var conn = new URLSearchParams(location.search).get("connected");
+          if (conn) {
+            var pmsg = pl.querySelector("[data-pmsg]");
+            if (pmsg) pmsg.innerHTML = /failed|error/.test(location.search + conn)
+              ? "The handshake slipped — try the connect button again."
+              : "<b style='color:#00c805'>✓ Connected: " + esc(conn.replace(":", " — ")) + ".</b> Verified, banked, and your real numbers just filed.";
+            try { history.replaceState(null, "", location.pathname + "#yours"); } catch (e) {}
+          }
           pl.querySelector("[data-pgo]").addEventListener("click", function () {
             var jobs = [], msg = pl.querySelector("[data-pmsg]");
             pl.querySelectorAll("[data-pk]").forEach(function (inp) {
