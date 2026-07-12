@@ -426,9 +426,9 @@
     if (!dock) return;
     function ic(g) { return '<span class="dk-ic" aria-hidden="true">' + g + "</span>"; }
 
-    /* THE MISSION TAB: command rides the bar like everything else.
-       The admin's tab lands in Mission Control; every member's lands
-       in their own mission desk — same seat, same grammar. */
+    /* MISSION rides inside the Profile wing (not the main bar): the
+       admin's slot lands in Mission Control, every member's in their
+       own mission desk — same seat in the sub-menu, two homes. */
     var ADM = false;
     try {
       var s0 = JSON.parse(localStorage.getItem("mccdb_session") || "null");
@@ -439,43 +439,22 @@
       }
     } catch (e) {}
     var MISSION_HOME = ADM ? "mission.html" : "mymission.html";
-    if (!dock.querySelector('[data-appnav="mission"]')) {
-      var hereM = location.pathname.split("/").pop() || "index.html";
-      var mtab = document.createElement("a");
-      mtab.className = "appbar__tab" + (hereM === MISSION_HOME ? " is-active" : "");
-      mtab.href = MISSION_HOME;
-      mtab.setAttribute("data-appnav", "mission");
-      mtab.innerHTML = ic("🎛") + "<span>Mission</span>";
-      dock.insertBefore(mtab, dock.querySelector('[data-appnav="profile"]'));
-    }
     var WINGS = {
       we: { home: "rides.html", label: "WE", slots: [
         ["rides.html#meter", "🧮", "Meter"], ["rides.html#drivers", "🚗", "Drivers"],
-        ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"],
-        ["market.html#yours", "🏦", "Your desk"]] },
+        ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"]] },
       music: { home: "app.html", label: "Only Us", slots: [
         ["mccluster.html", "🌇", "Penthouse"], ["index.html", "🎬", "Front door"],
-        ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"],
-        ["market.html#wire", "💬", "The Wire"]] },
+        ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"]] },
       market: { home: "market.html", label: "Market", slots: [
         ["market.html#pay", "💸", "Pay"], ["market.html#yours", "🏦", "Your desk"],
-        ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"],
-        ["hire.html", "🎥", "Hire"]] },
+        ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"]] },
       spaces: { home: "spaces.html", label: "Spaces", slots: [
         ["list-your-space.html", "📋", "List yours"], ["ourworld.html", "🗺", "The Game"],
-        ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"],
-        ["market.html#pay", "💸", "Pay"]] },
-      mission: { home: MISSION_HOME, label: "Mission", slots: ADM
-        ? [["mission.html", "🎛", "The room"], ["mymission.html", "🎯", "My missions"],
-           ["market.html#wire", "💬", "The Wire"], ["shelf.html", "🥇", "Gold Shelf"],
-           ["civic.html", "🪪", "Street cred"]]
-        : [["mymission.html", "🎯", "Missions"], ["rise.html", "🃏", "Your card"],
-           ["shelf.html", "🥇", "Gold Shelf"], ["civic.html", "🪪", "Street cred"],
-           ["market.html#yours", "🏦", "Your desk"]] },
+        ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"]] },
       profile: { home: "profile.html", label: "Profile", slots: [
-        ["rise.html", "🃏", "Your card"], ["mymission.html", "🎯", "Missions"],
-        ["civic.html", "🪪", "Street cred"], ["index.html", "🚪", "Front door"],
-        ["shelf.html", "🥇", "Gold Shelf"]] },
+        [MISSION_HOME, "🎯", "Mission"], ["market.html#yours", "✉️", "Messages"],
+        ["rise.html", "🃏", "Your card"], ["index.html", "🚪", "Front door"]] },
     };
     /* THE METER LAW + the geo desks — ONE source, shared by the rides
        page and the meter tool the dock pops on any page */
@@ -537,7 +516,7 @@
       "distribution.html": ["🎛", "Distribution", "The locker: the identifiers your work pays through, seals, earnings."],
       "market.html": ["🏪", "Our Street", "The floor: every member a ticker, every deal on the record, the Wire running through it."],
       "market.html#pay": ["💸", "The pay desk", "Punch a number, tap a phone, the deal goes on the record. Card or E⤴ — one price."],
-      "market.html#yours": ["🏦", "Your desk", "Your listing, wallet, deals and payouts — the private side of your ticker."],
+      "market.html#yours": ["✉️", "Your desk & messages", "Your listing, wallet, deals — and the bell, where notes from the desk and deal news land."],
       "market.html#wire": ["💬", "The Wire", "One feed for all of Our Street — drops, reactions, receipts."],
       "shelf.html": ["🥇", "The Gold Shelf", "What gold is FOR: burn granted E⤴ with the house on reach, polish and partner deals."],
       "spaces.html": ["🏠", "Spaces", "Rooms, studios and stages you can actually book — the city's inventory."],
@@ -702,7 +681,7 @@
       setTimeout(function () { if (peekAway) document.addEventListener("pointerdown", peekAway, true); }, 0);
       emit("mcc:dock-peek", { dest: dest });
     }
-    var ORDER = ["we", "music", "market", "spaces", "mission", "profile"];
+    var ORDER = ["we", "music", "market", "spaces", "profile"];
     function morph(key) {
       var w = WINGS[key];
       if (!w || wingOn === key) return;
