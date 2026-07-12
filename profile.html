@@ -127,6 +127,12 @@
         var prim = CH && CH.primary && CH.primary();
         var cc = prim && PATH_META[prim] ? PATH_META[prim][1] : "#c99d45";
         var links = (mine && mine.terms && mine.terms.links) || {};
+        /* THE PRESSED MIRROR: once a member presses their thing into the
+           card, the mirror folds away — a dressed card (or the pressed
+           flag) means the editor waits behind one door until needed */
+        var pressed = false;
+        try { pressed = !!localStorage.getItem("mcc_pressed"); } catch (e) {}
+        if (!pressed && mine && (mine.headline || mine.photo)) pressed = true;
         var pathsLine = myPaths.length
           ? myPaths.map(function (p) { return PATH_META[p] ? PATH_META[p][0] : p; }).join(" × ")
           : "";
@@ -150,7 +156,15 @@
           '<span class="crd__n"><b id="pfPts">—</b><small>game points</small></span>' +
           "</div></div>" +
 
-          '<div class="pf__card">' +
+          '<div class="pf__card" id="pfStreet">' +
+          '<p class="pf__lab" style="margin-top:0">Street credit — the number behind the card</p>' +
+          '<div id="pfStreetNums" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.6rem"></div>' +
+          '<p class="pf__sub" style="font-size:0.9rem;margin-top:0.55rem">Earned by showing up: clean deals, verified accounts, votes, receipts. Every point pays 2 game points into your price.</p>' +
+          '<a class="pf__door" href="civic.html" style="--dc:#2fbf71;margin-top:0.6rem"><span class="ic">🪪</span><span style="flex:1"><b>The Street Cred Portal</b><small>Raise it: connect accounts, file your card, vote, keep showing up.</small></span><span class="go">&#8594;</span></a>' +
+          "</div>" +
+
+          (pressed ? '<div class="pf__doors" style="margin-top:1rem"><button class="pf__door" type="button" id="pfMirrorOpen" style="--dc:#45b6ff"><span class="ic">🪞</span><span style="flex:1"><b>The mirror</b><small>Your press is in the card. Open this only when something changes.</small></span><span class="go">&#8594;</span></button></div>' : "") +
+          '<div class="pf__card" id="pfMirror"' + (pressed ? " hidden" : "") + ">" +
           '<p class="pf__lab" style="margin-top:0">The mirror — what the card says</p>' +
           '<label class="pf__lab" for="pfEName">Name on the card</label><input class="pf__in" id="pfEName" value="' + esc((mine && mine.name) || "") + '" placeholder="Your name">' +
           '<label class="pf__lab" for="pfEHead">One line — what you do</label><input class="pf__in" id="pfEHead" value="' + esc((mine && mine.headline) || "") + '" placeholder="Photographer · producer · driver…">' +
@@ -171,7 +185,7 @@
             ? '<a class="pf__door" href="page.html?who=' + esc(slug) + '" style="--dc:#e8c877"><span class="ic">📄</span><span style="flex:1"><b>Your public page</b><small>What any visitor sees when your card gets shared.</small></span><span class="go">&#8594;</span></a>' +
               '<button class="pf__door" type="button" id="pfShare" style="--dc:#45b6ff"><span class="ic">🔗</span><span style="flex:1"><b>Share your card</b><small id="pfShareNote">One link carries all of it.</small></span><span class="go">&#8594;</span></button>'
             : '<a class="pf__door" href="welcome.html" style="--dc:#e8c877"><span class="ic">🚪</span><span style="flex:1"><b>Finish the walk-in</b><small>Your public page, ticker and chart go up together.</small></span><span class="go">&#8594;</span></a>') +
-          '<a class="pf__door" href="mccluster.html" style="--dc:#c99d45"><span class="ic">🌇</span><span style="flex:1"><b>The Penthouse</b><small>What a built-out card looks like — the desk’s own floor.</small></span><span class="go">&#8594;</span></a>' +
+          '<a class="pf__door" href="index.html" style="--dc:#c99d45"><span class="ic">🌇</span><span style="flex:1"><b>The Penthouse</b><small>What a built-out card looks like — the desk’s own floor.</small></span><span class="go">&#8594;</span></a>' +
           (ADMIN ? '<a class="pf__door" href="mission.html" style="--dc:#e5383b"><span class="ic">🎛</span><span style="flex:1"><b>Mission Control</b><small>The whole system — the admin desk.</small></span><span class="go">&#8594;</span></a>' : "") +
           "</div>" +
           '<button class="pf__out" id="pfSignOut" type="button">Sign out</button>';
@@ -182,6 +196,17 @@
           if (sc.price != null) $("pfPrice").textContent = "$" + (+sc.price).toFixed(2);
           if (sc.points != null) $("pfPts").textContent = Math.round(+sc.points).toLocaleString();
           if (sc.score != null) $("pfCred").textContent = sc.score;
+          /* the street panel: the same read the portal shows, in the room */
+          function cel(n, l, col) {
+            return '<div style="border:1px solid rgba(244,239,230,0.13);border-radius:12px;padding:0.65rem;text-align:center;flex:1;min-width:88px">' +
+              '<b style="display:block;font-size:1.25rem;font-variant-numeric:tabular-nums;color:' + (col || "#2fbf71") + '">' + n + "</b>" +
+              '<small style="color:rgba(244,239,230,0.7);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase">' + l + "</small></div>";
+          }
+          var trust = sc.game && sc.game.trust != null ? Math.round(+sc.game.trust) : null;
+          $("pfStreetNums").innerHTML =
+            cel(sc.score != null ? sc.score + " / 1000" : "—", "street credit") +
+            cel(sc.price != null ? "$" + (+sc.price).toFixed(2) : "—", "your price", "#e8c877") +
+            (trust != null ? cel(trust.toLocaleString() + " pts", "credit paying your price", "#e8c877") : "");
         });
         rpc("my_colors").then(function (c) {
           if (!c) return;
@@ -210,6 +235,7 @@
             terms: terms,
           };
           window.MCC_NET.saveListing(fields).then(function (row) {
+            try { localStorage.setItem("mcc_pressed", "1"); } catch (e) {}
             $("pfMsg").textContent = "✓ Pressed — the card remembers, and Our Street reads it.";
             $("pfCardName").innerHTML = esc(fields.name) + (tick ? "<span>" + esc(tick) + "</span>" : "");
             if (window.MCC_FLOOR && window.MCC_FLOOR.invalidate) window.MCC_FLOOR.invalidate();
@@ -219,6 +245,13 @@
             $("pfMsg").style.color = "#ff5000";
             $("pfMsg").textContent = "The press slipped — try again.";
           }).then(function () { btn.disabled = false; btn.innerHTML = "Press it into the card &#8594;"; });
+        });
+
+        var mo = $("pfMirrorOpen");
+        if (mo) mo.addEventListener("click", function () {
+          $("pfMirror").hidden = false;
+          mo.parentNode.removeChild(mo);
+          $("pfEName").focus();
         });
 
         var sh = $("pfShare");

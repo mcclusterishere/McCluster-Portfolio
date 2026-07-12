@@ -3,21 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>McCluster $MCC — The Penthouse · McCluster Corp &amp; Equity Uprise</title>
-  <meta name="description" content="The Penthouse IS the front door: Matthew McCluster — $MCC live on the Equity Uprise floor. Creative direction, photography, web, music, and the public record, all trading under one ticker. Deal with me on the record.">
+  <title>Matthew McCluster — Creative Director, Founder of McCluster Corp &amp; Equity Uprise</title>
+  <meta name="description" content="Matthew McCluster — creative director, photographer, web designer, and songwriter; founder of McCluster Corp and the Equity Uprise civic fellowship, recognized by the State of Georgia and the City of Bridgeport. Owner of Whip Equipped LLC. Portfolio, music, and public-record work.">
   <meta name="author" content="Matthew McCluster">
   <meta name="keywords" content="McCluster, Matthew McCluster, McCluster Corp, Equity Uprise, Whip Equipped, creative director Connecticut, Bridgeport, Acworth Georgia, civic fellowship, Docket 516">
   <link rel="canonical" href="https://mcclusterishere.github.io/McCluster-Portfolio/">
   <link rel="icon" type="image/png" href="assets/img/m-mark.png">
   <script>
-    /* MEMBER OF THE MONTH — the landing takeover still rules the front
-       door. When data/motm.json names a member, the whole app's front
-       door becomes their fan page until the next name goes in. ?stay=
-       always reaches the Penthouse. The original cinematic opener is
-       preserved untouched at front-door.html. */
+    /* MEMBER OF THE MONTH — the landing takeover. When data/motm.json names
+       a member, the whole app's front door becomes their fan page until the
+       next name goes in. ?stay=1 (and the motm page's own "full site" link)
+       always reaches this original landing. */
     (function () {
       try {
-        if (/[?&]stay=/.test(location.search)) return;
+        if (/[?&]stay=1/.test(location.search)) return;
         fetch("data/motm.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (m) {
           if (m && m.slug) location.replace("motm.html?who=" + encodeURIComponent(m.slug));
         }).catch(function () {});
@@ -35,7 +34,7 @@
   <!-- Open Graph / social share -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="McCluster">
-  <meta property="og:title" content="McCluster $MCC — The Penthouse on the Equity Uprise floor">
+  <meta property="og:title" content="Matthew McCluster — Creative Director, Founder of McCluster Corp &amp; Equity Uprise">
   <meta property="og:description" content="Creative director, photographer, web designer, and songwriter. Founder of McCluster Corp and Equity Uprise — recognized by the State of Georgia and the City of Bridgeport.">
   <meta property="og:url" content="https://mcclusterishere.github.io/McCluster-Portfolio/">
   <meta property="og:image" content="https://mcclusterishere.github.io/McCluster-Portfolio/assets/img/og-card.jpg">
@@ -174,7 +173,7 @@
         <span class="sound-toggle__dot"></span> Sound
         <span class="sound-toggle__tip" aria-hidden="true">Tap for sound</span>
       </button>
-      <a class="head-cta" href="#book">Deal with me</a>
+      <a class="head-cta" href="#book">Lock In</a>
     </nav>
   </header>
 
@@ -191,25 +190,19 @@
         <div class="hero__vignette" aria-hidden="true"></div>
 
         <div class="hero__content">
-          <p class="hero__eyebrow reveal-line"><span>The profile · $MCC on Our Street · Direction · Photo · Web · Music</span></p>
+          <p class="hero__eyebrow reveal-line"><span>Creative direction · Photography · Web · Music</span></p>
           <h1 class="hero__title" id="heroTitle">
             <span class="hero__line" data-word="McCLUSTER"></span>
             <span class="hero__line hero__line--accent" data-word="CORP"></span>
           </h1>
           <p class="hero__sub reveal-line"><span><em class="bracket">[</em> Matthew McCluster <em class="bracket">]</em></span></p>
-          <div id="mccTape" style="display:none;margin:0.7rem auto 0;max-width:26rem;border:1.5px solid rgba(201,157,69,0.6);border-radius:100px;background:rgba(12,9,8,0.82);padding:0.55em 1.2em;font-size:0.95rem;font-variant-numeric:tabular-nums">
-            <b style="color:#e8c877">$MCC</b> <b id="mccPx" style="margin-left:0.35em">—</b>
-            <span id="mccChg" style="margin-left:0.4em;font-size:0.84rem"></span>
-            <a href="market.html?to=mccluster" style="color:#00c805;font-weight:800;text-decoration:none;margin-left:0.7em">Trade me &#8599;</a>
-            <a href="page.html?who=mccluster" style="color:var(--cream-dim);text-decoration:none;margin-left:0.7em;font-size:0.84rem">the record &#8594;</a>
-          </div>
           <button class="getapp-pill" type="button" data-getapp data-cta="getapp-hero">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
             Get the app · one tap, no app store
           </button>
-          <a class="support-pill" href="market.html?to=mccluster" data-cta="donate-hero">
+          <a class="support-pill" href="https://square.link/u/MBVeuzoo?src=sheet" target="_blank" rel="noopener" data-cta="support-hero">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.7C6.6 16.9 3.5 13.4 3.5 9.7 3.5 7 5.6 5 8.1 5c1.5 0 3 0.8 3.9 2 0.9-1.2 2.4-2 3.9-2 2.5 0 4.6 2 4.6 4.7 0 3.7-3.1 7.2-8.5 11z"/></svg>
-            Donate on the record — card, tracked
+            Support the Mission
           </a>
         </div>
 
@@ -219,7 +212,7 @@
           <div class="hud__item hud__reel">Scroll slow ! <span class="hud__arrow">&#8597;</span></div>
         </div>
 
-        <a class="lo-offer" id="heroOffer" href="profile.html" data-cta="offer-360"><span class="lo-offer__spark" aria-hidden="true"></span> This is MY profile. <b>Get yours on Our Street &#8594;</b></a>
+        <a class="lo-offer" id="heroOffer" href="hire.html" data-cta="offer-360"><span class="lo-offer__spark" aria-hidden="true"></span> Want your own page like this? <b>$14,400 &#183; monthly available &#183; 2 / 3 left &#8594;</b></a>
       </div>
     </section>
 
@@ -241,7 +234,7 @@
         <div class="wantsite__cta">
           <a class="wantsite__btn" href="hire.html" data-cta="wantsite-offer">
             <span class="wantsite__btn-shine" aria-hidden="true"></span>
-            Get a page like mine — $14,400 <b class="wantsite__btn-arrow">&#8594;</b>
+            The limited offer — $14,400 <b class="wantsite__btn-arrow">&#8594;</b>
           </a>
           <p class="wantsite__spots"><span class="wantsite__pulse" aria-hidden="true"></span> Only <b>2 / 3</b> spots left &#183; $14,400 / year or $1,200 &#215; 12 &#183; or <b>9,648 E&#10548;</b> on Our Street — 33% off</p>
         </div>
@@ -367,21 +360,6 @@
       </div>
     </section>
 
-    <!-- ============ NEXT DOOR — the street keeps going ============
-         Everything above is ONE profile; the next ones live right down
-         the block. Real members off the nightly tape — the section only
-         appears when the board answers. Never fake. -->
-    <section class="street" id="street" style="display:none" aria-label="Next door on Our Street">
-      <div class="street__inner">
-        <p class="kicker kicker--center">Our Street &middot; the block keeps going</p>
-        <h2 class="street__title">Next<br>door.</h2>
-        <p class="street__sub">Everything you just scrolled is <b>one</b> profile. These are the neighbors —
-          real members, real tickers, live off the same tape. Step into the next one.</p>
-        <div class="street__rail" id="streetRail"></div>
-        <p class="street__all"><a href="market.html" data-cta="street-floor">Walk the whole floor &#8594;</a></p>
-      </div>
-    </section>
-
     <!-- ============ FINALE ============ -->
     <section class="finale" id="book">
       <div class="finale__inner">
@@ -391,9 +369,9 @@
           <span class="hero__line hero__line--accent" data-word="IN"></span>
         </h2>
         <div class="finale__actions">
-          <a class="btn btn--ruby magnetic" id="bookCallBtn" href="#">Book a call with me</a>
-          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Booking%20Inquiry%20%E2%80%94%20McCluster" data-lead data-cta="lock-date-home">Lock in a date with me</a>
-          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Quote%20Request%20%E2%80%94%20McCluster" data-lead data-cta="quote-home">Ask me for a quote</a>
+          <a class="btn btn--ruby magnetic" id="bookCallBtn" href="#">Book a Paid Call</a>
+          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Booking%20Inquiry%20%E2%80%94%20McCluster" data-lead data-cta="lock-date-home">Lock In a Date</a>
+          <a class="btn btn--ghost magnetic" href="mailto:matthew@mccluster.org?subject=Quote%20Request%20%E2%80%94%20McCluster" data-lead data-cta="quote-home">Request a Quote</a>
           <a class="btn btn--ghost magnetic" id="subscribeBtn" href="#">Subscribe</a>
         </div>
         <p class="finale__believe finale__more">Still not convinced? <a href="ecosystem.html" data-cta="more-work">See the rest of the work &#8594;</a></p>
@@ -448,7 +426,7 @@
       <h2 class="getapp__h">Everything you just scrolled is one profile.</h2>
       <p class="getapp__sub">The films, the music, the receipts, the ticker — this is what a page on M Network can be.
         Claim your ticker, build your room, get M-Verified, get found.</p>
-      <a class="btn btn--ruby magnetic" href="profile.html" data-cta="getprofile-end" style="margin-top:0.3rem">Get your own profile</a>
+      <a class="btn btn--ruby magnetic" href="profile.html" data-cta="getprofile-end" style="margin-top:0.3rem">Get your profile</a>
       <button class="getapp__btn" type="button" data-getapp data-cta="getapp-end" style="margin-top:0.8rem">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
         Or take the app with you
@@ -459,8 +437,7 @@
   <footer class="site-foot">
     <div class="site-foot__brand"><img class="brand__mark" src="assets/img/m-mark.png" alt="M">cCluster</div>
     <nav class="site-foot__links">
-      <a href="market.html?to=mccluster" data-cta="donate-footer" style="color:var(--ruby-hot);font-weight:700">♥ Donate on the record — card in the app, tracked on your desk</a>
-      <a href="https://square.link/u/MBVeuzoo?src=sheet" target="_blank" rel="noopener" data-cta="support-footer">Donate via Square &#8599;</a>
+      <a href="https://square.link/u/MBVeuzoo?src=sheet" target="_blank" rel="noopener" data-cta="support-footer" style="color:var(--ruby-hot);font-weight:700">♥ Donate / Support McCluster Corp</a>
       <a href="song-who-did-the-shoot.html">♫ Who Did The Shoot</a>
       <a href="song-antisocial.html">♫ Antisocial</a>
       <a href="song-environmental-injustice.html">♫ Environmental Injustice</a>
@@ -510,7 +487,6 @@
 
   <script src="js/analytics.js?v=__STAMP__"></script>
   <script src="js/polish.js?v=__STAMP__"></script>
-  <script src="js/backend.js?v=__STAMP__"></script>
   <script src="js/payments.js?v=__STAMP__"></script>
   <script src="js/lead.js?v=__STAMP__"></script>
   <script src="js/vr360.js?v=__STAMP__"></script>
@@ -522,60 +498,5 @@
   <script src="js/badges.js?v=__STAMP__"></script>
   <script src="js/psychology-markers.js?v=__STAMP__"></script>
   <script src="js/main.js?v=__STAMP__"></script>
-<script>
-  /* THE PROFILE TAPE + NEXT DOOR: one score-board call feeds the $MCC
-     tape up top AND the neighbors down the block — real or dark, never fake */
-  (function () {
-    function esc(x) { var d = document.createElement("i"); d.textContent = x == null ? "" : x; return d.innerHTML; }
-    function delta(srs) {
-      return srs && srs.length > 1 ? +srs[srs.length - 1].v - +srs[srs.length - 2].v : null;
-    }
-    function go() {
-      var S = window.MCC_SUPA;
-      if (!S || !S.url) { setTimeout(go, 400); return; }
-      fetch(S.url + "/rest/v1/rpc/score_board", { method: "POST",
-        headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key },
-        body: JSON.stringify({ p_limit: 200 }) })
-        .then(function (r) { return r.ok ? r.json() : []; })
-        .then(function (rows) {
-          rows = rows || [];
-          var line = rows.filter(function (b) { return b.slug === "mccluster"; })[0];
-          if (line) {
-            document.getElementById("mccPx").textContent = "$" + (+line.price).toFixed(2);
-            var d0 = delta(line.series);
-            if (d0 != null) {
-              var c = document.getElementById("mccChg");
-              c.textContent = (d0 >= 0 ? "\u25b2 +" : "\u25bc ") + d0.toFixed(2);
-              c.style.color = d0 >= 0 ? "#00c805" : "#ff5000";
-            }
-            document.getElementById("mccTape").style.display = "";
-            if (window.MCC_TRACK) window.MCC_TRACK("penthouse_tape", {});
-          }
-          /* the neighbors: the tape's next desks, straight off the board */
-          var hood = rows.filter(function (b) { return b.slug !== "mccluster" && (b.name || b.ticker); });
-          hood.sort(function (a, b) { return (+b.price || 0) - (+a.price || 0); });
-          hood = hood.slice(0, 3);
-          if (!hood.length) return;
-          document.getElementById("streetRail").innerHTML = hood.map(function (b) {
-            var d = delta(b.series);
-            return '<article class="street__card">' +
-              '<div class="street__row"><b class="street__name">' + esc(b.name || b.slug) + "</b>" +
-              (b.ticker ? '<span class="street__tick">$' + esc(String(b.ticker).toUpperCase()) + "</span>" : "") + "</div>" +
-              '<div class="street__row"><b class="street__px">$' + (+b.price || 0).toFixed(2) + "</b>" +
-              (d != null ? '<span class="street__chg" style="color:' + (d >= 0 ? "#00c805" : "#ff5000") + '">' +
-                (d >= 0 ? "\u25b2 +" : "\u25bc ") + d.toFixed(2) + "</span>" : "") +
-              (b.score != null ? '<span class="street__cred">' + (+b.score) + " <small>street credit</small></span>" : "") + "</div>" +
-              '<div class="street__acts">' +
-              '<a class="street__go" href="page.html?who=' + encodeURIComponent(b.slug) + '" data-cta="street-' + esc(b.slug) + '">Step inside &#8594;</a>' +
-              '<a class="street__trade" href="market.html?to=' + encodeURIComponent(b.ticker || b.slug) + '">Trade &#8599;</a>' +
-              "</div></article>";
-          }).join("");
-          document.getElementById("street").style.display = "";
-          if (window.MCC_TRACK) window.MCC_TRACK("street_view", { n: hood.length });
-        }).catch(function () {});
-    }
-    go();
-  })();
-</script>
 </body>
 </html>

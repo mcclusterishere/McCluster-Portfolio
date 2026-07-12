@@ -513,6 +513,9 @@ a { color: inherit; text-decoration: none; }
   text-align: center; pointer-events: none;
   padding: 0 4vw;
 }
+/* the hero swallows pointers so the orbit can scrub — but its BUTTONS
+   are real: the tape, the pills, every link answers the finger */
+.hero__content a, .hero__content button { pointer-events: auto; }
 .hero__eyebrow {
   font-size: 0.84rem; letter-spacing: 0.5em; text-transform: uppercase;
   color: var(--cream-dim); margin-bottom: 1.2rem;
@@ -4448,3 +4451,32 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .closer-bar button { flex: none; border: 0; background: none; color: rgba(244, 239, 230, 0.7); font-size: 0.9rem;
   cursor: pointer; padding: 0.3em 0.5em; }
 @media (prefers-reduced-motion: reduce) { .closer-bar { animation: none; } }
+
+/* NEXT DOOR — the block keeps going: the neighbors' desks ride the
+   penthouse floor, straight off the nightly tape. Dark until real. */
+.street { position: relative; padding: clamp(4rem, 10vh, 7rem) clamp(1rem, 4vw, 2rem); }
+.street__inner { max-width: 34rem; margin: 0 auto; text-align: center; }
+.street__title { font-family: var(--sig); text-transform: uppercase; line-height: 0.9;
+  font-size: clamp(3rem, 14vw, 5rem); margin-top: 0.6rem; }
+.street__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.8rem; font-size: 0.95rem; }
+.street__sub b { color: var(--cream); }
+.street__rail { display: grid; gap: 0.8rem; margin-top: 1.6rem; text-align: left; }
+.street__card { border: 1px solid rgba(244, 239, 230, 0.14); border-radius: 16px;
+  background: rgba(18, 14, 11, 0.85); padding: 1rem 1.1rem;
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.2, 1), border-color 0.25s; }
+.street__card:hover { transform: translateY(-2px); border-color: rgba(232, 200, 119, 0.45); }
+.street__row { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.street__row + .street__row { margin-top: 0.35rem; }
+.street__name { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.15rem; }
+.street__tick { color: #e8c877; font-weight: 800; font-size: 0.86rem; letter-spacing: 0.08em; }
+.street__px { font-variant-numeric: tabular-nums; color: #00c805; font-size: 1.05rem; }
+.street__chg { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 0.84rem; }
+.street__cred { margin-left: auto; font-variant-numeric: tabular-nums; color: #2fbf71; font-weight: 800; font-size: 0.9rem; }
+.street__cred small { color: var(--cream-dim); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.street__acts { display: flex; gap: 0.6rem; margin-top: 0.8rem; }
+.street__go, .street__trade { flex: 1; text-align: center; text-decoration: none; font-weight: 800; font-size: 0.92rem;
+  border-radius: 100px; padding: 0.6em 1em; border: 1px solid rgba(244, 239, 230, 0.22); color: var(--cream); }
+.street__go { background: linear-gradient(180deg, #e5383b, #a4161a); border-color: transparent; color: #fff; }
+.street__trade { color: #00c805; border-color: rgba(0, 200, 5, 0.45); }
+.street__all { margin-top: 1.3rem; }
+.street__all a { color: #e8c877; font-weight: 800; text-decoration: none; }

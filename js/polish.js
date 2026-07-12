@@ -444,7 +444,7 @@
         ["rides.html#meter", "🧮", "Meter"], ["rides.html#drivers", "🚗", "Drivers"],
         ["welcome.html?as=driver", "🪙", "Drive"], ["market.html#pay", "💸", "Pay"]] },
       music: { home: "app.html", label: "Only Us", slots: [
-        ["mccluster.html", "🌇", "Penthouse"], ["index.html", "🎬", "Front door"],
+        ["index.html", "🌇", "Penthouse"], ["front-door.html", "🎬", "Front door"],
         ["song-dealer-plates.html", "🎞", "The Series"], ["distribution.html", "🎛", "Distribute"]] },
       market: { home: "market.html", label: "Market", slots: [
         ["market.html#pay", "💸", "Pay"], ["market.html#yours", "🏦", "Your desk"],
@@ -454,7 +454,7 @@
         ["amenities.html", "🛋", "Amenities"], ["hire.html", "🎥", "Hire"]] },
       profile: { home: "profile.html", label: "Profile", slots: [
         [MISSION_HOME, "🎯", "Mission"], ["market.html#yours", "✉️", "Messages"],
-        ["rise.html", "🃏", "Your card"], ["index.html", "🚪", "Front door"]] },
+        ["rise.html", "🃏", "Your card"], ["index.html", "🌇", "Penthouse"]] },
     };
     /* THE METER LAW + the geo desks — ONE source, shared by the rides
        page and the meter tool the dock pops on any page */
@@ -510,8 +510,8 @@
       "rides.html#drivers": ["🚗", "Drivers on the road", "Real members carrying the Rides lane — on the list and pinned on the street. Book in one pop."],
       "welcome.html?as=driver": ["🪙", "Drive & earn", "Get Whip Equipped: the walk-in pre-picks the Rides lane. The meter names it, you keep all of it."],
       "app.html": ["🎧", "Only Us", "The music house: the heat chart, the registry, the series — and the sound follows you room to room."],
-      "mccluster.html": ["🌇", "The Penthouse", "McCluster's own floor — the films, the record, the live $MCC tape. What a built-out page looks like."],
-      "index.html": ["🎬", "The front door", "The cinematic opener — the spinning, scrolling face of the whole house."],
+      "index.html": ["🌇", "The Penthouse", "The front door IS McCluster's own floor now — the films, the record, the live $MCC tape, and the neighbors down the block."],
+      "front-door.html": ["🎬", "The front door — the original cut", "The first cinematic opener, saved exactly as it was."],
       "song-dealer-plates.html": ["🎞", "The Series", "Whip Equipped, season one: dealer plates, two mixes, one ride."],
       "distribution.html": ["🎛", "Distribution", "The locker: the identifiers your work pays through, seals, earnings."],
       "market.html": ["🏪", "Our Street", "The floor: every member a ticker, every deal on the record, the Wire running through it."],
@@ -1044,7 +1044,7 @@
     "docket-516.html": 1, "dekalb.html": 1, "deluxe-516r.html": 1, "grind-paper.html": 1,
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
-    "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "rides.html": 1, "walkthrough-qt6kv-2847.html": 1 };
+    "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1, "walkthrough-qt6kv-2847.html": 1 };
   if (OPEN[here] || here.indexOf("song-") === 0) return;
   try {
     var card = JSON.parse(localStorage.getItem("mcc_rise") || "null");
