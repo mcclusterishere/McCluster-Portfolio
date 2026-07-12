@@ -76,11 +76,17 @@
     tipI++;
     nudge.classList.add("is-on");
     setTimeout(function () { nudge.classList.remove("is-on"); }, 5200);
+    // ONCE, NOT FOREVER: count lifetime nudges; after the cap, never poke
+    // again. The Guide is still one tap away — it just stops chasing you.
+    var n = (+(localStorage.getItem("mcc_guide_nags") || 0)) + 1;
+    try { localStorage.setItem("mcc_guide_nags", String(n)); } catch (e) {}
+    if (n >= 2 && nudgeTimer) { clearInterval(nudgeTimer); nudgeTimer = null; }
   }
   function startNudges() {
-    if (localStorage.getItem("mcc_guide_opened") === "1") return; // they found it — stop nagging
-    setTimeout(poke, 3500);
-    nudgeTimer = setInterval(poke, 22000);
+    if (localStorage.getItem("mcc_guide_opened") === "1") return; // they found it — stop
+    if ((+(localStorage.getItem("mcc_guide_nags") || 0)) >= 2) return; // shown enough — never nag again
+    setTimeout(poke, 4000);
+    nudgeTimer = setInterval(poke, 45000); // gentler, and it self-stops at the cap
   }
 
   var panel = document.createElement("div");
