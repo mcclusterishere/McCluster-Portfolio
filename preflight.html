@@ -144,7 +144,7 @@
             fix: "Deploy the <code>pay-deal</code> edge function (code + steps in <code>docs/stripe-connect.md</code>).",
             run: function () { return fn("pay-deal"); } },
           { n: "stripe-webhook (the receipt writer)", why: "Marks deals paid and stamps the record when Stripe settles.",
-            fix: "Deploy <code>stripe-webhook</code> + set the webhook secret (same doc).",
+            fix: "Deploy <code>stripe-webhook</code> + set <code>STRIPE_WEBHOOK_SECRET</code> — full code &amp; steps in <code>docs/stripe-webhook.md</code>.",
             run: function () { return fn("stripe-webhook"); } },
           { n: "connect-onboard (BUSINESS BANK ACCOUNTS)", why: "The “Set up payouts” button on every member desk — tomorrow's onboarding lives or dies here.",
             fix: "Deploy <code>connect-onboard</code> — full code + dashboard steps in <code>docs/connect-onboard.md</code>. Five minutes.",
@@ -153,8 +153,12 @@
         { sec: "The engines — missions, tape, rides", rows: [
           { n: "T.R.A.P.S. — the mission gauntlet", why: "Complete a mission → points save → the scoreboard moves.",
             fix: "Paste <code>docs/traps-engine.sql</code> (the v2 engine — verifies all 26 missions against real tables).",
-            run: function () { return rpc("claim_gauntlet", { p_key: "__preflight__" }, function (x, missing) {
-              return { ok: !missing, note: missing ? "engine not pasted" : "engine answers (" + x.s + ")" };
+            run: function () { return rpc("claim_gauntlet", {}, function (x, missing) {
+              /* the v2 engine takes NO arguments — call it clean. With the
+                 public key auth.uid() is null, so it raises "sign in first"
+                 (HTTP 400) BEFORE touching anything: a 400 proves it's
+                 deployed, a 404/PGRST202 means the paste never landed. */
+              return { ok: !missing, note: missing ? "engine not pasted" : "engine answers — deployed" };
             }); } },
           { n: "The nightly tape (score_board)", why: "Prices and street credit on the floor, the board, the penthouse tape.",
             fix: "Paste <code>docs/one-tape.sql</code>, then schedule the nightly cron (in the doc).",
