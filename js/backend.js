@@ -79,17 +79,41 @@
   function session() { return jget("session", null); }
   function jwtExp(tok) { try { return JSON.parse(atob(tok.split(".")[1])).exp * 1000; } catch (e) { return 0; } }
 
-  // magic-link landing: tokens arrive in the URL hash
+  // magic-link landing: tokens arrive in the URL hash. If Supabase bounced the
+  // link (expired, wrong Site URL, redirect not allow-listed), the REASON lands
+  // in the URL too — surface it instead of failing silently, so a broken link
+  // says what's wrong instead of looking like nothing happened.
   (function catchMagicLink() {
-    if (location.hash.indexOf("access_token=") === -1) return;
+    var raw = location.hash.slice(1) + "&" + location.search.slice(1);
+    if (raw.indexOf("access_token=") === -1 && raw.indexOf("error") === -1) return;
     var q = {};
-    location.hash.slice(1).split("&").forEach(function (kv) {
-      var p = kv.split("="); q[p[0]] = decodeURIComponent(p[1] || "");
+    raw.split("&").forEach(function (kv) {
+      if (!kv) return;
+      var p = kv.split("="); q[p[0]] = decodeURIComponent((p[1] || "").replace(/\+/g, " "));
     });
     if (q.access_token) {
       saveSession({ access_token: q.access_token, refresh_token: q.refresh_token || "" });
       history.replaceState(null, "", location.pathname + location.search);
+      return;
     }
+    var msg = q.error_description || q.error_code || q.error;
+    if (!msg) return;
+    try { console.warn("[sign-in] magic link did not complete:", q); } catch (e) {}
+    (function banner() {
+      if (!document.body) { setTimeout(banner, 50); return; }
+      var bar = document.createElement("div");
+      bar.setAttribute("role", "alert");
+      bar.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:99999;background:#7c0c15;color:#fff;" +
+        "font:600 13px/1.45 system-ui,sans-serif;padding:.7rem 2.4rem .7rem 1rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.4)";
+      bar.textContent = "Sign-in link didn't land: " + msg + " — request a fresh link and try again.";
+      var x = document.createElement("button");
+      x.type = "button"; x.textContent = "✕";
+      x.style.cssText = "position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:none;border:0;color:#fff;font-size:1.05rem;cursor:pointer";
+      x.onclick = function () { if (bar.parentNode) bar.parentNode.removeChild(bar); };
+      bar.appendChild(x);
+      document.body.appendChild(bar);
+    })();
+    history.replaceState(null, "", location.pathname);
   })();
 
   function refresh() {
