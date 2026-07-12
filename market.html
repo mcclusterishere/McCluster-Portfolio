@@ -825,6 +825,11 @@
         <input class="mk__in" id="fArea" type="text" placeholder="Where you work — e.g. Atlanta metro · travels">
         <textarea class="mk__in" id="fBlurb" placeholder="The pitch: gear, style, what booking you feels like"></textarea>
         <input class="mk__in" id="fHref" type="url" placeholder="Portfolio link (optional)">
+        <input type="file" id="fPhotoFile" accept="image/*" hidden>
+        <div class="mp__linkrow" style="margin-top:0.5rem;align-items:center">
+          <img id="fPhotoPrev" alt="" style="display:none;width:2.6rem;height:2.6rem;border-radius:50%;object-fit:cover;border:1.5px solid rgba(244,239,230,0.4)">
+          <button class="btn btn--ghost" id="fPhotoBtn" type="button" style="flex:1">&#128248; Add your face / logo</button>
+        </div>
         <button class="btn btn--ruby" id="tdSave" type="button">Save the listing</button>
         <p class="mk__msg" id="tdSaveMsg"></p>
         <a class="mv" href="verify.html" data-cta="mk-desk-mverified">
@@ -2130,6 +2135,21 @@
             window.MCC_STOCK.mount($("tdStock"), data);
           }).catch(function () {});
         }
+        /* THE FACE DROP: the picked photo shrinks in the browser and rides
+           the save — a listing with a face gets booked; a gray row doesn't */
+        var facePick = null;
+        $("fPhotoBtn").addEventListener("click", function () { $("fPhotoFile").click(); });
+        $("fPhotoFile").addEventListener("change", function () {
+          var f = this.files && this.files[0];
+          if (!f) return;
+          $("fPhotoBtn").textContent = "Loading…";
+          window.MCC_FACE.shrink(f).then(function (uri) {
+            facePick = uri;
+            $("fPhotoPrev").src = uri; $("fPhotoPrev").style.display = "";
+            $("fPhotoBtn").textContent = "✓ Face on — save the listing";
+          }).catch(function () { $("fPhotoBtn").textContent = "That photo slipped — try another"; });
+        });
+
         $("tdSave").addEventListener("click", function () {
           if (!(window.MCC_AUTH.user && window.MCC_AUTH.user())) {
             // the door opens right here — the filled form survives the reload
@@ -2163,6 +2183,7 @@
             name: $("fName").value.trim(), ticker: tick,
             headline: $("fHeadline").value.trim(), area: $("fArea").value.trim(),
             blurb: $("fBlurb").value.trim(), href: $("fHref").value.trim() || null, roles: picked,
+            photo: facePick || undefined,
           };
           if (!fields.name) { $("tdSaveMsg").textContent = "The listing needs a name."; return; }
           $("fTicker").value = tick;

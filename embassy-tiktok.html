@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Sound Room — Equity Uprise for TikTok</title>
+  <meta name="description" content="The TikTok embassy: the sound room. Every record from the house, one thumb, zero ads — tap a track, it plays right here, the lyric decks one tap deeper.">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="manifest" href="manifest-soundroom.webmanifest">
+  <meta name="theme-color" content="#0a0807">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sound Room">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .em { min-height: 100dvh; padding: clamp(3.4rem, 7vh, 5rem) clamp(1rem, 4vw, 2rem) 6rem; max-width: 30rem; margin: 0 auto; }
+    .em h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.9; font-size: clamp(3rem, 15vw, 4.6rem); }
+    .em__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; font-size: 0.95rem; }
+    .em__sub b { color: var(--cream); }
+    .em__list { display: grid; gap: 0.65rem; margin-top: 1.5rem; }
+    .emt { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(18,14,11,0.85); padding: 0.85rem 0.95rem; }
+    .emt__t { display: flex; align-items: baseline; gap: 0.6rem; }
+    .emt__no { flex: none; color: rgba(244,239,230,0.4); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.14em; }
+    .emt__t b { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.1rem; }
+    .emt__t small { margin-left: auto; color: var(--cream-dim); font-size: 0.76rem; }
+    .emt__cred { color: var(--cream-dim); font-size: 0.8rem; margin-top: 0.15rem; }
+    .emt audio { width: 100%; margin-top: 0.5rem; height: 2.1rem; }
+    .emt__deck { display: inline-block; margin-top: 0.45rem; color: #e8c877; font-weight: 800; font-size: 0.84rem; text-decoration: none; }
+    .em__cta { display: grid; gap: 0.6rem; margin-top: 1.6rem; }
+    .em__cta a { display: block; text-align: center; padding: 0.9rem 1rem; border-radius: 100px; text-decoration: none; font-weight: 800; }
+    .em__cta .hot { background: linear-gradient(120deg, #c1121f, #e5383b); color: #fff; }
+    .em__cta .cool { border: 1px solid rgba(244,239,230,0.25); color: var(--cream); }
+    .em__foot { margin-top: 2rem; color: var(--cream-dim); font-size: 0.8rem; line-height: 1.6; text-align: center; }
+    .em__foot a { color: #e8c877; text-decoration: none; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <main class="em">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> The TikTok embassy · the sound, whole</p>
+    <h1>The Sound<br>Room.</h1>
+    <p class="em__sub">You know the 15 seconds — <b>this is the whole record.</b> Every track the house has pressed,
+      playing right here. The lyric decks and the films sit one tap deeper.</p>
+
+    <div class="em__list" id="emList"><p class="em__sub">Pulling the records…</p></div>
+
+    <div class="em__cta">
+      <a class="hot" href="app.html" data-cta="embassy-tt-app">Step into Only Us — the whole music house 🎧</a>
+      <a class="cool" href="song-upset.html">UPSET — the lyric deck, live →</a>
+      <a class="cool" href="market.html?to=mccluster">♥ Support the sound — on the record</a>
+    </div>
+    <p class="em__foot">This page installs as its own app — Share → Add to Home Screen.<br>
+      <a href="privacy.html">Privacy</a> · © 2026 McCluster Corp</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
+      fetch("data/catalogue.json").then(function (r) { return r.json(); }).then(function (j) {
+        var rows = (j.tracks || []).filter(function (t) { return t.available !== false; });
+        document.getElementById("emList").innerHTML = rows.map(function (t) {
+          return '<article class="emt"><div class="emt__t"><span class="emt__no">' + esc(t.no || "") + "</span><b>" +
+            esc(t.title) + "</b><small>" + esc(t.length || "") + "</small></div>" +
+            '<p class="emt__cred">' + esc(t.credit || "") + "</p>" +
+            '<audio controls preload="none" src="assets/audio/' + esc(t.slug) + '.mp3" data-slug="' + esc(t.slug) + '"></audio>' +
+            (t.page ? '<a class="emt__deck" href="' + esc(t.page) + '">The song’s world →</a>' : "") +
+            "</article>";
+        }).join("");
+        /* one record at a time — and every first play counts on the tape */
+        var counted = {};
+        document.querySelectorAll(".emt audio").forEach(function (a) {
+          a.addEventListener("play", function () {
+            document.querySelectorAll(".emt audio").forEach(function (b) { if (b !== a) b.pause(); });
+            var s = a.getAttribute("data-slug");
+            if (!counted[s] && window.MCC_TRACK) { counted[s] = 1; window.MCC_TRACK("track_play", { slug: s, from: "embassy-tiktok" }); }
+          });
+        });
+      }).catch(function () {
+        document.getElementById("emList").innerHTML = '<p class="em__sub">The music house is a tap away — <a href="app.html" style="color:#e8c877">walk in →</a></p>';
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("embassy_view", { p: "tiktok" });
+    })();
+  </script>
+</body>
+</html>

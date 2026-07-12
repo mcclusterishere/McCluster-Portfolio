@@ -169,7 +169,9 @@
           '<label class="pf__lab" for="pfEName">Name on the card</label><input class="pf__in" id="pfEName" value="' + esc((mine && mine.name) || "") + '" placeholder="Your name">' +
           '<label class="pf__lab" for="pfEHead">One line — what you do</label><input class="pf__in" id="pfEHead" value="' + esc((mine && mine.headline) || "") + '" placeholder="Photographer · producer · driver…">' +
           '<label class="pf__lab" for="pfEArea">Where you run</label><input class="pf__in" id="pfEArea" value="' + esc((mine && mine.area) || "") + '" placeholder="Bridgeport, CT">' +
-          '<label class="pf__lab" for="pfEPhoto">Face (photo URL)</label><input class="pf__in" id="pfEPhoto" value="' + esc((mine && mine.photo) || "") + '" placeholder="https://…jpg">' +
+          '<label class="pf__lab" for="pfEPhoto">Face</label><input class="pf__in" id="pfEPhoto" value="' + esc((mine && mine.photo) || "") + '" placeholder="https://…jpg — or use the button">' +
+          '<input type="file" id="pfEPhotoFile" accept="image/*" hidden>' +
+          '<button class="btn btn--ghost" id="pfFaceBtn" type="button" style="margin-top:0.45rem;font-size:0.85rem">📸 Drop a photo from this phone</button>' +
           '<p class="pf__lab">The links — your followership feeds the chart</p>' +
           '<div class="pf__links">' +
           '<input class="pf__in" id="pfLyt" value="' + esc(links.yt || "") + '" placeholder="YouTube">' +
@@ -245,6 +247,18 @@
             $("pfMsg").style.color = "#ff5000";
             $("pfMsg").textContent = "The press slipped — try again.";
           }).then(function () { btn.disabled = false; btn.innerHTML = "Press it into the card &#8594;"; });
+        });
+
+        /* the face drop: pick → shrink → the field fills itself */
+        $("pfFaceBtn").addEventListener("click", function () { $("pfEPhotoFile").click(); });
+        $("pfEPhotoFile").addEventListener("change", function () {
+          var f = this.files && this.files[0];
+          if (!f) return;
+          $("pfFaceBtn").textContent = "Loading the face…";
+          window.MCC_FACE.shrink(f).then(function (uri) {
+            $("pfEPhoto").value = uri;
+            $("pfFaceBtn").textContent = "✓ Face loaded — now press it into the card";
+          }).catch(function () { $("pfFaceBtn").textContent = "That photo slipped — try another"; });
         });
 
         var mo = $("pfMirrorOpen");

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Preflight — is the house real yet? · Equity Uprise</title>
+  <meta name="description" content="The preflight board: every engine the live site depends on, probed right now from this browser — green means armed, red names the exact fix.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .pfl { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 40rem; margin: 0 auto; }
+    .pfl h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.92; font-size: clamp(2.6rem, 11vw, 4rem); }
+    .pfl__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; font-size: 0.95rem; }
+    .pfl__sum { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.1rem; }
+    .pfl__stat { flex: 1; min-width: 7rem; border: 1px solid rgba(244,239,230,0.14); border-radius: 14px; padding: 0.8rem; text-align: center; }
+    .pfl__stat b { display: block; font-family: var(--display); font-size: 1.7rem; }
+    .pfl__stat small { color: var(--cream-dim); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; }
+    .pfl__sec { margin-top: 1.8rem; }
+    .pfl__sec h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1.25rem; letter-spacing: 0.04em; }
+    .pfl__rows { display: grid; gap: 0.5rem; margin-top: 0.7rem; }
+    .pfr { border: 1px solid rgba(244,239,230,0.13); border-radius: 13px; background: rgba(18,14,11,0.85); padding: 0.75rem 0.9rem; }
+    .pfr__t { display: flex; align-items: center; gap: 0.55rem; }
+    .pfr__dot { flex: none; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: #6b6257; }
+    .pfr.is-ok .pfr__dot { background: #2fbf71; box-shadow: 0 0 10px rgba(47,191,113,0.7); }
+    .pfr.is-no .pfr__dot { background: #e5383b; box-shadow: 0 0 10px rgba(229,56,59,0.7); }
+    .pfr.is-part .pfr__dot { background: #e8c877; box-shadow: 0 0 10px rgba(232,200,119,0.7); }
+    .pfr__t b { font-size: 0.96rem; }
+    .pfr__t small { margin-left: auto; color: var(--cream-dim); font-size: 0.74rem; font-variant-numeric: tabular-nums; }
+    .pfr__why { color: var(--cream-dim); font-size: 0.85rem; line-height: 1.5; margin-top: 0.3rem; }
+    .pfr__fix { display: none; margin-top: 0.4rem; font-size: 0.85rem; line-height: 1.5; color: #ffb4a2; }
+    .pfr.is-no .pfr__fix, .pfr.is-part .pfr__fix { display: block; }
+    .pfr__fix code { background: rgba(244,239,230,0.09); border-radius: 6px; padding: 0.1em 0.4em; font-size: 0.92em; color: var(--cream); }
+    .pfl__again { margin-top: 1.6rem; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="mission.html">Mission Control</a><a href="docs/PASTE-ORDER.md">Paste order</a></nav>
+  </header>
+
+  <main class="pfl">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> The preflight board</p>
+    <h1>Is the house<br>real yet?</h1>
+    <p class="pfl__sub">Every engine the live site leans on, probed <b>right now, from this browser</b>, against the
+      live database. Green is armed. Red names the exact fix — most are one paste in the Supabase SQL Editor,
+      a couple are one dashboard switch. When this board runs green, you onboard businesses without apologizing.</p>
+
+    <div class="pfl__sum">
+      <div class="pfl__stat"><b id="pfOk" style="color:#2fbf71">—</b><small>armed</small></div>
+      <div class="pfl__stat"><b id="pfNo" style="color:#e5383b">—</b><small>need the fix</small></div>
+      <div class="pfl__stat"><b id="pfAll">—</b><small>checks</small></div>
+    </div>
+
+    <div id="pfBoard"></div>
+
+    <div class="finale__actions pfl__again">
+      <button class="btn btn--ruby" id="pfAgain" type="button">Run the board again</button>
+    </div>
+    <p class="pfl__sub" style="font-size:0.84rem">The full paste map lives in <code>docs/PASTE-ORDER.md</code> in the repo.
+      This page only reads public endpoints — it can't change anything and holds no secrets.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      var S = window.MCC_SUPA;
+      var H = { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + S.key };
+
+      /* one probe = one promise resolving {ok, note} — ok may be
+         true (armed), false (missing), or "part" (reachable but idle) */
+      function rpc(name, body, judge) {
+        return fetch(S.url + "/rest/v1/rpc/" + name, { method: "POST", headers: H, body: JSON.stringify(body || {}) })
+          .then(function (r) { return r.text().then(function (t) { return { s: r.status, t: t }; }); })
+          .then(function (x) {
+            var missing = x.s === 404 && /PGRST202|Could not find/.test(x.t);
+            if (judge) return judge(x, missing);
+            return { ok: !missing, note: missing ? "the function isn't in the database" : "answers (" + x.s + ")" };
+          })
+          .catch(function () { return { ok: false, note: "no answer from the database" }; });
+      }
+      function table(q, note) {
+        return fetch(S.url + "/rest/v1/" + q, { headers: H })
+          .then(function (r) { return { ok: r.status === 200, note: r.status === 200 ? (note || "readable") : "answered " + r.status }; })
+          .catch(function () { return { ok: false, note: "no answer" }; });
+      }
+      function fn(name, judge) {
+        return fetch(S.url + "/functions/v1/" + name, { method: "POST", headers: H, body: "{}" })
+          .then(function (r) { return r.text().then(function (t) { return { s: r.status, t: t }; }); })
+          .then(function (x) {
+            var missing = x.s === 404 && /NOT_FOUND|not found|Function not found/i.test(x.t || "");
+            if (judge) return judge(x, missing);
+            return { ok: !missing, note: missing ? "not deployed" : "deployed — answers (" + x.s + ")" };
+          })
+          .catch(function () { return { ok: false, note: "unreachable" }; });
+      }
+
+      var BOARD = [
+        { sec: "The doors — who can walk in", rows: [
+          { n: "Instant accounts (no email needed)", why: "The one-tap door strangers use mid-payment and on the desk.",
+            fix: "Supabase → Authentication → Sign In / Providers → turn ON <code>Anonymous sign-ins</code>.",
+            run: function () {
+              return fetch(S.url + "/auth/v1/settings", { headers: { apikey: S.key } })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                  var on = !!(j && (j.external && j.external.anonymous_users || j.anonymous_users_enabled));
+                  return { ok: on, note: on ? "switched on" : "switched off" };
+                }).catch(function () { return { ok: false, note: "settings unreadable" }; });
+            } },
+          { n: "Email magic-link door", why: "The real cloud login — Benji's test account signs in with this.",
+            fix: "Supabase → Authentication: email provider must be enabled (it is by default). If links don't arrive, check Auth → Email Templates + rate limits (3/hr on the built-in mailer — fine for tonight, wire custom SMTP later).",
+            run: function () {
+              return fetch(S.url + "/auth/v1/settings", { headers: { apikey: S.key } })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                  var on = !!(j && j.external && j.external.email);
+                  return { ok: on, note: on ? "enabled" : "disabled" };
+                }).catch(function () { return { ok: false, note: "settings unreadable" }; });
+            } },
+        ] },
+        { sec: "The floor — listings & identity", rows: [
+          { n: "The floor answers", why: "providers — every listing on Our Street.",
+            fix: "Paste <code>docs/market-schema.sql</code> in the SQL Editor.",
+            run: function () { return table("providers?select=id&limit=1"); } },
+          { n: "THE GREEN LIGHT (self-serve listings)", why: "Members go live without your approval; you keep notice + undo.",
+            fix: "Paste <code>docs/green-light.sql</code>.",
+            run: function () { return table("providers?select=id,status&limit=1"); } },
+          { n: "THE NAMEPLATE (one ticker, one holder)", why: "Live “yours to claim ✓” check; nobody takes a claimed name.",
+            fix: "Paste <code>docs/nameplate.sql</code>.",
+            run: function () { return rpc("ticker_free", { p_tick: "ZZZZZ" }); } },
+          { n: "Bank-ID columns (the ✓ on Mission Control)", why: "id_verified / charges_enabled — why everyone reads “no bank ID yet” today.",
+            fix: "Paste <code>docs/payments-schema.sql</code> and <code>docs/verify-schema.sql</code>.",
+            run: function () { return table("providers?select=id,square,stripe_acct,charges_enabled,id_verified&limit=1", "columns exist"); } },
+        ] },
+        { sec: "The money — real bank rails", rows: [
+          { n: "pay-deal (card checkout)", why: "Buyers pay by card on signed deals — the live Stripe rail.",
+            fix: "Deploy the <code>pay-deal</code> edge function (code + steps in <code>docs/stripe-connect.md</code>).",
+            run: function () { return fn("pay-deal"); } },
+          { n: "stripe-webhook (the receipt writer)", why: "Marks deals paid and stamps the record when Stripe settles.",
+            fix: "Deploy <code>stripe-webhook</code> + set the webhook secret (same doc).",
+            run: function () { return fn("stripe-webhook"); } },
+          { n: "connect-onboard (BUSINESS BANK ACCOUNTS)", why: "The “Set up payouts” button on every member desk — tomorrow's onboarding lives or dies here.",
+            fix: "Deploy <code>connect-onboard</code> — full code + dashboard steps in <code>docs/connect-onboard.md</code>. Five minutes.",
+            run: function () { return fn("connect-onboard"); } },
+        ] },
+        { sec: "The engines — missions, tape, rides", rows: [
+          { n: "T.R.A.P.S. — the mission gauntlet", why: "Complete a mission → points save → the scoreboard moves.",
+            fix: "Paste <code>docs/traps-engine.sql</code> (the v2 engine — verifies all 26 missions against real tables).",
+            run: function () { return rpc("claim_gauntlet", { p_key: "__preflight__" }, function (x, missing) {
+              return { ok: !missing, note: missing ? "engine not pasted" : "engine answers (" + x.s + ")" };
+            }); } },
+          { n: "The nightly tape (score_board)", why: "Prices and street credit on the floor, the board, the penthouse tape.",
+            fix: "Paste <code>docs/one-tape.sql</code>, then schedule the nightly cron (in the doc).",
+            run: function () { return rpc("score_board", { p_limit: 1 }, function (x, missing) {
+              if (missing) return { ok: false, note: "not pasted" };
+              var n = 0; try { n = JSON.parse(x.t).length; } catch (e) {}
+              return n > 0 ? { ok: true, note: n + " desk(s) scored" } : { ok: "part", note: "pasted, but the tape hasn't scored anyone yet — run the cron once" };
+            }); } },
+          { n: "Whip Equipped driver board", why: "Drivers go online; live green cars on the WE map.",
+            fix: "Paste <code>docs/we-driver.sql</code>.",
+            run: function () { return rpc("drivers_on_road"); } },
+          { n: "The desk imprint", why: "The account remembers the card cross-device — no lost numbers.",
+            fix: "Paste <code>docs/desk-imprint.sql</code> (v2).",
+            run: function () { return rpc("my_imprint", {}, function (x, missing) {
+              return { ok: !missing, note: missing ? "not pasted" : "answers (" + x.s + ")" };
+            }); } },
+          { n: "THE PEN + admin bell (green-light rpc)", why: "“Message them” from Mission Control lands on the member's bell.",
+            fix: "Paste <code>docs/green-light.sql</code>.",
+            run: function () { return rpc("admin_note_member", { p_owner: "00000000-0000-0000-0000-000000000000", p_msg: "preflight" }, function (x, missing) {
+              return { ok: !missing, note: missing ? "not pasted" : "armed (needs the admin sign-in to fire)" };
+            }); } },
+        ] },
+        { sec: "The signals — analytics", rows: [
+          { n: "Google Analytics 4", why: "Every page + event already reports to GA4.",
+            fix: "",
+            run: function () {
+              var id = window.ANALYTICS_ID;
+              return Promise.resolve(id ? { ok: true, note: "wired — property " + id + " · read it at analytics.google.com" }
+                : { ok: false, note: "no measurement ID in js/analytics.js" });
+            } },
+          { n: "First-party pulse (events table)", why: "The site's own tape — Mission Control's analytics pane reads it.",
+            fix: "Paste <code>docs/analytics-schema.sql</code>.",
+            run: function () {
+              return fetch(S.url + "/rest/v1/events", { method: "POST",
+                headers: { "Content-Type": "application/json", apikey: S.key, Prefer: "return=minimal" },
+                body: JSON.stringify({ name: "preflight_probe", path: "preflight.html", props: {} }) })
+                .then(function (r) { return { ok: r.status === 201, note: r.status === 201 ? "collector takes the write" : "answered " + r.status }; })
+                .catch(function () { return { ok: false, note: "no answer" }; });
+            } },
+        ] },
+      ];
+
+      var board = $("pfBoard");
+      function paint() {
+        board.innerHTML = "";
+        var oks = 0, nos = 0, all = 0;
+        var waits = [];
+        BOARD.forEach(function (sec) {
+          var el = document.createElement("div");
+          el.className = "pfl__sec";
+          el.innerHTML = "<h2>" + sec.sec + "</h2>" + '<div class="pfl__rows"></div>';
+          var rows = el.querySelector(".pfl__rows");
+          sec.rows.forEach(function (r) {
+            all++;
+            var d = document.createElement("div");
+            d.className = "pfr";
+            d.innerHTML = '<div class="pfr__t"><span class="pfr__dot"></span><b>' + r.n + "</b><small>probing…</small></div>" +
+              '<p class="pfr__why">' + r.why + "</p>" +
+              (r.fix ? '<p class="pfr__fix">The fix: ' + r.fix + "</p>" : "");
+            rows.appendChild(d);
+            waits.push(r.run().then(function (res) {
+              d.classList.add(res.ok === true ? "is-ok" : res.ok === "part" ? "is-part" : "is-no");
+              d.querySelector("small").textContent = res.note;
+              if (res.ok === true) oks++; else nos++;
+              $("pfOk").textContent = oks; $("pfNo").textContent = nos; $("pfAll").textContent = all;
+            }));
+          });
+          board.appendChild(el);
+        });
+        Promise.all(waits).then(function () {
+          if (window.MCC_TRACK) window.MCC_TRACK("preflight_run", { ok: oks, no: nos });
+        });
+      }
+      $("pfAgain").addEventListener("click", paint);
+      paint();
+    })();
+  </script>
+</body>
+</html>

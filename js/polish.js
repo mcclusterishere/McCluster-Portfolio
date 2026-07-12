@@ -833,6 +833,33 @@
     lesson(0);
   })();
 
+  /* ---------- THE FACE DROP: a photo from the phone becomes the card's
+     face — resized in the browser to a small JPEG data-URI, so it rides
+     the listing row itself. No bucket, no URL homework. ---------- */
+  window.MCC_FACE = {
+    shrink: function (file, max) {
+      max = max || 512;
+      return new Promise(function (res, rej) {
+        var fr = new FileReader();
+        fr.onerror = rej;
+        fr.onload = function () {
+          var img = new Image();
+          img.onerror = rej;
+          img.onload = function () {
+            var k = Math.min(1, max / Math.max(img.width, img.height));
+            var c = document.createElement("canvas");
+            c.width = Math.max(1, Math.round(img.width * k));
+            c.height = Math.max(1, Math.round(img.height * k));
+            c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+            res(c.toDataURL("image/jpeg", 0.82));
+          };
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      });
+    },
+  };
+
   /* ---------- the way back: every room has a door out ----------
      A floating back button on every page but home — real history when
      there is one, the front door when there isn't. ---------- */
@@ -1044,7 +1071,9 @@
     "docket-516.html": 1, "dekalb.html": 1, "deluxe-516r.html": 1, "grind-paper.html": 1,
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
-    "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1, "walkthrough-qt6kv-2847.html": 1 };
+    "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1,
+    "privacy.html": 1, "preflight.html": 1, "embassy-instagram.html": 1, "embassy-tiktok.html": 1,
+    "embassy-youtube.html": 1, "walkthrough-qt6kv-2847.html": 1 };
   if (OPEN[here] || here.indexOf("song-") === 0) return;
   try {
     var card = JSON.parse(localStorage.getItem("mcc_rise") || "null");
