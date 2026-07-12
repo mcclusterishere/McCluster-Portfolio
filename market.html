@@ -670,9 +670,13 @@
         <input class="mk__in" id="pContact" type="text" placeholder="Name · email or phone">
         <button class="btn btn--ruby" id="pSend" type="button">Send it</button>
         <p class="mk__msg" id="pMsg"></p>
-        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> one price, no fee lines, ever.
-          You name your ask — it arrives whole. Card checkout on signed deals; the payment note everywhere else.</p>
-        <p class="mk__note"><em style="color:var(--cream)">Part of every dollar spent here builds the next artist.</em></p>
+        <p class="mk__note"><b style="color:var(--cream)">How money moves:</b> one price. Your ask arrives whole. Ever.</p>
+        <div class="fold">
+          <button class="fold__btn" data-fold type="button">💸 The fine grain — how money moves here</button>
+          <div class="fold__body">
+            <p class="mk__note">You name your ask and it arrives whole — the buyer sees one price with the house's cut already inside; no fee lines, no surprises. Signed deals with an armed rail get real card checkout; every other deal carries the payment note and the record holds it. Part of every dollar spent here builds the next artist.</p>
+          </div>
+        </div>
       </div>
 
       <!-- hard limits, for signed-in artists -->
@@ -3489,8 +3493,9 @@
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (rows) {
             if (!rows || !rows.length) return;
-            $("xcBoard").innerHTML = '<div class="mk__card" style="margin:1.1rem 0 0.2rem;border-color:rgba(69,182,255,0.35)">' +
-              '<span class="mp__lblx" style="color:#45b6ff">The board — the tape&rsquo;s top desks</span>' +
+            $("xcBoard").innerHTML = '<div class="mk__card fold" style="margin:1.1rem 0 0.2rem;border-color:rgba(69,182,255,0.35)">' +
+              '<button class="fold__btn" data-fold type="button" style="color:#45b6ff">📈 The board — the tape&rsquo;s top ' + rows.length + ' desks</button>' +
+              '<div class="fold__body">' +
               rows.map(function (b, i) {
                 return '<a href="page.html?who=' + encodeURIComponent(b.slug) + '" data-cta="board-' + esc(b.slug) +
                   '" style="display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid rgba(244,239,230,0.07);text-decoration:none;color:var(--cream)">' +
@@ -3500,7 +3505,7 @@
                   '<b style="font-variant-numeric:tabular-nums">' + (+b.score || 0) + "</b>" +
                   '<span style="color:#2fbf71;font-weight:800;font-size:0.9rem;font-variant-numeric:tabular-nums">$' + (+b.price || 0).toFixed(2) + "</span></a>";
               }).join("") +
-              '<p class="mk__note" style="margin-top:0.5rem">Score of 1000 — money the webhook saw, verified IDs, deduped heat, head-counted votes. The tape writes it nightly.</p></div>';
+              '<p class="mk__note" style="margin-top:0.5rem">Score of 1000 — money the webhook saw, verified IDs, deduped heat, head-counted votes. The tape writes it nightly.</p></div></div>';
             track("board_view", { n: rows.length });
           }).catch(function () {});
       })();

@@ -253,18 +253,11 @@
     });
   }
 
-  /* first visit, signed out, standing on Our Street → the walk begins */
+  /* ONE LESSON LAW: the dock walk teaches everything essential now
+     (its final cards carry the money beats), so the tour never auto-
+     stacks behind it. It waits on the ✦ Tour chip and ?tour=1/#tour. */
   var forced = /(^|[?&])tour=1/.test(location.search) || location.hash === "#tour";
-  var done = false;
-  try { done = !!localStorage.getItem(DONE_KEY); } catch (e) {}
-  var signedIn = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
-  if (forced || (!done && !signedIn)) {
-    // the dock walk teaches the bar first; the tour waits its turn
-    var classed = false;
-    try { classed = !!localStorage.getItem("mcc_dock_walk"); } catch (e) {}
-    if (!forced && !classed) document.addEventListener("mcc:dockwalk-done", function () { setTimeout(start, 700); });
-    else setTimeout(start, 900);
-  }
+  if (forced) setTimeout(start, 900);
 
   window.MCC_TOUR = { start: start, end: end };
 })();

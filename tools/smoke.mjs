@@ -107,18 +107,20 @@ function check(name, cond, detail) {
     await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
     await page.waitForTimeout(500);
     check("market", !(await page.$(".appbar--morph")), "double-tap did not bring the main bar back");
+    // beat 6: the money card — where the floor, the pay door and the desk live
+    check("market", (await page.textContent(".dockwalk")).includes("Where the money lives"),
+      "the walk's money beat is missing");
+    await page.click("#dwBtn"); // Got it — last one
+    await page.waitForTimeout(300);
     await page.click("#dwBtn"); // I got it — open the doors
     await page.waitForTimeout(300);
     check("market", !(await page.$(".dockwalk")), "the gate did not lift after the lesson");
   }
-  // …and the tour follows the lesson — it waits its turn behind the walk
-  await page.waitForTimeout(1400);
-  const tour = await page.$("#mccTour");
-  check("market", tour, "first-visit tour did not appear after the dock walk");
-  if (tour) {
-    await page.click("[data-tour-skip]");
-    await page.waitForTimeout(300);
-  }
+  // THE ONE LESSON LAW: the tour never auto-stacks behind the walk — it
+  // waits on the ✦ Tour chip (and ?tour=1) instead
+  await page.waitForTimeout(1600);
+  check("market", !(await page.$("#mccTour")), "the tour auto-stacked behind the walk — one lesson only");
+  check("market", await page.$("#mkTourChip"), "the ✦ Tour chip is missing from the rail");
   const provFetches = Object.entries(netCounts).filter(([u]) => u.endsWith("providers.json")).map(([, n]) => n)[0] || 0;
   check("market", provFetches === 1, `providers.json fetched ${provFetches}× — the cache should make it exactly 1`);
   check("market", (await page.$$(".xc__row")).length >= 6, "floor underpopulated");

@@ -4480,3 +4480,20 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .street__trade { color: #00c805; border-color: rgba(0, 200, 5, 0.45); }
 .street__all { margin-top: 1.3rem; }
 .street__all a { color: #e8c877; font-weight: 800; text-decoration: none; }
+
+/* THE FOLD — long copy waits behind one honest tap; the fast reader
+   never pays for the slow reader's detail */
+.fold__btn { display: block; width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
+  color: var(--cream); font: inherit; font-weight: 800; font-size: 0.92rem; padding: 0.55em 0; }
+.fold__btn::after { content: " ⌄"; color: var(--cream-dim); font-weight: 400; }
+.fold.is-open .fold__btn::after { content: " ⌃"; }
+.fold__body { display: none; }
+.fold.is-open .fold__body { display: block; }
+
+/* THE TL;DR CARD — the whole paper in three lines + the honest clock */
+.tldr { border: 1.5px solid rgba(232, 200, 119, 0.5); border-radius: 14px; background: rgba(20, 16, 12, 0.85);
+  padding: 1rem 1.1rem; margin: 1.2rem 0; }
+.tldr__k { color: #e8c877; font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 800; }
+.tldr ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.tldr li { color: var(--cream-dim); line-height: 1.6; font-size: 0.92rem; margin-top: 0.25rem; }
+.tldr li b { color: var(--cream); }

@@ -802,6 +802,7 @@
       { t: "Now double-tap WE.", b: "Two taps OPEN the wing — the bar becomes WE's own menu, and you never left this page.", ev: "mcc:dock-morph" },
       { t: "Tap any slot once.", b: "Its working part pops up RIGHT HERE — the meter quotes, the road lists — and you use it without ever leaving the page. Tap again, it pops down.", ev: "mcc:dock-peek" },
       { t: "Double-tap WE again.", b: "The main bar comes right back. The tab you opened never moved — only the others made room.", ev: "mcc:dock-revert" },
+      { t: "Where the money lives.", b: "Our Street (🏪 Market): every member is a ticker. The 💸 Pay door moves real card money onto the record. And YOUR desk — Profile wing — holds your listing, wallet, deals and messages.", btn: "Got it — last one" },
       { t: "That's the whole grammar.", b: "1 tap looks (a slot pops its tool) · 2 taps open a wing · 3 taps carry you all the way through. The cards' buttons travel too. ONE exception: while music plays, the Only Us tab IS the pause button — one tap, silence.", btn: "I got it — open the doors" },
     ];
     var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
@@ -832,6 +833,17 @@
     if (window.MCC_TRACK) window.MCC_TRACK("dockwalk_start", {});
     lesson(0);
   })();
+
+  /* ---------- THE FOLD: long copy waits behind one honest tap.
+     <div class="fold"><button class="fold__btn" data-fold>label</button>
+     <div class="fold__body">…</div></div> — closed by default, the fast
+     reader never pays for the slow reader's detail. ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-fold]");
+    if (!b) return;
+    var f = b.closest(".fold");
+    if (f) f.classList.toggle("is-open");
+  });
 
   /* ---------- THE FACE DROP: a photo from the phone becomes the card's
      face — resized in the browser to a small JPEG data-URI, so it rides
@@ -1072,7 +1084,8 @@
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
     "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1,
-    "privacy.html": 1, "preflight.html": 1, "embassy-instagram.html": 1, "embassy-tiktok.html": 1,
+    "privacy.html": 1, "preflight.html": 1, "glossary.html": 1, "reading-room.html": 1,
+    "embassy-instagram.html": 1, "embassy-tiktok.html": 1,
     "embassy-youtube.html": 1, "walkthrough-qt6kv-2847.html": 1 };
   if (OPEN[here] || here.indexOf("song-") === 0) return;
   try {
