@@ -4106,6 +4106,13 @@ button.hire__pill { font: inherit; cursor: pointer; }
   border-radius: 50%; border: 0; cursor: pointer; background: rgba(10, 8, 7, 0.85); color: #f4efe6;
   font-size: 0.95rem; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
 
+/* ---- THE SOUND EXCEPTION: playing music turns the tab into pause ---- */
+.appbar__tab { position: relative; }
+.appbar__tab.is-sound svg, .appbar__tab.is-sound .dk-ic { opacity: 0.25; }
+.appbar__tab.is-sound::before { content: "⏸"; position: absolute; top: 0.35rem; left: 50%;
+  transform: translateX(-50%); font-size: 1.15rem; line-height: 1.75rem; color: #e5383b;
+  text-shadow: 0 0 12px rgba(229, 56, 59, 0.6); }
+
 /* ---- THE PEEK: one tap looks — the card that explains a door ---- */
 .dk-peek { position: fixed; left: 50%; transform: translateX(-50%); z-index: 205;
   bottom: calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 0.9rem);

@@ -95,6 +95,9 @@
       });
     },
     saveListing: function (fields) {
+      if (fields.ticker) {
+        try { localStorage.setItem("mcc_ticker", String(fields.ticker).toUpperCase()); } catch (e) {}
+      }
       return window.MCC_NET.myListing().then(function (mine) {
         if (mine) {
           return authed("providers?id=eq." + mine.id, { method: "PATCH", body: fields, prefer: "return=representation" })
@@ -107,6 +110,9 @@
         mirror(Object.assign({ _form: "provider-listing" }, fields));
         return authed("providers", { method: "POST", body: fields, prefer: "return=representation" })
           .then(function (rows) { return rows && rows[0]; });
+      }).catch(function (e) {
+        if (/409/.test(String(e && e.message))) throw new Error("That ticker is already claimed — pick another name.");
+        throw e;
       });
     },
 

@@ -58,7 +58,24 @@
   };
 
   /* ---------- session plumbing ---------- */
-  function saveSession(s) { jset("session", s); }
+  /* THE KEEP: the session mirrors to a second shelf, and the mirror
+     restores it if the main copy is ever cleared by accident — the
+     same device stays the same member, same numbers. A real sign-out
+     clears both shelves on purpose. */
+  function saveSession(s) {
+    jset("session", s);
+    try { localStorage.setItem("mcc_sess_keep", JSON.stringify(s)); } catch (e) {}
+  }
+  (function restoreKeep() {
+    try {
+      if (!localStorage.getItem("mccdb_session")) {
+        var kept = localStorage.getItem("mcc_sess_keep");
+        if (kept) localStorage.setItem("mccdb_session", kept);
+      } else {
+        localStorage.setItem("mcc_sess_keep", localStorage.getItem("mccdb_session"));
+      }
+    } catch (e) {}
+  })();
   function session() { return jget("session", null); }
   function jwtExp(tok) { try { return JSON.parse(atob(tok.split(".")[1])).exp * 1000; } catch (e) { return 0; } }
 
@@ -170,7 +187,11 @@
         return true;
       });
     },
-    signOut: function () { jdel("session"); return Promise.resolve(); },
+    signOut: function () {
+      jdel("session");
+      try { localStorage.removeItem("mcc_sess_keep"); } catch (e) {}
+      return Promise.resolve();
+    },
     /* the admin door: email + password, no inbox in the loop.
        Create the user once in Supabase → Authentication → Users →
        Add user (auto-confirm on) — then this signs in directly. */

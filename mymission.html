@@ -465,8 +465,8 @@
         var rk = document.getElementById("mmRekey");
         if (rk) rk.addEventListener("click", function (ev) {
           ev.preventDefault();
-          try { localStorage.removeItem("mccdb_session"); } catch (e3) {}
-          location.reload();
+          try { localStorage.removeItem("mccdb_session"); localStorage.removeItem("mcc_sess_keep"); } catch (e3) {}
+          location.href = "profile.html"; // sign back into the SAME account — a fresh instant account starts from zero
         });
         /* THE FACES: rail taps + the pick walk (photo cards) */
         (function () {
@@ -553,8 +553,8 @@
         var rk2 = document.getElementById("mmRekey2");
         if (rk2) rk2.addEventListener("click", function (ev) {
           ev.preventDefault();
-          try { localStorage.removeItem("mccdb_session"); } catch (e4) {}
-          location.reload();
+          try { localStorage.removeItem("mccdb_session"); localStorage.removeItem("mcc_sess_keep"); } catch (e4) {}
+          location.href = "profile.html"; // same account, fresh key — never a new instant account
         });
       });
     })();

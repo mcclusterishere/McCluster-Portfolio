@@ -65,6 +65,11 @@
     if (!model || !model.last) return; // nothing worth carrying
     var g = grindSnap();
     if (g) model = Object.assign({}, model, { grind: g });
+    /* THE NAMEPLATE: the device wears the member's ticker */
+    try {
+      var plate = localStorage.getItem("mcc_ticker");
+      if (plate) model = Object.assign({}, model, { plate: plate });
+    } catch (e) {}
     pushed = true;
     authed("device_state?on_conflict=owner", {
       method: "POST", keepalive: true,

@@ -2023,6 +2023,32 @@
                 if (pre) {
                   if (pre.name && !$("fName").value) $("fName").value = pre.name;
                   try { var tc = localStorage.getItem("mcc_ticker_claim"); if (tc && !$("fTicker").value) $("fTicker").value = tc; } catch (e2) {}
+                  /* THE NAMEPLATE: the ticker answers live while they type */
+                  (function () {
+                    var ft = $("fTicker");
+                    if (!ft || ft.getAttribute("data-nplate")) return;
+                    ft.setAttribute("data-nplate", "1");
+                    var t0 = null;
+                    ft.addEventListener("input", function () {
+                      clearTimeout(t0);
+                      var v = ft.value.trim().toUpperCase();
+                      if (v.length < 2) return;
+                      t0 = setTimeout(function () {
+                        var S9 = window.MCC_SUPA;
+                        fetch(S9.url + "/rest/v1/rpc/ticker_free", { method: "POST",
+                          headers: { "Content-Type": "application/json", apikey: S9.key, Authorization: "Bearer " + S9.key },
+                          body: JSON.stringify({ p_tick: v }) })
+                          .then(function (r) { return r.ok ? r.json() : null; })
+                          .then(function (free) {
+                            if (free === null) return; // the check arms with one paste (nameplate)
+                            var mine9 = ft.getAttribute("data-mine") === v;
+                            $("tdSaveMsg").textContent = free || mine9
+                              ? "$" + v + " is yours to claim ✓"
+                              : "$" + v + " is taken — pick another name.";
+                          }).catch(function () {});
+                      }, 400);
+                    });
+                  })();
                   if (pre.headline && !$("fHeadline").value) $("fHeadline").value = pre.headline;
                   if (pre.area && !$("fArea").value) $("fArea").value = pre.area;
                   if (pre.blurb && !$("fBlurb").value) $("fBlurb").value = pre.blurb;
@@ -2048,6 +2074,7 @@
             }
             $("fName").value = mine.name || "";
             $("fTicker").value = mine.ticker || "";
+            if (mine.ticker) $("fTicker").setAttribute("data-mine", String(mine.ticker).toUpperCase());
             $("fHeadline").value = mine.headline || "";
             $("fArea").value = mine.area || "";
             $("fBlurb").value = mine.blurb || "";

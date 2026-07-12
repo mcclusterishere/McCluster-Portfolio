@@ -479,7 +479,9 @@
         try {
           if (window.MCC_GRIND) {
             var st = window.MCC_GRIND.state();
-            live.push({ owner: "this device", updated_at: new Date().toISOString(),
+            var myPlate = "";
+            try { myPlate = localStorage.getItem("mcc_ticker") || ""; } catch (eP) {}
+            live.push({ owner: myPlate ? "this device · $" + myPlate : "this device", updated_at: new Date().toISOString(),
               g: { device: st.device, E: +(st.E || 0).toFixed(1), streak: st.streak,
                 boost: window.MCC_GRIND.boost(), tasks: (st.done[new Date().toISOString().slice(0,10)] || []).length,
                 shadow: (st.shadow && st.shadow[new Date().toISOString().slice(0,10)] || []).length,

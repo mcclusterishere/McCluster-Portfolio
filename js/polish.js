@@ -532,6 +532,28 @@
     };
     var HOME_BAR = dock.innerHTML;
     var wingOn = null, taps = 0, tapKey = null, timer = null, practice = false;
+
+    /* THE SOUND EXCEPTION: while music is PLAYING, the Only Us tab IS
+       the pause button — the ONE tab where a single tap acts right now.
+       Silent again, it speaks the normal grammar like everyone else. */
+    var SOUND_ON = false;
+    function soundLive() {
+      return SOUND_ON || !!(window.MCC_RADIO && window.MCC_RADIO.playing && window.MCC_RADIO.playing());
+    }
+    function paintSound() {
+      var mt = dock.querySelector('[data-appnav="music"]');
+      if (mt) mt.classList.toggle("is-sound", soundLive());
+    }
+    function hushAll() {
+      if (window.MCC_RADIO && window.MCC_RADIO.playing && window.MCC_RADIO.playing()) window.MCC_RADIO.toggle();
+      document.querySelectorAll("audio, video").forEach(function (a) { try { a.pause(); } catch (e) {} });
+      SOUND_ON = false;
+      paintSound();
+    }
+    window.addEventListener("mcc:nowplaying", function (e) {
+      SOUND_ON = !!(e.detail && e.detail.playing);
+      paintSound();
+    });
     function emit(n, d) { try { document.dispatchEvent(new CustomEvent(n, { detail: d || {} })); } catch (e) {} }
     function veilOn() { document.documentElement.classList.add("pt-out"); }
     function veilOff() { document.documentElement.classList.remove("pt-out"); }
@@ -714,6 +736,7 @@
       wingOn = null;
       dock.classList.remove("appbar--morph");
       dock.innerHTML = HOME_BAR;
+      paintSound();
       emit("mcc:dock-revert", {});
     }
     dock.addEventListener("click", function (e) {
@@ -723,6 +746,8 @@
       e.preventDefault();
       var slot = a.getAttribute("data-dock");
       var key = a.getAttribute("data-appnav");
+      /* the one immediate tap on the whole bar: music playing → pause */
+      if (key === "music" && soundLive()) { hushAll(); return; }
       var id = slot || key;
       var w = key ? WINGS[key] : null;
       if (id !== tapKey) { taps = 0; tapKey = id; }
@@ -777,7 +802,7 @@
       { t: "Now double-tap WE.", b: "Two taps OPEN the wing — the bar becomes WE's own menu, and you never left this page.", ev: "mcc:dock-morph" },
       { t: "Tap any slot once.", b: "Its working part pops up RIGHT HERE — the meter quotes, the road lists — and you use it without ever leaving the page. Tap again, it pops down.", ev: "mcc:dock-peek" },
       { t: "Double-tap WE again.", b: "The main bar comes right back. The tab you opened never moved — only the others made room.", ev: "mcc:dock-revert" },
-      { t: "That's the whole grammar.", b: "1 tap looks (a slot pops its tool) · 2 taps open a wing · 3 taps carry you all the way through. The cards' buttons travel too.", btn: "I got it — open the doors" },
+      { t: "That's the whole grammar.", b: "1 tap looks (a slot pops its tool) · 2 taps open a wing · 3 taps carry you all the way through. The cards' buttons travel too. ONE exception: while music plays, the Only Us tab IS the pause button — one tap, silence.", btn: "I got it — open the doors" },
     ];
     var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
     var at = -1;
