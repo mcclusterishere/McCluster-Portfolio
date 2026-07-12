@@ -185,6 +185,14 @@
             run: function () { return rpc("admin_note_member", { p_owner: "00000000-0000-0000-0000-000000000000", p_msg: "preflight" }, function (x, missing) {
               return { ok: !missing, note: missing ? "not pasted" : "armed (needs the admin sign-in to fire)" };
             }); } },
+          { n: "THE GUIDE (AI concierge)", why: "Claude answering at the Lobby door and the floating ✦ — the AI that routes people to the right floor.",
+            fix: "Paste <code>docs/guide-schema.sql</code>, deploy <code>the-guide</code> (JWT OFF) + set <code>ANTHROPIC_KEY</code> — full code &amp; steps in <code>docs/the-guide.md</code>.",
+            run: function () { return fn("the-guide", function (x, missing) {
+              /* the function checks the caller is a real member itself, so the
+                 anon key bounces with 401 — a 401 proves it's deployed, a 404
+                 means the function isn't there yet. */
+              return { ok: !missing, note: missing ? "not deployed" : "deployed — the door answers" };
+            }); } },
         ] },
         { sec: "The signals — analytics", rows: [
           { n: "Google Analytics 4", why: "Every page + event already reports to GA4.",
