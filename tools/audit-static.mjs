@@ -17,7 +17,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const fails = [];
 // media that is wired ahead of upload, on purpose — pages degrade gracefully
 const PENDING = new Set(["assets/audio/deep-end.mp3", "assets/audio/runway.mp3", "assets/img/mission-hero.jpg",
-  "assets/img/offer-hero.jpg", "assets/img/we-night.jpg"]);
+  "assets/img/offer-hero.jpg", "assets/img/we-night.jpg",
+  "assets/img/ghana-gate.jpg", "assets/img/ghana-warehouse.jpg"]);
 const pages = readdirSync(ROOT).filter((f) => f.endsWith(".html"));
 
 const BANNED = [
