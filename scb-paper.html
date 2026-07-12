@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>The SCB White Paper · Street Credit Bureau</title>
-  <meta name="description" content="Street Credit Bureau — Alternative Credit Ecosystems: Models, Technologies, and a Blueprint. The white paper, the download, and the map of how the model runs live on Equity Uprise.">
+  <meta name="description" content="Street Credit Bureau — Alternative Credit Ecosystems: Models, Technologies, and a Blueprint. The white paper, and the live six-pillar 0–1000 reputation engine running it on streetcreditbureau.com.">
   <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
   <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=__STAMP__">
@@ -66,8 +66,8 @@
     <h1>Alternative Credit Ecosystems</h1>
     <div class="tldr"><span class="tldr__k">TL;DR · 8 min full read</span><ul>
       <li><b>The idea:</b> a community-owned credit bureau — reputation earned in the open, kept by you, shown to who you choose.</li>
-      <li><b>The blueprint:</b> models and technologies for alternative credit, mapped to what already runs live on Equity Uprise.</li>
-      <li><b>The paper:</b> the full PDF sits below; the live implementation is the Street Cred Portal.</li>
+      <li><b>The blueprint:</b> models and technologies for alternative credit, mapped to the engine that runs it live.</li>
+      <li><b>The engine:</b> a six-pillar, 0–1000 reputation dial — <code>street_score()</code> — computed only from signals the platform can't fake. The full PDF sits below.</li>
     </ul></div>
     <p class="wp__meta"><span>Models, Technologies &amp; a Blueprint</span><span><b>McCluster Corp</b> &middot; nonprofit &middot; SAM.gov registered</span><span>32 pages</span></p>
     <div class="wp__acts">
@@ -102,28 +102,48 @@
     </section>
 
     <section class="wp__sec">
+      <h2>The score, in the open — six pillars, one dial</h2>
+      <p>The Street Score is a <b>reputation index from 0 to 1000</b>, not a FICO score in the legal sense and
+        not a security. It reads only signals the platform witnesses firsthand and that a bot can't forge —
+        money the payment webhook actually captured, government-grade verified identifiers, deduped plays,
+        head-counted votes, signed deals. Six pillars, log-curved so no single number runs away, and a
+        cold-start confidence cap so a brand-new file can't flash 900 overnight. Every line of the engine —
+        <code>street_score()</code> in <code>docs/score-schema.sql</code> — is readable in the repo; no black box.</p>
+      <div class="wp__tablewrap"><table>
+        <tr><th>Pillar</th><th>Weight</th><th>What the platform witnesses (unforgeable)</th></tr>
+        <tr><td>Capital</td><td>30%</td><td>Real captured money for your desks — webhook-recorded deal payments, 90-day and all-time — plus your equity stake.</td></tr>
+        <tr><td>Craft</td><td>15%</td><td>The identifier locker: ISRC, UPC, IPI, ISNI, PRO, channel — professional identity held. Verified ones count double.</td></tr>
+        <tr><td>Reach</td><td>15%</td><td>Followers, deduped plays of your tracks, and the reactions your posts actually earned.</td></tr>
+        <tr><td>Community</td><td>15%</td><td>Plugs you brought, votes cast, posts made, collabs locked on the record — peer accountability, measured.</td></tr>
+        <tr><td>Consistency</td><td>10%</td><td>Showing up and staying: distinct active days over 30, and tenure on Our Street.</td></tr>
+        <tr><td>Co-sign</td><td>15%</td><td>Third-party trust: verified identifiers, academy lessons finished, a fulfilled gas grant, the Member Agreement signed.</td></tr>
+      </table></div>
+      <p><b>The bands:</b> 800+ Excellent · 650+ Strong · 450+ Building · 250+ Starting · else New file. The dial
+        always names <b>the next move</b> — the weakest weighted pillar's own coaching, credit-builder style.
+        The nightly tape (a <code>pg_cron</code> job) scores every desk and writes the snapshot the whole floor reads.</p>
+    </section>
+
+    <section class="wp__sec">
       <h2>From blueprint to platform</h2>
-      <p>The companion document — <b>how the paper's model runs live on Equity Uprise today</b>. Every
-        prescription mapped to the code that carries it, and an honest ledger of what waits on counsel.
-        (Also in the repo: <code>docs/scb-application.md</code>.)</p>
+      <p>Every prescription in the paper, mapped to the code that carries it — and an honest ledger of what
+        waits on counsel. (Also in the repo: <code>docs/scb-application.md</code> and <code>docs/street-score.md</code>.)</p>
       <div class="wp__tablewrap"><table>
         <tr><th>The paper prescribes</th><th>The platform built</th><th>Where it lives</th><th>Status</th></tr>
-        <tr><td>Alternative payment data (rent, utility, phone) as credit signal</td><td>Deals that reach paid/completed; signed&rarr;done inside 30 days reads on-time</td><td>"Payment history" book &middot; 35%</td><td class="wp__live">Live</td></tr>
-        <tr><td>Cash-flow underwriting over credit history</td><td>How many of the last 6 months saw deal money move, and volume</td><td>"Cash flow" book &middot; 20%</td><td class="wp__live">Live</td></tr>
-        <tr><td>Community reputation &amp; peer accountability</td><td>Client stars (deal-verified, ~3&times; weight) + peer stars, volume on a square root</td><td>Ratings &rarr; "Community word" &middot; 20%</td><td class="wp__live">Live</td></tr>
-        <tr><td>Psychometric / gamified behavioral layer</td><td>The duality quiz, the grind (streaks, shadow board), the civic ride on Please Set Me Free</td><td>"Behavior" book &middot; 15% + the marker registry</td><td class="wp__live">Live</td></tr>
-        <tr><td>Group membership in good standing</td><td>Listing live, fully dressed, tenure accruing on Our Street</td><td>"Tenure &amp; seat" book &middot; 10%</td><td class="wp__live">Live</td></tr>
-        <tr><td>Open ML scoring instead of proprietary black boxes</td><td>The two-model law: the staging model trains the live one; every line of the engine readable in the repo</td><td>streetscore.js &middot; mworth.js &middot; mgrind.js</td><td class="wp__live">Live</td></tr>
-        <tr><td>Mobile-first data capture</td><td>Device-keyed grind, every surface a sensor, the offline-capable app</td><td>The PWA</td><td class="wp__live">Live</td></tr>
-        <tr><td>Transparency &amp; coaching, not judgment</td><td>The dial shows its five books and weights; the weakest book speaks as "the next move"</td><td>The SCB room in the Market</td><td class="wp__live">Live</td></tr>
-        <tr><td>No record &ne; bad record</td><td>Empty books start neutral-low, never zero — inclusion is the design rule</td><td>streetscore.js</td><td class="wp__live">Live</td></tr>
-        <tr><td>Community institutions as economic units</td><td>Programs trade on Our Street; the crowd moves their price ($EU)</td><td>The exchange</td><td class="wp__live">Live</td></tr>
-        <tr><td>A community token for incentives (the paper's SCT)</td><td>M Token — closed-loop platform credit, minted only by the deal-completion trigger</td><td>The token ledger</td><td class="wp__live">Live &middot; closed loop</td></tr>
-        <tr><td>Everyday individuals as lenders (StreetFund / P2P)</td><td>The scoring engine is ready to underwrite; lending is regulated in every US state</td><td>&mdash;</td><td class="wp__wait">Counsel first</td></tr>
+        <tr><td>Alternative payment &amp; cash-flow data as the credit signal</td><td>Webhook-captured deal money, 90-day and all-time, plus equity stake — the heaviest pillar</td><td>Capital pillar &middot; 30%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Professional identity / thin-file enrichment</td><td>The identifier locker — ISRC, UPC, PRO, channel; verified counts double</td><td>Craft pillar &middot; 15%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Audience &amp; reputation reach</td><td>Followers, deduped plays, earned reactions</td><td>Reach pillar &middot; 15%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Community reputation &amp; peer accountability</td><td>Plugs brought, votes cast, posts, locked collabs</td><td>Community pillar &middot; 15%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Behavioral consistency (psychometric-lite)</td><td>Distinct active days over 30 + tenure on the floor</td><td>Consistency pillar &middot; 10%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Group membership &amp; third-party co-sign</td><td>Verified IDs, academy lessons, gas grant, signed agreement</td><td>Co-sign pillar &middot; 15%</td><td class="wp__live">Live</td></tr>
+        <tr><td>Open ML instead of proprietary black boxes</td><td>Every line of the scoring engine readable in the repo; log-curved, confidence-capped</td><td><code>street_score()</code> &middot; score-schema.sql</td><td class="wp__live">Live</td></tr>
+        <tr><td>Mobile-first data capture</td><td>Device-keyed activity, every surface a sensor, the offline-capable app</td><td>The PWA</td><td class="wp__live">Live</td></tr>
+        <tr><td>Transparency &amp; coaching, not judgment</td><td>The dial shows its six pillars and weights; the weakest speaks as "the next move"</td><td>The SCB room in the Market</td><td class="wp__live">Live</td></tr>
+        <tr><td>No record &ne; bad record</td><td>Empty pillars start neutral-low, never zero; the confidence cap protects the cold start</td><td><code>street_score()</code></td><td class="wp__live">Live</td></tr>
+        <tr><td>A community token for incentives (the paper's SCT)</td><td>M Token / E&#10548; — closed-loop platform credit, minted only by the deal-completion trigger</td><td>The token ledger</td><td class="wp__live">Live &middot; closed loop</td></tr>
+        <tr><td>Everyday individuals as lenders (StreetFund / P2P)</td><td>The engine is ready to underwrite; lending is regulated in every US state</td><td>&mdash;</td><td class="wp__wait">Counsel first</td></tr>
         <tr><td>Token governance / value share</td><td>Closed loop holds until the attorney conversation</td><td>&mdash;</td><td class="wp__wait">Counsel first</td></tr>
         <tr><td>On-chain attestations, smart-contract credit</td><td>Not before the token questions settle</td><td>&mdash;</td><td class="wp__wait">Deferred</td></tr>
-        <tr><td>Open banking / utility data import</td><td>Real-world payment histories joining the books (Plaid-class)</td><td>&mdash;</td><td class="wp__wait">Roadmap</td></tr>
-        <tr><td>Cross-platform reach</td><td>Nightly stats snapshot — artists &amp; daily-stats tables live, Action pending API keys</td><td>songstats schema</td><td class="wp__wait">Staged</td></tr>
+        <tr><td>Open banking / utility import (Plaid-class)</td><td>Real-world payment histories joining the pillars</td><td>&mdash;</td><td class="wp__wait">Roadmap</td></tr>
       </table></div>
 
       <div class="wp__div">
@@ -135,16 +155,15 @@
       </div>
       <div class="wp__div" style="margin-top:0.8rem">
         <b>What the platform adds that the paper couldn't:</b> the paper assumes signals must be
-        imported. Equity Uprise <b>generates</b> them — the marketplace witnesses deals firsthand, the Heat
-        counter witnesses plays, ratings witness the community's word, the grind witnesses showing up.
+        imported. The platform <b>generates</b> them — the marketplace witnesses deals firsthand, the play
+        counter witnesses plays, votes witness the community's word, the record witnesses showing up.
         First-party witnessed data beats any scraped feed. The moat is that the bureau and the economy
-        live in the same building.
+        live in the same building — now under its own name, <b>streetcreditbureau.com</b>.
       </div>
     </section>
 
     <section class="wp__sec">
-      <h2>Read the paper</h2>
-      <div class="wp__frame"><iframe src="assets/papers/scb-alternative-credit-ecosystems.pdf" title="Street Credit Bureau — Alternative Credit Ecosystems (PDF)"></iframe></div>
+      <h2>Read the paper</h2>"><iframe src="assets/papers/scb-alternative-credit-ecosystems.pdf" title="Street Credit Bureau — Alternative Credit Ecosystems (PDF)"></iframe></div>
       <p style="font-size:0.84rem">If the viewer doesn't render on your device, use the download button at the top — the PDF is the document of record.</p>
     </section>
 
