@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mcclusterishere.github.io/McCluster-Portfolio/sitemap.xml
+Sitemap: https://streetcreditbureau.com/sitemap.xml

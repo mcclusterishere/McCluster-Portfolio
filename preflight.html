@@ -160,6 +160,11 @@
                  deployed, a 404/PGRST202 means the paste never landed. */
               return { ok: !missing, note: missing ? "engine not pasted" : "engine answers — deployed" };
             }); } },
+          { n: "THE BUREAU — street_score / my_card", why: "The crown jewel: the 0–1000 reputation dial and the one-call card the whole app reads.",
+            fix: "Paste <code>docs/score-schema.sql</code> (SEAL #2 — the canonical score engine). Enable pg_cron so the tape writes nightly.",
+            run: function () { return rpc("my_card", {}, function (x, missing) {
+              return { ok: !missing, note: missing ? "score engine not pasted" : "the Bureau answers — deployed" };
+            }); } },
           { n: "The nightly tape (score_board)", why: "Prices and street credit on the floor, the board, the penthouse tape.",
             fix: "Paste <code>docs/one-tape.sql</code>, then schedule the nightly cron (in the doc).",
             run: function () { return rpc("score_board", { p_limit: 1 }, function (x, missing) {

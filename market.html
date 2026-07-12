@@ -945,7 +945,6 @@
   <script src="js/amenities.js?v=__STAMP__"></script>
   <script src="js/floorcache.js?v=__STAMP__"></script>
   <script src="js/house.js?v=__STAMP__"></script>
-  <script src="js/streetscore.js?v=__STAMP__"></script>
   <script>
     (function () {
       "use strict";
@@ -3515,20 +3514,53 @@
   </script>
   <script>
     /* ============ THE STREET CREDIT BUREAU PANE ============
-       The institution's front desk: the dial, the five books, the next
-       move. Computed by js/streetscore.js from the owner's own
-       RLS-guarded records — the bureau keeps nothing; the person does. */
+       ONE number, one meaning. The dial reads the SAME authoritative
+       score the whole platform uses — street_score() (0–1000, six
+       unforgeable pillars), served by my_score(). No second engine, no
+       second scale: the Bureau's number IS the tape's number. */
     (function () {
       "use strict";
       function $(id) { return document.getElementById(id); }
       function esc(s) { var d = document.createElement("i"); d.textContent = s == null ? "" : s; return d.innerHTML; }
       function track(n, p) { if (window.MCC_TRACK) window.MCC_TRACK(n, p); }
 
-      function bookRows(books) {
-        return books.map(function (b) {
-          return '<div class="scb__book"><small>' + esc(b.label) + " · " + Math.round(b.weight * 100) + "%</small>" +
-            '<span class="scb__bar"><i style="--v:' + b.value + '"></i></span><b>' + b.value + "</b></div>";
+      // THE CANONICAL DIAL — 0–1000, one band table used everywhere
+      function band(sc) {
+        return sc >= 800 ? "Excellent" : sc >= 650 ? "Strong" : sc >= 450 ? "Building"
+             : sc >= 250 ? "Starting" : "New file";
+      }
+      // the six pillars, their weights, and the credit-builder next move
+      var PILLARS = [
+        ["capital", "Capital", 0.30, "Close a paid deal on the record — real captured money is the heaviest pillar."],
+        ["craft", "Craft", 0.15, "Bank an identifier — ISRC, channel, PRO. Verified ones count double."],
+        ["reach", "Reach", 0.15, "Link your platforms so the nightly sweep counts your real followers and plays."],
+        ["community", "Community", 0.15, "Bring a plug, cast a vote, post, or lock a collab — the community's word."],
+        ["consistency", "Consistency", 0.10, "Show up and keep showing up — daily presence and time on the floor build this."],
+        ["cosign", "Co-sign", 0.15, "Verify identifiers, finish an academy lesson, sign the Member Agreement."],
+      ];
+      function pillarRows(P) {
+        return PILLARS.map(function (p) {
+          var v = Math.max(0, Math.min(100, Math.round(+P[p[0]] || 0)));
+          return '<div class="scb__book"><small>' + esc(p[1]) + " · " + Math.round(p[2] * 100) + "%</small>" +
+            '<span class="scb__bar"><i style="--v:' + v + '"></i></span><b>' + v + "</b></div>";
         }).join("");
+      }
+      function nextMove(P) {
+        var weakest = PILLARS.slice().sort(function (a, b) {
+          return (+P[a[0]] || 0) * a[2] - (+P[b[0]] || 0) * b[2];
+        })[0];
+        return weakest[3];
+      }
+
+      function fetchScore() {
+        var S = window.MCC_SUPA;
+        if (!S || !S.url || !S.token) return Promise.resolve(null);
+        return S.token().then(function (t) {
+          if (!t) return null;
+          return fetch(S.url + "/rest/v1/rpc/my_score", { method: "POST",
+            headers: { "Content-Type": "application/json", apikey: S.key, Authorization: "Bearer " + t }, body: "{}" })
+            .then(function (r) { return r.ok ? r.json() : null; });
+        }).catch(function () { return null; });
       }
 
       var painted = false;
@@ -3536,27 +3568,32 @@
         if (painted) return;
         painted = true;
         var authed = !!(window.MCC_AUTH && window.MCC_AUTH.user && window.MCC_AUTH.user());
-        if (!authed || !window.MCC_STREET) {
+        if (!authed) {
           $("scbOut").classList.remove("scb__hidden");
-          // the empty file: what the books ARE, neutral-low, honest
-          var sample = window.MCC_STREET ? window.MCC_STREET.score({ deals: [], ratings: [], listing: null, grind: {} }) : null;
-          if (sample) $("scbBooksOut").innerHTML = bookRows(sample.books);
+          // the empty file: the six pillars at neutral, honest — no record ≠ bad record
+          $("scbBooksOut").innerHTML = pillarRows({});
           track("scb_view", { authed: false });
           return;
         }
         $("scbIn").classList.remove("scb__hidden");
-        window.MCC_STREET.mine().then(function (out) {
-          var pct = Math.round(((out.score - 300) / 550) * 100);
-          $("scbDial").style.setProperty("--p", pct);
-          $("scbScore").textContent = out.score;
-          $("scbBand").textContent = out.band;
-          $("scbLede").textContent = "The dial reads your own books — deals done, money on time, the community's word, your presence. " +
-            "It moves the moment the record does.";
-          $("scbBooks").innerHTML = bookRows(out.books);
-          $("scbNext").innerHTML = "<b>The next move</b>" + esc(out.next);
-          track("scb_view", { authed: true, band: out.band });
+        fetchScore().then(function (s) {
+          if (!s || s.score == null) {
+            $("scbLede").textContent = "Your file is opening — the tape scores it on the next nightly run.";
+            $("scbBooks").innerHTML = pillarRows({});
+            return;
+          }
+          var P = s.pillars || {};
+          $("scbDial").style.setProperty("--p", Math.round((+s.score) / 10));
+          $("scbScore").textContent = +s.score;
+          $("scbBand").textContent = band(+s.score) + " · of 1000";
+          var conf = Math.round((+s.confidence || 0) * 100);
+          $("scbLede").textContent = "Six unforgeable pillars — money the webhook actually saw, verified identifiers, deduped plays, "
+            + "head-counted votes. Confidence " + conf + "% — verify more and the cold-start cap lifts.";
+          $("scbBooks").innerHTML = pillarRows(P);
+          $("scbNext").innerHTML = "<b>The next move</b>" + esc(nextMove(P));
+          track("scb_view", { authed: true, band: band(+s.score) });
         }).catch(function () {
-          $("scbLede").textContent = "Couldn't reach the books — the dial reads when the cloud answers.";
+          $("scbLede").textContent = "Couldn't reach the file — the dial reads when the cloud answers.";
         });
       }
 

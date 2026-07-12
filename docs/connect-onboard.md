@@ -39,7 +39,7 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SK")!);
 const SB = Deno.env.get("SUPABASE_URL")!;
 const SRV = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
-const SITE = "https://mcclusterishere.github.io/McCluster-Portfolio/";
+const SITE = "https://streetcreditbureau.com/";
 const H = { apikey: SRV, Authorization: "Bearer " + SRV, "Content-Type": "application/json" };
 
 Deno.serve(async (req) => {
