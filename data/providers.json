@@ -617,6 +617,24 @@
     }
    },
    "photo": "assets/img/space-privi.jpg"
+  },
+  {
+   "id": "cohiba-season",
+   "slug": "cohiba-season",
+   "name": "Cohiba Season",
+   "ticker": "COHBA",
+   "headline": "Raw East Coast lyricism — no mumble, all bars",
+   "blurb": "Independent underground hip-hop artist holding the traditional East Coast line. The record so far: SelfMade EP (2018) · News at 6 feat. Bundy Foxx (2019) · Retail (2022) · Recipe (2023) · ROOKIE OF THE YEAR (2024) · Crash Course (2025) · Express Five, prod. Chuck Kennedy. The desk holds this seat until Cohiba claims it.",
+   "area": "East Coast",
+   "roles": [
+    "Music"
+   ],
+   "badgeColor": "#2aa8a0",
+   "href": "page.html?who=cohiba-season",
+   "claimed": false,
+   "terms": {
+    "notes": "An unclaimed seat minted for the takeover pitch. The discography goes live on this floor the day the distribution grant is signed — the songs stream here, the plays write the tape, the deals go on the record."
+   }
   }
  ]
 }

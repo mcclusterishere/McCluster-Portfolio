@@ -1084,7 +1084,7 @@
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
     "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1,
-    "privacy.html": 1, "preflight.html": 1, "glossary.html": 1, "reading-room.html": 1,
+    "privacy.html": 1, "preflight.html": 1, "glossary.html": 1, "reading-room.html": 1, "distribution-grant.html": 1,
     "embassy-instagram.html": 1, "embassy-tiktok.html": 1,
     "embassy-youtube.html": 1, "walkthrough-qt6kv-2847.html": 1 };
   if (OPEN[here] || here.indexOf("song-") === 0) return;

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Distribution Grant — sign your music onto the floor · Equity Uprise</title>
+  <meta name="description" content="The one page every artist signs: a non-exclusive grant letting Equity Uprise host and distribute your listed works. You keep ownership. Revocable. Signed on the record.">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .dg { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 9rem; max-width: 34rem; margin: 0 auto; }
+    .dg h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.92; font-size: clamp(2.6rem, 11vw, 4rem); }
+    .dg__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; font-size: 0.95rem; }
+    .dg__sub b { color: var(--cream); }
+    .dg__card { border: 1px solid rgba(244,239,230,0.14); border-radius: 16px; background: rgba(18,14,11,0.85); padding: 1.1rem 1.15rem; margin-top: 1.1rem; }
+    .dg__lab { display: block; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; margin-top: 0.9rem; }
+    .dg__in { width: 100%; box-sizing: border-box; background: rgba(244,239,230,0.06); color: var(--cream);
+      border: 1px solid rgba(244,239,230,0.22); border-radius: 10px; padding: 0.75rem 0.9rem; font: inherit; margin-top: 0.35rem; }
+    .dg__in:focus { outline: none; border-color: #e8c877; }
+    textarea.dg__in { min-height: 5.5rem; }
+    .dg__terms p { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.65; margin-top: 0.6rem; }
+    .dg__terms p b { color: var(--cream); }
+    .dg__agree { display: flex; gap: 0.6rem; align-items: flex-start; margin-top: 1rem; font-size: 0.9rem; color: var(--cream-dim); line-height: 1.5; }
+    .dg__agree input { margin-top: 0.25rem; width: 1.1rem; height: 1.1rem; accent-color: #e5383b; }
+    .dg__msg { min-height: 1.2em; margin-top: 0.8rem; font-size: 0.92rem; color: #2fbf71; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="glossary.html">The Ten Words</a><a href="agreement.html">Member Agreement</a></nav>
+  </header>
+  <main class="dg">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> Sign your music onto the floor</p>
+    <h1 id="dgTitle">The Distribution<br>Grant.</h1>
+    <p class="dg__sub" id="dgLede"><b>One signature puts your catalogue on Our Street.</b> Your songs stream on your page,
+      every play writes your ticker's tape, and every sale lands on the record. You keep ownership of everything.</p>
+
+    <div class="tldr"><span class="tldr__k">Plain words · 1 min</span><ul>
+      <li><b>You keep your masters.</b> This is a license, never a transfer — your music stays yours.</li>
+      <li><b>Non-exclusive.</b> Keep Spotify, Apple, everything. This just adds Equity Uprise as a floor.</li>
+      <li><b>Walk-away clause.</b> Revoke with 30 days written notice; your works come down.</li>
+    </ul></div>
+
+    <div class="dg__card dg__terms">
+      <span class="dg__lab" style="margin-top:0">The grant — full text</span>
+      <p><b>1 · The license.</b> The artist named below ("Artist") grants McCluster Corp / Equity Uprise ("the House")
+        a <b>non-exclusive, revocable license</b> to host, stream, display and sell the works listed below on the
+        Equity Uprise platform and its embassy pages.</p>
+      <p><b>2 · Ownership.</b> All masters, compositions and rights remain the Artist's. Nothing here transfers
+        ownership, publishing, or any right beyond clause 1.</p>
+      <p><b>3 · The money.</b> Revenue from the works moves per deal records both sides sign on the platform —
+        one price to the buyer, the split disclosed inside, every payment on the record.</p>
+      <p><b>4 · The exit.</b> Either side may end this grant with 30 days written notice (email suffices).
+        The works come down; records of past deals stand, as ledgers do.</p>
+      <p><b>5 · The warranty.</b> The Artist confirms they hold the rights to grant this license for every work listed.</p>
+    </div>
+
+    <div class="dg__card">
+      <span class="dg__lab" style="margin-top:0">Artist / act name</span>
+      <input class="dg__in" id="dgAct" type="text" placeholder="e.g. Cohiba Season">
+      <span class="dg__lab">The works — what this grant covers</span>
+      <textarea class="dg__in" id="dgWorks" placeholder="Albums, EPs, singles — list them or write “full catalogue to date”"></textarea>
+      <span class="dg__lab">Your legal name — this is the signature</span>
+      <input class="dg__in" id="dgName" type="text" autocomplete="name" placeholder="First Last">
+      <span class="dg__lab">A way to reach you</span>
+      <input class="dg__in" id="dgContact" type="text" placeholder="Email or phone">
+      <label class="dg__agree"><input type="checkbox" id="dgYes">
+        <span>I read the grant above, I hold the rights to these works, and typing my legal name here is my signature.</span></label>
+      <div class="finale__actions" style="margin-top:1rem"><button class="btn btn--ruby" id="dgSign" type="button">Sign the grant — on the record</button></div>
+      <p class="dg__msg" id="dgMsg"></p>
+    </div>
+
+    <p class="dg__sub" style="font-size:0.84rem">Every artist who joins the association signs this same page — it's the standard door.
+      Questions first? <a href="mailto:matthew@mccluster.org?subject=Distribution%20Grant" style="color:#e8c877">matthew@mccluster.org</a>.</p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/network.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+      var q = new URLSearchParams(location.search);
+      var WHO = (q.get("who") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+
+      /* the pitch arrives pre-dressed: ?who= pulls the seat's name off the floor */
+      if (WHO) {
+        fetch("data/providers.json").then(function (r) { return r.json(); }).then(function (j) {
+          var p = (j.providers || []).filter(function (x) { return x.slug === WHO; })[0];
+          if (!p) return;
+          $("dgAct").value = p.name;
+          if (!$("dgWorks").value) $("dgWorks").value = "Full catalogue to date";
+          $("dgLede").innerHTML = "<b>" + p.name + " — one signature puts your catalogue on Our Street.</b> " +
+            "Your songs stream on your page, every play writes $" + String(p.ticker || "").toUpperCase() +
+            "'s tape, and every sale lands on the record. You keep ownership of everything.";
+        }).catch(function () {});
+      }
+
+      $("dgSign").addEventListener("click", function () {
+        var act = $("dgAct").value.trim(), works = $("dgWorks").value.trim(),
+            name = $("dgName").value.trim(), contact = $("dgContact").value.trim();
+        var msg = $("dgMsg");
+        msg.style.color = "#ff5000";
+        if (!act) { msg.textContent = "The act name is missing."; return; }
+        if (!works) { msg.textContent = "Name the works — or write “full catalogue to date”."; return; }
+        if (!name) { msg.textContent = "The legal name IS the signature — it can't be blank."; return; }
+        if (!contact) { msg.textContent = "Leave a way to reach you — the countersigned copy comes back to it."; return; }
+        if (!$("dgYes").checked) { msg.textContent = "Tick the box — that's the “I read it” part."; return; }
+        var b = $("dgSign");
+        b.disabled = true; b.textContent = "Signing…";
+        window.MCC_NET.requestBooking({
+          provider_slug: WHO || act.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          name: name, contact: contact,
+          details: "DISTRIBUTION GRANT v1 — SIGNED. Act: " + act + ". Works: " + works +
+            ". Signature (typed legal name): " + name + ". Signed at " + new Date().toISOString() +
+            " on " + location.href,
+        }).then(function () {
+          msg.style.color = "#2fbf71";
+          msg.textContent = "✓ Signed and on the record — the desk countersigns and your floor opens. Welcome to the association.";
+          b.textContent = "✓ Signed";
+          try { localStorage.setItem("mcc_grant_" + (WHO || act), JSON.stringify({ act: act, name: name, at: Date.now() })); } catch (e) {}
+          if (window.MCC_TRACK) window.MCC_TRACK("grant_signed", { who: WHO || act });
+        }).catch(function () {
+          msg.textContent = "The record didn't take it — try once more, or email the grant instead.";
+          b.disabled = false; b.textContent = "Sign the grant — on the record";
+        });
+      });
+      if (window.MCC_TRACK) window.MCC_TRACK("grant_view", { who: WHO });
+    })();
+  </script>
+</body>
+</html>
