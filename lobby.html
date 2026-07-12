@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>The Lobby — tell us what you're here to do</title>
+  <meta name="description" content="The open door. Type what you came to do and the concierge sorts you onto the right floor — the Trading Floor, the Penthouse, the Bureau, the Garage, or the Workshop — with an access card for each.">
+  <link rel="canonical" href="https://streetcreditbureau.com/lobby.html">
+  <link rel="icon" type="image/png" href="assets/img/m-mark.png">
+  <meta name="theme-color" content="#0a0807">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="The Lobby">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Lobby — tell us what you're here to do">
+  <meta property="og:description" content="Type what you came to do. The concierge sorts you onto the right floor, with an access card for each.">
+  <meta property="og:url" content="https://streetcreditbureau.com/lobby.html">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .lb { min-height: 100dvh; padding: clamp(4.4rem, 9vh, 6rem) clamp(1.05rem, 4vw, 2rem) 7rem; max-width: 44rem; margin: 0 auto; }
+    .lb__emblem { width: 74px; height: 74px; border-radius: 20px; display: grid; place-items: center; margin-bottom: 1.1rem;
+      background: linear-gradient(150deg, rgba(229,56,59,0.22), rgba(20,16,14,0.85));
+      border: 1.5px solid rgba(229,56,59,0.5); box-shadow: 0 0 30px rgba(229,56,59,0.22); }
+    .lb__emblem img { width: 52%; }
+    .lb__k { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; }
+    .lb h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.9; font-size: clamp(2.6rem, 11vw, 4.2rem); margin-top: 0.4rem; }
+    .lb__lede { color: var(--cream-dim); line-height: 1.65; margin-top: 0.9rem; font-size: 1.02rem; }
+    .lb__lede b { color: var(--cream); }
+
+    .lb__ask { margin-top: 1.5rem; border: 1px solid rgba(244,239,230,0.2); border-radius: 18px; background: rgba(18,14,11,0.82);
+      padding: 0.9rem 0.95rem; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .lb__askrow { display: flex; gap: 0.55rem; align-items: flex-end; }
+    .lb__ta { flex: 1; min-width: 0; resize: none; background: transparent; border: 0; color: var(--cream);
+      font-size: max(16px, 1.02rem); line-height: 1.5; font-family: inherit; padding: 0.35rem 0.2rem; min-height: 3.1em; }
+    .lb__ta:focus { outline: none; }
+    .lb__ta::placeholder { color: rgba(244,239,230,0.42); }
+    .lb__send { flex: 0 0 auto; background: radial-gradient(circle at 32% 28%, #e5383b, #c1121f 60%, #7c0c15); border: 0;
+      color: #fff; font-weight: 800; border-radius: 13px; padding: 0.7rem 1rem; cursor: pointer; font-size: 0.95rem; }
+    .lb__signed { display: block; margin-top: 0.55rem; font-size: 0.74rem; color: rgba(244,239,230,0.45); }
+    .lb__signed b { color: var(--ruby-hot); }
+    .lb__chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.9rem; }
+    .lb__chip { background: rgba(244,239,230,0.06); border: 1px solid rgba(244,239,230,0.16); color: var(--cream-dim);
+      border-radius: 100px; padding: 0.45rem 0.85rem; font-size: 0.82rem; cursor: pointer; }
+    .lb__chip:hover { border-color: rgba(229,56,59,0.5); color: var(--cream); }
+
+    .lb__reply { margin-top: 1.6rem; }
+    .lb__claudewrap { display: flex; gap: 0.7rem; align-items: flex-start; }
+    .lb__av { flex: 0 0 auto; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center;
+      background: radial-gradient(circle at 32% 28%, #e5383b, #7c0c15); }
+    .lb__av img { width: 1.25rem; }
+    .lb__claude { flex: 1; background: rgba(244,239,230,0.07); border: 1px solid rgba(244,239,230,0.14);
+      border-radius: 4px 15px 15px 15px; padding: 0.75rem 0.95rem; color: var(--cream); line-height: 1.5; font-size: 0.95rem; }
+    .lb__who { display: block; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(244,239,230,0.5); margin-bottom: 0.25rem; }
+
+    .lb__floors { display: grid; gap: 0.7rem; margin-top: 1.5rem; }
+    .lbfl { border: 1px solid rgba(244,239,230,0.12); border-radius: 15px; background: rgba(18,14,11,0.8); padding: 1rem 1.05rem; }
+    .lbfl--hot { border-color: rgba(229,56,59,0.55); background: linear-gradient(160deg, rgba(229,56,59,0.1), rgba(18,14,11,0.85));
+      box-shadow: 0 0 26px rgba(229,56,59,0.14); }
+    .lbfl__top { display: flex; align-items: center; gap: 0.75rem; }
+    .lbfl__ic { flex: 0 0 auto; width: 2.5rem; height: 2.5rem; border-radius: 12px; display: grid; place-items: center;
+      border: 1px solid rgba(216,186,124,0.4); background: rgba(216,186,124,0.08); }
+    .lbfl__ic svg { width: 1.35rem; height: 1.35rem; fill: none; stroke: #e8c877; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .lbfl__name { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.03em; font-size: 1.15rem; color: var(--cream); }
+    .lbfl__tag { font-size: 0.8rem; color: var(--cream-dim); }
+    .lbfl__card { margin-left: auto; font-weight: 800; color: #17110d; background: linear-gradient(120deg, #b8862f, #e8c877);
+      border-radius: 8px; padding: 0.2rem 0.5rem; font-size: 0.8rem; align-self: flex-start; }
+    .lbfl__blurb { color: var(--cream-dim); font-size: 0.9rem; line-height: 1.55; margin: 0.7rem 0 0; }
+    .lbfl__intro { margin-top: 0.7rem; border-left: 2px solid rgba(229,56,59,0.5); padding: 0.1rem 0 0.1rem 0.8rem; }
+    .lbfl__ik { display: block; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ruby-hot); font-weight: 800; margin-bottom: 0.35rem; }
+    .lbfl__intro ul { margin: 0; padding-left: 1rem; }
+    .lbfl__intro li { color: var(--cream-dim); font-size: 0.86rem; line-height: 1.5; margin-bottom: 0.25rem; }
+    .lbfl__acts { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.9rem; flex-wrap: wrap; }
+    .lbfl__peek { background: none; border: 0; color: #d8ba7c; font-size: 0.84rem; cursor: pointer; padding: 0.2rem 0; font-weight: 700; }
+    .lbfl__go { margin-left: auto; text-decoration: none; font-weight: 800; border-radius: 100px; padding: 0.6rem 1.1rem;
+      background: rgba(244,239,230,0.1); border: 1px solid rgba(244,239,230,0.22); color: var(--cream); }
+    .lbfl--hot .lbfl__go { background: linear-gradient(120deg, #b8862f, #e8c877); color: #17110d; border: 0; }
+
+    .lb__wallet { margin-top: 1.8rem; border-top: 1px solid rgba(244,239,230,0.12); padding-top: 1.1rem; }
+    .lb__wallet h2 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: 1rem; color: var(--cream-dim); letter-spacing: 0.05em; }
+    .lb__cards { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 0.7rem; }
+    .lbcard { display: inline-flex; align-items: center; gap: 0.45rem; text-decoration: none;
+      border: 1px solid rgba(216,186,124,0.45); border-radius: 11px; padding: 0.5rem 0.8rem;
+      background: linear-gradient(150deg, rgba(216,186,124,0.14), rgba(18,14,11,0.9)); }
+    .lbcard__eu { font-weight: 800; color: #e8c877; }
+    .lbcard__nm { color: var(--cream); font-size: 0.85rem; font-weight: 700; }
+
+    .lb__foot { margin-top: 2.6rem; color: var(--cream-dim); font-size: 0.8rem; line-height: 1.7; }
+    .lb__foot a { color: #d8ba7c; text-decoration: none; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+
+  <main class="lb">
+    <span class="lb__emblem" aria-hidden="true"><img src="assets/img/m-mark.png" alt=""></span>
+    <p class="lb__k">The open door</p>
+    <h1>The Lobby</h1>
+    <p class="lb__lede">One building, five floors. Tell the concierge what you came to do — in your own words — and
+      you'll get sorted to the right floor with an <b>E&#10548; access card</b> for each. No wrong answer, no maze.</p>
+
+    <div class="lb__ask">
+      <div class="lb__askrow">
+        <textarea id="lbAsk" class="lb__ta" rows="2" maxlength="500"
+          placeholder="What are you here to do? e.g. &ldquo;get paid for a shoot&rdquo; · &ldquo;check my street credit&rdquo; · &ldquo;build my own page&rdquo;"></textarea>
+        <button id="lbSend" class="lb__send" type="button">Sort me&nbsp;&#8594;</button>
+      </div>
+      <span class="lb__signed">Answered by <b>The Guide</b> · the platform concierge. It works instantly — signed-in members get Claude's own words.</span>
+    </div>
+
+    <div class="lb__chips" aria-label="Quick starts">
+      <button class="lb__chip" type="button" data-chip="I want to get paid for my work">Get paid</button>
+      <button class="lb__chip" type="button" data-chip="I want to buy something or hire someone">Buy or hire</button>
+      <button class="lb__chip" type="button" data-chip="Show me my street credit score">My street credit</button>
+      <button class="lb__chip" type="button" data-chip="I want to build my own profile page">Get my own page</button>
+      <button class="lb__chip" type="button" data-chip="I'm new and want to learn how this works and earn">How it works</button>
+      <button class="lb__chip" type="button" data-chip="just looking around">Just looking</button>
+    </div>
+
+    <section class="lb__reply" id="lbReply" hidden>
+      <div class="lb__claudewrap">
+        <span class="lb__av" aria-hidden="true"><img src="assets/img/m-mark.png" alt=""></span>
+        <div class="lb__claude"><span class="lb__who">The Guide</span><span id="lbClaude"></span></div>
+      </div>
+      <div class="lb__floors" id="lbFloors"></div>
+    </section>
+
+    <section class="lb__wallet" id="lbWallet" hidden>
+      <h2>Your access cards</h2>
+      <div class="lb__cards" data-cards></div>
+    </section>
+
+    <p class="lb__foot">
+      Prefer to look first? <a href="index.html?stay=1">The Penthouse</a> is the front door ·
+      <a href="market.html">walk the whole floor</a> ·
+      <a href="glossary.html">the ten words</a> ·
+      <a href="reading-room.html">the reading room</a>.<br>
+      Your access cards live on this device until you open an account — then they follow you everywhere.
+    </p>
+  </main>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/backend.js?v=__STAMP__"></script>
+  <script src="js/lobby.js?v=__STAMP__"></script>
+</body>
+</html>

@@ -787,7 +787,7 @@
     try { walked = !!localStorage.getItem(WALK_KEY); } catch (e) {}
     var guest = /[?&](to|who|tour|deal)=/.test(location.search) ||
       { "pay.html": 1, "agreement.html": 1, "claim.html": 1, "page.html": 1,
-        "provider.html": 1, "offline.html": 1 }[here2] === 1;
+        "provider.html": 1, "offline.html": 1, "lobby.html": 1 }[here2] === 1;
     if (walked || guest) return;
     practice = true;
     var ov = document.createElement("div");
@@ -1084,6 +1084,7 @@
     "scb-paper.html": 1, "pitch-freedom.html": 1, "fellowship.html": 1, "psychology-markers.html": 1,
     "badge-explainer.html": 1, "space-revent.html": 1, "ecosystem.html": 1, "house.html": 1,
     "offline.html": 1, "mission.html": 1, "mccluster.html": 1, "front-door.html": 1, "rides.html": 1,
+    "lobby.html": 1,
     "privacy.html": 1, "preflight.html": 1, "glossary.html": 1, "reading-room.html": 1, "distribution-grant.html": 1,
     "embassy-instagram.html": 1, "embassy-tiktok.html": 1,
     "embassy-youtube.html": 1, "walkthrough-qt6kv-2847.html": 1 };

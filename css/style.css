@@ -3994,6 +3994,16 @@ html.is-installed .getapp, html.is-installed .getapp-pill { display: none !impor
 .support-pill svg { width: 1.05rem; height: 1.05rem; fill: #fff; }
 @media (prefers-reduced-motion: reduce) { .support-pill { animation: none; } }
 
+/* the open door: a quiet second entrance under the hero pills */
+.hero__door {
+  display: inline-block; margin-top: 0.7rem; text-decoration: none;
+  color: rgba(244, 239, 230, 0.7); font-size: 0.82rem; letter-spacing: 0.02em;
+  border-bottom: 1px dashed rgba(244, 239, 230, 0.25); padding-bottom: 0.1rem;
+  transition: color 0.2s;
+}
+.hero__door b { color: var(--cream); }
+.hero__door:hover { color: var(--cream); }
+
 /* ---- the autopilot: exit card + the appbar signal dot ---- */
 .exitov {
   position: fixed; inset: 0; z-index: 420; display: grid; place-items: center;

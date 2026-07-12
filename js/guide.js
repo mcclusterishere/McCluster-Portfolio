@@ -145,9 +145,9 @@
     var uid = S.uid();
     if (!uid) {
       body.innerHTML =
-        '<div class="gd__door">The Guide talks to members. ' +
-        '<a href="market.html#yours">Open your account</a> — it takes one tap — and I\'ll walk you through everything: ' +
-        "Our Street, the missions, Uprise Nation, the civic route, all of it.</div>";
+        '<div class="gd__door">New here? Start at <a href="lobby.html">the door</a> — tell it what you came to do ' +
+        "in your own words and I'll sort you onto the right floor. Or " +
+        '<a href="market.html#yours">open your account</a> in one tap and I\'ll walk you through everything.</div>';
       return;
     }
     bubble("Pulling up our thread…", "ai", true);
