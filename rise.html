@@ -396,20 +396,25 @@
           ob.rise = card; if (!ob.roles || !ob.roles.length) ob.roles = entry[4];
           localStorage.setItem("mcc_onboard", JSON.stringify(ob));
         } catch (e) {}
-        /* CARD ON THE ACCOUNT: the instant it's dealt, imprint the paths so a
-           signed-in member is remembered on ANY device — the imprint restore in
-           backend.js hydrates it back, and RISE is never re-dealt. Anonymous
-           (no account) visitors keep the local card; nothing to write, no error. */
+        /* CARD ON THE ACCOUNT: the instant it's dealt, imprint the paths so it's
+           remembered on ANY device — backend.js's my_imprint restore hydrates it
+           back and RISE is never re-dealt. If the visitor has no account yet, mint
+           an anonymous one first (Anonymous sign-ins are on), so even a no-email
+           quiz-taker is remembered. A full storage wipe is the only thing that can
+           forget them — there's nothing left to remember them by. */
         try {
-          var Si = window.MCC_SUPA;
-          if (Si && Si.uid && Si.uid() && Si.token) {
+          var Si = window.MCC_SUPA, Au = window.MCC_AUTH;
+          var writeImprint = function () {
+            if (!(Si && Si.uid && Si.uid() && Si.token)) return;
             Si.token().then(function (t) {
               if (!t) return;
               fetch(Si.url + "/rest/v1/rpc/imprint_desk", { method: "POST",
                 headers: { "Content-Type": "application/json", apikey: Si.key, Authorization: "Bearer " + t },
                 body: JSON.stringify({ p_face: null, p_paths: card.arch }) }).catch(function () {});
             }).catch(function () {});
-          }
+          };
+          if (Si && Si.uid && Si.uid()) writeImprint();
+          else if (Au && Au.signInAnon) Au.signInAnon().then(writeImprint).catch(function () {});
         } catch (eI) {}
         track("rise_done", { arch: card.arch.join("+"), entry: entry[0] });
         try { var c9 = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (c9 && c9.kind === "rise") localStorage.removeItem("mcc_cart"); } catch (eC2) {}
