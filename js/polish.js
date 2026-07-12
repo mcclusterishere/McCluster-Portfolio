@@ -753,26 +753,21 @@
       if (id !== tapKey) { taps = 0; tapKey = id; }
       taps += 1;
       clearTimeout(timer);
-      if (taps === 1) {
-        // one tap only ever LOOKS — a peek, or a slot's working tool,
-        // rises in place; nothing travels
-        timer = setTimeout(function () {
-          taps = 0;
-          if (w) {
-            if (peekEl && peekEl.getAttribute("data-for") === w.home) unpeek();
-            else peek(w.home, key);
-          } else toggleSlot(slot);
-        }, 300);
-      } else if (taps === 2) {
-        timer = setTimeout(function () {
-          taps = 0;
-          if (w) { if (wingOn === key) revert(); else morph(key); }
-          else toggleSlot(slot); // slots pop up and pop down — no travel
-        }, 300);
-      } else {
+      /* THE GRAMMAR: one tap opens the icon's menu right on the bar · two
+         taps walk you all the way through · three taps do nothing, so you
+         never fat-finger your way somewhere. One timer decides once, by the
+         final tap count, so a second tap always has time to cancel the first. */
+      timer = setTimeout(function () {
+        var n = taps;
         taps = 0;
-        sail(w ? w.home : slot, 460); // three taps: all the way through
-      }
+        if (n === 1) {
+          if (w) { if (wingOn === key) revert(); else morph(key); } // open (or close) the menu
+          else toggleSlot(slot); // a slot pops its working tool in place — no travel
+        } else if (n === 2) {
+          sail(w ? w.home : slot, 460); // two taps: all the way through
+        }
+        // three or more: nothing
+      }, 300);
     });
     window.addEventListener("pageshow", function () { taps = 0; tapKey = null; unpeek(); });
     window.MCC_DOCK = { morph: morph, revert: revert, peek: peek, wing: function () { return wingOn; } };
@@ -797,13 +792,10 @@
       '<button class="dockwalk__btn" id="dwBtn" type="button"></button></div>';
     document.body.appendChild(ov);
     var STEPS = [
-      { t: "One bar runs the whole world.", b: "Every tab down there is its own mini-app. Thirty seconds to learn the grammar, then every door opens.", btn: "Show me" },
-      { t: "Tap WE once.", b: "One tap only LOOKS — a peek card tells you what lives there. Nothing moves until you say so.", ev: "mcc:dock-peek" },
-      { t: "Now double-tap WE.", b: "Two taps OPEN the wing — the bar becomes WE's own menu, and you never left this page.", ev: "mcc:dock-morph" },
-      { t: "Tap any slot once.", b: "Its working part pops up RIGHT HERE — the meter quotes, the road lists — and you use it without ever leaving the page. Tap again, it pops down.", ev: "mcc:dock-peek" },
-      { t: "Double-tap WE again.", b: "The main bar comes right back. The tab you opened never moved — only the others made room.", ev: "mcc:dock-revert" },
-      { t: "Where the money lives.", b: "Our Street (🏪 Market): every member is a ticker. The 💸 Pay door moves real card money onto the record. And YOUR desk — Profile wing — holds your listing, wallet, deals and messages.", btn: "Got it — last one" },
-      { t: "That's the whole grammar.", b: "1 tap looks (a slot pops its tool) · 2 taps open a wing · 3 taps carry you all the way through. The cards' buttons travel too. ONE exception: while music plays, the Only Us tab IS the pause button — one tap, silence.", btn: "I got it — open the doors" },
+      { t: "One bar runs the whole world.", b: "Every icon down there opens its own menu right on the bar. Ten seconds and it's yours.", btn: "Show me" },
+      { t: "Tap WE once.", b: "One tap opens that icon's menu — the whole bar becomes WE, and you never left this page.", ev: "mcc:dock-morph" },
+      { t: "Tap WE once more.", b: "One tap on an open icon closes its menu and the main bar comes right back. That's the toggle.", ev: "mcc:dock-revert" },
+      { t: "That's the whole grammar.", b: "One tap opens an icon's menu · two taps walk you all the way through to it · three taps do nothing, so you never fat-finger your way somewhere. 🏪 Market is where the money moves; your Profile wing is your desk, wallet and deals. (While music plays, the Only Us tab is your pause button.)", btn: "I got it — open the doors" },
     ];
     var dwBtn = ov.querySelector("#dwBtn"), dwT = ov.querySelector("#dwT"), dwB = ov.querySelector("#dwB"), dwD = ov.querySelector("#dwD");
     var at = -1;

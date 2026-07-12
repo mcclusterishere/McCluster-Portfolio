@@ -89,29 +89,25 @@ function check(name, cond, detail) {
   const { page, errors, netCounts } = await boot("/market.html", { settle: 1800, dockwalk: true });
   check("market", errors.length === 0, "page errors: " + errors.join(" | "));
   // a cold boot MUST open THE DOCK WALK — the gate that teaches the bar's
-  // grammar (1 tap looks · 2 taps open/go · 3 taps through); the whole
-  // lesson is driven here so the gate stays a tested invariant
+  // grammar (1 tap opens the icon's menu · 2 taps walk through · 3 taps do
+  // nothing); the whole lesson is driven here so the gate stays a tested invariant
   const walk = await page.$(".dockwalk");
   check("market", walk, "the dock walk gate did not appear on a cold boot");
   if (walk) {
     await page.click("#dwBtn"); // Show me
-    await page.evaluate(() => document.querySelector('.appbar__tab[data-appnav="we"]').click()); // one tap = look
-    await page.waitForTimeout(500);
-    check("market", await page.$(".dk-peek"), "single tap did not raise the peek card");
-    await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
-    await page.waitForTimeout(500);
-    check("market", await page.$(".appbar--morph"), "double-tap did not morph the bar");
-    await page.evaluate(() => document.querySelector(".appbar [data-dock]").click()); // one tap peeks a slot
-    await page.waitForTimeout(500);
-    check("market", await page.$(".dk-peek"), "slot single tap did not peek");
-    await page.evaluate(() => { const t = document.querySelector('.appbar__tab[data-appnav="we"]'); t.click(); t.click(); });
-    await page.waitForTimeout(500);
-    check("market", !(await page.$(".appbar--morph")), "double-tap did not bring the main bar back");
-    // beat 6: the money card — where the floor, the pay door and the desk live
-    check("market", (await page.textContent(".dockwalk")).includes("Where the money lives"),
-      "the walk's money beat is missing");
-    await page.click("#dwBtn"); // Got it — last one
     await page.waitForTimeout(300);
+    // one tap opens WE's menu right on the bar (morph) and advances the lesson
+    await page.evaluate(() => document.querySelector('.appbar__tab[data-appnav="we"]').click());
+    await page.waitForTimeout(500);
+    check("market", await page.$(".appbar--morph"), "one tap did not open the icon's menu (morph)");
+    check("market", (await page.textContent(".dockwalk")).includes("once more"),
+      "the walk did not advance to the close-the-menu beat");
+    // one tap on the open icon closes the menu (revert) and advances
+    await page.evaluate(() => document.querySelector('.appbar__tab[data-appnav="we"]').click());
+    await page.waitForTimeout(500);
+    check("market", !(await page.$(".appbar--morph")), "one tap on the open icon did not close the menu");
+    check("market", (await page.textContent(".dockwalk")).includes("whole grammar"),
+      "the walk did not reach the grammar beat");
     await page.click("#dwBtn"); // I got it — open the doors
     await page.waitForTimeout(300);
     check("market", !(await page.$(".dockwalk")), "the gate did not lift after the lesson");

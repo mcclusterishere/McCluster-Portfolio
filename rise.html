@@ -396,6 +396,21 @@
           ob.rise = card; if (!ob.roles || !ob.roles.length) ob.roles = entry[4];
           localStorage.setItem("mcc_onboard", JSON.stringify(ob));
         } catch (e) {}
+        /* CARD ON THE ACCOUNT: the instant it's dealt, imprint the paths so a
+           signed-in member is remembered on ANY device — the imprint restore in
+           backend.js hydrates it back, and RISE is never re-dealt. Anonymous
+           (no account) visitors keep the local card; nothing to write, no error. */
+        try {
+          var Si = window.MCC_SUPA;
+          if (Si && Si.uid && Si.uid() && Si.token) {
+            Si.token().then(function (t) {
+              if (!t) return;
+              fetch(Si.url + "/rest/v1/rpc/imprint_desk", { method: "POST",
+                headers: { "Content-Type": "application/json", apikey: Si.key, Authorization: "Bearer " + t },
+                body: JSON.stringify({ p_face: null, p_paths: card.arch }) }).catch(function () {});
+            }).catch(function () {});
+          }
+        } catch (eI) {}
         track("rise_done", { arch: card.arch.join("+"), entry: entry[0] });
         try { var c9 = JSON.parse(localStorage.getItem("mcc_cart") || "null"); if (c9 && c9.kind === "rise") localStorage.removeItem("mcc_cart"); } catch (eC2) {}
         var sorted = VKEYS.slice().sort(function (a, b) { return card.v[b] - card.v[a]; });
