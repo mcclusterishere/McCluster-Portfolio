@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Upset — Hitman Benji × Raheem × Rahndrx · The Lyric Deck</title>
+  <meta name="description" content="UPSET — Hitman Benji, Raheem &amp; Rahndrx. The lyric deck: every two bars is its own scene card, armed for the silent film.">
+  <link rel="icon" type="image/png" href="assets/img/eu-favicon.png">
+  <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=__STAMP__">
+  <style>
+    .up { min-height: 100dvh; padding: clamp(4.6rem, 9vh, 6rem) clamp(1rem, 4vw, 2rem) 12rem; max-width: 34rem; margin: 0 auto; }
+    .up h1 { font-family: var(--sig); text-transform: uppercase; line-height: 0.9; font-size: clamp(3.4rem, 16vw, 5.6rem); }
+    .up__cred { color: #e8c877; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.82rem; margin-top: 0.5rem; }
+    .up__sub { color: var(--cream-dim); line-height: 1.65; margin-top: 0.7rem; font-size: 0.95rem; }
+    .up__deck { margin-top: 2rem; display: grid; gap: 0.85rem; }
+    .uc { position: relative; border: 1px solid rgba(244,239,230,0.13); border-radius: 18px; overflow: hidden;
+      background: rgba(18,14,11,0.8); padding: 1.3rem 1.2rem; cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.2,0.9,0.2,1), border-color 0.35s, box-shadow 0.35s; }
+    .uc__art { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 0.5s; }
+    .uc.has-art .uc__art { opacity: 0.34; }
+    .uc.is-on.has-art .uc__art { opacity: 0.5; }
+    .uc__no { position: absolute; top: 0.7rem; right: 0.9rem; font-size: 0.68rem; letter-spacing: 0.2em;
+      color: rgba(244,239,230,0.4); font-weight: 800; }
+    .uc__ln { position: relative; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+      font-size: clamp(1.15rem, 5vw, 1.6rem); line-height: 1.2; color: rgba(244,239,230,0.5);
+      transition: color 0.3s; }
+    .uc__ln + .uc__ln { margin-top: 0.35rem; }
+    .uc.is-on { border-color: rgba(229,56,59,0.75); transform: scale(1.02);
+      box-shadow: 0 14px 50px rgba(0,0,0,0.55), 0 0 30px rgba(229,56,59,0.25); }
+    .uc.is-on .uc__ln { color: var(--cream); }
+    .uc.is-done .uc__ln { color: rgba(244,239,230,0.35); }
+    /* the player rail */
+    .up__bar { position: fixed; left: 50%; transform: translateX(-50%); z-index: 90;
+      bottom: calc(var(--appbar-h, 4.4rem) + env(safe-area-inset-bottom) + 0.8rem);
+      width: min(100% - 1.6rem, 32rem); display: flex; align-items: center; gap: 0.8rem;
+      background: rgba(14,11,9,0.96); backdrop-filter: blur(10px); border: 1px solid rgba(229,56,59,0.55);
+      border-radius: 100px; padding: 0.55rem 1rem; box-shadow: 0 14px 50px rgba(0,0,0,0.6); }
+    .up__play { flex: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 0; cursor: pointer;
+      background: linear-gradient(180deg, #e5383b, #a4161a); color: #fff; font-size: 1rem; }
+    .up__prog { flex: 1; height: 5px; border-radius: 5px; background: rgba(244,239,230,0.15); position: relative; cursor: pointer; }
+    .up__prog i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px;
+      background: linear-gradient(90deg, #e5383b, #e8c877); width: 0; }
+    .up__time { flex: none; font-size: 0.74rem; color: var(--cream-dim); font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="songpage">
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-head">
+    <a class="brand" href="index.html"><img class="brand__mark" src="assets/img/m-mark.png" alt="M"><span class="brand__rest">cCluster</span></a>
+    <nav class="site-head__nav"><a href="app.html">Only Us</a><a href="catalogue.html">Catalogue</a></nav>
+  </header>
+
+  <main class="up">
+    <p class="kicker"><img class="kicker__mark" src="assets/img/eu-favicon.png" alt="" style="filter:none"> The single · the lyric deck</p>
+    <h1>Upset.</h1>
+    <p class="up__cred">Hitman Benji &#215; Raheem &#215; Rahndrx</p>
+    <p class="up__sub">Every two bars is its own scene. Tap any card to jump the record there —
+      the silent film lands on these cards, one scene at a time.</p>
+
+    <div class="up__deck" id="upDeck">
+      <article class="uc" data-i="0" data-begin="2.718" data-end="9.238">
+        <div class="uc__art" data-scene="sc01"></div>
+        <span class="uc__no">01</span>
+        <p class="uc__ln">Yeah, I see you upset</p>
+        <p class="uc__ln">You living a lie at work, you’re dreamers at best</p>
+      </article>
+      <article class="uc" data-i="1" data-begin="10.402" data-end="17.002">
+        <div class="uc__art" data-scene="sc02"></div>
+        <span class="uc__no">02</span>
+        <p class="uc__ln">I made this for you, I figured you needed a vest</p>
+        <p class="uc__ln">I&#x27;ll come out with a mask next when I aim for your head</p>
+      </article>
+      <article class="uc" data-i="2" data-begin="17.725" data-end="21.407">
+        <div class="uc__art" data-scene="sc03"></div>
+        <span class="uc__no">03</span>
+        <p class="uc__ln">I&#x27;m speaking direct</p>
+        <p class="uc__ln">Hit the bullseye with my eyes closed</p>
+      </article>
+      <article class="uc" data-i="3" data-begin="21.487" data-end="25.276">
+        <div class="uc__art" data-scene="sc04"></div>
+        <span class="uc__no">04</span>
+        <p class="uc__ln">Third eye looking through a rifle</p>
+        <p class="uc__ln">They could never get me for my soul</p>
+      </article>
+      <article class="uc" data-i="4" data-begin="25.370" data-end="28.663">
+        <div class="uc__art" data-scene="sc05"></div>
+        <span class="uc__no">05</span>
+        <p class="uc__ln">I can smell the bull with my wide nose</p>
+        <p class="uc__ln">You guys all over the place</p>
+      </article>
+      <article class="uc" data-i="5" data-begin="28.958" data-end="33.001">
+        <div class="uc__art" data-scene="sc06"></div>
+        <span class="uc__no">06</span>
+        <p class="uc__ln">I got the scope of the place and the codes to your safe</p>
+        <p class="uc__ln">You dug the hole to your grave</p>
+      </article>
+      <article class="uc" data-i="6" data-begin="33.081" data-end="37.325">
+        <div class="uc__art" data-scene="sc07"></div>
+        <span class="uc__no">07</span>
+        <p class="uc__ln">This is just business so put your emotions away</p>
+        <p class="uc__ln">Oh, I see you upset</p>
+      </article>
+      <article class="uc" data-i="7" data-begin="37.861" data-end="40.779">
+        <div class="uc__art" data-scene="sc08"></div>
+        <span class="uc__no">08</span>
+        <p class="uc__ln">Cold heart, got the burner</p>
+        <p class="uc__ln">Try me, put the heat to your chest</p>
+      </article>
+      <article class="uc" data-i="8" data-begin="41.368" data-end="44.608">
+        <div class="uc__art" data-scene="sc09"></div>
+        <span class="uc__no">09</span>
+        <p class="uc__ln">Get involved, make a call</p>
+        <p class="uc__ln">Couple shots to your dog, I&#x27;m a vet</p>
+      </article>
+      <article class="uc" data-i="9" data-begin="46.067" data-end="48.691">
+        <div class="uc__art" data-scene="sc10"></div>
+        <span class="uc__no">10</span>
+        <p class="uc__ln">It&#x27;s bigger than me, it&#x27;s my team</p>
+        <p class="uc__ln">We gon&#x27; need some respect</p>
+      </article>
+      <article class="uc" data-i="10" data-begin="49.026" data-end="52.949">
+        <div class="uc__art" data-scene="sc11"></div>
+        <span class="uc__no">11</span>
+        <p class="uc__ln">Plus I need me a check</p>
+        <p class="uc__ln">Pulled up to your plug</p>
+      </article>
+      <article class="uc" data-i="11" data-begin="53.042" data-end="56.952">
+        <div class="uc__art" data-scene="sc12"></div>
+        <span class="uc__no">12</span>
+        <p class="uc__ln">Never paid a nigga, I take interest</p>
+        <p class="uc__ln">Only flexing when it come to fitness</p>
+      </article>
+      <article class="uc" data-i="12" data-begin="57.045" data-end="60.941">
+        <div class="uc__art" data-scene="sc13"></div>
+        <span class="uc__no">13</span>
+        <p class="uc__ln">Get your hood lit up like it&#x27;s Christmas</p>
+        <p class="uc__ln">Way too many shots, got it lit quick</p>
+      </article>
+      <article class="uc" data-i="13" data-begin="61.035" data-end="64.944">
+        <div class="uc__art" data-scene="sc14"></div>
+        <span class="uc__no">14</span>
+        <p class="uc__ln">Catch a case, it get dismissed</p>
+        <p class="uc__ln">That was old news, shot the witness</p>
+      </article>
+      <article class="uc" data-i="14" data-begin="65.038" data-end="70.808">
+        <div class="uc__art" data-scene="sc15"></div>
+        <span class="uc__no">15</span>
+        <p class="uc__ln">Got your lady next on my hit list</p>
+        <p class="uc__ln">To these virgin eyes, I&#x27;m a beast</p>
+      </article>
+      <article class="uc" data-i="15" data-begin="70.875" data-end="74.851">
+        <div class="uc__art" data-scene="sc16"></div>
+        <span class="uc__no">16</span>
+        <p class="uc__ln">Off the leash, need a vet</p>
+        <p class="uc__ln">I guess they see I&#x27;m a threat, y&#x27;all pussy</p>
+      </article>
+      <article class="uc" data-i="16" data-begin="74.945" data-end="79.215">
+        <div class="uc__art" data-scene="sc17"></div>
+        <span class="uc__no">17</span>
+        <p class="uc__ln">I got hitters on call, that&#x27;ll really get you wet</p>
+        <p class="uc__ln">I&#x27;ma need some respect, don&#x27;t come through here dripping</p>
+      </article>
+      <article class="uc" data-i="17" data-begin="79.282" data-end="82.944">
+        <div class="uc__art" data-scene="sc18"></div>
+        <span class="uc__no">18</span>
+        <p class="uc__ln">Cause this heat make you sweat</p>
+        <p class="uc__ln">Better keep you a vest, I&#x27;ma keep you in check</p>
+      </article>
+      <article class="uc" data-i="18" data-begin="83.038" data-end="86.933">
+        <div class="uc__art" data-scene="sc19"></div>
+        <span class="uc__no">19</span>
+        <p class="uc__ln">I see how you living, we different</p>
+        <p class="uc__ln">You got me started ignition, like this my tradition</p>
+      </article>
+      <article class="uc" data-i="19" data-begin="87.027" data-end="90.936">
+        <div class="uc__art" data-scene="sc20"></div>
+        <span class="uc__no">20</span>
+        <p class="uc__ln">I pull up and hit with precision</p>
+        <p class="uc__ln">I do not need no permission, I feel like a hitman</p>
+      </article>
+      <article class="uc" data-i="20" data-begin="91.030" data-end="94.738">
+        <div class="uc__art" data-scene="sc21"></div>
+        <span class="uc__no">21</span>
+        <p class="uc__ln">For hitman I’ll murder ya mistress</p>
+        <p class="uc__ln">Leave without leaving a witness, I&#x27;m feeling ambitious</p>
+      </article>
+      <article class="uc" data-i="21" data-begin="95.020" data-end="100.683">
+        <div class="uc__art" data-scene="sc22"></div>
+        <span class="uc__no">22</span>
+        <p class="uc__ln">I kill anybody that listen, it really just come down to business</p>
+        <p class="uc__ln">I know why they upset</p>
+      </article>
+      <article class="uc" data-i="22" data-begin="102.597" data-end="108.903">
+        <div class="uc__art" data-scene="sc23"></div>
+        <span class="uc__no">23</span>
+        <p class="uc__ln">They just mad that we next</p>
+        <p class="uc__ln">All this ice around my neck</p>
+      </article>
+      <article class="uc" data-i="23" data-begin="110.897" data-end="115.436">
+        <div class="uc__art" data-scene="sc24"></div>
+        <span class="uc__no">24</span>
+        <p class="uc__ln">Benji here chasing a check</p>
+        <p class="uc__ln">Sick of Dulce pass me the Henny</p>
+      </article>
+      <article class="uc" data-i="24" data-begin="115.744" data-end="119.412">
+        <div class="uc__art" data-scene="sc25"></div>
+        <span class="uc__no">25</span>
+        <p class="uc__ln">They can go around, know we got plenty</p>
+        <p class="uc__ln">Hit it lit quick, made a quick flip</p>
+      </article>
+      <article class="uc" data-i="25" data-begin="119.506" data-end="123.402">
+        <div class="uc__art" data-scene="sc26"></div>
+        <span class="uc__no">26</span>
+        <p class="uc__ln">Not knowing that the devil was in me</p>
+        <p class="uc__ln">Cause I got free smoke for the freeloaders</p>
+      </article>
+      <article class="uc" data-i="26" data-begin="123.817" data-end="127.485">
+        <div class="uc__art" data-scene="sc27"></div>
+        <span class="uc__no">27</span>
+        <p class="uc__ln">Weed gassing up their ego</p>
+        <p class="uc__ln">Till I roll up on them like a steamroller</p>
+      </article>
+      <article class="uc" data-i="27" data-begin="127.927" data-end="132.090">
+        <div class="uc__art" data-scene="sc28"></div>
+        <span class="uc__no">28</span>
+        <p class="uc__ln">Shoot them down then I reload it</p>
+        <p class="uc__ln">I know why they upset</p>
+      </article>
+      <article class="uc" data-i="28" data-begin="134.018" data-end="140.203">
+        <div class="uc__art" data-scene="sc29"></div>
+        <span class="uc__no">29</span>
+        <p class="uc__ln">They just mad that we next</p>
+        <p class="uc__ln">All this ice around my neck</p>
+      </article>
+      <article class="uc" data-i="29" data-begin="142.867" data-end="145.987">
+        <div class="uc__art" data-scene="sc30"></div>
+        <span class="uc__no">30</span>
+        <p class="uc__ln">Benji head chasing a check</p>
+        <p class="uc__ln">Oh they upset</p>
+      </article>
+      <article class="uc" data-i="30" data-begin="147.486" data-end="150.030">
+        <div class="uc__art" data-scene="sc31"></div>
+        <span class="uc__no">31</span>
+        <p class="uc__ln">They upset</p>
+        <p class="uc__ln">They upset</p>
+      </article>
+      <article class="uc" data-i="31" data-begin="150.124" data-end="152.440">
+        <div class="uc__art" data-scene="sc32"></div>
+        <span class="uc__no">32</span>
+        <p class="uc__ln">They upset</p>
+        <p class="uc__ln">They upset</p>
+      </article>
+      <article class="uc" data-i="32" data-begin="152.935" data-end="156.844">
+        <div class="uc__art" data-scene="sc33"></div>
+        <span class="uc__no">33</span>
+        <p class="uc__ln">They probably mad</p>
+        <p class="uc__ln">They got finessed</p>
+      </article>
+      <article class="uc" data-i="33" data-begin="157.018" data-end="159.977">
+        <div class="uc__art" data-scene="sc34"></div>
+        <span class="uc__no">34</span>
+        <p class="uc__ln">I&#x27;m not impressed</p>
+        <p class="uc__ln">They not a threat</p>
+      </article>
+      <article class="uc" data-i="34" data-begin="161.677" data-end="165.533">
+        <div class="uc__art" data-scene="sc35"></div>
+        <span class="uc__no">35</span>
+        <p class="uc__ln">I know why they upset</p>
+        <p class="uc__ln">They mad they mad</p>
+      </article>
+      <article class="uc" data-i="35" data-begin="165.627" data-end="169.670">
+        <div class="uc__art" data-scene="sc36"></div>
+        <span class="uc__no">36</span>
+        <p class="uc__ln">I know why they upset</p>
+        <p class="uc__ln">They mad they mad</p>
+      </article>
+      <article class="uc" data-i="36" data-begin="170.312" data-end="175.574">
+        <div class="uc__art" data-scene="sc37"></div>
+        <span class="uc__no">37</span>
+        <p class="uc__ln">Probably hating cause we next</p>
+        <p class="uc__ln">Haters hate to see success</p>
+      </article>
+    </div>
+  </main>
+
+  <div class="up__bar">
+    <button class="up__play" id="upPlay" type="button" aria-label="Play">&#9654;&#xFE0E;</button>
+    <div class="up__prog" id="upProg"><i id="upFill"></i></div>
+    <span class="up__time" id="upTime">0:00 / 3:04</span>
+  </div>
+  <audio id="upAud" src="assets/audio/upset.mp3" preload="metadata"></audio>
+
+  <script src="js/analytics.js?v=__STAMP__"></script>
+  <script src="js/polish.js?v=__STAMP__"></script>
+  <script src="js/guide.js?v=__STAMP__"></script>
+  <script>
+    (function () {
+      "use strict";
+      function $(id) { return document.getElementById(id); }
+
+      /* THE SILENT FILM SLOTS — drop art per card as scenes render:
+         SCENE_ART[cardIndex] = "assets/img/upset/sc01.jpg" (stills now,
+         clips later). A card with art wears it behind the bars. */
+      var SCENE_ART = {};
+
+      var aud = $("upAud"), play = $("upPlay"), fill = $("upFill"), tEl = $("upTime");
+      var cards = [].slice.call(document.querySelectorAll(".uc"));
+      cards.forEach(function (c) {
+        var art = SCENE_ART[+c.getAttribute("data-i")];
+        if (art) {
+          c.classList.add("has-art");
+          c.querySelector(".uc__art").style.backgroundImage = "url(" + art + ")";
+        }
+      });
+
+      var counted = false;
+      function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + ("0" + s % 60).slice(-2); }
+      function paintBtn() { play.innerHTML = aud.paused ? "&#9654;&#xFE0E;" : "&#10074;&#10074;"; }
+      play.addEventListener("click", function () { if (aud.paused) aud.play(); else aud.pause(); });
+      aud.addEventListener("play", function () {
+        paintBtn();
+        if (!counted) { counted = true; if (window.MCC_TRACK) window.MCC_TRACK("track_play", { slug: "upset", title: "Upset" }); }
+      });
+      aud.addEventListener("pause", paintBtn);
+
+      /* follow the record: the live card lights and rides center — a hand
+         on the page pauses the follow for a few seconds */
+      var followOff = 0, live = -1;
+      window.addEventListener("scroll", function () { followOff = Date.now() + 4000; }, { passive: true });
+      function tick() {
+        var t = aud.currentTime;
+        var on = -1;
+        for (var i = 0; i < cards.length; i++) {
+          if (t >= +cards[i].getAttribute("data-begin") - 0.15 && t < +cards[i].getAttribute("data-end") + 0.35) { on = i; break; }
+        }
+        cards.forEach(function (c, i) {
+          c.classList.toggle("is-on", i === on);
+          c.classList.toggle("is-done", on !== -1 ? i < on : t > +c.getAttribute("data-end"));
+        });
+        if (on !== -1 && on !== live && Date.now() > followOff && !aud.paused) {
+          cards[on].scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        live = on;
+        if (aud.duration) fill.style.width = (t / aud.duration * 100) + "%";
+        tEl.textContent = fmt(t) + " / " + fmt(aud.duration || 184);
+      }
+      aud.addEventListener("timeupdate", tick);
+
+      /* tap a card, jump the record — the seek waits for the reel to load */
+      var pendingSeek = null;
+      aud.addEventListener("loadedmetadata", function () {
+        if (pendingSeek != null) { aud.currentTime = pendingSeek; pendingSeek = null; }
+      });
+      function seekTo(b) {
+        if (aud.readyState >= 1) aud.currentTime = b;
+        else pendingSeek = b;
+        aud.play();
+      }
+      cards.forEach(function (c) {
+        c.addEventListener("click", function () {
+          followOff = 0;
+          seekTo(+c.getAttribute("data-begin"));
+        });
+      });
+
+      /* scrub */
+      $("upProg").addEventListener("click", function (e) {
+        var r = this.getBoundingClientRect();
+        if (aud.duration) aud.currentTime = (e.clientX - r.left) / r.width * aud.duration;
+      });
+
+      if (window.MCC_TRACK) window.MCC_TRACK("upset_view", {});
+    })();
+  </script>
+</body>
+</html>

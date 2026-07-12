@@ -292,7 +292,10 @@
     "floor": 50,
     "feature": 500,
     "notes": "Book the operator on Our Street. Signed, masked, delivered — the desk runs this line until Benji claims it."
-   }
+   },
+   "tracks": [
+    "upset"
+   ]
   },
   {
    "id": "hitman-gear",
@@ -339,7 +342,10 @@
     }
    },
    "photo": "assets/img/rahndrx-hero.jpg",
-   "approved": true
+   "approved": true,
+   "tracks": [
+    "upset"
+   ]
   },
   {
    "id": "ocho-gr8",
@@ -431,7 +437,10 @@
    "claimed": false,
    "terms": {
     "notes": "Unclaimed — Raheem claims it to accept his split on 'Upset'."
-   }
+   },
+   "tracks": [
+    "upset"
+   ]
   },
   {
    "id": "daniel-cano",
