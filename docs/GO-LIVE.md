@@ -30,11 +30,13 @@ Full code + steps: `docs/the-guide.md`.
 3. Secret `ANTHROPIC_KEY` = your Anthropic key.
 - Verify: preflight's "THE GUIDE" row goes green, or open the ✦ Guide signed in.
 
-## 3. The engine — SQL pastes
+## 3. The engine — ONE SQL paste
 
-The full dependency-ordered ladder is `docs/PASTE-ORDER.md` (run top to bottom; re-running is safe). The pieces preflight will flag if missing:
-`market-schema.sql` · `green-light.sql` · `nameplate.sql` · `payments-schema.sql` · `verify-schema.sql` · `traps-engine.sql` · `score-schema.sql` (the Bureau) · `one-tape.sql` · `we-driver.sql` · `desk-imprint.sql`.
+**Fast path (do this):** SQL Editor → paste the whole of **`docs/live-engine.sql`** → Run. That one file is the entire 50-step core ladder **plus** the 6 preflight-checked extras (`green-light` · `nameplate` · `traps-engine` · `one-tape` · `we-driver` · `desk-imprint`), all stitched in dependency order — it replaces pasting 56 files by hand with a single Run. It's idempotent, so re-running is safe, and if it ever stops the error names the `-- [NN] file.sql` section header right above the failing line so you know exactly where you are.
+
 Then enable **pg_cron** so the nightly tape scores (command in `docs/one-tape.sql`).
+
+*(The annotated dependency map is still `docs/PASTE-ORDER.md` if you want to see what each stage opens. `live-engine.sql` is that same ladder, concatenated.)*
 
 ## 4. Money — Stripe (live rails)
 
