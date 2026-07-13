@@ -41,7 +41,7 @@ Then enable **pg_cron** so the nightly tape scores (command in `docs/one-tape.sq
 ## 4. Money — Stripe (live rails)
 
 Entity on Stripe = **McCluster Corp**; SCB is the brand + statement descriptor.
-- Deploy edge functions: **`pay-deal`** (`docs/stripe-connect.md`), **`stripe-webhook`** (`docs/stripe-webhook.md`, set `STRIPE_WEBHOOK_SECRET`), **`connect-onboard`** (`docs/connect-onboard.md`, JWT ON). All use `STRIPE_SK`.
+- Deploy edge functions: **`pay-deal`** (`docs/stripe-connect.md`), **`stripe-webhook`** (`docs/stripe-webhook.md`, set `STRIPE_WEBHOOK_SECRET`), **`connect-onboard`** (`docs/connect-onboard.md`, JWT **OFF** — it verifies the caller's token itself; the browser preflight carries no token and would bounce if JWT were on). All use `STRIPE_SK`.
 - Products/services description: creative-services marketplace + donations (not "software," not "credits/tickers").
 - Statement descriptor: `STREETCREDITBUREAU` or `EQUITY UPRISE`.
 - **Do NOT** check "501(c)(3) / tax-exempt" unless McCluster Corp holds the **IRS determination letter** — the CT charity registration (CHR.0069693) is not the same thing. Call money "contributions," not "tax-deductible."
