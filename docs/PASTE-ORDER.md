@@ -1,5 +1,10 @@
 # THE PASTE ORDER — the engine's assembly manual
 
+> **Just want it live?** Paste **`docs/live-engine.sql`** once — it's this whole
+> ladder (plus the 6 preflight extras) concatenated in the order below. This
+> page is the annotated map of what each stage opens; the bundle is the ladder
+> you actually run.
+
 One list, one order. Every schema paste in `docs/`, in dependency order.
 Each file is safe to re-run. When in doubt, run the whole ladder top to
 bottom — the two SEAL files at the end re-assert the safe version of
