@@ -53,8 +53,8 @@ Deno.serve(async (req) => {
       transfer_data: { destination: provider_acct },
     },
     metadata: { deal_id },
-    success_url: "https://mcclusterishere.github.io/McCluster-Portfolio/market.html#yours",
-    cancel_url: "https://mcclusterishere.github.io/McCluster-Portfolio/market.html#yours",
+    success_url: "https://streetcreditbureau.com/market.html#yours",
+    cancel_url: "https://streetcreditbureau.com/market.html#yours",
   });
   return Response.json({ url: session.url });
 });
