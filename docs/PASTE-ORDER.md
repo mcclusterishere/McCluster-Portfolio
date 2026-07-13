@@ -73,6 +73,7 @@ matter what ran before.
 |---|---|---|
 | `stripe-webhook` | OFF (Stripe signs) | STRIPE_SK, STRIPE_WHSEC |
 | `pay-deal` | OFF (checks GoTrue inside) | STRIPE_SK |
+| `pay-now` | OFF (walk-up payer; resolves payee server-side) | STRIPE_SK |
 | `buy-eup` | OFF (checks GoTrue inside) | STRIPE_SK |
 | `connect-onboard` | OFF (verifies token itself; preflight carries none) | STRIPE_SK |
 | `the-brain` | OFF (admin check inside) | ANTHROPIC_KEY |
