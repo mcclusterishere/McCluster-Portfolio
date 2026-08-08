@@ -124,7 +124,7 @@ Proposal → Counterproposal (0..n rounds) → Terms Lock → Signature
 - **Internal economics (not public):** hired videographers $50/hr (3 hrs/wk/client =
   $450/wk at 3 clients); Matthew's solo venture rate $100/hr; studio package $125/hr
   (includes $25/hr studio rent to the partner space). Limited Offer margin is the
-  spread between $14,400/yr client revenue and ~$23,400/yr fully-hired delivery cost
+  spread between $28,800/yr client revenue and ~$23,400/yr fully-hired delivery cost
   — which is why the offer holds at exactly 3 clients while Matthew still shoots, and
   why after 3 clients the model flips to day rates + productized web work.
 
