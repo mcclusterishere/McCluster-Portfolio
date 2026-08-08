@@ -15,7 +15,7 @@ links stay until replaced.
 | Song donations ("Donate & own it") | 6 song pages | Square links | **LIVE** |
 | Mission fund ("Support the Mission") | Hero · footer · Equity Uprise · Heal the 3 | Square link | **LIVE** |
 | Limited Offer — $28,800/yr (or $2,400/mo) | offer.html + home teaser + 360 bag pin | Claim email → invoice | **LIVE** (1 of 3 claimed) |
-| Web builds — from $4,500 / flagship $10k–24k / $25k+ | book-web.html, hire.html | Quote email | **LIVE** |
+| Web builds — from $4,250 / flagship $10k–24k / $25k+ | book-web.html, hire.html | Quote email | **LIVE** |
 | Photo & video day booking | book-photo.html, book-video.html | Booking email | **LIVE** |
 | Vaunt referral | cockpit pin, universe page, song page | Vaunt pays the house | **LIVE** |
 
