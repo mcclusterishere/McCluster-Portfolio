@@ -8,6 +8,16 @@ The current task is to make the existing experience feel more physical, cinemati
 
 If the result looks like a new dashboard, sci-fi control room, game HUD, or totally different website, the implementation has gone too far.
 
+## Required design map before implementation
+
+Before changing visual code, read:
+
+- `docs/design/HERE_RESKIN_MAP.md`
+
+That file maps the actual current HERE structure, including `index.html`, `app.html`, the sticky/scroll systems, hero orbit, 360/VR experience, Brand Collabs, Antisocial, finale, bottom app bar, streaming app surface, and the exact material assets that belong on each existing region.
+
+Do not implement from the asset names alone. The map is the source of truth for WHERE each material belongs and what must remain untouched.
+
 ## Core rule
 
 **Keep the design. Upgrade the material language and motion language.**
@@ -255,12 +265,13 @@ Not:
 ## Claude work protocol
 
 Before implementation:
-1. inspect the existing live/app layout and current source structure
-2. identify existing surfaces, buttons, navigation, cards, dividers, red accents, and animations
-3. map each existing UI element to at most one or two material assets
-4. produce a reskin plan without changing page architecture
-5. implement the material system progressively
-6. compare before/after screenshots at the same viewport sizes
+1. read `docs/design/HERE_RESKIN_MAP.md`
+2. inspect the existing live/app layout and current source structure
+3. identify existing surfaces, buttons, navigation, cards, dividers, red accents, and animations
+4. map each existing UI element to at most one or two material assets
+5. produce a reskin plan without changing page architecture
+6. implement the material system progressively
+7. compare before/after screenshots at the same viewport sizes
 
 Do not begin by creating new sections or replacing existing layouts.
 
