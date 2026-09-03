@@ -7,11 +7,6 @@ name: Fetch Docket 516 record
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - production
-    paths:
-      - ".github/workflows/fetch-docket.yml"
 
 permissions:
   contents: write
