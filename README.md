@@ -1,3 +1,10 @@
+> [!CAUTION]
+> **This repository is retired.** It publishes nothing and is connected to no
+> Worker, database or live domain. The live site is
+> [`mcclusterishere/mccluster`](https://github.com/mcclusterishere/mccluster)
+> → matthew.mccluster.org. Editing anything here changes nothing a person can
+> see. Agents: read `AGENTS.md` before writing.
+
 # Matthew McCluster — Cinematic 3D-Scroll Portfolio
 
 Ink black. Ruby red. Cream. One director.

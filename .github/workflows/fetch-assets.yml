@@ -5,12 +5,6 @@ name: Fetch portfolio assets
 # into a scroll-scrub frame sequence, and commits everything back.
 
 on:
-  push:
-    branches:
-      - production
-    paths:
-      - "assets-manifest.json"
-      - ".github/workflows/fetch-assets.yml"
   workflow_dispatch: {}
 
 permissions:

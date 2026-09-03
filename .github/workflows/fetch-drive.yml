@@ -7,9 +7,6 @@
 name: Fetch from Google Drive
 
 on:
-  push:
-    branches: [production]
-    paths: ["data/drive-queue.json"]
   workflow_dispatch: {}
 
 permissions:

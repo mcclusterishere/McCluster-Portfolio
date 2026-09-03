@@ -1,37 +1,25 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (RETIRED)
 
-# Mirrors this branch into gh-pages, which GitHub Pages serves.
-# (GITHUB_TOKEN can't enable Pages itself, so the site is published
-# from the gh-pages branch instead of a Pages deployment workflow.)
+# THIS REPOSITORY IS RETIRED.
+#
+# It used to mirror main into gh-pages on every push. The live site is
+# mcclusterishere/mccluster -> matthew.mccluster.org, and this repo is no
+# longer part of it. The trigger is manual-only now so a push here cannot
+# republish anything, and the one job refuses on purpose.
+#
+# Whatever is already on gh-pages stays exactly as it is. Nothing is
+# deleted; it is simply frozen.
 
 on:
-  push:
-    branches:
-      - "production"
-      - "main"
   workflow_dispatch: {}
 
-permissions:
-  contents: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  publish:
+  blocked:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Stamp asset versions so every deploy busts browser caches
+      - name: Do not deploy from a retired repository
         run: |
-          find . -maxdepth 1 -name '*.html' -exec sed -i "s/__STAMP__/${GITHUB_SHA::12}/g" {} +
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "Stamp asset versions for deploy" --allow-empty
-
-      - name: Push to gh-pages
-        run: git push origin HEAD:refs/heads/gh-pages --force
+          echo "McCluster-Portfolio is retired."
+          echo "The live site deploys from mcclusterishere/mccluster."
+          echo "Refusing to publish."
+          exit 1

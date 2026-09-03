@@ -6,14 +6,6 @@ name: Build catalogue from audio
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - production
-    paths:
-      - "assets/audio/**"
-      - "data/song-meta.json"
-      - "tools/build-catalogue.mjs"
-      - ".github/workflows/build-catalogue.yml"
 
 permissions:
   contents: write

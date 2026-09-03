@@ -4,8 +4,6 @@
 name: Archive to Wayback
 
 on:
-  push:
-    branches: [production]
   workflow_dispatch:
 
 permissions: {}
